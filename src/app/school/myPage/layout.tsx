@@ -23,7 +23,7 @@ export default function MyPageLayout({ children, modal }: MyPageLayoutProps) {
       {/* 메인 콘텐츠 */}
       <main className="pb-20">{children}</main>
 
-      {/* 모달 (Intercepting Route로 구현예정) */}
+      {/* 모달 (Intercepting Route로 구현예쩡)(리뷰 남기는 창) */}
       {modal}
 
       {/* 하단 네비게이션 */}
