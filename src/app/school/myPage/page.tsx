@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { User, Package, Star, Heart } from "lucide-react";
+import { User, Package, Star, Heart, Bell, Info, LogOut } from "lucide-react";
 
 export default function myPage() {
   return (
@@ -59,6 +59,59 @@ export default function myPage() {
                 <p className="font-medium text-black">찜한 목록</p>
                 <p className="text-sm text-gray-400">1건</p>
               </div>
+            </div>
+          </Link>
+        </div>
+      </div>
+      {/* 상세 정보 및 설정 섹션 */}
+      <div className="bg-white">
+        <div className="px-4 py-4 border-b border-gray-100">
+          <h3 className="text-lg font-semibold text-black">상세 정보 및 설정</h3>
+        </div>
+
+        <div className="space-y-0">
+          <Link
+            href="/myPage/account" //계정 설정
+            className="flex items-center justify-between py-4 px-4 border-b border-gray-100 hover:bg-gray-100 transition-colors"
+          >
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-gray-200 rounded-lg flex items-center justify-center">
+                <User className="w-5 h-5 text-gray-600" />
+              </div>
+              <span className="font-medium text-black">계정 설정</span>
+            </div>
+          </Link>
+          <Link
+            href="/myPage/alarm" //알림 설정
+            className="flex items-center justify-between py-4 px-4 border-b border-gray-100 hover:bg-gray-100 transition-colors"
+          >
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-gray-200 rounded-lg flex items-center justify-center">
+                <Bell className="w-5 h-5 text-gray-600" />
+              </div>
+              <span className="font-medium text-black">알림 설정</span>
+            </div>
+          </Link>
+          <Link
+            href="/myPage/information" //앱 정보(임시 페이지 이름)
+            className="flex items-center justify-between py-4 px-4 border-b border-gray-100 hover:bg-gray-100 transition-colors"
+          >
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-gray-200 rounded-lg flex items-center justify-center">
+                <Info className="w-5 h-5 text-gray-600" />
+              </div>
+              <span className="font-medium text-black">앱 정보</span>
+            </div>
+          </Link>
+          <Link
+            href="/myPage/logout" //로그아웃
+            className="flex items-center justify-between py-4 px-4 border-b border-gray-100 hover:bg-gray-100 transition-colors"
+          >
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-gray-200 rounded-lg flex items-center justify-center">
+                <LogOut className="w-5 h-5 text-gray-600" />
+              </div>
+              <span className="font-medium text-black">로그아웃</span>
             </div>
           </Link>
         </div>
