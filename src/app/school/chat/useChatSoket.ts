@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { io } from "socket.io-client";
-import { useChatStore } from "./useChatStore";
+import { Message, useChatStore } from "./useChatStore";
 
 export const socket = io("https://fesp-api.koyeb.app/websocket/sample");
 
@@ -49,7 +49,14 @@ export const useChatSocket = ({ userId, nickName, roomName }: useChatSocketProps
     );
     // 메시지 이벤트 수신
     socket.on("message", (data) => {
-      console.log("메시지 수신:", data);
+      const msg = {
+        id: Date.now().toString,
+        roomId: data.roomId,
+        content: typeof data.msg === "object" ? data.msg.msg : data.msg,
+        type: "text",
+        createdAt: new Date().toISOString(),
+      };
+      useChatStore.getState().addMessage(msg);
     });
     // 페이지 이동하거나 컴포넌트 사라질 때 연결 종료
     return () => {
