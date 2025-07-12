@@ -1,4 +1,5 @@
-import { User } from "lucide-react";
+import Link from "next/link";
+import { User, Package, Star, Heart } from "lucide-react";
 
 export default function myPage() {
   return (
@@ -10,6 +11,57 @@ export default function myPage() {
         </div>
         <h2 className="text-xl font-semibold text-black mb-1">이훈진</h2>
         <p className="text-sm text-gray-400">hunjinjin@example.com</p>
+      </div>
+      {/* 활동 요약 섹션 */}
+      <div className="bg-white">
+        <div className="px-4 py-4 border-b border-gray-100">
+          <h3 className="text-lg font-semibold text-black">활동 요약</h3>
+        </div>
+
+        <div className="space-y-0">
+          <Link
+            href="/myPage/my-posts" //내가 거래한 목록
+            className="flex items-center justify-between py-4 px-4 border-b border-gray-100 hover:bg-gray-100 transition-colors"
+          >
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                <Package className="w-5 h-5 text-blue-400" />
+              </div>
+              <div>
+                <p className="font-medium text-black">내 거래 목록</p>
+                <p className="text-sm text-gray-400">2건</p>
+              </div>
+            </div>
+          </Link>
+          <Link
+            href="/myPage/reviews-to-leave" //남길 수 있는 후기 목록
+            className="flex items-center justify-between py-4 px-4 border-b border-gray-100 hover:bg-gray-100 transition-colors"
+          >
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                <Star className="w-5 h-5 text-blue-400" />
+              </div>
+              <div>
+                <p className="font-medium text-black">남길 수 있는 후기</p>
+                <p className="text-sm text-gray-400">3건</p>
+              </div>
+            </div>
+          </Link>
+          <Link
+            href="/myPage/liked-posts" //찜한 목록
+            className="flex items-center justify-between py-4 px-4 hover:bg-gray-100 transition-colors"
+          >
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                <Heart className="w-5 h-5 text-blue-400" />
+              </div>
+              <div>
+                <p className="font-medium text-black">찜한 목록</p>
+                <p className="text-sm text-gray-400">1건</p>
+              </div>
+            </div>
+          </Link>
+        </div>
       </div>
     </div>
   );
