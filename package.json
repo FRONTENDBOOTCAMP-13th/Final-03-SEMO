@@ -9,12 +9,13 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "lucide-react": "^0.525.0",
     "next": "15.3.5",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "socket.io-client": "^4.8.1",
-    "zustand": "^5.0.6",
-    "lucide-react": "^0.525.0"
+    "websocket-client": "^1.0.0",
+    "zustand": "^5.0.6"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
@@ -26,8 +27,8 @@
     "eslint": "^9",
     "eslint-config-next": "15.3.5",
     "postcss": "^8.5.6",
+    "prettier": "^3.6.2",
     "tailwindcss": "^4.1.11",
-    "typescript": "^5",
-    "prettier": "^3.6.2"
+    "typescript": "^5"
   }
 }

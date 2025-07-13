@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { io } from "socket.io-client";
-import { Message, useChatStore } from "./useChatStore";
+import { useChatStore, Message } from "./useChatStore";
 
 export const socket = io("https://fesp-api.koyeb.app/websocket/sample");
 
@@ -49,8 +49,8 @@ export const useChatSocket = ({ userId, nickName, roomName }: useChatSocketProps
     );
     // 메시지 이벤트 수신
     socket.on("message", (data) => {
-      const msg = {
-        id: Date.now().toString,
+      const msg: Message = {
+        id: Date.now().toString(),
         roomId: data.roomId,
         content: typeof data.msg === "object" ? data.msg.msg : data.msg,
         type: "text",

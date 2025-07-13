@@ -4,14 +4,13 @@ import { useState } from "react";
 import { useChatStore } from "./useChatStore";
 import { socket, useChatSocket } from "./useChatSoket";
 
-export const ChatTestPage = () => {
+const ChatTestPage = () => {
   const userId = "user123";
   const nickName = "조한솔";
   const roomName = "테스트방";
 
   const [input, setInput] = useState("");
   const messages = useChatStore((state) => state.messages);
-  const addMessage = useChatStore((state) => state.addMessage);
 
   useChatSocket({ userId, nickName, roomName });
 
@@ -23,7 +22,7 @@ export const ChatTestPage = () => {
   };
   return (
     <div className="p-4">
-      <h1 className="text-xl font-bold mb-4">🧪 채팅 테스트</h1>
+      <h1 className="text-xl font-bold mb-4"> 채팅 테스트</h1>
       <div className="border h-64 overflow-y-auto mb-2 p-2">
         {messages.map((msg, idx) => (
           <div key={idx} className="mb-1">
@@ -42,3 +41,5 @@ export const ChatTestPage = () => {
     </div>
   );
 };
+
+export default ChatTestPage;
