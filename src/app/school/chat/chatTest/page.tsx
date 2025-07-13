@@ -20,10 +20,11 @@ const ChatTestPage = () => {
       setInput("");
     }
   };
+
   return (
     <div className="p-4">
-      <h1 className="text-xl font-bold mb-4"> 채팅 테스트</h1>
-      <div className="border h-64 overflow-y-auto mb-2 p-2">
+      <h1 className="mb-4 text-xl font-bold"> 채팅 테스트</h1>
+      <div className="h-64 p-2 mb-2 overflow-y-auto border">
         {messages.map((msg, idx) => (
           <div key={idx} className="mb-1">
             <strong>익명:</strong> {msg.content}
@@ -35,7 +36,7 @@ const ChatTestPage = () => {
         value={input}
         onChange={(e) => setInput(e.target.value)}
         onKeyDown={(e) => e.key === "Enter" && handleSend()}
-        className="border px-2 py-1 w-full"
+        className="w-full px-2 py-1 border"
         placeholder="메시지 입력"
       />
     </div>

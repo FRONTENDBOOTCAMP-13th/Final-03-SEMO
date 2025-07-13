@@ -36,8 +36,8 @@ export const useChatSocket = ({ userId, nickName, roomName }: useChatSocketProps
               user_id: userId,
               nickName,
             },
-            (joinRes: any) => {
-              if (joinRes.ok) {
+            (res: any) => {
+              if (res.ok) {
                 console.log("채팅방 입장 완료");
               }
             }
