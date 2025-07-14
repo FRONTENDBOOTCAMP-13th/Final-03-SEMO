@@ -20,7 +20,7 @@ export default function myPage() {
 
         <div className="space-y-0">
           <Link
-            href="/myPage/my-posts" //내가 거래한 목록
+            href="/school/myPage/my-post" //내가 거래한 목록
             className="flex items-center justify-between py-4 px-4 border-b border-gray-100 hover:bg-gray-100 transition-colors"
           >
             <div className="flex items-center space-x-3">
@@ -34,7 +34,7 @@ export default function myPage() {
             </div>
           </Link>
           <Link
-            href="/myPage/reviews-to-leave" //남길 수 있는 후기 목록
+            href="/school/myPage/review-to-write" //남길 수 있는 후기 목록
             className="flex items-center justify-between py-4 px-4 border-b border-gray-100 hover:bg-gray-100 transition-colors"
           >
             <div className="flex items-center space-x-3">
@@ -48,7 +48,7 @@ export default function myPage() {
             </div>
           </Link>
           <Link
-            href="/myPage/liked-posts" //찜한 목록
+            href="/school/myPage/wishlist" //찜한 목록
             className="flex items-center justify-between py-4 px-4 hover:bg-gray-100 transition-colors"
           >
             <div className="flex items-center space-x-3">
@@ -71,7 +71,7 @@ export default function myPage() {
 
         <div className="space-y-0">
           <Link
-            href="/myPage/account" //계정 설정
+            href="/school/myPage/account" //계정 설정
             className="flex items-center justify-between py-4 px-4 border-b border-gray-100 hover:bg-gray-100 transition-colors"
           >
             <div className="flex items-center space-x-3">
@@ -82,7 +82,7 @@ export default function myPage() {
             </div>
           </Link>
           <Link
-            href="/myPage/alarm" //알림 설정
+            href="/school/myPage/notifications" //알림 설정
             className="flex items-center justify-between py-4 px-4 border-b border-gray-100 hover:bg-gray-100 transition-colors"
           >
             <div className="flex items-center space-x-3">
@@ -93,7 +93,7 @@ export default function myPage() {
             </div>
           </Link>
           <Link
-            href="/myPage/information" //앱 정보(임시 페이지 이름)
+            href="/school/myPage/app-info" //앱 정보(임시 페이지 이름)
             className="flex items-center justify-between py-4 px-4 border-b border-gray-100 hover:bg-gray-100 transition-colors"
           >
             <div className="flex items-center space-x-3">
@@ -104,7 +104,7 @@ export default function myPage() {
             </div>
           </Link>
           <Link
-            href="/myPage/logout" //로그아웃
+            href="/school/myPage/logout" //로그아웃
             className="flex items-center justify-between py-4 px-4 border-b border-gray-100 hover:bg-gray-100 transition-colors"
           >
             <div className="flex items-center space-x-3">
