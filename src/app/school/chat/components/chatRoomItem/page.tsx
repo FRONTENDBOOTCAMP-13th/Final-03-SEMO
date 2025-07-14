@@ -6,10 +6,17 @@
 //   date: string;
 //   unread: boolean;
 // }
+"use client";
+
+import { useRouter } from "next/navigation";
 
 const ChatRoomItem = () => {
+  const router = useRouter();
   return (
-    <div className="flex min-w-[320px] w-full max-w-[480px] items-center justify-between px-4 py-3 hover:bg-gray-50">
+    <div
+      className="flex min-w-[320px] w-full max-w-[480px] items-center justify-between px-4 py-3 hover:bg-gray-50 cursor-pointer"
+      onClick={() => router.push("/school/chat/chatRoom")}
+    >
       <div className="flex items-center">
         <div className="rounded-full w-[70px] h-[70px] bg-uni-blue-400" />
         <div className="flex flex-col ml-4">
