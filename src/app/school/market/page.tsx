@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import ItemSection from './itemSection';
 import FloatingButton from "@/components/common/FloatingButton";
+import Search from "@/components/common/Search"
 
 export default function BuyMarketPage() {
   const [activeTab, setActiveTab] = useState<'wish' | 'sell'>('wish');
@@ -25,6 +26,7 @@ export default function BuyMarketPage() {
 
   return (
     <div className="px-4 py-6 bg-uni-white min-h-screen">
+      <Search />
 
       {/* 탭 버튼 */}
       <div className="flex justify-around mb-4 border-b border-uni-gray-300">
