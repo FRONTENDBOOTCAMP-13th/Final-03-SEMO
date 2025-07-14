@@ -4,10 +4,9 @@ import React, { useState } from 'react';
 import ItemSection from './itemSection';
 
 export default function BuyMarketPage() {
-  const [activeTab, setActiveTab] = useState<'all' | 'wish' | 'sell'>('wish');
+  const [activeTab, setActiveTab] = useState<'wish' | 'sell'>('wish');
 
   const tabMap = [
-    { label: '전체', value: 'all' },
     { label: '사고싶어요', value: 'wish' },
     { label: '팔고싶어요', value: 'sell' },
   ];
@@ -54,9 +53,6 @@ export default function BuyMarketPage() {
       )}
       {activeTab === 'sell' && (
         <ItemSection title="팔고싶어요" items={wishList} />
-      )}
-      {activeTab === 'all' && (
-        <p className="text-center text-uni-gray-600 font-medium">전체 아이템 목록</p>
       )}
     </div>
   );
