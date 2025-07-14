@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import ItemSection from './itemSection';
+import FloatingButton from "@/components/common/FloatingButton";
 
 export default function BuyMarketPage() {
   const [activeTab, setActiveTab] = useState<'wish' | 'sell'>('wish');
@@ -54,6 +55,7 @@ export default function BuyMarketPage() {
       {activeTab === 'sell' && (
         <ItemSection title="팔고싶어요" items={wishList} />
       )}
+      <FloatingButton href="/school/buyMarket/new" />
     </div>
   );
 
