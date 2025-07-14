@@ -36,12 +36,12 @@ export default function BuyMarketPage() {
               key={value}
               onClick={() => setActiveTab(value)}
               className={`flex-1 text-center py-2 font-bold text-14 relative ${
-                isActive ? 'text-uni-blue-500' : 'text-gray-500'
+                isActive ? 'text-uni-blue-400' : 'text-gray-500'
               }`}
             >
               {label}
               {isActive && (
-                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-10 h-[3px] bg-uni-blue-500" />
+                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-20 h-[3px] bg-uni-blue-400" />
               )}
             </button>
           );
@@ -55,7 +55,7 @@ export default function BuyMarketPage() {
       {activeTab === 'sell' && (
         <ItemSection title="팔고싶어요" items={wishList} />
       )}
-      <FloatingButton href="/school/buyMarket/new" />
+      <FloatingButton href="/school/market/new" />
     </div>
   );
 
