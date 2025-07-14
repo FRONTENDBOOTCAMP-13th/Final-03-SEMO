@@ -27,7 +27,7 @@ export default function BuyMarketPage() {
     <div className="px-4 py-6 bg-uni-white min-h-screen">
 
       {/* 탭 버튼 */}
-      <div className="flex justify-around mb-4 border-b">
+      <div className="flex justify-around mb-4 border-b border-uni-gray-300">
         {tabMap.map(({ label, value }) => {
           const isActive = activeTab === value;
 
@@ -41,7 +41,7 @@ export default function BuyMarketPage() {
             >
               {label}
               {isActive && (
-                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-20 h-[3px] bg-uni-blue-400" />
+                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-43 h-[3px] bg-uni-blue-400" />
               )}
             </button>
           );
@@ -50,10 +50,10 @@ export default function BuyMarketPage() {
 
       {/* 탭에 따른 컨텐츠 */}
       {activeTab === 'wish' && (
-        <ItemSection title="사고싶어요" items={wishList} />
+        <ItemSection title="" items={wishList} />
       )}
       {activeTab === 'sell' && (
-        <ItemSection title="팔고싶어요" items={wishList} />
+        <ItemSection title="" items={wishList} />
       )}
       <FloatingButton href="/school/market/new" />
     </div>

@@ -32,7 +32,7 @@ export default function ItemSection({ title, items }: Props) {
               />
             </div>
             <p className="text-sm mt-2 text-16">{item.title}</p>
-            <div className="flex items-center text-16 text-gray-500 mt-1">
+            <div className="flex items-center text-16 text-uni-gray-500 mt-1">
               ❤️ <span className="ml-1 mr-2">3</span> 💬 <span className="ml-1">5</span>
             </div>
           </div>
