@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import TabNavigation from "../_components/TabNavigation";
 
 export default function MyPageMyPost() {
   const [activeTab, setActiveTab] = useState("전체");
@@ -42,6 +43,8 @@ export default function MyPageMyPost() {
 
   const gatheringsItems: any[] = [];
 
+  const tabs = ["전체", "팔래요", "살래요", "모여요"];
+
   const getStatusButton = (status: string) => {
     if (status === "판매중") {
       return <button className="px-4 py-2 bg-green-400 text-white text-sm rounded-lg font-medium ml-4">판매중</button>;
@@ -53,21 +56,7 @@ export default function MyPageMyPost() {
   return (
     <div className="min-h-screen">
       {/* Tab Navigation */}
-      <nav className="flex bg-white border-b border-gray-100">
-        {["전체", "팔래요", "살래요", "모여요"].map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab)}
-            className={`flex-1 py-4 px-4 text-sm font-medium border-b-2 transition-colors ${
-              activeTab === tab
-                ? "text-blue-400 border-blue-400"
-                : "text-gray-500 border-transparent hover:text-gray-700"
-            }`}
-          >
-            {tab}
-          </button>
-        ))}
-      </nav>
+      <TabNavigation tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
 
       <main className="p-4 space-y-6">
         {/* 팔래요 Section */}
