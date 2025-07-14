@@ -13,7 +13,6 @@ export default function BuyMarketPage() {
     { label: '팔고싶어요', value: 'sell' },
   ];
 
-
   // 하드코딩 아이템
   const wishList = [
     { id: 1, title: '치킨 깊티 구해요!', img: '/' },
@@ -25,7 +24,7 @@ export default function BuyMarketPage() {
   ];
 
   return (
-    <div className="px-4 py-1 bg-uni-white min-h-screen">
+    <div className="px-5 py-1 bg-uni-white min-h-screen">
       <Search />
 
       {/* 탭 버튼 */}
@@ -43,7 +42,7 @@ export default function BuyMarketPage() {
             >
               {label}
               {isActive && (
-                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-43 h-[3px] bg-uni-blue-400" />
+                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-47 h-[3px] bg-uni-blue-400" />
               )}
             </button>
           );
