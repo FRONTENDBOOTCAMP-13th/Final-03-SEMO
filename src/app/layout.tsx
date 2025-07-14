@@ -16,7 +16,7 @@ export default function RootLayout({ children, modal }: MyPageLayoutProps) {
       <body>
         <div className="min-h-screen bg-white min-w-[320px] w-full max-w-[480px] mx-auto relative">
           {/* 공통 헤더 */}
-          <header className="bg-white border-b border-gray-200 px-3 py-2 sticky top-0 z-10">
+          <header className="bg-white px-3 py-2 sticky top-0 z-10">
             <div className="flex items-center h-11">
               <Link href="/" className="p-2 -ml-2 flex items-center justify-center">
                 <ChevronLeft className="w-6 h-6 text-gray-600" />
