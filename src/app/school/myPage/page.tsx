@@ -6,7 +6,7 @@ export default function myPage() {
     <div className="px-4 py-6 space-y-6">
       {/* 사용자 프로필 */}
       <div className="flex flex-col items-center text-center bg-uni-white py-8">
-        <div className="w-24 h-24 mb-4 bg-gray-200 rounded-lg flex items-center justify-center">
+        <div className="w-24 h-24 mb-4 bg-gray-200 rounded-full flex items-center justify-center">
           <User className="w-12 h-12 text-uni-gray-500" />
         </div>
         <h2 className="text-xl font-semibold text-uni-blackmb-1">이훈진</h2>
