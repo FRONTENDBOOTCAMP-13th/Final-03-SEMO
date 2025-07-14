@@ -24,7 +24,7 @@ export default function BuyMarketPage() {
   ];
 
   return (
-    <div className="min-w-[320px] max-w-md mx-auto px-4 py-6 bg-uni-white min-h-screen">
+    <div className="px-4 py-6 bg-uni-white min-h-screen">
 
       {/* 탭 버튼 */}
       <div className="flex justify-around mb-4 border-b">
