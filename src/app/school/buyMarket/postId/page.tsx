@@ -1,3 +1,4 @@
+// 게시글 상세(선택 게시글 보여주기)
 export default function buyMarketPostId() {
   return (
     <>
