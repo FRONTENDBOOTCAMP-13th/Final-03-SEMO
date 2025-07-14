@@ -21,7 +21,7 @@ export default function ItemSection({ title, items }: Props) {
           <div>
             <div
               key={item.id}
-              className="rounded-lg p-2 bg-uni-white"
+              className="rounded-lg p-2 bg-uni-gray-100"
             >
               <Image
                 src={item.img}
@@ -36,7 +36,6 @@ export default function ItemSection({ title, items }: Props) {
               ❤️ <span className="ml-1 mr-2">3</span> 💬 <span className="ml-1">5</span>
             </div>
           </div>
-          
         ))}
       </div>
     </div>
