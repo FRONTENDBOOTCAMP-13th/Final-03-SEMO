@@ -5,6 +5,49 @@ import { useState } from "react";
 export default function MyPageMyPost() {
   const [activeTab, setActiveTab] = useState("전체");
 
+  // 테스트용 더미 데이터
+  const sellItems = [
+    {
+      id: 1,
+      title: "인센스 사실분?",
+      price: "10,000원",
+      image: "🕯️",
+      status: "판매중",
+    },
+    {
+      id: 2,
+      title: "기숙사 공기에 좋은 선인장",
+      price: "5,000원",
+      image: "🌵",
+      status: "판매중",
+    },
+  ];
+
+  const buyItems = [
+    {
+      id: 3,
+      title: "여행에서 헤어져서 폴라로이드 팝니다",
+      price: "15,000원",
+      image: "🏔️",
+      status: "판매완료",
+    },
+    {
+      id: 4,
+      title: "노트북 팝니다ㅠ",
+      price: "15,000원",
+      image: "🏔️",
+      status: "판매완료",
+    },
+  ];
+
+  const getStatusButton = (status: string) => {
+    if (status === "판매중") {
+      return <button className="px-4 py-2 bg-green-400 text-white text-sm rounded-lg font-medium ml-4">판매중</button>;
+    } else {
+      return <button className="px-4 py-2 bg-gray-400 text-white text-sm rounded-lg font-medium ml-4">판매완료</button>;
+    }
+  };
+
   return (
     <div className="min-h-screen">
       {/* Tab Navigation */}
@@ -25,7 +68,50 @@ export default function MyPageMyPost() {
       </nav>
 
       <main className="p-4 space-y-6">
-        <p className="text-gray-500">현재 선택된 탭: {activeTab}</p>
+        <section>
+          <h2 className="text-lg font-semibold mb-3 text-black">팔고싶어요</h2>
+          <div className="space-y-3">
+            {sellItems.map((item) => (
+              <div
+                key={item.id}
+                className="flex items-center justify-between p-4 bg-white rounded-xl shadow-sm border border-gray-100"
+              >
+                <div className="flex items-center space-x-3 flex-1 min-w-0">
+                  <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center text-xl flex-shrink-0">
+                    {item.image}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-medium text-gray-900 text-sm whitespace-nowrap">{item.title}</h3>
+                    <p className="text-sm text-gray-600 mt-0.5">{item.price}</p>
+                  </div>
+                </div>
+                {getStatusButton(item.status)}
+              </div>
+            ))}
+          </div>
+        </section>
+        <section>
+          <h2 className="text-lg font-semibold mb-3 text-black">사고싶어요</h2>
+          <div className="space-y-3">
+            {buyItems.map((item) => (
+              <div
+                key={item.id}
+                className="flex items-center justify-between p-4 bg-white rounded-xl shadow-sm border border-gray-100"
+              >
+                <div className="flex items-center space-x-3 flex-1 min-w-0">
+                  <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center text-xl flex-shrink-0">
+                    {item.image}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-medium text-gray-900 text-sm whitespace-nowrap">{item.title}</h3>
+                    <p className="text-sm text-gray-600 mt-0.5">{item.price}</p>
+                  </div>
+                </div>
+                {getStatusButton(item.status)}
+              </div>
+            ))}
+          </div>
+        </section>
       </main>
     </div>
   );
