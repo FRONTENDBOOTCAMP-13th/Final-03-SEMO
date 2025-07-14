@@ -1,3 +1,24 @@
+/**
+ * ItemCard 컴포넌트
+ *
+ * 거래 아이템(판매/구매/모임 등)을 카드 형태로 표시합니다.
+ *
+ * @example
+ * <ItemCard
+ *   id={1}
+ *   title="인센스 사실분?"
+ *   price="10,000원"
+ *   image="🕯️"
+ *   status="판매중"
+ * />
+ *
+ * @param id - 아이템 고유 id
+ * @param title - 아이템 제목
+ * @param price - 가격 문자열
+ * @param image - 아이콘 또는 이미지 (지금은 이모지 기반)
+ * @param status - 판매중 or 판매완료
+ */
+
 "use client";
 
 // 아이템 공통 타입
