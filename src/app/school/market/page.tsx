@@ -25,7 +25,7 @@ export default function BuyMarketPage() {
   ];
 
   return (
-    <div className="px-4 py-6 bg-uni-white min-h-screen">
+    <div className="px-4 py-1 bg-uni-white min-h-screen">
       <Search />
 
       {/* 탭 버튼 */}
