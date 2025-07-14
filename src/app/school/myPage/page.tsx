@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { User, Package, Star, Heart, Bell, Info, LogOut } from "lucide-react";
 
-export default function myPage() {
+export default function MyPage() {
   return (
     <div className="px-4 py-6 space-y-6">
       {/* 사용자 프로필 */}
