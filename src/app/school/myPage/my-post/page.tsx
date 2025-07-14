@@ -86,6 +86,7 @@ export default function MyPageMyPost() {
                         {item.image}
                       </div>
                       <div className="flex-1 min-w-0">
+                        {/*줄바꿈 -> 그라데이션 효과 적용*/}
                         <div className="relative overflow-hidden">
                           <h3 className="font-medium text-gray-900 text-sm whitespace-nowrap">{item.title}</h3>
                           <div className="absolute top-0 right-0 w-8 h-full bg-gradient-to-l from-white"></div>
