@@ -3,6 +3,7 @@
 import { useState } from "react";
 import TabNavigation from "../_components/TabNavigation";
 import ItemCard, { Item } from "../_components/ItemCard";
+import EmptyState from "../_components/EmptyState";
 
 export default function MyPageMyPost() {
   const [activeTab, setActiveTab] = useState("전체");
@@ -60,9 +61,7 @@ export default function MyPageMyPost() {
               {sellItems.length > 0 ? (
                 sellItems.map((item) => <ItemCard key={item.id} item={item} />)
               ) : (
-                <div className="text-center p-8 text-gray-600 bg-gray-100 rounded-xl border border-gray-100">
-                  <p className="text-sm font-semibold">아직 거래한게 없어요</p>
-                </div>
+                <EmptyState message="아직 거래한게 없어요" />
               )}
             </div>
           </section>
@@ -76,9 +75,7 @@ export default function MyPageMyPost() {
               {buyItems.length > 0 ? (
                 buyItems.map((item) => <ItemCard key={item.id} item={item} />)
               ) : (
-                <div className="text-center p-8 text-gray-600 bg-gray-100 rounded-xl border border-gray-100">
-                  <p className="text-sm font-semibold">아직 거래한게 없어요</p>
-                </div>
+                <EmptyState message="아직 거래한게 없어요" />
               )}
             </div>
           </section>
@@ -92,9 +89,7 @@ export default function MyPageMyPost() {
               {gatheringsItems.length > 0 ? (
                 gatheringsItems.map((item) => <ItemCard key={item.id} item={item} />)
               ) : (
-                <div className="text-center p-8 text-gray-600 bg-gray-100 rounded-xl border border-gray-100">
-                  <p className="text-sm font-semibold">아직 거래한게 없어요</p>
-                </div>
+                <EmptyState message="아직 거래한게 없어요" />
               )}
             </div>
           </section>
