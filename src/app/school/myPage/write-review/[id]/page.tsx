@@ -6,9 +6,14 @@ import { Star } from "lucide-react";
 
 export default function MyPageWriteReview() {
   const [rating, setRating] = useState(3);
+  const [review, setReview] = useState("");
 
   const handleStarClick = (starIndex: number) => {
     setRating(starIndex + 1);
+  };
+
+  const handleSubmit = () => {
+    console.log({ rating, review });
   };
 
   return (
@@ -57,6 +62,8 @@ export default function MyPageWriteReview() {
         {/* 리뷰 작성 textarea */}
         <section className="mt-6">
           <textarea
+            value={review}
+            onChange={(e) => setReview(e.target.value)}
             className="w-full h-40 p-4 border border-gray-200 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-uni-blue-400 focus:border-transparent text-sm"
             rows={8}
             placeholder=""
@@ -74,7 +81,10 @@ export default function MyPageWriteReview() {
       </main>
 
       {/* 등록 버튼 */}
-      <button className="fixed bottom-24 left-4 right-4 py-4 bg-uni-blue-400 text-white font-medium rounded-lg shadow-lg hover:bg-blue-600 transition-all duration-100 hover:shadow-xl active:scale-98">
+      <button
+        onClick={handleSubmit}
+        className="fixed bottom-24 left-4 right-4 py-4 bg-uni-blue-400 text-white font-medium rounded-lg shadow-lg hover:bg-blue-600 transition-all duration-100 hover:shadow-xl active:scale-98"
+      >
         등록하기
       </button>
     </div>
