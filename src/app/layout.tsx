@@ -1,53 +1,26 @@
-import Link from "next/link";
+import { ReactNode } from "react";
 import "./globals.css";
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+interface MyPageLayoutProps {
+  children: ReactNode;
+  modal?: ReactNode;
+}
+
+export default function RootLayout({ children, modal }: MyPageLayoutProps) {
   return (
     <html lang="ko">
       <body>
-        <ul>
-          <li>
-            <Link href="/login">login</Link>
-          </li>
-          <li>
-            <Link href="/onBoarding">onBoarding</Link>
-          </li>
-          <li>
-            <Link href="/signup">signup</Link>
-          </li>
-          <li>
-            <Link href="/school/buyMarket">buyMarket</Link>
-          </li>
-          <li>
-            <Link href="/school/buyMarket/new">buyMarket/new</Link>
-          </li>
-          <li>
-            <Link href="/school/buyMarket/postId">buyMarket/postId</Link>
-          </li>
-          <li>
-            <Link href="/school/chat">chat</Link>
-          </li>
-          <li>
-            <Link href="/school/chat/chatId">chatId</Link>
-          </li>
-          <li>
-            <Link href="/school/sellMarket">sellMarket</Link>
-          </li>
-          <li>
-            <Link href="/school/sellMarket/new">sellMarket/new</Link>
-          </li>
-          <li>
-            <Link href="/school/sellMarket/postId">sellMarket/postId</Link>
-          </li>
-          <li>
-            <Link href="/school/myPage">myPage</Link>
-          </li>
-        </ul>
-        {children}
+        <div className="min-h-screen bg-white min-w-[320px] w-full max-w-[480px] mx-auto relative">
+          
+
+          {/* 메인 콘텐츠 */}
+          <main className="pb-20">{children}</main>
+
+          {/* 모달 (Intercepting Route로 구현예쩡) */}
+          {modal}
+
+          
+        </div>
       </body>
     </html>
   );
