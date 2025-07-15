@@ -1,6 +1,6 @@
 'use client';
 import Image from 'next/image';
-import CommentItem from './CommentItem';
+import CommentList from './CommentList';
 
 export default function BuyMarketPostPage() {
   return (
@@ -41,17 +41,7 @@ export default function BuyMarketPostPage() {
       {/* 설명 */}
       <p className="text-gray-700 mb-2">미개봉 새상품입니다. 쿨거래시 네고 가능합니다.</p>
       <p className="text-12 text-uni-gray-400 mb-6">2025년 07월 09일 11:34시</p>
-
-      {/* 댓글 */}
-      <div>
-        <h3 className="font-bold text-22 mt-5 mb-2">댓글 (2)</h3>
-        <input
-          placeholder="댓글을 입력하세요"
-          className="w-full bg-uni-gray-200 rounded-md p-3 mb-8 text-16"
-        />
-        
-      <CommentItem />
-      </div>
+      <CommentList />
     </div>
   )
 }
