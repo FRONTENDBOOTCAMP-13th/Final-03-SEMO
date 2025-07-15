@@ -1,20 +1,47 @@
 "use client";
 
-import { useState } from "react";
+import { useState, use } from "react";
 import Image from "next/image";
 import { Star } from "lucide-react";
 import SaveFloatingButton from "../../_components/SaveFloatingButton";
+import { Review, getReviewById } from "../../data/reviewsData";
 
-export default function MyPageWriteReview() {
+interface MyPageWriteReviewProps {
+  params: Promise<{
+    id: string;
+  }>;
+}
+
+export default function MyPageWriteReview({ params }: MyPageWriteReviewProps) {
   const [rating, setRating] = useState(3);
   const [review, setReview] = useState("");
+
+  const { id } = use(params);
+
+  // URL에서 받은 id로 해당하는 리뷰 데이터 찾기
+  const currentReview = getReviewById(parseInt(id));
+
+  // 해당 id의 데이터가 없는 경우 기본값 사용
+  const reviewData = currentReview || {
+    id: parseInt(id),
+    title: "상품 정보",
+    author: "판매자",
+    image: "👤",
+    location: "기숙사",
+    date: "2025년 07월 15일",
+  };
 
   const handleStarClick = (starIndex: number) => {
     setRating(starIndex + 1);
   };
 
   const handleSubmit = () => {
-    console.log({ rating, review });
+    console.log({
+      reviewId: id,
+      productTitle: reviewData.title,
+      rating,
+      review,
+    });
   };
 
   return (
@@ -25,8 +52,8 @@ export default function MyPageWriteReview() {
           <div className="flex items-start justify-between">
             <div className="flex-1">
               <p className="text-xs text-gray-500 mb-1">거래 완료</p>
-              <h2 className="text-sm font-semibold text-gray-900 mb-1">제가 잠잘때 사용하는 인형입니다</h2>
-              <p className="text-xs text-gray-500">2025년 07월 25일</p>
+              <h2 className="text-sm font-semibold text-gray-900 mb-1">{reviewData.title}</h2>
+              <p className="text-xs text-gray-500">{reviewData.date}</p>
             </div>
             <div className="ml-4">
               <div className="w-30 h-20 bg-gray-100 rounded-lg overflow-hidden relative">
@@ -38,12 +65,10 @@ export default function MyPageWriteReview() {
 
         {/* 판매자/리뷰어 정보 섹션 */}
         <section className="flex items-center space-x-3 py-2">
-          <div className="w-10 h-10 bg-gray-100 rounded-full overflow-hidden relative">
-            <Image src="/api/placeholder/40/40" alt="프로필 이미지" fill className="object-cover" />
-          </div>
+          <div className="w-10 h-10 bg-gray-100 rounded-full overflow-hidden relative">{reviewData.image} </div>
           <div>
-            <p className="text-sm font-semibold text-gray-900">박지수</p>
-            <p className="text-xs text-gray-500">행복 기숙사</p>
+            <p className="text-sm font-semibold text-gray-900">{reviewData.author}</p>
+            <p className="text-xs text-gray-500">{reviewData.location}</p>
           </div>
         </section>
 
