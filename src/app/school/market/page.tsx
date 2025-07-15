@@ -56,7 +56,7 @@ export default function BuyMarketPage() {
       {activeTab === 'sell' && (
         <ItemSection title="" items={wishList} />
       )}
-      <FloatingButton href="/school/market/new" />
+      <FloatingButton href="/school/market/edit" />
     </div>
   );
 
