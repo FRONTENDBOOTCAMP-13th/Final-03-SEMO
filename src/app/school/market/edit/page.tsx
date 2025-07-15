@@ -3,6 +3,8 @@ import { useState } from 'react';
 
 export default function EditPage() {
   const [selected, setSelected] = useState<'registered' | 'new'>('registered');
+  const [tradeType, setTradeType] = useState<'sell' | 'buy' | 'group'>('sell');
+
   return (
       <main className="min-w-[320px] max-w-[480px] mx-auto px-4 py-6 min-h-screen bg-uni-white">
         <div role='form' aria-label='상품 등록 폼'>
@@ -29,9 +31,27 @@ export default function EditPage() {
           <section className='mb-5'>
             <h2 className='sr-only'>거래 유형</h2>
             <div className='flex gap-3' role='group' aria-label='거래 유형 선택'>
-              <button className="px-4 py-2 rounded-lg bg-yellow-100 text-black font-medium text-14 cursor-pointer">팔래요</button>
-              <button className="px-4 py-2 rounded-lg bg-uni-red-200 text-black font-medium text-14 cursor-pointer">살래요</button>
-              <button className="px-4 py-2 rounded-lg bg-uni-blue-200 text-black font-medium text-14 cursor-pointer">모여요</button>
+              <button 
+                type='button'
+                onClick={() => setTradeType('sell')}
+                className="px-4 py-2 rounded-lg bg-yellow-100 text-black font-medium text-14 cursor-pointer"
+              >
+                팔래요
+              </button>
+              <button 
+                type='button'
+                onClick={() => setTradeType('buy')}
+                className="px-4 py-2 rounded-lg bg-uni-red-200 text-black font-medium text-14 cursor-pointer"
+              >
+                살래요
+              </button>
+              <button 
+                type='button'
+                onClick={() => setTradeType('group')}
+                className="px-4 py-2 rounded-lg bg-uni-blue-200 text-black font-medium text-14 cursor-pointer"
+              >
+                모여요
+              </button>
             </div>
           </section>
           <section className='mb-5'>
@@ -74,21 +94,43 @@ export default function EditPage() {
             </div>
           </section>
           
-          {/* 공동구매 추가 폼 */}
-          <section className='mb-5'>
-            <div>
-              <label htmlFor="participants" className='sr-only'>인원수</label>
-              <div className='relative'>
-                <input 
-                  type="number"
-                  placeholder='인원'
-                  className='w-full bg-uni-gray-200 rounded-md p-3 text-14'
-                  min = '1'
-                />
-                <p className="text-sm text-gray-600 mt-2">총금액을 나눠서 결제할 인원수를 입력해주세요</p>
+          {/* 공동구매 추가 폼, 클릭시만 보이게*/}
+          {tradeType === 'group' && (
+            <section className='mb-8'>
+              <div className='mb-5'>
+                <label htmlFor="participants" className='sr-only'>인원수</label>
+                <div className='relative'>
+                  <input 
+                    type="number"
+                    placeholder='인원'
+                    className='w-full bg-uni-gray-200 rounded-md p-3 text-16'
+                    min = '1'
+                  />
+                  <p className="text-14 text-uni-gray-600 mt-2">총금액을 나눠서 결제할 인원수를 입력해주세요</p>
+                </div>
               </div>
-            </div>
-          </section>
+              <div className='mb-5'>
+                <label htmlFor="location" className='sr-only'>분배 장소</label>
+                <input 
+                  type="text"
+                  placeholder='분배 장소'
+                  className='w-full bg-uni-gray-200 rounded-md p-3 text-16' 
+                />
+                <p className='text-14 text-uni-gray-600 mt-2'>분배할 장소를 입력해주세요</p>
+              </div>
+              <div className='mb-8'>
+                <label htmlFor="deadline" className='sr-only'>마감시간</label>
+                <div className='relaltive'>
+                  <input 
+                    id="deadline"
+                    type="datetime-local" 
+                    className='w-full bg-uni-gray-200 rounded-md p-3 text-16'
+                  />
+                  <p className="text-14 text-uni-gray-600 mt-2">마감시간을 설정해주세요</p>
+                </div>
+              </div>
+            </section>
+          )}
           <section className='mb-8'>
             <h2 className='sr-only'>계좌 정보</h2>
             <fieldset>
@@ -126,7 +168,7 @@ export default function EditPage() {
             {/* 새로운 계좌 입력 */}
             {selected === 'new' && (
               <div>
-                <select className='w-full bg-uni-gray-200 rounded-lg p-3 mb-8 text-16 text-uni-gray-600'>
+                <select className='w-full bg-uni-gray-200 rounded-lg p-3 mb-5 text-16 text-uni-gray-600'>
                   <option value="">은행사</option>
                   <option value="카카오뱅크">카카오뱅크</option>
                   <option value="우리은행">우리은행</option>
