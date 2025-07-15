@@ -7,7 +7,7 @@ export default function MyPageWriteReview() {
     <div className="min-h-screen bg-white relative">
       <main className="p-4 space-y-6">
         {/* 거래 완료 섹션 */}
-        <section className="bg-gray-50 rounded-lg p-4">
+        <section className="bg-gray-50 rounded-lg p-4 shadow">
           <div className="flex items-start justify-between">
             <div className="flex-1">
               <p className="text-xs text-gray-500 mb-1">거래 완료</p>
@@ -48,7 +48,7 @@ export default function MyPageWriteReview() {
         {/* 리뷰 작성 textarea */}
         <section className="mt-6">
           <textarea
-            className="w-full h-40 p-4 border border-gray-200 rounded-lg resize-none text-sm"
+            className="w-full h-40 p-4 border border-gray-200 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-uni-blue-400 focus:border-transparent text-sm"
             rows={8}
             placeholder=""
           />
@@ -65,7 +65,7 @@ export default function MyPageWriteReview() {
       </main>
 
       {/* 등록 버튼 */}
-      <button className="fixed bottom-24 left-4 right-4 py-4 bg-uni-blue-400 text-white font-medium rounded-lg shadow-lg">
+      <button className="fixed bottom-24 left-4 right-4 py-4 bg-uni-blue-400 text-white font-medium rounded-lg shadow-lg hover:bg-blue-600 transition-all duration-100 hover:shadow-xl active:scale-98">
         등록하기
       </button>
     </div>
