@@ -29,9 +29,9 @@ export default function EditPage() {
           <section className='mb-5'>
             <h2 className='sr-only'>거래 유형</h2>
             <div className='flex gap-3' role='group' aria-label='거래 유형 선택'>
-              <button className="px-4 py-2 rounded-lg bg-yellow-100 text-black font-medium text-14">팔래요</button>
-              <button className="px-4 py-2 rounded-lg bg-uni-red-200 text-black font-medium text-14">살래요</button>
-              <button className="px-4 py-2 rounded-lg bg-uni-blue-200 text-black font-medium text-14">모여요</button>
+              <button className="px-4 py-2 rounded-lg bg-yellow-100 text-black font-medium text-14 cursor-pointer">팔래요</button>
+              <button className="px-4 py-2 rounded-lg bg-uni-red-200 text-black font-medium text-14 cursor-pointer">살래요</button>
+              <button className="px-4 py-2 rounded-lg bg-uni-blue-200 text-black font-medium text-14 cursor-pointer">모여요</button>
             </div>
           </section>
           <section className='mb-5'>
@@ -69,8 +69,24 @@ export default function EditPage() {
               <input 
                 type="text"
                 placeholder='거래 장소'
-                className='w-full bg-uni-gray-200 rounded-md p-3 mb-8 text-16'  
+                className='w-full bg-uni-gray-200 rounded-md p-3 text-16'  
               />
+            </div>
+          </section>
+          
+          {/* 공동구매 추가 폼 */}
+          <section className='mb-5'>
+            <div>
+              <label htmlFor="participants" className='sr-only'>인원수</label>
+              <div className='relative'>
+                <input 
+                  type="number"
+                  placeholder='인원'
+                  className='w-full bg-uni-gray-200 rounded-md p-3 text-14'
+                  min = '1'
+                />
+                <p className="text-sm text-gray-600 mt-2">총금액을 나눠서 결제할 인원수를 입력해주세요</p>
+              </div>
             </div>
           </section>
           <section className='mb-8'>
