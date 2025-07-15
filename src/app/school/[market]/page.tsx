@@ -7,7 +7,7 @@ import Search from "@/components/common/Search";
 export default function BuyMarketPage() {
   const [activeTab, setActiveTab] = useState<'wish' | 'sell'>('wish');
 
-  const tabMap = [
+  const tabMap: {label: string; value: 'wish' | 'sell'}[] = [
     { label: '사고싶어요', value: 'wish' },
     { label: '팔고싶어요', value: 'sell' },
   ];
