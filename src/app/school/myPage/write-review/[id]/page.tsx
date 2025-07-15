@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { Star } from "lucide-react";
+import SaveFloatingButton from "../../_components/SaveFloatingButton";
 
 export default function MyPageWriteReview() {
   const [rating, setRating] = useState(3);
@@ -81,12 +82,7 @@ export default function MyPageWriteReview() {
       </main>
 
       {/* 등록 버튼 */}
-      <button
-        onClick={handleSubmit}
-        className="fixed bottom-24 left-4 right-4 py-4 bg-uni-blue-400 text-white font-medium rounded-lg shadow-lg hover:bg-blue-600 transition-all duration-100 hover:shadow-xl active:scale-98"
-      >
-        등록하기
-      </button>
+      <SaveFloatingButton onClick={handleSubmit}>등록하기</SaveFloatingButton>
     </div>
   );
 }
