@@ -1,57 +1,4 @@
-// import Link from "next/link";
-// import "./globals.css";
 
-// export default function RootLayout({
-//   children,
-// }: Readonly<{
-//   children: React.ReactNode;
-// }>) {
-//   return (
-//     <html lang="ko">
-//       <body>
-//         <ul>
-//           <li>
-//             <Link href="/login">login</Link>
-//           </li>
-//           <li>
-//             <Link href="/onBoarding">onBoarding</Link>
-//           </li>
-//           <li>
-//             <Link href="/signup">signup</Link>
-//           </li>
-//           <li>
-//             <Link href="/school/buyMarket">buyMarket</Link>
-//           </li>
-//           <li>
-//             <Link href="/school/buyMarket/new">buyMarket/new</Link>
-//           </li>
-//           <li>
-//             <Link href="/school/buyMarket/postId">buyMarket/postId</Link>
-//           </li>
-//           <li>
-//             <Link href="/school/chat">chat</Link>
-//           </li>
-//           <li>
-//             <Link href="/school/chat/chatId">chatId</Link>
-//           </li>
-//           <li>
-//             <Link href="/school/sellMarket">sellMarket</Link>
-//           </li>
-//           <li>
-//             <Link href="/school/sellMarket/new">sellMarket/new</Link>
-//           </li>
-//           <li>
-//             <Link href="/school/sellMarket/postId">sellMarket/postId</Link>
-//           </li>
-//           <li>
-//             <Link href="/school/myPage">myPage</Link>
-//           </li>
-//         </ul>
-//         {children}
-//       </body>
-//     </html>
-//   );
-// }
 
 import { ReactNode } from "react";
 import Link from "next/link";
@@ -69,7 +16,7 @@ export default function RootLayout({ children, modal }: MyPageLayoutProps) {
       <body>
         <div className="min-h-screen bg-white min-w-[320px] w-full max-w-[480px] mx-auto relative">
           {/* 공통 헤더 */}
-          <header className="bg-white border-b border-gray-200 px-3 py-2 sticky top-0 z-10">
+          <header className="bg-white px-3 py-2 sticky top-0 z-10">
             <div className="flex items-center h-11">
               <Link href="/" className="p-2 -ml-2 flex items-center justify-center">
                 <ChevronLeft className="w-6 h-6 text-gray-600" />
@@ -91,7 +38,7 @@ export default function RootLayout({ children, modal }: MyPageLayoutProps) {
                 <Home className="w-5 h-5 text-gray-400 mb-1" />
                 <div className="text-xs text-gray-400 font-medium">홈</div>
               </Link>
-              <Link href="/school/buyMarket" className="flex-1 flex flex-col items-center justify-center py-2 px-1">
+              <Link href="/school/market" className="flex-1 flex flex-col items-center justify-center py-2 px-1">
                 <ShoppingBag className="w-5 h-5 text-gray-400 mb-1" />
                 <div className="text-xs text-gray-400 font-medium">상품</div>
               </Link>

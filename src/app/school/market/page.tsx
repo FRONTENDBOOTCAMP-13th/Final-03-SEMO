@@ -2,6 +2,8 @@
 
 import React, { useState } from 'react';
 import ItemSection from './itemSection';
+import FloatingButton from "@/components/common/FloatingButton";
+import Search from "@/components/common/Search"
 
 export default function BuyMarketPage() {
   const [activeTab, setActiveTab] = useState<'wish' | 'sell'>('wish');
@@ -10,7 +12,6 @@ export default function BuyMarketPage() {
     { label: '사고싶어요', value: 'wish' },
     { label: '팔고싶어요', value: 'sell' },
   ];
-
 
   // 하드코딩 아이템
   const wishList = [
@@ -23,10 +24,11 @@ export default function BuyMarketPage() {
   ];
 
   return (
-    <div className="min-w-[320px] max-w-md mx-auto px-4 py-6 bg-uni-blue-100 min-h-screen">
+    <div className="px-5 py-1 bg-uni-white min-h-screen">
+      <Search />
 
       {/* 탭 버튼 */}
-      <div className="flex justify-around mb-4 border-b">
+      <div className="flex justify-around mb-4 border-b border-uni-gray-300">
         {tabMap.map(({ label, value }) => {
           const isActive = activeTab === value;
 
@@ -35,12 +37,12 @@ export default function BuyMarketPage() {
               key={value}
               onClick={() => setActiveTab(value)}
               className={`flex-1 text-center py-2 font-bold text-14 relative ${
-                isActive ? 'text-uni-blue-500' : 'text-gray-500'
+                isActive ? 'text-uni-blue-400' : 'text-gray-500'
               }`}
             >
               {label}
               {isActive && (
-                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-10 h-[3px] bg-uni-blue-500" />
+                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-47 h-[3px] bg-uni-blue-400" />
               )}
             </button>
           );
@@ -49,11 +51,12 @@ export default function BuyMarketPage() {
 
       {/* 탭에 따른 컨텐츠 */}
       {activeTab === 'wish' && (
-        <ItemSection title="사고싶어요" items={wishList} />
+        <ItemSection title="" items={wishList} />
       )}
       {activeTab === 'sell' && (
-        <ItemSection title="팔고싶어요" items={wishList} />
+        <ItemSection title="" items={wishList} />
       )}
+      <FloatingButton href="/school/market/edit" />
     </div>
   );
 
