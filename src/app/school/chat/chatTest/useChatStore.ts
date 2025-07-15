@@ -6,6 +6,9 @@ export interface Message {
   content: string;
   type: "text" | "image" | "status";
   createdAt: string;
+
+  user_id: string;
+  nickName: string;
 }
 
 interface ChatStore {

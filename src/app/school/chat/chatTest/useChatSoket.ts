@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { io } from "socket.io-client";
 import { useChatStore, Message } from "./useChatStore";
 
-export const socket = io("https://fesp-api.koyeb.app/websocket/sample");
+export const socket = io("https://fesp-api.koyeb.app/ws/sample");
 
 interface useChatSocketProps {
   userId: string;
@@ -55,6 +55,8 @@ export const useChatSocket = ({ userId, nickName, roomName }: useChatSocketProps
         content: typeof data.msg === "object" ? data.msg.msg : data.msg,
         type: "text",
         createdAt: new Date().toISOString(),
+        user_id: data.msg.user_id || data.nickName,
+        nickName: data.nickName || "익명",
       };
       useChatStore.getState().addMessage(msg);
     });
