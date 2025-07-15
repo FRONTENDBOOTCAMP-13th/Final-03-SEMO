@@ -1,16 +1,13 @@
 "use client";
 
-import ReviewCard, { Review } from "../_components/ReviewCard";
+import ReviewCard from "../_components/ReviewCard";
 import EmptyState from "../_components/EmptyState";
-
-// 예시 데이터
-const reviewsData: Review[] = [
-  { id: 1, title: "인간관계론 2학년 교양", author: "김지원", image: "🧔" },
-  { id: 2, title: "컵라면 20개", author: "박서준", image: "👨‍👩‍👧‍👦" },
-  { id: 3, title: "닭가슴살 샐러드", author: "이지아", image: "👩‍👧‍👦" },
-];
+import { getAllReviews } from "../data/reviewsData";
 
 export default function MyPageReviewsToWrite() {
+  // 공통 데이터에서 리뷰 목록 가져오기
+  const reviewsData = getAllReviews();
+
   return (
     <div className="bg-white min-h-screen p-4 space-y-6">
       {/* 소제목 */}
