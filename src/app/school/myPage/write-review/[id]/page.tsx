@@ -1,8 +1,16 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
+import { Star } from "lucide-react";
 
 export default function MyPageWriteReview() {
+  const [rating, setRating] = useState(3);
+
+  const handleStarClick = (starIndex: number) => {
+    setRating(starIndex + 1);
+  };
+
   return (
     <div className="min-h-screen bg-white relative">
       <main className="p-4 space-y-6">
@@ -33,13 +41,14 @@ export default function MyPageWriteReview() {
           </div>
         </section>
 
-        {/* 별점 평가 섹션 (아직 클릭 기능 없음) */}
+        {/* 별점 평가 섹션 */}
         <section className="py-3">
           <div className="flex space-x-1 justify-start">
             {[0, 1, 2, 3, 4].map((starIndex) => (
-              <button key={starIndex} className="p-0">
-                {/* 별 모양은 lucide-react로 대체 */}
-                <span className="w-7 h-7 inline-block bg-gray-300"></span>
+              <button key={starIndex} onClick={() => handleStarClick(starIndex)} className="p-0">
+                <Star
+                  className={`w-7 h-7 ${starIndex < rating ? "text-yellow-400 fill-yellow-400" : "text-gray-300"}`}
+                />
               </button>
             ))}
           </div>
