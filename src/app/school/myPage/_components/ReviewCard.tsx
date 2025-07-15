@@ -1,5 +1,29 @@
+/**
+ * ReviewCard 컴포넌트
+ *
+ * 거래 후기를 작성하러 이동할 수 있는 카드 컴포넌트입니다.
+ *
+ * @example
+ * const review = {
+ *   id: 1,
+ *   title: "제가 잠잘 때 사용하는 인형입니다",
+ *   author: "박지수",
+ *   image: <Image src="/some.jpg" alt="썸네일" fill />,
+ * };
+ *
+ * <ReviewCard review={review} />
+ *
+ * @param review - 후기 정보를 담은 객체
+ * @param review.id - 후기 대상 ID
+ * @param review.title - 후기 대상 거래 제목
+ * @param review.author - 판매자 이름
+ * @param review.image - 썸네일 이미지 컴포넌트(JSX.Element)
+ */
+
 "use client";
+
 import Link from "next/link";
+
 // 리뷰 공통 타입
 export interface Review {
   id: number;
@@ -33,7 +57,7 @@ export default function ReviewCard({ review }: { review: Review }) {
         className="px-4 py-2 bg-blue-400 text-white text-sm rounded-lg font-medium ml-4 hover:bg-blue-600 transition-colors"
       >
         후기 작성
-      </Link>{" "}
+      </Link>
     </div>
   );
 }
