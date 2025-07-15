@@ -23,14 +23,7 @@
 "use client";
 
 import Link from "next/link";
-
-// 리뷰 공통 타입
-export interface Review {
-  id: number;
-  title: string;
-  author: string;
-  image: string;
-}
+import { Review } from "../data/reviewsData";
 
 export default function ReviewCard({ review }: { review: Review }) {
   return (
