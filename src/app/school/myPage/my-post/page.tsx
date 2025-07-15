@@ -4,46 +4,41 @@ import { useState } from "react";
 import TabNavigation from "../_components/TabNavigation";
 import ItemCard, { Item } from "../_components/ItemCard";
 import EmptyState from "../_components/EmptyState";
+import { myPageItemsData, MyPageItem } from "../data/postData";
 
 export default function MyPageMyPost() {
   const [activeTab, setActiveTab] = useState("전체");
 
-  // 테스트용 더미 데이터
-  const sellItems: Item[] = [
-    {
-      id: 1,
-      title: "인센스 사실분?",
-      price: "10,000원",
-      image: "🕯️",
-      status: "판매중",
-    },
-    {
-      id: 2,
-      title: "기숙사 공기에 좋은 선인장",
-      price: "5,000원",
-      image: "🌵",
-      status: "판매중",
-    },
-  ];
+  // reviewsData에서 카테고리별로 필터링
+  const sellItems: Item[] = myPageItemsData
+    .filter((item: MyPageItem) => item.category === "팔래요")
+    .map((item: MyPageItem) => ({
+      id: item.id,
+      title: item.title,
+      price: item.price,
+      image: item.image,
+      status: item.status,
+    }));
 
-  const buyItems: Item[] = [
-    {
-      id: 3,
-      title: "여행에서 헤어져서 폴라로이드 팝니다",
-      price: "15,000원",
-      image: "🏔️",
-      status: "판매완료",
-    },
-    {
-      id: 4,
-      title: "노트북 팝니다ㅠ",
-      price: "15,000원",
-      image: "🏔️",
-      status: "판매완료",
-    },
-  ];
+  const buyItems: Item[] = myPageItemsData
+    .filter((item: MyPageItem) => item.category === "살래요")
+    .map((item: MyPageItem) => ({
+      id: item.id,
+      title: item.title,
+      price: item.price,
+      image: item.image,
+      status: item.status,
+    }));
 
-  const gatheringsItems: Item[] = [];
+  const gatheringsItems: Item[] = myPageItemsData
+    .filter((item: MyPageItem) => item.category === "모여요")
+    .map((item: MyPageItem) => ({
+      id: item.id,
+      title: item.title,
+      price: item.price,
+      image: item.image,
+      status: item.status,
+    }));
 
   const tabs = ["전체", "팔래요", "살래요", "모여요"];
 

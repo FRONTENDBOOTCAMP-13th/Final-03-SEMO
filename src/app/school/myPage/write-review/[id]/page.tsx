@@ -4,7 +4,7 @@ import { useState, use } from "react";
 import Image from "next/image";
 import { Star } from "lucide-react";
 import SaveFloatingButton from "../../_components/SaveFloatingButton";
-import { Review, getReviewById } from "../../data/reviewsData";
+import { getReviewById } from "../../data/reviewsData";
 
 interface MyPageWriteReviewProps {
   params: Promise<{
