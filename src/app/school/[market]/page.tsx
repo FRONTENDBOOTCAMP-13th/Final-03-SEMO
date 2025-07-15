@@ -1,9 +1,8 @@
 'use client';
-
 import React, { useState } from 'react';
 import ItemSection from './itemSection';
 import FloatingButton from "@/components/common/FloatingButton";
-import Search from "@/components/common/Search"
+import Search from "@/components/common/Search";
 
 export default function BuyMarketPage() {
   const [activeTab, setActiveTab] = useState<'wish' | 'sell'>('wish');
@@ -13,31 +12,38 @@ export default function BuyMarketPage() {
     { label: '팔고싶어요', value: 'sell' },
   ];
 
-  // 하드코딩 아이템
   const wishList = [
     { id: 1, title: '치킨 깊티 구해요!', img: '/' },
     { id: 2, title: '컵라면 하나만요ㅠ', img: '/' },
-    { id: 3, title: '햇반 가져와.', img: '/' },
-    { id: 4, title: '심리학 전공책 구해요ㅠ', img: '/' },
-    { id: 5, title: '노트북 거치대', img: '/' },
-    { id: 6, title: '블루투스 키보드', img: '/' },
+    { id: 3, title: '치킨 깊티 구해요!', img: '/' },
+    { id: 4, title: '컵라면 하나만요ㅠ', img: '/' },
+    { id: 5, title: '치킨 깊티 구해요!', img: '/' },
+    { id: 6, title: '컵라면 하나만요ㅠ', img: '/' },
+  ];
+
+  const sellList = [
+    { id: 1, title: '치킨 깊티 구해요!', img: '/' },
+    { id: 2, title: '컵라면 하나만요ㅠ', img: '/' },
+    { id: 3, title: '치킨 깊티 구해요!', img: '/' },
+    { id: 4, title: '컵라면 하나만요ㅠ', img: '/' },
+    { id: 5, title: '치킨 깊티 구해요!', img: '/' },
+    { id: 6, title: '컵라면 하나만요ㅠ', img: '/' },
   ];
 
   return (
     <div className="px-5 py-1 bg-uni-white min-h-screen">
       <Search />
 
-      {/* 탭 버튼 */}
+      {/* 탭 */}
       <div className="flex justify-around mb-4 border-b border-uni-gray-300">
         {tabMap.map(({ label, value }) => {
           const isActive = activeTab === value;
-
           return (
             <button
               key={value}
               onClick={() => setActiveTab(value)}
               className={`flex-1 text-center py-2 font-bold text-14 relative ${
-                isActive ? 'text-uni-blue-400' : 'text-gray-500'
+                isActive ? 'text-uni-blue-400' : 'text-uni-gray-500'
               }`}
             >
               {label}
@@ -49,16 +55,14 @@ export default function BuyMarketPage() {
         })}
       </div>
 
-      {/* 탭에 따른 컨텐츠 */}
+      {/* 리스트 변경 */}
       {activeTab === 'wish' && (
-        <ItemSection title="" items={wishList} />
+        <ItemSection title="사고싶어요" items={wishList} />
       )}
       {activeTab === 'sell' && (
-        <ItemSection title="" items={wishList} />
+        <ItemSection title="팔고싶어요" items={sellList} />
       )}
-      <FloatingButton href="/school/market/edit" />
+      <FloatingButton href={`/school/market/${activeTab}/new`} />
     </div>
   );
-
-
 }

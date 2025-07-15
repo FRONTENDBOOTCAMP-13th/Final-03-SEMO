@@ -1,3 +1,5 @@
+// 게시글 수정 페이지
+
 'use client';
 import { useState } from 'react';
 
