@@ -3,6 +3,7 @@
 import { Send } from "lucide-react";
 import { useState } from "react";
 import { socket } from "../../chatRoom/useChatSoket";
+import { useChatStore } from "../../chatRoom/useChatStore";
 
 interface InputChatProps {
   userId: string;
@@ -11,16 +12,23 @@ interface InputChatProps {
 
 const InputChat = ({ userId, nickName }: InputChatProps) => {
   const [input, setInput] = useState("");
+  const roomId = useChatStore((state) => state.currentRoomId); // ✅ 현재 방 ID 불러오기
 
   const handleSend = () => {
-    if (input.trim()) {
-      socket.emit("message", {
-        msg: input,
-        user_id: userId,
-        nickName: nickName,
-      });
-      setInput("");
+    if (!input.trim()) return;
+    if (!roomId) {
+      console.warn("❌ roomId 없음. 메시지 전송 실패");
+      return;
     }
+
+    socket.emit("message", {
+      roomId, // ✅ 이게 반드시 있어야 함!
+      msg: input,
+      user_id: userId,
+      nickName: nickName,
+    });
+
+    setInput("");
   };
 
   return (
@@ -28,7 +36,7 @@ const InputChat = ({ userId, nickName }: InputChatProps) => {
       <div className="flex items-center bg-uni-gray-200 rounded-[12px] h-12 w-full">
         <input
           type="text"
-          value={input || ""}
+          value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleSend()}
           placeholder="메시지 보내기"
@@ -41,4 +49,5 @@ const InputChat = ({ userId, nickName }: InputChatProps) => {
     </div>
   );
 };
+
 export default InputChat;
