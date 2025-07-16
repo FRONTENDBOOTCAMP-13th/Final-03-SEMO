@@ -21,7 +21,7 @@ export default function ItemSection({ title, items }: Props) {
           <div>
             <div
               key={item.id}
-              className="rounded-lg p-2 bg-uni-white"
+              className="rounded-lg p-2 bg-uni-gray-100"
             >
               <Image
                 src={item.img}
@@ -32,11 +32,10 @@ export default function ItemSection({ title, items }: Props) {
               />
             </div>
             <p className="text-sm mt-2 text-16">{item.title}</p>
-            <div className="flex items-center text-16 text-gray-500 mt-1">
+            <div className="flex items-center text-16 text-uni-gray-500 mt-1">
               ❤️ <span className="ml-1 mr-2">3</span> 💬 <span className="ml-1">5</span>
             </div>
           </div>
-          
         ))}
       </div>
     </div>
