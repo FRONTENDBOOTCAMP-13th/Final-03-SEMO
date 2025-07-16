@@ -25,6 +25,11 @@ export function useResponsivePagination<T>({
   const [viewportHeight, setViewportHeight] = useState(800);
   const [isClient, setIsClient] = useState(false);
 
+  useEffect(() => {
+    setIsClient(true);
+    setViewportHeight(window.innerHeight);
+  }, []);
+
   const totalPages = Math.ceil(data.length / minItemsPerPage);
 
   const paginatedData = useMemo(() => {
