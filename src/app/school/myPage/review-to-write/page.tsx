@@ -28,10 +28,10 @@ export default function MyPageReviewsToWrite() {
   });
 
   return (
-    <div className="bg-white min-h-screen p-4 space-y-6 pb-24">
+    <div className="bg-uni-white min-h-screen p-4 space-y-6 pb-24">
       {/* 소제목 */}
       <section>
-        <h2 className="text-xl font-semibold mb-3 text-black">미작성 후기</h2>
+        <h2 className="text-20 font-semibold mb-3 text-uni-black font-pretendard">미작성 후기</h2>
         {/* 후기 아이템 목록 */}
         <div className="space-y-3">
           {reviewsData.length > 0 ? (
@@ -51,7 +51,7 @@ export default function MyPageReviewsToWrite() {
       </section>
       {/* 개발 환경에서만 보이는 디버그 정보 */}
       {process.env.NODE_ENV === "development" && isClient && (
-        <div className="text-xs text-gray-500 bg-gray-100 p-2 rounded">
+        <div className="text-10 text-uni-gray-400 bg-uni-gray-100 p-2 rounded font-pretendard">
           화면 높이: {viewportHeight}px | 페이지당 아이템: {itemsPerPage}개 | 총 페이지: {totalPages}
         </div>
       )}
