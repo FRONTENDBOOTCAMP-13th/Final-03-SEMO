@@ -22,6 +22,8 @@ export function useResponsivePagination<T>({
   reservedHeight = 200,
 }: UseResponsivePaginationProps<T>) {
   const [currentPage, setCurrentPage] = useState(initialPage);
+  const [viewportHeight, setViewportHeight] = useState(800);
+  const [isClient, setIsClient] = useState(false);
 
   const totalPages = Math.ceil(data.length / minItemsPerPage);
 
