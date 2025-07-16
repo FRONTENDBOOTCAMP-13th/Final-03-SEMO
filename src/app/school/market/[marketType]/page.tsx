@@ -1,16 +1,17 @@
-import ItemSection from './itemSection';
+// import ItemSection from '';
+import ItemSection from '../itemSection';
 import FloatingButton from "@/components/common/FloatingButton";
 import Search from "@/components/common/Search";
+import Link from 'next/link'
+// import { redirect } from 'next/navigation';
 
 interface Item {id: number, title: string; img: string};
 
-export default function MarketPage({params}: {params: {market:string} }) {
-  const {market} = params;
-  // const title = market === 'buy' ? '사고 싶어요' : '팔고 싶어요';
-  // const title = Item.title
+export default function MarketPage({params}: {params: {marketType:'buy' | 'sell'} }) {
+  const {marketType} = params;
 
   // 더미 데이터
-  const items: Item[] = market === 'buy'
+  const items: Item[] = marketType === 'buy'
   ? [
     { id: 1, title: '치킨 깊티 구해요!', img: '/' },
     { id: 2, title: '컵라면 하나만요ㅠ', img: '/' },
@@ -18,9 +19,9 @@ export default function MarketPage({params}: {params: {market:string} }) {
     { id: 4, title: '컵라면 하나만요ㅠ', img: '/' },
     { id: 5, title: '치킨 깊티 구해요!', img: '/' },
     { id: 6, title: '컵라면 하나만요ㅠ', img: '/' },
-  ]
+  ] 
   : 
-  [
+  [ 
     { id: 1, title: '치킨 깊티 구해요!', img: '/' },
     { id: 2, title: '컵라면 하나만요ㅠ', img: '/' },
     { id: 3, title: '치킨 깊티 구해요!', img: '/' },
@@ -35,23 +36,23 @@ export default function MarketPage({params}: {params: {market:string} }) {
       <div className='flex justify-around mb-4 border-b border-uni-gray-300'>
         {(['buy', 'sell'] as const).map(i => {
           const label = i === 'buy' ? '사고 싶어요' : '팔고 싶어요';
-          const active = i === market;
+          const active = i === marketType;
           return (
-            <a
+            <Link
               key={i}
-              href={`/school/${i}`}
+              href={`/school/market/${i}`}
               className={`flex-1 text-center py-2 font-bold text-14 ${
                 active ? 'text-uni-blue-400' : 'text-uni-gray-500'
               }`}
             >
               {label}
               {active && <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-47 h-[3px] bg-uni-blue-400" />}
-            </a>
+            </Link>
           );
         })}
       </div>
-      <ItemSection items={items} market={market} />
-      <FloatingButton href={`/school/${market}/new`} />
+      <ItemSection items={items} market={marketType} />
+      <FloatingButton href={`/school/market/${marketType}/new`} />
     </main>
   )
 }
