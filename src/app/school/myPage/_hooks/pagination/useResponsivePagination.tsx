@@ -58,6 +58,13 @@ export function useResponsivePagination<T>({
 
   const totalPages = Math.ceil(data.length / minItemsPerPage);
 
+  // 페이지 유효성 검사 (만약 현재 페이지가 totalPages보다 커지면 currentPage를 totalPages로 맞춥니다)
+  useEffect(() => {
+    if (currentPage > totalPages && totalPages > 0) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
+
   const paginatedData = useMemo(() => {
     const startIndex = (currentPage - 1) * minItemsPerPage;
     return data.slice(startIndex, startIndex + minItemsPerPage);
