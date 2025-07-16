@@ -2,6 +2,7 @@
 
 'use client';
 import { useState } from 'react';
+import GroupPurchase from "./GroupPurchase"
 
 export default function MarketNew() {
   const [selected, setSelected] = useState<'registered' | 'new'>('registered');
@@ -98,40 +99,7 @@ export default function MarketNew() {
           
           {/* 공동구매 추가 폼, 클릭시만 보이게*/}
           {tradeType === 'group' && (
-            <section className='mb-8'>
-              <div className='mb-5'>
-                <label htmlFor="participants" className='sr-only'>인원수</label>
-                <div className='relative'>
-                  <input 
-                    type="number"
-                    placeholder='인원'
-                    className='w-full bg-uni-gray-200 rounded-md p-3 text-16'
-                    min = '1'
-                  />
-                  <p className="text-14 text-uni-gray-600 mt-2">총금액을 나눠서 결제할 인원수를 입력해주세요</p>
-                </div>
-              </div>
-              <div className='mb-5'>
-                <label htmlFor="location" className='sr-only'>분배 장소</label>
-                <input 
-                  type="text"
-                  placeholder='분배 장소'
-                  className='w-full bg-uni-gray-200 rounded-md p-3 text-16' 
-                />
-                <p className='text-14 text-uni-gray-600 mt-2'>분배할 장소를 입력해주세요</p>
-              </div>
-              <div className='mb-8'>
-                <label htmlFor="deadline" className='sr-only'>마감시간</label>
-                <div className='relaltive'>
-                  <input 
-                    id="deadline"
-                    type="datetime-local" 
-                    className='w-full bg-uni-gray-200 rounded-md p-3 text-16'
-                  />
-                  <p className="text-14 text-uni-gray-600 mt-2">마감시간을 설정해주세요</p>
-                </div>
-              </div>
-            </section>
+            <GroupPurchase />
           )}
           <section className='mb-8'>
             <h2 className='sr-only'>계좌 정보</h2>
