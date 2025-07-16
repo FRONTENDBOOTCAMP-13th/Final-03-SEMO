@@ -1,20 +1,7 @@
 
-
 import { ReactNode } from "react";
 import Link from "next/link";
 import { ChevronLeft, Home, ShoppingBag, Users, MessageSquare, User } from "lucide-react";
-import "./globals.css";
-
-interface MyPageLayoutProps {
-  children: ReactNode;
-  modal?: ReactNode;
-}
-
-export default function RootLayout({ children, modal }: MyPageLayoutProps) {
-  return (
-    <html lang="ko">
-      <body>
-        <div className="min-h-screen bg-white min-w-[320px] w-full max-w-[480px] mx-auto relative">
           {/* 공통 헤더 */}
           <header className="bg-white px-3 py-2 sticky top-0 z-10">
             <div className="flex items-center h-11">
@@ -24,13 +11,11 @@ export default function RootLayout({ children, modal }: MyPageLayoutProps) {
               <h1 className="absolute left-1/2 -translate-x-1/2 text-lg font-semibold text-black">내 정보</h1>
             </div>
           </header>
-
           {/* 메인 콘텐츠 */}
           <main className="pb-20">{children}</main>
 
           {/* 모달 (Intercepting Route로 구현예쩡) */}
           {modal}
-
           {/* 하단 네비게이션 */}
           <nav className="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-md bg-white border-t border-gray-200 px-3 py-2 z-10">
             <div className="flex h-16">
