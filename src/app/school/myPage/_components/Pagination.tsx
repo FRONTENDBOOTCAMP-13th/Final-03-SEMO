@@ -2,7 +2,13 @@
 
 import ReactPaginate from "react-paginate";
 
-export default function Pagination({ pageCount, onPageChange, forcePage = 0 }) {
+interface PaginationProps {
+  pageCount: number;
+  onPageChange: (selectedItem: { selected: number }) => void;
+  forcePage?: number;
+}
+
+export default function Pagination({ pageCount, onPageChange, forcePage = 0 }: PaginationProps) {
   return (
     <ReactPaginate
       pageCount={pageCount}
