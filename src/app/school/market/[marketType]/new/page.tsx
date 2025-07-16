@@ -4,6 +4,8 @@
 import { useState } from "react";
 import GroupPurchase from "./GroupPurchase";
 import ProductDesc from "./ProductDesc";
+import Product from "./Product";
+import NewAccount from "./NewAccount";
 
 export default function MarketNew() {
   const [selected, setSelected] = useState<"registered" | "new">("registered");
@@ -12,28 +14,8 @@ export default function MarketNew() {
   return (
     <main className="min-w-[320px] max-w-[480px] mx-auto px-4 py-6 min-h-screen bg-uni-white">
       <div role="form" aria-label="상품 등록 폼">
-        <section>
-          <h1 className="sr-only">상품 등록</h1>
-          <div className="mb-5">
-            <label htmlFor="item-name" className="sr-only">
-              상품명
-            </label>
-            <input
-              id="item-name"
-              type="text"
-              placeholder="상품명"
-              className="w-full bg-uni-gray-200 rounded-md p-3 text-16"
-            />
-          </div>
-          <div className="mb-5">
-            <input
-              id="item-image"
-              type="text"
-              placeholder="사진 추가"
-              className="w-full bg-uni-gray-200 rounded-md p-3 text-16"
-            />
-          </div>
-        </section>
+        {/* 상품 */}
+        <Product />
         <section className="mb-5">
           <h2 className="sr-only">거래 유형</h2>
           <div className="flex gap-3" role="group" aria-label="거래 유형 선택">
@@ -102,20 +84,8 @@ export default function MarketNew() {
           </fieldset>
           {/* 새로운 계좌 입력 */}
           {selected === "new" && (
-            <div>
-              <select className="w-full bg-uni-gray-200 rounded-lg p-3 mb-5 text-16 text-uni-gray-600">
-                <option value="">은행사</option>
-                <option value="카카오뱅크">카카오뱅크</option>
-                <option value="우리은행">우리은행</option>
-                <option value="농협">농협</option>
-                <option value="기업은행">기업은행</option>
-              </select>
-              <input
-                type="text"
-                placeholder="계좌번호"
-                className="w-full bg-uni-gray-200 rounded-md p-3 mb-8 text-16"
-              />
-            </div>
+            // 새로운 계좌
+            <NewAccount />
           )}
         </section>
       </div>
