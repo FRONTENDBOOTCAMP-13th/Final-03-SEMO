@@ -6,6 +6,10 @@ interface UsePaginationProps<T> {
   initialPage?: number;
 }
 
+interface PageChangeEvent {
+  selected: number;
+}
+
 export function usePagination<T>({ data, itemsPerPage, initialPage = 1 }: UsePaginationProps<T>) {
   const [currentPage, setCurrentPage] = useState(initialPage);
 
@@ -16,10 +20,15 @@ export function usePagination<T>({ data, itemsPerPage, initialPage = 1 }: UsePag
     return data.slice(startIndex, startIndex + itemsPerPage);
   }, [data, currentPage, itemsPerPage]);
 
+  const handlePageChange = (selectedItem: PageChangeEvent) => {
+    setCurrentPage(selectedItem.selected + 1);
+  };
+
   return {
     currentPage,
     totalPages,
     paginatedData,
+    handlePageChange,
     setCurrentPage,
   };
 }
