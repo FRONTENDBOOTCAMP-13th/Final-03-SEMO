@@ -50,7 +50,7 @@ export default function MarketPage({params}: {params: {market:string} }) {
           );
         })}
       </div>
-      <ItemSection items={items} />
+      <ItemSection items={items} market={market} />
       <FloatingButton href={`/school/${market}/new`} />
     </main>
   )
