@@ -56,7 +56,7 @@ export function useResponsivePagination<T>({
     return Math.max(minItemsPerPage, Math.min(maxItemsPerPage, calculatedItems));
   }, [isClient, viewportHeight, estimatedItemHeight, minItemsPerPage, maxItemsPerPage, reservedHeight]);
 
-  const totalPages = Math.ceil(data.length / minItemsPerPage);
+  const totalPages = Math.ceil(data.length / itemsPerPage);
 
   // 페이지 유효성 검사 (만약 현재 페이지가 totalPages보다 커지면 currentPage를 totalPages로 맞춥니다)
   useEffect(() => {
@@ -74,12 +74,18 @@ export function useResponsivePagination<T>({
     setCurrentPage(selectedItem.selected + 1);
   };
 
+  const resetToFirstPage = () => setCurrentPage(1);
+
   return {
     currentPage,
     totalPages,
+    itemsPerPage,
     paginatedData,
     handlePageChange,
+    resetToFirstPage,
     setCurrentPage,
     hasData: data.length > 0,
+    viewportHeight,
+    isClient,
   };
 }
