@@ -5,6 +5,7 @@ import TabNavigation from "../_components/TabNavigation";
 import ItemCard, { Item } from "../_components/ItemCard";
 import EmptyState from "../_components/EmptyState";
 import Pagination from "../_components/Pagination";
+import SectionHeader from "../_components/SectionHeader";
 import { myPageItemsData, MyPageItem } from "../data/postData";
 import { useResponsivePagination } from "../_hooks/pagination/useResponsivePagination";
 
@@ -80,15 +81,19 @@ export default function MyPageMyPost() {
         {/* 팔래요 Section */}
         {(activeTab === "전체" || activeTab === "팔래요") && (
           <section>
-            <h2 className="text-20 font-semibold mb-3 text-uni-black font-pretendard">팔고싶어요</h2>
+            {activeTab === "전체" ? (
+              <SectionHeader title="팔고싶어요" targetTab="팔래요" onTabChange={setActiveTab} />
+            ) : (
+              <h2 className="text-20 font-semibold mb-3 text-uni-black font-pretendard">팔고싶어요</h2>
+            )}
             <div className="space-y-3">
               {sellItems.length > 0 ? (
                 <>
                   {activeTab === "팔래요"
                     ? // 팔래요 탭일 때만 페이지네이션 적용
                       sellPagination.paginatedData.map((item) => <ItemCard key={item.id} item={item} />)
-                    : // 전체 탭일 때는 모든 아이템 표시
-                      sellItems.map((item) => <ItemCard key={item.id} item={item} />)}
+                    : // 전체 탭일 때는 4개만 표시
+                      sellItems.slice(0, 4).map((item) => <ItemCard key={item.id} item={item} />)}
                   {activeTab === "팔래요" && sellPagination.totalPages > 1 && (
                     <Pagination
                       pageCount={sellPagination.totalPages}
@@ -107,15 +112,19 @@ export default function MyPageMyPost() {
         {/* 살래요 Section */}
         {(activeTab === "전체" || activeTab === "살래요") && (
           <section>
-            <h2 className="text-20 font-semibold mb-3 text-uni-black font-pretendard">사고싶어요</h2>
+            {activeTab === "전체" ? (
+              <SectionHeader title="사고싶어요" targetTab="살래요" onTabChange={setActiveTab} />
+            ) : (
+              <h2 className="text-20 font-semibold mb-3 text-uni-black font-pretendard">사고싶어요</h2>
+            )}
             <div className="space-y-3">
               {buyItems.length > 0 ? (
                 <>
                   {activeTab === "살래요"
                     ? // 살래요 탭일 때만 페이지네이션 적용
                       buyPagination.paginatedData.map((item) => <ItemCard key={item.id} item={item} />)
-                    : // 전체 탭일 때는 모든 아이템 표시
-                      buyItems.map((item) => <ItemCard key={item.id} item={item} />)}
+                    : // 전체 탭일 때는 4개만 표시
+                      buyItems.slice(0, 4).map((item) => <ItemCard key={item.id} item={item} />)}
                   {activeTab === "살래요" && buyPagination.totalPages > 1 && (
                     <Pagination
                       pageCount={buyPagination.totalPages}
@@ -134,15 +143,19 @@ export default function MyPageMyPost() {
         {/* 모여요 Section */}
         {(activeTab === "전체" || activeTab === "모여요") && (
           <section>
-            <h2 className="text-20 font-semibold mb-3 text-uni-black font-pretendard">모여요</h2>
+            {activeTab === "전체" ? (
+              <SectionHeader title="모여요" targetTab="모여요" onTabChange={setActiveTab} />
+            ) : (
+              <h2 className="text-20 font-semibold mb-3 text-uni-black font-pretendard">모여요</h2>
+            )}
             <div className="space-y-3">
               {gatheringsItems.length > 0 ? (
                 <>
                   {activeTab === "모여요"
                     ? // 모여요 탭일 때만 페이지네이션 적용
                       gatheringsPagination.paginatedData.map((item) => <ItemCard key={item.id} item={item} />)
-                    : // 전체 탭일 때는 모든 아이템 표시
-                      gatheringsItems.map((item) => <ItemCard key={item.id} item={item} />)}
+                    : // 전체 탭일 때는 4개만 표시
+                      gatheringsItems.slice(0, 4).map((item) => <ItemCard key={item.id} item={item} />)}
                   {activeTab === "모여요" && gatheringsPagination.totalPages > 1 && (
                     <Pagination
                       pageCount={gatheringsPagination.totalPages}
