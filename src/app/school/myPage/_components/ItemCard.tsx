@@ -34,13 +34,13 @@ export default function ItemCard({ item }: { item: Item }) {
   const getStatusButton = (status: Item["status"]) => {
     if (status === "판매중") {
       return (
-        <button className="px-4 py-2 text-14 bg-uni-green-300 text-uni-white rounded-lg font-medium font-pretendard ml-16">
+        <button className="px-4 py-2 text-14 bg-uni-green-300 text-uni-white rounded-lg font-medium font-pretendard ml-4">
           판매중
         </button>
       );
     } else {
       return (
-        <button className="px-4 py-2 text-14 bg-uni-gray-300 text-uni-white rounded-lg font-medium font-pretendard ml-16">
+        <button className="px-4 py-2 text-14 bg-uni-gray-300 text-uni-white rounded-lg font-medium font-pretendard ml-4">
           판매완료
         </button>
       );
