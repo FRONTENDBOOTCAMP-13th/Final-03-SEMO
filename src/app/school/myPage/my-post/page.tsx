@@ -4,51 +4,76 @@ import { useState } from "react";
 import TabNavigation from "../_components/TabNavigation";
 import ItemCard, { Item } from "../_components/ItemCard";
 import EmptyState from "../_components/EmptyState";
+import Pagination from "../_components/Pagination";
+import SectionHeader from "../_components/SectionHeader";
+import { myPageItemsData, MyPageItem } from "../data/postData";
+import { useResponsivePagination } from "../_hooks/pagination/useResponsivePagination";
 
 export default function MyPageMyPost() {
   const [activeTab, setActiveTab] = useState("전체");
 
-  // 테스트용 더미 데이터
-  const sellItems: Item[] = [
-    {
-      id: 1,
-      title: "인센스 사실분?",
-      price: "10,000원",
-      image: "🕯️",
-      status: "판매중",
-    },
-    {
-      id: 2,
-      title: "기숙사 공기에 좋은 선인장",
-      price: "5,000원",
-      image: "🌵",
-      status: "판매중",
-    },
-  ];
+  // reviewsData에서 카테고리별로 필터링
+  const sellItems: Item[] = myPageItemsData
+    .filter((item: MyPageItem) => item.category === "팔래요")
+    .map((item: MyPageItem) => ({
+      id: item.id,
+      title: item.title,
+      price: item.price,
+      image: item.image,
+      status: item.status,
+    }));
 
-  const buyItems: Item[] = [
-    {
-      id: 3,
-      title: "여행에서 헤어져서 폴라로이드 팝니다",
-      price: "15,000원",
-      image: "🏔️",
-      status: "판매완료",
-    },
-    {
-      id: 4,
-      title: "노트북 팝니다ㅠ",
-      price: "15,000원",
-      image: "🏔️",
-      status: "판매완료",
-    },
-  ];
+  const buyItems: Item[] = myPageItemsData
+    .filter((item: MyPageItem) => item.category === "살래요")
+    .map((item: MyPageItem) => ({
+      id: item.id,
+      title: item.title,
+      price: item.price,
+      image: item.image,
+      status: item.status,
+    }));
 
-  const gatheringsItems: Item[] = [];
+  const gatheringsItems: Item[] = myPageItemsData
+    .filter((item: MyPageItem) => item.category === "모여요")
+    .map((item: MyPageItem) => ({
+      id: item.id,
+      title: item.title,
+      price: item.price,
+      image: item.image,
+      status: item.status,
+    }));
+
+  // 팔래요 페이지네이션
+  const sellPagination = useResponsivePagination({
+    data: sellItems,
+    estimatedItemHeight: 88,
+    minItemsPerPage: 3,
+    maxItemsPerPage: 10,
+    reservedHeight: 350, // 탭 네비게이션 + 하단 네비게이션을 고려하여 증가
+  });
+
+  // 살래요 페이지네이션
+  const buyPagination = useResponsivePagination({
+    data: buyItems,
+    estimatedItemHeight: 88,
+    minItemsPerPage: 3,
+    maxItemsPerPage: 10,
+    reservedHeight: 350, // 탭 네비게이션 + 하단 네비게이션을 고려하여 증가
+  });
+
+  // 모여요 페이지네이션
+  const gatheringsPagination = useResponsivePagination({
+    data: gatheringsItems,
+    estimatedItemHeight: 88,
+    minItemsPerPage: 3,
+    maxItemsPerPage: 10,
+    reservedHeight: 350, // 탭 네비게이션 + 하단 네비게이션을 고려하여 증가
+  });
 
   const tabs = ["전체", "팔래요", "살래요", "모여요"];
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-uni-white">
       {/* Tab Navigation */}
       <TabNavigation tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
 
@@ -56,10 +81,27 @@ export default function MyPageMyPost() {
         {/* 팔래요 Section */}
         {(activeTab === "전체" || activeTab === "팔래요") && (
           <section>
-            <h2 className="text-lg font-semibold mb-3 text-black">팔고싶어요</h2>
+            {activeTab === "전체" ? (
+              <SectionHeader title="팔고싶어요" targetTab="팔래요" onTabChange={setActiveTab} />
+            ) : (
+              <h2 className="text-20 font-semibold mb-3 text-uni-black font-pretendard">팔고싶어요</h2>
+            )}
             <div className="space-y-3">
               {sellItems.length > 0 ? (
-                sellItems.map((item) => <ItemCard key={item.id} item={item} />)
+                <>
+                  {activeTab === "팔래요"
+                    ? // 팔래요 탭일 때만 페이지네이션 적용
+                      sellPagination.paginatedData.map((item) => <ItemCard key={item.id} item={item} />)
+                    : // 전체 탭일 때는 4개만 표시
+                      sellItems.slice(0, 4).map((item) => <ItemCard key={item.id} item={item} />)}
+                  {activeTab === "팔래요" && sellPagination.totalPages > 1 && (
+                    <Pagination
+                      pageCount={sellPagination.totalPages}
+                      onPageChange={sellPagination.handlePageChange}
+                      forcePage={sellPagination.currentPage - 1}
+                    />
+                  )}
+                </>
               ) : (
                 <EmptyState message="아직 거래한게 없어요" />
               )}
@@ -70,10 +112,27 @@ export default function MyPageMyPost() {
         {/* 살래요 Section */}
         {(activeTab === "전체" || activeTab === "살래요") && (
           <section>
-            <h2 className="text-lg font-semibold mb-3 text-black">사고싶어요</h2>
+            {activeTab === "전체" ? (
+              <SectionHeader title="사고싶어요" targetTab="살래요" onTabChange={setActiveTab} />
+            ) : (
+              <h2 className="text-20 font-semibold mb-3 text-uni-black font-pretendard">사고싶어요</h2>
+            )}
             <div className="space-y-3">
               {buyItems.length > 0 ? (
-                buyItems.map((item) => <ItemCard key={item.id} item={item} />)
+                <>
+                  {activeTab === "살래요"
+                    ? // 살래요 탭일 때만 페이지네이션 적용
+                      buyPagination.paginatedData.map((item) => <ItemCard key={item.id} item={item} />)
+                    : // 전체 탭일 때는 4개만 표시
+                      buyItems.slice(0, 4).map((item) => <ItemCard key={item.id} item={item} />)}
+                  {activeTab === "살래요" && buyPagination.totalPages > 1 && (
+                    <Pagination
+                      pageCount={buyPagination.totalPages}
+                      onPageChange={buyPagination.handlePageChange}
+                      forcePage={buyPagination.currentPage - 1}
+                    />
+                  )}
+                </>
               ) : (
                 <EmptyState message="아직 거래한게 없어요" />
               )}
@@ -84,10 +143,27 @@ export default function MyPageMyPost() {
         {/* 모여요 Section */}
         {(activeTab === "전체" || activeTab === "모여요") && (
           <section>
-            <h2 className="text-lg font-semibold mb-3 text-black">모여요</h2>
+            {activeTab === "전체" ? (
+              <SectionHeader title="모여요" targetTab="모여요" onTabChange={setActiveTab} />
+            ) : (
+              <h2 className="text-20 font-semibold mb-3 text-uni-black font-pretendard">모여요</h2>
+            )}
             <div className="space-y-3">
               {gatheringsItems.length > 0 ? (
-                gatheringsItems.map((item) => <ItemCard key={item.id} item={item} />)
+                <>
+                  {activeTab === "모여요"
+                    ? // 모여요 탭일 때만 페이지네이션 적용
+                      gatheringsPagination.paginatedData.map((item) => <ItemCard key={item.id} item={item} />)
+                    : // 전체 탭일 때는 4개만 표시
+                      gatheringsItems.slice(0, 4).map((item) => <ItemCard key={item.id} item={item} />)}
+                  {activeTab === "모여요" && gatheringsPagination.totalPages > 1 && (
+                    <Pagination
+                      pageCount={gatheringsPagination.totalPages}
+                      onPageChange={gatheringsPagination.handlePageChange}
+                      forcePage={gatheringsPagination.currentPage - 1}
+                    />
+                  )}
+                </>
               ) : (
                 <EmptyState message="아직 거래한게 없어요" />
               )}
