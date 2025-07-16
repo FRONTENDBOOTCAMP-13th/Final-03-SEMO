@@ -66,9 +66,9 @@ export function useResponsivePagination<T>({
   }, [currentPage, totalPages]);
 
   const paginatedData = useMemo(() => {
-    const startIndex = (currentPage - 1) * minItemsPerPage;
-    return data.slice(startIndex, startIndex + minItemsPerPage);
-  }, [data, currentPage, minItemsPerPage]);
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    return data.slice(startIndex, startIndex + itemsPerPage);
+  }, [data, currentPage, itemsPerPage]);
 
   const handlePageChange = (selectedItem: PageChangeEvent) => {
     setCurrentPage(selectedItem.selected + 1);
