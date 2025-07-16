@@ -4,7 +4,9 @@ import { useState } from "react";
 import TabNavigation from "../_components/TabNavigation";
 import ItemCard, { Item } from "../_components/ItemCard";
 import EmptyState from "../_components/EmptyState";
+import Pagination from "../_components/Pagination";
 import { myPageItemsData, MyPageItem } from "../data/postData";
+import { useResponsivePagination } from "../_hooks/pagination/useResponsivePagination";
 
 export default function MyPageMyPost() {
   const [activeTab, setActiveTab] = useState("전체");
@@ -40,6 +42,33 @@ export default function MyPageMyPost() {
       status: item.status,
     }));
 
+  // 팔래요 페이지네이션
+  const sellPagination = useResponsivePagination({
+    data: sellItems,
+    estimatedItemHeight: 88,
+    minItemsPerPage: 3,
+    maxItemsPerPage: 10,
+    reservedHeight: 350, // 탭 네비게이션 + 하단 네비게이션을 고려하여 증가
+  });
+
+  // 살래요 페이지네이션
+  const buyPagination = useResponsivePagination({
+    data: buyItems,
+    estimatedItemHeight: 88,
+    minItemsPerPage: 3,
+    maxItemsPerPage: 10,
+    reservedHeight: 350, // 탭 네비게이션 + 하단 네비게이션을 고려하여 증가
+  });
+
+  // 모여요 페이지네이션
+  const gatheringsPagination = useResponsivePagination({
+    data: gatheringsItems,
+    estimatedItemHeight: 88,
+    minItemsPerPage: 3,
+    maxItemsPerPage: 10,
+    reservedHeight: 350, // 탭 네비게이션 + 하단 네비게이션을 고려하여 증가
+  });
+
   const tabs = ["전체", "팔래요", "살래요", "모여요"];
 
   return (
@@ -54,7 +83,20 @@ export default function MyPageMyPost() {
             <h2 className="text-20 font-semibold mb-3 text-uni-black font-pretendard">팔고싶어요</h2>
             <div className="space-y-3">
               {sellItems.length > 0 ? (
-                sellItems.map((item) => <ItemCard key={item.id} item={item} />)
+                <>
+                  {activeTab === "팔래요"
+                    ? // 팔래요 탭일 때만 페이지네이션 적용
+                      sellPagination.paginatedData.map((item) => <ItemCard key={item.id} item={item} />)
+                    : // 전체 탭일 때는 모든 아이템 표시
+                      sellItems.map((item) => <ItemCard key={item.id} item={item} />)}
+                  {activeTab === "팔래요" && sellPagination.totalPages > 1 && (
+                    <Pagination
+                      pageCount={sellPagination.totalPages}
+                      onPageChange={sellPagination.handlePageChange}
+                      forcePage={sellPagination.currentPage - 1}
+                    />
+                  )}
+                </>
               ) : (
                 <EmptyState message="아직 거래한게 없어요" />
               )}
@@ -68,7 +110,20 @@ export default function MyPageMyPost() {
             <h2 className="text-20 font-semibold mb-3 text-uni-black font-pretendard">사고싶어요</h2>
             <div className="space-y-3">
               {buyItems.length > 0 ? (
-                buyItems.map((item) => <ItemCard key={item.id} item={item} />)
+                <>
+                  {activeTab === "살래요"
+                    ? // 살래요 탭일 때만 페이지네이션 적용
+                      buyPagination.paginatedData.map((item) => <ItemCard key={item.id} item={item} />)
+                    : // 전체 탭일 때는 모든 아이템 표시
+                      buyItems.map((item) => <ItemCard key={item.id} item={item} />)}
+                  {activeTab === "살래요" && buyPagination.totalPages > 1 && (
+                    <Pagination
+                      pageCount={buyPagination.totalPages}
+                      onPageChange={buyPagination.handlePageChange}
+                      forcePage={buyPagination.currentPage - 1}
+                    />
+                  )}
+                </>
               ) : (
                 <EmptyState message="아직 거래한게 없어요" />
               )}
@@ -82,7 +137,20 @@ export default function MyPageMyPost() {
             <h2 className="text-20 font-semibold mb-3 text-uni-black font-pretendard">모여요</h2>
             <div className="space-y-3">
               {gatheringsItems.length > 0 ? (
-                gatheringsItems.map((item) => <ItemCard key={item.id} item={item} />)
+                <>
+                  {activeTab === "모여요"
+                    ? // 모여요 탭일 때만 페이지네이션 적용
+                      gatheringsPagination.paginatedData.map((item) => <ItemCard key={item.id} item={item} />)
+                    : // 전체 탭일 때는 모든 아이템 표시
+                      gatheringsItems.map((item) => <ItemCard key={item.id} item={item} />)}
+                  {activeTab === "모여요" && gatheringsPagination.totalPages > 1 && (
+                    <Pagination
+                      pageCount={gatheringsPagination.totalPages}
+                      onPageChange={gatheringsPagination.handlePageChange}
+                      forcePage={gatheringsPagination.currentPage - 1}
+                    />
+                  )}
+                </>
               ) : (
                 <EmptyState message="아직 거래한게 없어요" />
               )}

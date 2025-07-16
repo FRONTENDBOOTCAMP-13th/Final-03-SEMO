@@ -24,7 +24,8 @@ export default function MyPageReviewsToWrite() {
     estimatedItemHeight: 88, // ReviewCard의 예상 높이
     minItemsPerPage: 3,
     maxItemsPerPage: 10,
-    reservedHeight: 250, // 헤더, 페이지네이션, 네비게이션을 위한 충분한 공간
+    reservedHeight: 250, //실제 컨텐츠 높이 = 전체 화면 높이 - reservedHeight
+    // 헤더, 페이지네이션, 네비게이션을 위한 충분한 공간
   });
 
   return (
