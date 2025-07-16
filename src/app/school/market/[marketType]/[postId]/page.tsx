@@ -1,20 +1,13 @@
-'use client';
-import Image from 'next/image';
-import CommentList from './CommentList';
+"use client";
+import Image from "next/image";
+import CommentList from "./CommentList";
 
 export default function BuyMarketPostPage() {
   return (
     <div className="min-w-[320px] max-w-[480px] mx-auto px-4 py-6 min-h-screen bg-uni-white">
-
       {/* 이미지 */}
       <div className="rounded-lg overflow-hidden mb-4 bg-uni-gray-100">
-        <Image
-          src="/"
-          alt=""
-          width={350}
-          height={300}
-          className="w-full h-auto object-cover"
-        />
+        <Image src="/" alt="" width={350} height={300} className="w-full h-auto object-cover" />
       </div>
 
       {/* 제목 + 좋아요 */}
@@ -36,12 +29,14 @@ export default function BuyMarketPostPage() {
       </div>
 
       {/* 상태 */}
-      <span className="inline-block px-3 py-1 bg-uni-green-400 text-uni-white text-14 font-bold rounded-[12px] mb-4 p-10">판매중</span>
+      <span className="inline-block px-3 py-1 bg-uni-green-400 text-uni-white text-14 font-bold rounded-[12px] mb-4 p-10">
+        판매중
+      </span>
 
       {/* 설명 */}
       <p className="text-gray-700 mb-2">미개봉 새상품입니다. 쿨거래시 네고 가능합니다.</p>
       <p className="text-12 text-uni-gray-400 mb-6">2025년 07월 09일 11:34시</p>
       <CommentList />
     </div>
-  )
+  );
 }

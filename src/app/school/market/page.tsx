@@ -21,7 +21,7 @@
 //     { id: 5, title: '치킨 깊티 구해요!', img: '/' },
 //     { id: 6, title: '컵라면 하나만요ㅠ', img: '/' },
 //   ]
-//   : 
+//   :
 //   [
 //     { id: 1, title: '치킨 깊티 구해요!', img: '/' },
 //     { id: 2, title: '컵라면 하나만요ㅠ', img: '/' },
@@ -59,8 +59,8 @@
 // }
 
 // src/app/school/market/page.tsx
-import { redirect } from 'next/navigation';
+import { redirect } from "next/navigation";
 
 export default function MarketRoot() {
-  redirect('/school/market/buy');
+  redirect("/school/market/buy");
 }

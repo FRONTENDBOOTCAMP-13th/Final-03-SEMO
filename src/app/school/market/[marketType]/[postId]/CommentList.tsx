@@ -1,5 +1,5 @@
-import CommentItem from './CommentItem';
-import CommentNew from './CommentNew';
+import CommentItem from "./CommentItem";
+import CommentNew from "./CommentNew";
 
 export default function CommentList() {
   return (
@@ -8,5 +8,5 @@ export default function CommentList() {
       <CommentNew />
       <CommentItem />
     </div>
-  )
+  );
 }

@@ -1,16 +1,22 @@
 // 사고싶어요, 팔고싶어요 리스트 렌더링용 컴포넌트
-'use client'
-import Link from 'next/link';
-import Image from 'next/image';
+"use client";
+import Link from "next/link";
+import Image from "next/image";
 
-interface Item { id: number; title: string; img: string; }
-interface Props { items: Item[]; market: 'buy' | 'sell';
+interface Item {
+  id: number;
+  title: string;
+  img: string;
+}
+interface Props {
+  items: Item[];
+  market: "buy" | "sell";
 }
 
 export default function ItemSection({ items, market }: Props) {
   return (
     <div className="grid grid-cols-2 gap-4">
-      {items.map(item => (
+      {items.map((item) => (
         <Link
           key={item.id}
           href={`/school/market/${market}/${item.id}`}
