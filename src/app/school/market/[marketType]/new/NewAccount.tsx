@@ -1,3 +1,4 @@
+// 새로운 계좌 입력 컴포넌트
 export default function NewAccount() {
   return (
     <div>

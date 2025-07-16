@@ -1,3 +1,4 @@
+// 상품 정보 컴포넌트
 export default function Product() {
   return (
     <section>

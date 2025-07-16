@@ -1,3 +1,4 @@
+// 공동구매 추가 Form 컴포넌트
 export default function GroupPurchase() {
   return (
     <section className="mb-8">

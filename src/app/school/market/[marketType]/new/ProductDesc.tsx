@@ -1,3 +1,4 @@
+// 상품 설명 입력 컴포넌트
 export default function ProductDesc() {
   return (
     <section className="mb-5">
