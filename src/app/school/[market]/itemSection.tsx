@@ -8,17 +8,17 @@ interface Item {
 }
 
 interface Props {
-  title: string;
+  // title: string;
   items: Item[];
 }
 
-export default function ItemSection({ title, items }: Props) {
+export default function ItemSection({ items }: Props) {
   return (
     <div>
-      <h2 className="text-base font-bold text-18 mb-3">{title}</h2>
+      {/* <h2 className="text-base font-bold text-18 mb-3">{title}</h2> */}
       <div className="grid grid-cols-2 gap-4">
         {items.map((item) => (
-          <div>
+          <div key={item.id}>
             <div
               key={item.id}
               className="rounded-lg p-2 bg-uni-gray-100"
