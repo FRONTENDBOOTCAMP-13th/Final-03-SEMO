@@ -30,5 +30,6 @@ export function usePagination<T>({ data, itemsPerPage, initialPage = 1 }: UsePag
     paginatedData,
     handlePageChange,
     setCurrentPage,
+    hasData: data.length > 0,
   };
 }
