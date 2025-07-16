@@ -1,3 +1,20 @@
+/**
+ * SectionHeader 컴포넌트
+ *
+ * 클릭 가능한 섹션 헤더로, 전체 탭에서 특정 탭으로 이동할 수 있는 기능을 제공합니다.
+ *
+ * @example
+ * <SectionHeader
+ *   title="팔고싶어요"
+ *   targetTab="팔래요"
+ *   onTabChange={setActiveTab}
+ * />
+ *
+ * @param title - 표시할 제목 텍스트
+ * @param targetTab - 클릭 시 이동할 탭 이름
+ * @param onTabChange - 탭 변경 함수
+ */
+
 "use client";
 
 import { ChevronRight } from "lucide-react";
