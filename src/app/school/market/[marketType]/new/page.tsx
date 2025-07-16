@@ -3,6 +3,7 @@
 'use client';
 import { useState } from 'react';
 import GroupPurchase from './GroupPurchase';
+import ProductDesc from './ProductDesc';
 
 export default function MarketNew() {
   const [selected, setSelected] = useState<'registered' | 'new'>('registered');
@@ -57,46 +58,8 @@ export default function MarketNew() {
               </button>
             </div>
           </section>
-          <section className='mb-5'>
-            <div className='mb-5'>
-              <label htmlFor="category" className='sr-only'>카테고리</label>
-              {/* 카테고리 셀렉트 */}
-              <select className='w-full bg-uni-gray-200 rounded-lg p-3 text-16 text-uni-gray-600'>
-                <option value="">카테고리</option>
-                <option value="음식">음식</option>
-                <option value="서적">서적</option>
-                <option value="생활용품">생활용품</option>
-                <option value="학용품">학용품</option>
-              </select>
-            </div>
-            <div className='mb-5'>
-              <label htmlFor="desc" className='sr-only'>상품 설명</label>
-              <textarea 
-                id='desc'
-                placeholder='상품 설명'
-                className='w-full h-[150px] bg-uni-gray-200 rounded-md p-3 text-16'  
-                maxLength={250}
-              />
-            </div>
-            <div className='mb-5'>
-              <label htmlFor="price" className='sr-only'>가격</label>
-              <input 
-                id='price'
-                type="text"
-                placeholder='가격'
-                className='w-full bg-uni-gray-200 rounded-md p-3 text-16'  
-              />
-            </div>
-            <div className='mb-5'>
-              <label htmlFor="location" className='sr-only'>가격</label>
-              <input 
-                type="text"
-                placeholder='거래 장소'
-                className='w-full bg-uni-gray-200 rounded-md p-3 text-16'  
-              />
-            </div>
-          </section>
-          
+          {/* 상품 설명 */}
+          <ProductDesc />
           {/* 공동구매 추가 폼, 클릭시만 보이게*/}
           {tradeType === 'group' && (
             <GroupPurchase />
