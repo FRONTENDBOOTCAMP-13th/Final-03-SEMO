@@ -2,7 +2,7 @@
 
 'use client';
 import { useState } from 'react';
-import GroupPurchase from "./GroupPurchase"
+import GroupPurchase from './groupPurchase';
 
 export default function MarketNew() {
   const [selected, setSelected] = useState<'registered' | 'new'>('registered');
