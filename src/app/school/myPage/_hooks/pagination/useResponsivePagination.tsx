@@ -44,6 +44,18 @@ export function useResponsivePagination<T>({
     return () => window.removeEventListener("resize", updateViewportHeight);
   }, [isClient, updateViewportHeight]);
 
+  // 페이지당 아이템 개수 계산 (동적으로 구현)
+  const itemsPerPage = useMemo(() => {
+    if (!isClient) return minItemsPerPage;
+
+    //헤더, 네비 같은 고정 영역 제외한 실제 공간 높이 계산
+    const availableHeight = Math.max(viewportHeight - reservedHeight, 200);
+    //높이로 나눠서 몇 개의 아이템이 들어갈 수 있는지 계산
+    const calculatedItems = Math.floor(availableHeight / estimatedItemHeight);
+
+    return Math.max(minItemsPerPage, Math.min(maxItemsPerPage, calculatedItems));
+  }, [isClient, viewportHeight, estimatedItemHeight, minItemsPerPage, maxItemsPerPage, reservedHeight]);
+
   const totalPages = Math.ceil(data.length / minItemsPerPage);
 
   const paginatedData = useMemo(() => {
