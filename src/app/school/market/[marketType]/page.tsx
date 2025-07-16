@@ -39,6 +39,7 @@ export default function MarketPage({ params }: { params: { marketType: "buy" | "
       <Search />
       <div className="flex justify-around mb-4 border-b border-uni-gray-300">
         {(["buy", "sell"] as const).map((i) => {
+          // 읽기 전용 [buy, sell] 튜플 리터럴
           const label = i === "buy" ? "사고 싶어요" : "팔고 싶어요";
           const active = i === marketType;
           return (
