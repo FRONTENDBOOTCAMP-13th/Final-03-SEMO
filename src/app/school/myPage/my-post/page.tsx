@@ -43,7 +43,7 @@ export default function MyPageMyPost() {
   const tabs = ["전체", "팔래요", "살래요", "모여요"];
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-uni-white">
       {/* Tab Navigation */}
       <TabNavigation tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
 
@@ -51,7 +51,7 @@ export default function MyPageMyPost() {
         {/* 팔래요 Section */}
         {(activeTab === "전체" || activeTab === "팔래요") && (
           <section>
-            <h2 className="text-lg font-semibold mb-3 text-black">팔고싶어요</h2>
+            <h2 className="text-20 font-semibold mb-3 text-uni-black font-pretendard">팔고싶어요</h2>
             <div className="space-y-3">
               {sellItems.length > 0 ? (
                 sellItems.map((item) => <ItemCard key={item.id} item={item} />)
@@ -65,7 +65,7 @@ export default function MyPageMyPost() {
         {/* 살래요 Section */}
         {(activeTab === "전체" || activeTab === "살래요") && (
           <section>
-            <h2 className="text-lg font-semibold mb-3 text-black">사고싶어요</h2>
+            <h2 className="text-20 font-semibold mb-3 text-uni-black font-pretendard">사고싶어요</h2>
             <div className="space-y-3">
               {buyItems.length > 0 ? (
                 buyItems.map((item) => <ItemCard key={item.id} item={item} />)
@@ -79,7 +79,7 @@ export default function MyPageMyPost() {
         {/* 모여요 Section */}
         {(activeTab === "전체" || activeTab === "모여요") && (
           <section>
-            <h2 className="text-lg font-semibold mb-3 text-black">모여요</h2>
+            <h2 className="text-20 font-semibold mb-3 text-uni-black font-pretendard">모여요</h2>
             <div className="space-y-3">
               {gatheringsItems.length > 0 ? (
                 gatheringsItems.map((item) => <ItemCard key={item.id} item={item} />)
