@@ -2,13 +2,10 @@
 
 export default function MyPageAccount() {
   return (
-    <main className="p-4">
-      <h1 className="text-xl font-bold mb-4">계정 설정</h1>
-      <div className="space-y-2">
-        <div className="border p-3 rounded">닉네임 변경</div>
-        <div className="border p-3 rounded">이메일 변경</div>
-        <div className="border p-3 rounded">비밀번호 변경</div>
+    <div className="min-h-screen bg-white">
+      <div className="px-4 py-6">
+        <p>계정 설정 페이지</p>
       </div>
-    </main>
+    </div>
   );
 }
