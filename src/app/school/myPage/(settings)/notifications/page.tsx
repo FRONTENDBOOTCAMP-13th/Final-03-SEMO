@@ -27,5 +27,13 @@ export default function NotificationSettings() {
     </div>
   );
 
+  // 알림 상태 핸들링 로직
+  const handleToggle = (key: keyof typeof notifications) => {
+    setNotifications((prev) => ({
+      ...prev,
+      [key]: !prev[key],
+    }));
+  };
+
   return <div className="min-h-screen bg-uni-white" />;
 }
