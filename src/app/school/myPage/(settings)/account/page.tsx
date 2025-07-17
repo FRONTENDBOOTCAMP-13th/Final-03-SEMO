@@ -160,6 +160,45 @@ export default function MyPageAccount() {
         />
         <p className="-mt-5 text-xs text-gray-500">* 2-10글자로 입력해주세요.</p>
       </div>
+
+      {/* 계좌번호 섹션 */}
+      <div className="mb-8">
+        <label className="block text-sm font-medium text-gray-900 mb-2">
+          계좌번호 <span className="text-red-500">*</span>
+        </label>
+        <div className="space-y-3">
+          {/* 은행 선택 드롭다운 */}
+          <div className="relative">
+            <select
+              value={selectedBank}
+              onChange={(e) => setSelectedBank(e.target.value)}
+              className="w-full px-4 py-3 bg-gray-100 rounded-lg border-0 text-gray-900 focus:outline-none focus:ring-2 focus:ring-uni-blue-400 appearance-none cursor-pointer"
+            >
+              {banks.map((bank) => (
+                <option key={bank} value={bank}>
+                  {bank}
+                </option>
+              ))}
+            </select>
+            <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none">
+              <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </div>
+          </div>
+
+          {/* 계좌번호 입력 (inputField 컴포넌트 사용)
+            1-2. 입력 중 실시간 검사*/}
+          <InputField
+            label=""
+            value={accountNumber}
+            onChange={handleAccountNumberChange}
+            placeholder="계좌번호를 입력해주세요"
+            error={accountError}
+          />
+        </div>
+        <p className="mt-2 text-xs text-gray-500">* 은행을 선택하고 계좌번호를 입력해주세요.</p>
+      </div>
     </div>
   );
 }
