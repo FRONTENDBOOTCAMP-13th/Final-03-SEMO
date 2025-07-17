@@ -1,10 +1,10 @@
 "use client";
 
-import Pagination from "../_components/Pagination";
-import ReviewCard from "../_components/ReviewCard";
-import EmptyState from "../_components/EmptyState";
-import { getAllReviews } from "../data/reviewsData";
-import { useResponsivePagination } from "../_hooks/pagination/useResponsivePagination";
+import Pagination from "../../_components/Pagination";
+import ReviewCard from "../../_components/ReviewCard";
+import EmptyState from "../../_components/EmptyState";
+import { getAllReviews } from "../../data/reviewsData";
+import { useResponsivePagination } from "../../_hooks/pagination/useResponsivePagination";
 
 export default function MyPageReviewsToWrite() {
   // 공통 데이터에서 리뷰 목록 가져오기

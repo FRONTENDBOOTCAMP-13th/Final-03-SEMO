@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import TabNavigation from "../_components/TabNavigation";
-import ItemCard, { Item } from "../_components/ItemCard";
-import EmptyState from "../_components/EmptyState";
-import Pagination from "../_components/Pagination";
-import SectionHeader from "../_components/SectionHeader";
-import { myPageItemsData, MyPageItem } from "../data/postData";
-import { useResponsivePagination } from "../_hooks/pagination/useResponsivePagination";
+import TabNavigation from "../../_components/TabNavigation";
+import ItemCard, { Item } from "../../_components/ItemCard";
+import EmptyState from "../../_components/EmptyState";
+import Pagination from "../../_components/Pagination";
+import SectionHeader from "../../_components/SectionHeader";
+import { myPageItemsData, MyPageItem } from "../../data/postData";
+import { useResponsivePagination } from "../../_hooks/pagination/useResponsivePagination";
 
 export default function MyPageMyPost() {
   const [activeTab, setActiveTab] = useState("전체");

@@ -99,9 +99,7 @@ export default function MyPageWriteReview({ params }: MyPageWriteReviewProps) {
         {/* 안내 문구 */}
         <section className="mt-4 mb-28">
           <p className="text-10 text-uni-gray-300 leading-relaxed font-pretendard">
-            다른 사용자에게 불쾌감을 줄 수 있는 리뷰는
-            <br />
-            법적조치를 받을 수 있습니다
+            다른 사용자에게 불쾌감을 줄 수 있는 리뷰는 법적조치를 받을 수 있습니다
           </p>
         </section>
       </main>
