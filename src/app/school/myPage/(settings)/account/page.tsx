@@ -96,6 +96,13 @@ export default function MyPageAccount() {
               <svg className="w-8 h-8 text-white">...</svg>
             </div>
             <input type="file" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+
+            {/* 이미지 제거 버튼 (이미지가 있을 때만 표시) */}
+            {profileImage && (
+              <button className="absolute -top-1 -right-1 w-8 h-8 bg-red-500 ...">
+                <svg className="w-4 h-4 text-white">...</svg>
+              </button>
+            )}
           </div>
         </div>
       </div>
