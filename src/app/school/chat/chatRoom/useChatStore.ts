@@ -4,10 +4,18 @@ export interface Message {
   id: string;
   roomId: string;
   content: string;
-  type: "text" | "image" | "status";
+  type?: "text";
   createdAt: string;
   user_id: string;
   nickName: string;
+
+  isMine?: boolean;
+}
+
+export interface ChatUser {
+  user_id: string;
+  nickName: string;
+  joinTime?: string;
 }
 
 interface ChatStore {
@@ -16,10 +24,14 @@ interface ChatStore {
   setRoomId: (roomId: string) => void;
   addMessage: (msg: Message) => void;
   clearMessages: () => void;
+  userList: ChatUser[];
+  setUserList: (users: ChatUser[]) => void;
 }
 
 // 전역상태 저장소
 export const useChatStore = create<ChatStore>((set) => ({
+  userList: [],
+  setUserList: (users) => set({ userList: users }),
   currentRoomId: null,
 
   // 채팅 메시지들이 저장

@@ -12,39 +12,49 @@ interface InputChatProps {
 
 const InputChat = ({ userId, nickName }: InputChatProps) => {
   const [input, setInput] = useState("");
-  const roomId = useChatStore((state) => state.currentRoomId); // ✅ 현재 방 ID 불러오기
+  const roomId = useChatStore((state) => state.currentRoomId);
+  const userList = useChatStore((state) => state.userList);
 
   const handleSend = () => {
-    if (!input.trim()) return;
-    if (!roomId) {
-      console.warn("❌ roomId 없음. 메시지 전송 실패");
-      return;
-    }
+    if (!input.trim() || !roomId) return;
 
     socket.emit("message", {
-      roomId, // ✅ 이게 반드시 있어야 함!
+      roomId,
       msg: input,
       user_id: userId,
-      nickName: nickName,
+      nickName,
     });
 
     setInput("");
   };
 
   return (
-    <div className="w-full min-w-[360px] max-w-[480px] px-4 py-3 ">
-      <div className="flex items-center bg-uni-gray-200 rounded-[12px] h-12 w-full">
-        <input
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && handleSend()}
-          placeholder="메시지 보내기"
-          className="w-full bg-transparent outline-none ml-4 my-2 mr-2 placeholder-uni-gray-600 text-16 text-uni-black"
-        />
-        <button onClick={handleSend} className="text-uni-black ml-[6px] my-[14px] mr-[14px]">
-          <Send size={20} />
-        </button>
+    <div className="w-full min-w-[360px] max-w-[480px] px-4 py-3">
+      <div className="flex gap-2">
+        <select className="rounded-md border px-2 py-1 text-sm bg-white text-uni-black cursor-default" disabled>
+          <option>접속자 ({userList.length})</option>
+          {userList
+            .filter((u) => u.user_id !== userId)
+            .map((user) => (
+              <option key={user.user_id} value={user.user_id}>
+                {user.nickName} ({user.user_id})
+              </option>
+            ))}
+        </select>
+
+        <div className="flex items-center bg-uni-gray-200 rounded-[12px] h-12 w-full">
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleSend()}
+            placeholder="메시지 입력..."
+            className="w-full bg-transparent outline-none ml-4 my-2 mr-2 placeholder-uni-gray-600 text-16 text-uni-black"
+          />
+          <button onClick={handleSend} className="text-uni-black ml-[6px] my-[14px] mr-[14px]">
+            <Send size={20} />
+          </button>
+        </div>
       </div>
     </div>
   );

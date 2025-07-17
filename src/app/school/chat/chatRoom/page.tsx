@@ -10,7 +10,7 @@ const ChatRoom = () => {
   const searchParams = useSearchParams();
   const userId = searchParams.get("userId") ?? "defaultUser";
   const nickName = searchParams.get("nickName") ?? "익명";
-  const roomId = searchParams.get("roomId") ?? "defualt-room";
+  const roomId = "global";
 
   useChatSocket({ userId, nickName, roomId });
 

@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { io } from "socket.io-client";
 import { Message, useChatStore } from "./useChatStore";
 
-export const socket = io("https://fesp-api.koyeb.app/ws/sample");
+export const socket = io("https://fesp-api.koyeb.app/ws/sample", { autoConnect: false });
 
 interface useChatSocketProps {
   userId: string;
@@ -14,85 +14,80 @@ interface useChatSocketProps {
 export const useChatSocket = ({ userId, nickName, roomId }: useChatSocketProps) => {
   // 현재 방 아이디를 저장하는 함수 가져옴(useChatStore), 성공 시 roomId 저장
   const setRoomId = useChatStore((state) => state.setRoomId);
+  const GlOBAL_ROOM_ID = "global";
+
   useEffect(() => {
-    console.log("[소켓 진입] userId:", userId, "| nickName:", nickName, "| room:", roomId);
+    socket.connect();
 
-    socket.emit(
-      "createRoom",
-      {
-        roomId,
-        user_id: userId,
-        hostName: nickName,
-        roomName: roomId,
-      },
-      (res: any) => {
-        if (res.ok) {
-          // ✅ 방 새로 생성되었을 때
-          const roomId = res.roomInfo.roomId;
-          console.log("✅ 방 생성 성공:", roomId);
-          setRoomId(roomId);
+    socket.on("connect", () => {
+      console.log("소켓 연결:", userId, nickName, roomId, socket.id);
+      setRoomId(GlOBAL_ROOM_ID);
 
+      socket.emit(
+        "createRoom",
+        {
+          roomId: GlOBAL_ROOM_ID,
+          user_id: userId,
+          hostName: nickName,
+          roomName: "Global Room",
+          autoClose: false,
+        },
+        (res: any) => {
+          if (!res.ok) {
+            console.warn("Global 룸 이미 존재:", res.message);
+          }
           socket.emit(
             "joinRoom",
             {
-              roomId,
+              roomId: GlOBAL_ROOM_ID,
               user_id: userId,
               nickName,
             },
             (res: any) => {
               if (res.ok) {
-                console.log("✅ 방 입장 성공");
+                console.log("Global 룸 입장 성공");
               } else {
-                console.warn("❌ 방 입장 실패", res.message);
+                console.warn("방 입장 실패", res.message);
               }
             }
           );
-        } else {
-          // ✅ 방이 이미 존재하는 경우 → joinRoom만 진행
-          if (res.message?.includes("이미 존재하는 roomId")) {
-            console.warn("⚠️ 이미 방이 존재합니다. joinRoom만 수행합니다.");
-
-            setRoomId(roomId); // 수동으로 저장해줌
-
-            socket.emit(
-              "joinRoom",
-              {
-                roomId,
-                user_id: userId,
-                nickName,
-              },
-              (res: any) => {
-                if (res.ok) {
-                  console.log("✅ 방 입장 성공 (기존 방)");
-                } else {
-                  console.warn("❌ 방 입장 실패", res.message);
-                }
-              }
-            );
-          } else {
-            console.warn("❌ 방 생성 실패:", res.message);
-          }
         }
-      }
-    );
+      );
+    });
+
+    socket.on("members", (memberListObj) => {
+      const list = Object.entries(memberListObj).map(([user_id, value]: [string, any]) => ({
+        user_id,
+        nickName: value.nickName,
+        joinTime: value.joinTime,
+      }));
+      useChatStore.getState().setUserList(list);
+    });
+
+    if (!socket) return;
+
+    socket.off("message");
 
     socket.on("message", (data) => {
       console.log("메시지 수신:", data);
-      const raw = typeof data.msg === "object" ? data.msg : { msg: data.msg };
+
+      const raw =
+        typeof data.msg === "object" ? data.msg : { msg: data.msg, nickName: data.nickName, user_id: data.user_id };
 
       const msg: Message = {
         id: Date.now().toString(),
-        roomId: raw.roomId ?? roomId,
+        roomId: GlOBAL_ROOM_ID,
         content: raw.msg,
         type: "text",
         createdAt: data.timestamp ?? new Date().toISOString(),
-        user_id: raw.user_id,
-        nickName: raw.nickName,
+        user_id: raw.user_id ?? "system",
+        nickName: raw.nickName ?? "시스템",
       };
       useChatStore.getState().addMessage(msg);
     });
 
     return () => {
+      socket.off("message");
       socket.emit("leaveRoom");
       socket.disconnect();
     };
