@@ -1,4 +1,11 @@
 // import ItemSection from '';
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Market",
+  description: "Market 페이지입니다.",
+};
+
 import ItemSection from "../itemSection";
 import FloatingButton from "@/components/common/FloatingButton";
 import Search from "@/components/common/Search";
