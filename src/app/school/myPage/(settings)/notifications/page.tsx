@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import SaveFloatingButton from "../../_components/SaveFloatingButton";
 
 export default function NotificationSettings() {
   const [notifications, setNotifications] = useState({
@@ -107,6 +108,7 @@ export default function NotificationSettings() {
           </div>
         </div>
       </div>
+      <SaveFloatingButton onClick={handleSave}>저장하기</SaveFloatingButton>
     </div>
   );
 }
