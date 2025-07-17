@@ -51,7 +51,7 @@ export default function RootLayout({ children, modal }: MyPageLayoutProps) {
                   <Home className="w-5 h-5 text-gray-400 mb-1" />
                   <div className="text-xs text-gray-400 font-medium">홈</div>
                 </Link>
-                <Link href="/school/buyMarket" className="flex-1 flex flex-col items-center justify-center py-2 px-1">
+                <Link href="/school/market" className="flex-1 flex flex-col items-center justify-center py-2 px-1">
                   <ShoppingBag className="w-5 h-5 text-gray-400 mb-1" />
                   <div className="text-xs text-gray-400 font-medium">상품</div>
                 </Link>
