@@ -199,6 +199,24 @@ export default function MyPageAccount() {
         </div>
         <p className="mt-2 text-xs text-gray-500">* 은행을 선택하고 계좌번호를 입력해주세요.</p>
       </div>
+
+      {/* 탈퇴 섹션 */}
+      <div className="mb-6">
+        <label className="block text-sm font-medium text-gray-900 mb-2">탈퇴</label>
+        <button
+          onClick={handleWithdraw}
+          className="w-full px-4 py-3 bg-gray-100 rounded-lg text-left text-gray-900 hover:bg-gray-200 transition-colors flex items-center justify-between"
+        >
+          <span>탈퇴하기</span>
+          <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      </div>
+
+      {/* SaveFloatingButton 컴포넌트 사용 
+      2. 최종 저장 시 검사*/}
+      <SaveFloatingButton onClick={handleSave}>저장하기</SaveFloatingButton>
     </div>
   );
 }
