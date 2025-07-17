@@ -1,16 +1,35 @@
-// app/setting/_components/NotificationToggleItem.tsx
+/**
+ * ToggleCard 컴포넌트
+ *
+ * 알림 설정 항목을 보여주는 토글 스위치 컴포넌트입니다.
+ * 제목과 설명 텍스트를 표시하며, 스위치 클릭 시 토글 상태를 변경합니다.
+ *
+ * @example
+ * <NotificationToggleItem
+ *   title="이메일 알림"
+ *   description="이메일로 알림을 받습니다."
+ *   isOn={isEmailOn}
+ *   onToggle={handleEmailToggle}
+ * />
+ *
+ * @param title - 알림 항목 제목 텍스트
+ * @param description - 알림 항목 설명 텍스트
+ * @param isOn - 토글 스위치 활성화 여부 (true: 켜짐)
+ * @param onToggle - 토글 스위치 클릭 시 호출되는 함수
+ */
+
 "use client";
 
 import React from "react";
 
-type NotificationToggleItemProps = {
+type ToggleCardProps = {
   title: string;
   description: string;
   isOn: boolean;
   onToggle: () => void;
 };
 
-export default function NotificationToggleItem({ title, description, isOn, onToggle }: NotificationToggleItemProps) {
+export default function ToggleCard({ title, description, isOn, onToggle }: ToggleCardProps) {
   return (
     <div className="flex items-center justify-between">
       <div>
