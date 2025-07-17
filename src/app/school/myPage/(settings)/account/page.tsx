@@ -132,6 +132,7 @@ export default function MyPageAccount() {
             </button>
           )}
         </div>
+
         {/* 업로드 안내 텍스트 */}
         <div className="mt-3 text-center">
           <p className="text-sm text-gray-600 mb-1">프로필 사진</p>
@@ -139,6 +140,25 @@ export default function MyPageAccount() {
             {profileImage ? "사진을 클릭하여 변경하거나 X를 눌러 삭제하세요" : "사진을 클릭하여 업로드하세요"}
           </p>
         </div>
+      </div>
+
+      {/* 아이디 섹션 (읽기 전용)(inputField 컴포넌트 사용) */}
+      <div className="mb-6">
+        <InputField label="아이디" value={userId} readOnly />
+      </div>
+
+      {/* 닉네임 섹션 (inputField 컴포넌트 사용)
+        1-1. 입력 중 실시간 검사*/}
+      <div className="mb-6">
+        <InputField
+          label="닉네임"
+          value={nickname}
+          onChange={handleNicknameChange}
+          placeholder="닉네임을 입력해주세요"
+          error={nicknameError}
+          required
+        />
+        <p className="-mt-5 text-xs text-gray-500">* 2-10글자로 입력해주세요.</p>
       </div>
     </div>
   );
