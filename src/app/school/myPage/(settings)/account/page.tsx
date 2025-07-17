@@ -47,9 +47,25 @@ export default function MyPageAccount() {
     }
   };
 
-  // 이미지 제거
   const handleImageRemove = () => {
     setProfileImage(null);
+  };
+
+  // 저장 핸들러
+  const handleSave = () => {
+    const bankError = validateBankSelection(selectedBank);
+    const nicknameValidationError = validateNickname(nickname);
+    const accountValidationError = validateAccountNumber(accountNumber);
+    if (bankError || nicknameValidationError || accountValidationError) {
+      alert(bankError || nicknameValidationError || accountValidationError);
+      return;
+    }
+    console.log("저장 데이터:", {
+      nickname: nickname.trim(),
+      bank: selectedBank,
+      accountNumber,
+      profileImage: profileImage ? "업로드된 이미지" : "기본 이미지",
+    });
   };
 
   return (
