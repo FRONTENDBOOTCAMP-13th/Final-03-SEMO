@@ -1,6 +1,12 @@
-// 게시글 작성 페이지
-
 "use client";
+// 게시글 작성 페이지
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "New Edit",
+  description: "New Edit 페이지입니다.",
+};
+
 import { useState } from "react";
 import GroupPurchase from "./GroupPurchase";
 import ProductDesc from "./ProductDesc";
