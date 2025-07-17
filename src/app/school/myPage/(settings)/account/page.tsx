@@ -83,6 +83,13 @@ export default function MyPageAccount() {
         <div className="flex flex-col items-center mb-8">
           <div className="relative group">
             <div className="w-28 h-28 rounded-full bg-gray-200" />
+            {profileImage ? (
+              <Image src={profileImage} alt="프로필 이미지" fill className="object-cover" />
+            ) : (
+              <svg className="w-14 h-14 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
+                <path d="..." />
+              </svg>
+            )}
           </div>
         </div>
       </div>
