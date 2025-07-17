@@ -68,6 +68,11 @@ export default function MyPageAccount() {
     });
   };
 
+  // 탈퇴 핸들러ㅌ
+  const handleWithdraw = () => {
+    console.log("탈퇴하기 버튼 클릭");
+  };
+
   return (
     <div className="min-h-screen bg-white">
       <div className="px-4 py-6">
