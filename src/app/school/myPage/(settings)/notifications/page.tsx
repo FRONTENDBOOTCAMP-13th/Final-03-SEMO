@@ -21,6 +21,17 @@ export default function NotificationSettings() {
     }));
   };
 
+  const handleToggleAll = () => {
+    const allOn = Object.values(notifications).every((value) => value); //배열 안의 모든 값이 true인지 검사
+    setNotifications((prev) => {
+      const newState = Object.assign({}, prev);
+      for (const key in prev) {
+        newState[key as keyof typeof notifications] = !allOn;
+      }
+      return newState;
+    });
+  };
+
   // TODO: 저장 버튼 (현재: 콘솔 로그로 대체)
   const handleSave = () => {
     console.log("저장된 알림 설정:", {
@@ -34,6 +45,17 @@ export default function NotificationSettings() {
 
   return (
     <div className="px-4 py-6">
+      {/* 전체 알림 Section */}
+      <div className="mb-8">
+        <h2 className="text-18 font-semibold mb-4 text-uni-black font-pretendard">전체 알림</h2>
+        <ToggleCard
+          title="전체 알림"
+          description="모든 알림을 켜거나 끕니다"
+          isOn={Object.values(notifications).every((value) => value)}
+          onToggle={handleToggleAll}
+        />
+      </div>
+
       {/* 채팅 Section */}
       <div className="mb-8">
         <h2 className="text-18 font-semibold mb-4 text-uni-black font-pretendard">채팅</h2>
