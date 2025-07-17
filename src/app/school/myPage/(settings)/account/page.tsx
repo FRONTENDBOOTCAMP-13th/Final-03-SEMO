@@ -1,6 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
+import SaveFloatingButton from "../../_components/SaveFloatingButton";
+import InputField from "../../_components/InputField";
+import { validateNickname, validateAccountNumber, validateBankSelection } from "./utils/validation";
 
 export default function MyPageAccount() {
   const [nickname, setNickname] = useState("김세모");
@@ -76,7 +80,11 @@ export default function MyPageAccount() {
   return (
     <div className="min-h-screen bg-white">
       <div className="px-4 py-6">
-        <p>계정 설정 페이지</p>
+        <div className="flex flex-col items-center mb-8">
+          <div className="relative group">
+            <div className="w-28 h-28 rounded-full bg-gray-200" />
+          </div>
+        </div>
       </div>
     </div>
   );
