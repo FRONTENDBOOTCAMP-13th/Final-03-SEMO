@@ -90,6 +90,12 @@ export default function MyPageAccount() {
                 <path d="..." />
               </svg>
             )}
+
+            {/* 호버 오버레이 */}
+            <div className="absolute inset-0 bg-black bg-opacity-40 ...">
+              <svg className="w-8 h-8 text-white">...</svg>
+            </div>
+            <input type="file" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
           </div>
         </div>
       </div>
