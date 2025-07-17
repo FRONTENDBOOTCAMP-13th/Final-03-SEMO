@@ -1,4 +1,12 @@
 "use client";
+
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "PostDetailPage",
+  description: "PostDetailPage 페이지입니다.",
+};
+
 import Image from "next/image";
 import CommentList from "./CommentList";
 
