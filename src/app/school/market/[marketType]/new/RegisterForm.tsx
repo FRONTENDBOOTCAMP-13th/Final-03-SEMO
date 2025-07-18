@@ -130,7 +130,7 @@ export default function RegisterForm({ boardType }: Props) {
         <section className="mb-8">
           <fieldset className="flex flex-col gap-3">
             <label
-              className={`flex justify-between items-center px-4 py-3 rounded-xl cursor-pointer
+              className={`flex justify-between items-center px-4 py-3 rounded-lg cursor-pointer
         ${selected === "registered" ? "border-1 border-uni-blue-400" : "border border-uni-gray-200"}`}
             >
               <span className="text-base text-14">등록된 계좌 번호</span>
@@ -145,7 +145,7 @@ export default function RegisterForm({ boardType }: Props) {
             </label>
 
             <label
-              className={`flex justify-between items-center mb-5 px-4 py-3 rounded-xl cursor-pointer
+              className={`flex justify-between items-center mb-5 px-4 py-3 rounded-lg cursor-pointer
         ${selected === "new" ? "border-1 border-uni-blue-400" : "border border-uni-gray-200"}`}
             >
               <span className="text-base text-14">새로운 계좌 번호</span>
@@ -164,10 +164,7 @@ export default function RegisterForm({ boardType }: Props) {
         </section>
 
         <div className="flex justify-end">
-          <button
-            type="submit"
-            className="w-full bg-uni-blue-400 text-uni-white px-4 py-2 rounded-[10px] cursor-pointer"
-          >
+          <button type="submit" className="w-full bg-uni-blue-400 text-uni-white px-4 py-2 rounded-lg cursor-pointer">
             등록하기
           </button>
         </div>

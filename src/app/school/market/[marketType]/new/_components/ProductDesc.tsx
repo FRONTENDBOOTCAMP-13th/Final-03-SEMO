@@ -27,7 +27,7 @@ export default function ProductDesc() {
           id="desc"
           name="content"
           placeholder="상품 설명"
-          className="w-full h-[150px] bg-uni-gray-200 rounded-md p-3 text-16"
+          className="w-full h-[150px] bg-uni-gray-200 rounded-lg p-3 text-16"
           maxLength={250}
         />
       </div>
@@ -40,7 +40,7 @@ export default function ProductDesc() {
           name="price"
           type="text"
           placeholder="가격"
-          className="w-full bg-uni-gray-200 rounded-md p-3 text-16"
+          className="w-full bg-uni-gray-200 rounded-lg p-3 text-16"
         />
       </div>
       <div className="mb-5">
@@ -51,7 +51,7 @@ export default function ProductDesc() {
           type="text"
           name="location"
           placeholder="거래 장소"
-          className="w-full bg-uni-gray-200 rounded-md p-3 text-16"
+          className="w-full bg-uni-gray-200 rounded-lg p-3 text-16"
         />
       </div>
     </section>

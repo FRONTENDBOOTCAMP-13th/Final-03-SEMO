@@ -52,7 +52,7 @@ export default function PhotoUpload() {
       {images.length === 0 ? (
         <div
           onClick={() => fileInputRef.current?.click()}
-          className="w-full bg-uni-gray-200 rounded-md p-3 flex items-center cursor-pointer"
+          className="w-full bg-uni-gray-200 rounded-lg p-3 flex items-center cursor-pointer"
         >
           <Plus className="w-5 h-5 text-uni-gray-500 mr-2" />
           <span className="text-uni-gray-600 text-16">사진 추가</span>
@@ -64,7 +64,7 @@ export default function PhotoUpload() {
           {/* 삭제 버튼 */}
           <button
             onClick={removeImage}
-            className="absolute top-2 right-2 w-8 h-8 bg-black bg-opacity-50 rounded-full flex items-center justify-center hover:bg-opacity-70"
+            className="absolute top-2 right-2 w-8 h-8 bg-uni-black bg-opacity-50 rounded-full flex items-center justify-center hover:bg-opacity-70"
           >
             <X className="w-4 h-4 text-white" />
           </button>
@@ -74,16 +74,16 @@ export default function PhotoUpload() {
             <>
               <button
                 onClick={prev}
-                className="absolute left-2 top-1/2 transform -translate-y-1/2 w-8 h-8 rounded-full flex items-center justify-center bg-black bg-opacity-50 hover:bg-opacity-70"
+                className="absolute left-2 top-1/2 transform -translate-y-1/2 w-8 h-8 rounded-full flex items-center justify-center bg-uni-black bg-opacity-50 hover:bg-opacity-70"
               >
-                <ChevronLeft className="w-4 h-4 text-white" />
+                <ChevronLeft className="w-4 h-4 text-uni-white" />
               </button>
 
               <button
                 onClick={next}
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 w-8 h-8 rounded-full flex items-center justify-center bg-black bg-opacity-50 hover:bg-opacity-70"
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 w-8 h-8 rounded-full flex items-center justify-center bg-uni-black bg-opacity-50 hover:bg-opacity-70"
               >
-                <ChevronRight className="w-4 h-4 text-white" />
+                <ChevronRight className="w-4 h-4 text-uni-white" />
               </button>
             </>
           )}

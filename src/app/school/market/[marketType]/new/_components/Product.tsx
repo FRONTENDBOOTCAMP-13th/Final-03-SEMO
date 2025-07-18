@@ -14,7 +14,7 @@ export default function Product() {
           name="title"
           type="text"
           placeholder="상품명"
-          className="w-full bg-uni-gray-200 rounded-md p-3 text-16"
+          className="w-full bg-uni-gray-200 rounded-lg p-3 text-16"
         />
       </div>
       <div className="mb-5">
