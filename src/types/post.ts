@@ -10,6 +10,9 @@ export interface Post {
   repliesCount: number;
   createdAt: string;
   updatedAt: string;
+  product?: {
+    image?: string | null;
+  };
   extra: {
     category: string;
     price: number;

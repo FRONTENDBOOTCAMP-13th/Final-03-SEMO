@@ -9,6 +9,7 @@ export default function Product() {
         </label>
         <input
           id="item-name"
+          name="title"
           type="text"
           placeholder="상품명"
           className="w-full bg-uni-gray-200 rounded-md p-3 text-16"

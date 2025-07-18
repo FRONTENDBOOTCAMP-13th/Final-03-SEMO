@@ -7,7 +7,11 @@ export default function ProductDesc() {
           카테고리
         </label>
         {/* 카테고리 셀렉트 */}
-        <select className="w-full bg-uni-gray-200 rounded-lg p-3 text-16 text-uni-gray-600">
+        <select
+          id="category"
+          name="category"
+          className="w-full bg-uni-gray-200 rounded-lg p-3 text-16 text-uni-gray-600"
+        >
           <option value="">카테고리</option>
           <option value="음식">음식</option>
           <option value="서적">서적</option>
@@ -21,6 +25,7 @@ export default function ProductDesc() {
         </label>
         <textarea
           id="desc"
+          name="content"
           placeholder="상품 설명"
           className="w-full h-[150px] bg-uni-gray-200 rounded-md p-3 text-16"
           maxLength={250}
@@ -30,13 +35,24 @@ export default function ProductDesc() {
         <label htmlFor="price" className="sr-only">
           가격
         </label>
-        <input id="price" type="text" placeholder="가격" className="w-full bg-uni-gray-200 rounded-md p-3 text-16" />
+        <input
+          id="price"
+          name="price"
+          type="text"
+          placeholder="가격"
+          className="w-full bg-uni-gray-200 rounded-md p-3 text-16"
+        />
       </div>
       <div className="mb-5">
         <label htmlFor="location" className="sr-only">
-          가격
+          거래장소
         </label>
-        <input type="text" placeholder="거래 장소" className="w-full bg-uni-gray-200 rounded-md p-3 text-16" />
+        <input
+          type="text"
+          name="location"
+          placeholder="거래 장소"
+          className="w-full bg-uni-gray-200 rounded-md p-3 text-16"
+        />
       </div>
     </section>
   );
