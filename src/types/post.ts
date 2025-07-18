@@ -18,5 +18,6 @@ export interface Post {
     price: number;
     location: string;
     crt: string;
+    newAccount: string;
   };
 }
