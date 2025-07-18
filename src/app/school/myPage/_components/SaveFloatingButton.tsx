@@ -27,7 +27,7 @@ export default function SaveFloatingButton({ children, onClick, className = "" }
   return (
     <button
       onClick={onClick}
-      className={`fixed bottom-24 left-4 right-4 py-4 text-16 bg-uni-blue-400 text-uni-white font-medium font-pretendard rounded-lg shadow-lg hover:bg-uni-blue-500 transition-all duration-100 hover:shadow-xl active:scale-98 ${className}`}
+      className={`fixed bottom-24 left-1/2 transform -translate-x-1/2 w-[calc(100%-2rem)] max-w-[448px] py-4 text-16 bg-uni-blue-400 text-uni-white font-medium font-pretendard rounded-lg shadow-lg hover:bg-uni-blue-500 transition-all duration-100 hover:shadow-xl active:scale-98 ${className}`}
     >
       {children}
     </button>

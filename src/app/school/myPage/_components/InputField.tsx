@@ -39,7 +39,7 @@ export default function InputField({
         readOnly={readOnly}
         disabled={disabled}
         className={`
-          w-full px-16 py-12 text-16 bg-uni-gray-200 rounded-lg border-0
+          w-full px-4 py-3 text-16 bg-uni-gray-200 rounded-lg border-0
           placeholder-uni-gray-300 focus:outline-none font-pretendard
           ${readOnly || disabled ? "cursor-not-allowed text-uni-gray-300 focus:ring-0" : "text-uni-black focus:ring-2"}
           ${!readOnly && !disabled && error ? "focus:ring-uni-red-300" : ""}

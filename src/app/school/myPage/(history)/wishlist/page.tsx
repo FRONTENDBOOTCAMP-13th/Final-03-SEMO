@@ -2,10 +2,10 @@
 "use client";
 
 import { useState } from "react";
-import TabNavigation from "../_components/TabNavigation";
-import ItemCard, { Item } from "../_components/ItemCard";
-import EmptyState from "../_components/EmptyState";
-import { myPageWishlistData, MyPageWishlist } from "../data/wishlistData";
+import TabNavigation from "../../_components/TabNavigation";
+import ItemCard, { Item } from "../../_components/ItemCard";
+import EmptyState from "../../_components/EmptyState";
+import { myPageWishlistData, MyPageWishlist } from "../../data/wishlistData";
 
 export default function MyPageMyPost() {
   const [activeTab, setActiveTab] = useState("전체");
