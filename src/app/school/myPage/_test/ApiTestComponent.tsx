@@ -5,24 +5,10 @@
 
 "use client";
 
-import { useState, useEffect } from "react"; // useEffect 추가
+import { useState } from "react";
 import Image from "next/image";
 import { useMyPageApi } from "../_hooks/useMyPageApi";
 import MyPageApiService, { type User } from "../_services/apiService";
-
-// Mock 데이터 생성 유틸리티 (테스트 용)
-const createMockUser = (id: number, email: string, name: string, image?: string): User => ({
-  _id: id,
-  email: email,
-  name: name,
-  type: "user",
-  image: image,
-  extra: {
-    nickname: `${name}Nick`,
-    bank: "국민은행",
-    bankNumber: 123456789,
-  },
-});
 
 export default function ApiTestComponent() {
   const [loginData, setLoginData] = useState({
@@ -31,9 +17,6 @@ export default function ApiTestComponent() {
   });
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userData, setUserData] = useState<User | null>(null);
-  const [testNickname, setTestNickname] = useState("새로운닉네임");
-  const [testBank, setTestBank] = useState("신한은행");
-  const [testAccountNumber, setTestAccountNumber] = useState("987654321");
 
   const { loading, error, login, getUserProfile, updateUserProfile, uploadProfileImage } = useMyPageApi();
 
@@ -46,9 +29,6 @@ export default function ApiTestComponent() {
   const handleLogin = async () => {
     const success = await login(loginData.email, loginData.password);
     setIsLoggedIn(success);
-    if (success) {
-      handleGetUser(); // 로그인 성공 시 사용자 정보 바로 조회
-    }
   };
 
   // 사용자 정보 조회 테스트
@@ -56,17 +36,13 @@ export default function ApiTestComponent() {
     console.log("사용자 정보 조회 시작...");
     const currentUserId = getCurrentUserId();
     if (!currentUserId) {
-      // alert("로그인이 필요합니다."); // alert 대신 console.error 사용
-      console.error("로그인이 필요합니다.");
+      alert("로그인이 필요합니다.");
       return;
     }
     const user = await getUserProfile(currentUserId);
     console.log("조회된 사용자 정보:", user);
     if (user) {
       setUserData(user);
-      setTestNickname(user.extra?.nickname || user.name);
-      setTestBank(user.extra?.bank || "국민은행");
-      setTestAccountNumber(user.extra?.bankNumber?.toString() || "");
     }
   };
 
@@ -74,19 +50,17 @@ export default function ApiTestComponent() {
   const handleUpdateUser = async () => {
     const currentUserId = getCurrentUserId();
     if (!currentUserId) {
-      // alert("로그인이 필요합니다."); // alert 대신 console.error 사용
-      console.error("로그인이 필요합니다.");
+      alert("로그인이 필요합니다.");
       return;
     }
     const success = await updateUserProfile(currentUserId, {
-      nickname: testNickname,
-      bank: testBank,
-      accountNumber: testAccountNumber,
-      profileImage: userData?.image, // 현재 이미지 유지
+      nickname: "테스트 닉네임",
+      bank: "국민은행",
+      accountNumber: "123456789123",
+      profileImage: userData?.image,
     });
     if (success) {
-      // alert("프로필 업데이트 성공!"); // alert 대신 console.log 사용
-      console.log("프로필 업데이트 성공!");
+      alert("프로필 업데이트 성공!");
       handleGetUser(); // 업데이트된 정보 다시 가져오기
     }
   };
@@ -100,36 +74,22 @@ export default function ApiTestComponent() {
       console.log("업로드된 이미지 URL:", imageUrl);
 
       if (imageUrl) {
-        // alert(`이미지 업로드 성공: ${imageUrl}`); // alert 대신 console.log 사용
-        console.log(`이미지 업로드 성공: ${imageUrl}`);
-        // 업로드된 이미지로 프로필 업데이트
-        const currentUserId = getCurrentUserId();
-        if (currentUserId) {
-          await updateUserProfile(currentUserId, {
-            nickname: userData?.extra?.nickname || "테스트 닉네임",
-            bank: userData?.extra?.bank || "국민은행",
-            accountNumber: userData?.extra?.bankNumber?.toString() || "123456789123",
-            profileImage: imageUrl, // 새로 업로드된 이미지 URL로 업데이트
-          });
-          handleGetUser(); // 업데이트된 정보 다시 가져오기
-        }
+        alert(`이미지 업로드 성공: ${imageUrl}`);
+        // 업로드된 이미지로 프로필 업데이트 (일시적으로 주석 처리)
+        /*
+        await updateUserProfile(testUserId, {
+          nickname: userData?.extra?.nickname || "테스트 닉네임",
+          bank: userData?.extra?.bank || "국민은행",
+          accountNumber: userData?.extra?.bankNumber?.toString() || "123456789123",
+          profileImage: imageUrl,
+        });
+        handleGetUser(); // 업데이트된 정보 다시 가져오기
+        */
       }
     }
     // 파일 input 초기화
     e.target.value = "";
   };
-
-  // 컴포넌트 마운트 시 로그인 상태 확인 및 사용자 정보 로드
-  useEffect(() => {
-    const checkLoginAndLoadUser = async () => {
-      const currentUserId = getCurrentUserId();
-      if (currentUserId) {
-        setIsLoggedIn(true);
-        await handleGetUser();
-      }
-    };
-    checkLoginAndLoadUser();
-  }, []); // 빈 배열로 한 번만 실행되도록 설정
 
   return (
     <div className="p-6 bg-gray-50 rounded-lg space-y-4">
@@ -196,27 +156,6 @@ export default function ApiTestComponent() {
       {/* 프로필 업데이트 섹션 */}
       <div className="bg-white p-4 rounded border">
         <h3 className="font-semibold mb-3">3. 프로필 업데이트 테스트</h3>
-        <div className="space-y-2 mb-3">
-          <input
-            type="text"
-            value={testNickname}
-            onChange={(e) => setTestNickname(e.target.value)}
-            placeholder="닉네임"
-            className="w-full p-2 border rounded"
-          />
-          <select value={testBank} onChange={(e) => setTestBank(e.target.value)} className="w-full p-2 border rounded">
-            <option value="국민은행">국민은행</option>
-            <option value="신한은행">신한은행</option>
-            <option value="우리은행">우리은행</option>
-          </select>
-          <input
-            type="text"
-            value={testAccountNumber}
-            onChange={(e) => setTestAccountNumber(e.target.value)}
-            placeholder="계좌번호"
-            className="w-full p-2 border rounded"
-          />
-        </div>
         <button
           onClick={handleUpdateUser}
           disabled={loading || !isLoggedIn || !userData}
