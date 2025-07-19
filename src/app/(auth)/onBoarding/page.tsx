@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useRouter } from 'next/navigation';
-import Button from '../_components/Button';
-import Logo from '../_components/Logo';
+import { useRouter } from "next/navigation";
+import Button from "../_components/Button";
+import Logo from "../_components/Logo";
 
 export default function OnboardingPage() {
   const router = useRouter();
@@ -10,14 +10,14 @@ export default function OnboardingPage() {
   return (
     <main className="bg-white min-h-screen flex justify-center">
       <div className="min-w-[320px] w-full max-w-[480px] px-6 py-8 flex flex-col">
-        {/* 로고 + 버튼 묶음 */}
+        {/* 로고 + 버튼 */}
         <div className="flex flex-col items-center gap-6 flex-grow justify-center">
           <Logo />
           <div className="w-full flex flex-col gap-4 mt-2 max-w-xs">
-            <Button type="primary" onClick={() => router.push('/login')}>
+            <Button type="primary" onClick={() => router.push("/login")}>
               로그인
             </Button>
-            <Button type="outline" onClick={() => router.push('/signup')}>
+            <Button type="outline" onClick={() => router.push("/signup")}>
               회원가입
             </Button>
           </div>

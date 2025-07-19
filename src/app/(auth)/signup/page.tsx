@@ -1,14 +1,14 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useUserStore } from "@/store/userStore";
 import Input from "../_components/Input";
 import Button from "../_components/Button";
 import BackButton from "../_components/BackButton";
 
 export default function SignupEmailPage() {
   const router = useRouter();
-  const [email, setEmail] = useState("");
+  const { email, setEmail } = useUserStore();
 
   const handleEmailSubmit = () => {
     const isValidEmail = email.includes("@") && email.endsWith(".ac.kr");
@@ -18,14 +18,12 @@ export default function SignupEmailPage() {
       return;
     }
 
-    // TODO: 백엔드 요청 후 페이지 이동
     router.push("/signup/password");
   };
 
   return (
     <main className="bg-white min-h-screen flex justify-center">
       <div className="min-w-[320px] w-full max-w-[480px] px-6 flex flex-col items-center justify-center flex-grow">
-        {/* BackButton - 상단 정렬 */}
         <div className="w-full mb-4">
           <BackButton />
         </div>
@@ -64,7 +62,7 @@ export default function SignupEmailPage() {
         <div className="w-full max-w-sm space-y-16">
           <Input type="email" placeholder="학교 이메일" value={email} onChange={(e) => setEmail(e.target.value)} />
           <Button type="primary" onClick={handleEmailSubmit}>
-            이메일 인증
+            이메일 입력
           </Button>
         </div>
       </div>
