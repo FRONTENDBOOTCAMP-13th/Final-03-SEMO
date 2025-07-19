@@ -102,6 +102,7 @@ class MyPageApiService {
       // 로컬 스토리지에 토큰 저장
       if (typeof window !== "undefined" && this.token) {
         localStorage.setItem("accessToken", this.token);
+        // 사용자 정보도 로컬 스토리지에 저장
         localStorage.setItem("currentUser", JSON.stringify(this.currentUser));
         console.log("로컬 스토리지에 토큰과 사용자 정보 저장 완료");
       }
@@ -142,10 +143,12 @@ class MyPageApiService {
    * 현재 로그인한 사용자의 ID 반환
    */
   static getCurrentUserId(): number | null {
+    // 메모리에서 먼저 확인
     if (this.currentUser && this.currentUser._id) {
       return this.currentUser._id;
     }
 
+    // 로컬 스토리지에서 복원 시도
     this.restoreToken();
     return this.currentUser && this.currentUser._id ? this.currentUser._id : null;
   }
@@ -154,10 +157,12 @@ class MyPageApiService {
    * 현재 로그인한 사용자 정보 반환
    */
   static getCurrentUser(): User | null {
+    // 메모리에서 먼저 확인
     if (this.currentUser) {
       return this.currentUser;
     }
 
+    // 로컬 스토리지에서 복원 시도
     this.restoreToken();
     return this.currentUser;
   }
@@ -183,6 +188,36 @@ class MyPageApiService {
       throw new Error(data.message || "사용자 정보를 가져올 수 없습니다.");
     }
 
+    // 이미지 URL 처리
+    if (data.item.image) {
+      console.log("원본 이미지 경로:", data.item.image, "타입:", typeof data.item.image);
+
+      if (
+        typeof data.item.image === "string" &&
+        data.item.image !== "undefined" &&
+        data.item.image.trim() !== "" &&
+        !data.item.image.startsWith("http") &&
+        !data.item.image.startsWith("data:")
+      ) {
+        // path가 "files/client-id/filename" 형태라면 API_BASE_URL만 앞에 붙임
+        if (data.item.image.startsWith("files/")) {
+          data.item.image = `${API_BASE_URL}/${data.item.image}`;
+        } else {
+          // 기존 방식 (파일명만 있는 경우)
+          data.item.image = `${API_BASE_URL}/files/${CLIENT_ID}/${data.item.image}`;
+        }
+        console.log("변환된 이미지 URL:", data.item.image);
+      } else if (
+        typeof data.item.image !== "string" ||
+        data.item.image === "undefined" ||
+        data.item.image.trim() === ""
+      ) {
+        console.warn("이미지가 유효하지 않습니다:", data.item.image);
+        data.item.image = undefined; // 안전하게 undefined로 설정
+      }
+    }
+
+    console.log("최종 처리된 사용자 데이터:", data.item);
     return data.item;
   }
   /**
@@ -208,18 +243,41 @@ class MyPageApiService {
       throw new Error(data.message || "사용자 정보 수정에 실패했습니다.");
     }
 
+    // 이미지 URL 처리
+    if (data.item.image) {
+      if (
+        typeof data.item.image === "string" &&
+        data.item.image !== "undefined" &&
+        data.item.image.trim() !== "" &&
+        !data.item.image.startsWith("http") &&
+        !data.item.image.startsWith("data:")
+      ) {
+        // path가 "files/client-id/filename" 형태라면 API_BASE_URL만 앞에 붙임
+        if (data.item.image.startsWith("files/")) {
+          data.item.image = `${API_BASE_URL}/${data.item.image}`;
+        } else {
+          // 기존 방식 (파일명만 있는 경우)
+          data.item.image = `${API_BASE_URL}/files/${CLIENT_ID}/${data.item.image}`;
+        }
+      } else if (
+        typeof data.item.image !== "string" ||
+        data.item.image === "undefined" ||
+        data.item.image.trim() === ""
+      ) {
+        data.item.image = undefined;
+      }
+    }
+
     console.log("최종 반환할 사용자 데이터:", data.item);
     return data.item;
   }
   /**
-   * 파일 업로드
+   * 파일 업로드 (압축된 이미지)
    */
   static async uploadFile(file: File): Promise<string> {
     this.restoreToken();
 
     try {
-      console.log("파일 업로드 시작:", file.name, "크기:", file.size);
-
       // 이미지 압축
       const compressedDataUrl = await this.compressImage(file);
 
