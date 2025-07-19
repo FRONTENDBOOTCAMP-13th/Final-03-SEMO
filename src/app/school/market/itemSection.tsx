@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Post } from "@/types";
 import { Heart, MessageCircleMore } from "lucide-react";
+import { getImageUrl } from "@/app/api/market/action/file";
 
 // interface Item {
 //   _id: number;
@@ -15,19 +16,12 @@ interface Props {
 }
 
 export default function ItemSection({ items, market }: Props) {
-  const getImageSrc = (item: Post): string => {
-    // 1. item.image가 있으면 사용 (Data URL)
-    if (item.image) {
-      return item.image;
-    }
-    return "/assets/defaultimg.png";
-  };
   return (
     <div className="grid grid-cols-2 gap-4">
       {items.map((item) => (
         <Link key={item._id} href={`/school/market/${market}/${item._id}`} className="block rounded-lg p-2">
           <Image
-            src={getImageSrc(item)}
+            src={getImageUrl(item.image)}
             alt={item.title}
             width={150}
             height={150}

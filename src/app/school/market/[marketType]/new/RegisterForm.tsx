@@ -21,7 +21,7 @@ export default function RegisterForm({ boardType }: Props) {
     e.preventDefault();
     const formData = new FormData(e.currentTarget); // 폼의 모든 입력값들을 FormData 객체로 수집
     try {
-      const imageData = images.length > 0 ? images[0] : ""; // 이미지가 있으면 첫 번째 이미지 사용, 없으면 빈 문자열을 서버로 보냄
+      const imageData = images.length > 0 ? images[0] : "";
       // 서버로 보낼 데이터
       const payload = {
         type: tradeType,
