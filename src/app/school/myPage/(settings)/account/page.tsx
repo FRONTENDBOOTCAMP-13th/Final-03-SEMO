@@ -263,7 +263,7 @@ export default function MyPageAccount() {
 
         {/* 아이디 섹션 (읽기 전용)(inputField 컴포넌트 사용) */}
         <div className="mb-6">
-          <InputField label="아이디" value={userId} readOnly />
+          <InputField label="아이디" value={userEmail} readOnly />
         </div>
 
         {/* 닉네임 섹션 (inputField 컴포넌트 사용)
