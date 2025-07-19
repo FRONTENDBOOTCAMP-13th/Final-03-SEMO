@@ -9,3 +9,10 @@ export interface User {
   name: string;
   type: string;
 }
+
+// 사용자 프로필 업데이트 시 필요한 데이터
+export interface UserProfileFormData {
+  nickname: string;
+  bank: string;
+  accountNumber: string;
+}
