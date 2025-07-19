@@ -3,7 +3,7 @@
 import PhotoUpload from "./imgUpdate";
 interface ProductProps {
   images: string[];
-  setImages: React.Dispatch<React.SetStateAction<string[]>>;
+  setImages: React.Dispatch<React.SetStateAction<string[]>>; // 이미지 상태 변경 함수
 }
 export default function Product({ images, setImages }: ProductProps) {
   return (
@@ -22,12 +22,6 @@ export default function Product({ images, setImages }: ProductProps) {
         />
       </div>
       <div className="mb-5">
-        {/* <input
-          id="item-image"
-          type="text"
-          placeholder="사진 추가"
-          className="w-full bg-uni-gray-200 rounded-md p-3 text-16"
-        /> */}
         <PhotoUpload images={images} setImages={setImages} />
       </div>
     </section>

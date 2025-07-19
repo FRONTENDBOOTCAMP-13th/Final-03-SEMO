@@ -55,6 +55,7 @@ export default function PhotoUpload({ images, setImages }: PhotoUploadProps) {
     }
   };
 
+  // 이미지 삭제 함수
   const removeImage = () => {
     setImages([]);
   };
