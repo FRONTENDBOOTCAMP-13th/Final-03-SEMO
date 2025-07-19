@@ -29,6 +29,34 @@ class MyPageApiService {
 
     return headers;
   }
+
+  /**
+   * 토큰 설정
+   */
+  static setToken(token: string) {
+    this.token = token;
+  }
+
+  /**
+   * 로컬 스토리지에서 토큰 복원(리프레시 토큰)
+   */
+  static restoreToken() {
+    if (typeof window !== "undefined") {
+      const token = localStorage.getItem("accessToken");
+      if (token) {
+        this.token = token;
+      }
+      // 사용자 정보도 복원
+      const userInfo = localStorage.getItem("currentUser");
+      if (userInfo) {
+        try {
+          this.currentUser = JSON.parse(userInfo);
+        } catch (error) {
+          console.error("사용자 정보 복원 실패:", error);
+        }
+      }
+    }
+  }
 }
 
 export default MyPageApiService;
