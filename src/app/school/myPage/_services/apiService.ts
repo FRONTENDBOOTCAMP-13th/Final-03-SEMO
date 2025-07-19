@@ -180,6 +180,51 @@ class MyPageApiService {
     console.log("최종 반환할 사용자 데이터:", data.item);
     return data.item;
   }
+  /**
+   * 파일 업로드
+   */
+  static async uploadFile(file: File): Promise<string> {
+    this.restoreToken();
+
+    try {
+      // FormData 생성
+      const formData = new FormData();
+      formData.append("attach", file);
+
+      console.log("파일 업로드 시작:", file.name, file.size, file.type);
+
+      const uploadResponse = await fetch(`${API_BASE_URL}/files/`, {
+        method: "POST",
+        headers: this.getHeaders(true, true), // isFormData = true
+        body: formData,
+      });
+
+      console.log("파일 업로드 응답 상태:", uploadResponse.status);
+      const data = await uploadResponse.json();
+      console.log("파일 업로드 응답 데이터 전체:", JSON.stringify(data, null, 2));
+
+      if (data.ok !== 1 || !data.item || !Array.isArray(data.item) || data.item.length === 0) {
+        throw new Error(data.message || "파일 업로드에 실패했습니다.");
+      }
+
+      const fileInfo = data.item[0]; // 첫 번째 파일 정보
+      console.log("업로드된 파일 정보:", fileInfo);
+
+      if (!fileInfo.path) {
+        console.error("파일 경로를 찾을 수 없습니다. fileInfo:", fileInfo);
+        throw new Error("업로드된 파일 경로를 찾을 수 없습니다.");
+      }
+
+      // 전체 URL 반환 (화면 표시용)
+      const finalUrl = `${API_BASE_URL}/${fileInfo.path}`;
+      console.log("생성된 최종 URL:", finalUrl);
+
+      return finalUrl;
+    } catch (error) {
+      console.error("파일 업로드 실패:", error);
+      throw error;
+    }
+  }
 }
 
 export default MyPageApiService;
