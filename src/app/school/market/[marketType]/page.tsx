@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Post, ApiRes } from "@/types";
 
 export const metadata: Metadata = {
-  title: "Market",
+  title: "UniStuff | Market",
   description: "Market 페이지입니다.",
 };
 
