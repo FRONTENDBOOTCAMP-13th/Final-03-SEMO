@@ -269,6 +269,27 @@ export const initData = async (clientId, nextSeq) => {
           crt: "구매중", // 현재 상태
         },
       },
+      {
+        _id: await nextSeq("post"),
+        type: "sell",
+        views: 1,
+        user: {
+          _id: 20,
+          name: "테토남경민",
+          image: `/files/${clientId}/user-neo.png`,
+          dormitory: "멋사 3조 헹복관",
+        },
+        title: "흠냐링",
+        content: "흠냐링 너무 배고파요 밥 사주세요",
+        like: 5,
+        createdAt: getTime(-2, -60 * 60 * 20),
+        updatedAt: getTime(-2, -60 * 60 * 2),
+        extra: {
+          price: "3000",
+          location: "멋사 기숙사 지하 1층",
+          crt: "구매중", // 현재 상태
+        },
+      },
     ],
 
     // 코드
