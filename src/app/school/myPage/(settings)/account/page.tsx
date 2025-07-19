@@ -336,7 +336,7 @@ export default function MyPageAccount() {
 
       {/* SaveFloatingButton 컴포넌트 사용 
       2. 최종 저장 시 검사*/}
-      <SaveFloatingButton onClick={handleSave}>저장하기</SaveFloatingButton>
+      <SaveFloatingButton onClick={handleSave}>{loading ? "저장 중..." : "저장하기"}</SaveFloatingButton>
     </div>
   );
 }
