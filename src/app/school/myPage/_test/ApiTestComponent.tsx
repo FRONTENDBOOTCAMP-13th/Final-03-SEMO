@@ -8,7 +8,8 @@
 import { useState } from "react";
 import Image from "next/image";
 import { useMyPageApi } from "../_hooks/useMyPageApi";
-import MyPageApiService, { type User } from "../_services/apiService";
+import MyPageApiService from "../_services/apiService";
+import type { User } from "@/app/school/myPage/_types/user";
 
 export default function ApiTestComponent() {
   const [loginData, setLoginData] = useState({
