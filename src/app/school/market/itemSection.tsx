@@ -15,15 +15,23 @@ interface Props {
 }
 
 export default function ItemSection({ items, market }: Props) {
+  const getImageSrc = (item: Post): string => {
+    // 1. item.image가 있으면 사용 (Data URL)
+    if (item.image) {
+      return item.image;
+    }
+    return "/assets/defaultimg.png";
+  };
   return (
     <div className="grid grid-cols-2 gap-4">
       {items.map((item) => (
         <Link key={item._id} href={`/school/market/${market}/${item._id}`} className="block rounded-lg p-2">
           <Image
-            src={item.product?.image?.startsWith("/") ? item.product.image : "/assets/defaultimg.png"}
+            src={getImageSrc(item)}
             alt={item.title}
             width={150}
             height={150}
+            className="rounded-lg object-cover w-full h-[150px]"
           />
           <p className="mt-2 text-16 font-medium truncate">{item.title}</p>
           <p className="text-14 text-uni-gray-300 font-light">{item.extra.price}원</p>
