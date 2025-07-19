@@ -37,6 +37,21 @@ export default function PhotoUpload({ images, setImages }: PhotoUploadProps) {
     });
   };
 
+  // 파일 업로드 함수
+  async function uploadFileToServer(file: File) {
+    const formData = new FormData();
+    formData.append("attach", file);
+
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/files`, {
+      method: "POST",
+      headers: {
+        "Client-Id": process.env.NEXT_PUBLIC_CLIENT_ID!,
+      },
+      body: formData,
+    });
+    return res.json();
+  }
+
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
