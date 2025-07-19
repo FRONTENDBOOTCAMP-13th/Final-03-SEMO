@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { User, Package, Star, Heart, Bell, Info, LogOut } from "lucide-react";
 
+// TODO: n건 나오는 부분 link 되어있는 페이지의 데이터 수를 나타내기
 export default function MyPage() {
   return (
     <div className="px-4 py-6 space-y-6">
