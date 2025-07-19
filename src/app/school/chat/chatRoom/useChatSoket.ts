@@ -67,7 +67,9 @@ export const useChatSocket = ({ userId, nickName, roomId }: useChatSocketProps) 
     if (!socket) return;
 
     socket.off("message");
+    socket.off("sendTo"); // 귓속말 이벤트도 정리
 
+    // 모두에게 메시지 수신
     socket.on("message", (data) => {
       console.log("메시지 수신:", data);
 
@@ -79,6 +81,7 @@ export const useChatSocket = ({ userId, nickName, roomId }: useChatSocketProps) 
         roomId: GlOBAL_ROOM_ID,
         content: raw.msg,
         type: "text",
+        msgType: "all",
         createdAt: data.timestamp ?? new Date().toISOString(),
         user_id: raw.user_id ?? "system",
         nickName: raw.nickName ?? "시스템",
@@ -86,8 +89,28 @@ export const useChatSocket = ({ userId, nickName, roomId }: useChatSocketProps) 
       useChatStore.getState().addMessage(msg);
     });
 
+    // 귓속말 수신 - 이벤트 리스너 수정
+    socket.on("sendTo", (data) => {
+      console.log("귓속말 수신:", data);
+
+      const msg: Message = {
+        id: Date.now().toString(),
+        roomId: GlOBAL_ROOM_ID,
+        content: data.msg, // content가 아니라 msg로 수정
+        type: "text",
+        msgType: "whisper",
+        createdAt: data.timestamp ?? new Date().toISOString(),
+        user_id: data.user_id,
+        nickName: data.nickName,
+        toUserId: data.toUserId,
+        toNickName: data.toNickName,
+      };
+      useChatStore.getState().addMessage(msg);
+    });
+
     return () => {
       socket.off("message");
+      socket.off("sendTo"); // 정리할 때 귓속말 이벤트도 제거
       socket.emit("leaveRoom");
       socket.disconnect();
     };

@@ -5,6 +5,9 @@ interface ChatBubbleProps {
     content: string;
     nickName: string;
     isMine: boolean;
+    isWhisper?: boolean;
+    toNickName?: string;
+    fromNickName?: string;
   };
 }
 
@@ -12,7 +15,11 @@ const ChatBubble = ({ msg }: ChatBubbleProps) => {
   return msg.isMine ? (
     <div className="flex justify-end items-end gap-2 min-h-[104px] p-4">
       <div className="max-w-[70%] text-right">
-        <div className="bg-uni-blue-400 px-4 py-3 text-uni-white rounded-xl text-16">{msg.content}</div>
+        <div className="bg-uni-blue-400 px-4 py-3 text-uni-white rounded-xl text-16">
+          {" "}
+          {msg.isWhisper && <span className="text-yellow-300 mr-2">(귓속말)</span>}
+          {msg.content}
+        </div>
       </div>
       <div>
         <Image src="/assets/defaultImg.png" alt="내 아바타" width={40} height={40} className="rounded-full" />
@@ -26,7 +33,11 @@ const ChatBubble = ({ msg }: ChatBubbleProps) => {
         <span className="text-12 flex justify-center">{msg.nickName}</span>
       </div>
       <div className="max-w-[70%] text-left">
-        <div className="bg-uni-gray-200 px-4 py-3 text-uni-black rounded-xl text-16">{msg.content}</div>
+        <div className="bg-uni-gray-200 px-4 py-3 text-uni-black rounded-xl text-16">
+          {" "}
+          {msg.isWhisper && <span className="text-yellow-300 mr-2">(귓속말)</span>}
+          {msg.content}
+        </div>
       </div>
     </div>
   );

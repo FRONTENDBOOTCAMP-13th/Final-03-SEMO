@@ -5,11 +5,14 @@ export interface Message {
   roomId: string;
   content: string;
   type?: "text";
+  msgType: "all" | "whisper";
   createdAt: string;
   user_id: string;
   nickName: string;
-
   isMine?: boolean;
+
+  toUserId?: string;
+  toNickName?: string;
 }
 
 export interface ChatUser {
