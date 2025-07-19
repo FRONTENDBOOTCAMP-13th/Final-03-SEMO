@@ -137,9 +137,65 @@ export default function MyPageAccount() {
     setUploadFile(null); // 업로드할 파일도 제거
   };
 
-  // 저장 핸들러 (아직 구현되지 않음)
+  // 저장 핸들러
   const handleSave = async () => {
-    console.log("handleSave 호출됨 (아직 구현되지 않음)");
+    const bankError = validateBankSelection(selectedBank);
+    const nicknameValidationError = validateNickname(nickname);
+    const accountValidationError = validateAccountNumber(accountNumber);
+    if (bankError || nicknameValidationError || accountValidationError) {
+      alert(bankError || nicknameValidationError || accountValidationError);
+      return;
+    }
+
+    try {
+      let finalImageUrl = profileImage;
+
+      // 새로 업로드할 파일이 있는 경우
+      if (uploadFile) {
+        console.log("새 이미지 업로드 시작:", uploadFile.name);
+        const uploadedImageUrl = await uploadProfileImage(uploadFile);
+        if (uploadedImageUrl) {
+          finalImageUrl = uploadedImageUrl;
+          console.log("이미지 업로드 성공:", uploadedImageUrl);
+        } else {
+          alert("이미지 업로드에 실패했습니다.");
+          return;
+        }
+      }
+
+      // 프로필 업데이트
+      const profileData = {
+        nickname: nickname.trim(),
+        bank: selectedBank,
+        accountNumber,
+        profileImage: finalImageUrl,
+      };
+
+      console.log("프로필 업데이트 시작:", profileData);
+      const currentUserId = MyPageApiService.getCurrentUserId();
+      if (!currentUserId) {
+        alert("로그인이 필요합니다.");
+        return;
+      }
+
+      const success = await updateUserProfile(currentUserId, profileData);
+
+      if (success) {
+        alert("프로필이 성공적으로 저장되었습니다.");
+        setUploadFile(null); // 업로드 완료 후 파일 상태 초기화
+
+        // 사용자 데이터 다시 로드하여 최신 정보 반영
+        const updatedUser = await getUserProfile(currentUserId);
+        if (updatedUser && updatedUser.image) {
+          setProfileImage(updatedUser.image);
+        }
+      } else {
+        alert("프로필 저장에 실패했습니다.");
+      }
+    } catch (error) {
+      console.error("저장 중 오류:", error);
+      alert("저장 중 오류가 발생했습니다.");
+    }
   };
 
   // 탈퇴 핸들러 (아직 구현되지 않음)
