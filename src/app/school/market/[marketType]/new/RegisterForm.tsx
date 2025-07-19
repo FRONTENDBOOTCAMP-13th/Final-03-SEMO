@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import GroupPurchase from "./_components/GroupPurchase";
 import ProductDesc from "./_components/ProductDesc";
 import Product from "./_components/Product";
@@ -11,6 +12,7 @@ interface Props {
 }
 
 export default function RegisterForm({ boardType }: Props) {
+  const router = useRouter();
   const [selected, setSelected] = useState<"registered" | "new">("registered");
   const [tradeType, setTradeType] = useState<"sell" | "buy" | "group">("sell");
   const [images, setImages] = useState<string[]>([]);
@@ -21,7 +23,7 @@ export default function RegisterForm({ boardType }: Props) {
     try {
       const imageData = images.length > 0 ? images[0] : "";
       const payload = {
-        type: boardType,
+        type: tradeType,
         title: formData.get("title"),
         content: formData.get("content"),
         image: imageData,
@@ -43,6 +45,8 @@ export default function RegisterForm({ boardType }: Props) {
 
       const json = await res.json();
       console.log(json);
+      const redirectType = tradeType;
+      router.push(`/school/market/${redirectType}`);
     } catch (error) {
       console.error("Error submitting form:", error);
     }
