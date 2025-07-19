@@ -51,12 +51,24 @@ export const useMyPageApi = (): UseMyPageApiReturn => {
   }, []);
 
   /**
-   * 사용자 프로필 조회 (아직 구현되지 않음)
+   * 사용자 프로필 조회
    */
   const getUserProfile = useCallback(async (userId: number): Promise<User | null> => {
-    // 이 부분은 다음 커밋에서 구현됩니다.
-    console.log("getUserProfile 호출됨 (아직 구현되지 않음)");
-    return null;
+    console.log("훅에서 사용자 프로필 조회 시작:", userId);
+    setLoading(true);
+    setError(null);
+
+    try {
+      const user = await MyPageApiService.getUserById(userId);
+      console.log("훅에서 받은 사용자 데이터:", user);
+      return user;
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "사용자 정보를 가져올 수 없습니다.";
+      setError(errorMessage);
+      return null;
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   /**
