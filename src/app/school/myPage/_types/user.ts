@@ -41,6 +41,14 @@ export interface User {
   };
 }
 
+// 일반적인 API 응답 구조(제네릭 T를 사용하여 응답 데이터의 타입을 유연하게 지정!)
+export interface ApiResponse<T> {
+  ok: number;
+  item?: T;
+  items?: T[];
+  message?: string;
+}
+
 // 사용자 프로필 업데이트 시 필요한 데이터
 export interface UserProfileFormData {
   nickname: string;
