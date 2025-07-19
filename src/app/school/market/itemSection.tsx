@@ -34,7 +34,7 @@ export default function ItemSection({ items, market }: Props) {
             className="rounded-lg object-cover w-full h-[150px]"
           />
           <p className="mt-2 text-16 font-medium truncate">{item.title}</p>
-          <p className="text-14 text-uni-gray-300 font-light truncate">{item.extra.price}원</p>
+          <p className="text-14 text-uni-gray-300 font-light truncate">{Number(item.extra.price).toLocaleString()}원</p>
           <div className="flex items-center text-14 text-uni-gray-400 mt-1">
             {/* 좋아요 */}
             <div className="flex items-center mr-4">

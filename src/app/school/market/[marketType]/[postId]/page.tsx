@@ -60,7 +60,7 @@ export default function MarketDetailPage() {
 
       {/* 가격 */}
       <p className="text-14 text-uni-gray-400 mb-4">
-        {post.extra?.price != null ? `${post.extra.price.toLocaleString()}원` : "가격 정보 없음"}
+        {post.extra?.price != null ? `${Number(post.extra.price).toLocaleString()}원` : "가격 정보 없음"}
       </p>
 
       {/* 작성자 */}
