@@ -1,5 +1,6 @@
 /**
  * 마이페이지 전용 API 서비스
+ * 이미지 처리 및 압축 기능 포함
  */
 // 로그인 API 응답의 구조
 import { LoginResponse } from "@/app/school/myPage/_types/user";
@@ -320,6 +321,35 @@ class MyPageApiService {
       console.error("파일 업로드 실패:", error);
       throw error;
     }
+  }
+
+  /**
+   * 이미지 URL 생성 및 유효성 검사
+   */
+  static getImageUrl(imagePath: string | null | undefined): string | null {
+    if (!imagePath || typeof imagePath !== "string" || imagePath === "undefined" || imagePath.trim() === "") {
+      return null;
+    }
+
+    if (imagePath.startsWith("http") || imagePath.startsWith("data:")) {
+      return imagePath;
+    }
+
+    // path가 "files/client-id/filename" 형태라면 API_BASE_URL만 앞에 붙임
+    if (imagePath.startsWith("files/")) {
+      return `${API_BASE_URL}/${imagePath}`;
+    }
+
+    // 기존 방식 (파일명만 있는 경우)
+    return `${API_BASE_URL}/files/${CLIENT_ID}/${imagePath}`;
+  }
+
+  /**
+   * 안전한 이미지 URL 반환 (기본 이미지 포함)
+   */
+  static getSafeImageUrl(imagePath: string | null | undefined, defaultPath = "/assets/defaultimg.png"): string {
+    const url = this.getImageUrl(imagePath);
+    return url || defaultPath;
   }
 }
 
