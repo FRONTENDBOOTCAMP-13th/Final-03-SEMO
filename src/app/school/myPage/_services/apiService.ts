@@ -10,6 +10,25 @@ class MyPageApiService {
   private static token: string | null = null;
   // 현재 로그인한 사용자 정보 저장
   private static currentUser: any = null;
+
+  // 헤더 생성
+  private static getHeaders(includeAuth = false, isFormData = false) {
+    const headers: HeadersInit = {
+      "client-id": CLIENT_ID ?? "",
+    };
+
+    if (!isFormData) {
+      // 일반 json 요청
+      headers["Content-Type"] = "application/json";
+    }
+
+    if (includeAuth && this.token) {
+      // 토큰 발급이 되었다면
+      headers["Authorization"] = `Bearer ${this.token}`;
+    }
+
+    return headers;
+  }
 }
 
 export default MyPageApiService;
