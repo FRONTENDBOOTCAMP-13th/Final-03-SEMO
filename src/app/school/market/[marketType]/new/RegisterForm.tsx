@@ -6,6 +6,7 @@ import GroupPurchase from "./_components/GroupPurchase";
 import ProductDesc from "./_components/ProductDesc";
 import Product from "./_components/Product";
 import NewAccount from "./_components/NewAccount";
+import { createPost } from "@/app/api/market/action/post_test";
 
 interface Props {
   boardType: string;
@@ -23,35 +24,28 @@ export default function RegisterForm({ boardType }: Props) {
     try {
       const imageData = images.length > 0 ? images[0] : "";
       // 서버로 보낼 데이터
-      const payload = {
+      const result = await createPost({
         type: tradeType,
-        title: formData.get("title"),
-        content: formData.get("content"),
+        title: formData.get("title") as string,
+        content: formData.get("content") as string,
         image: imageData,
         extra: {
-          category: formData.get("category"),
-          price: formData.get("price"),
-          location: formData.get("location"),
+          category: formData.get("category") as string,
+          price: formData.get("price") as string,
+          location: formData.get("location") as string,
         },
-      };
-
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/posts`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Client-Id": process.env.NEXT_PUBLIC_CLIENT_ID!,
-        },
-        body: JSON.stringify(payload),
       });
+      console.log(result);
 
-      const json = await res.json();
-      console.log(json);
-
-      // 사용자가 선택한 타입에 맞는 페이지로 이동
-      const redirectType = tradeType;
-      router.push(`/school/market/${redirectType}`);
+      if (result.ok) {
+        console.log("게시글이 등록되었습니다!");
+        router.push(`/school/market/${tradeType}`);
+      } else {
+        console.log("게시글 등록에 실패했습니다.");
+      }
     } catch (error) {
       console.error("Error submitting form:", error);
+      console.log("네트워크 오류가 발생했습니다.");
     }
   };
 
