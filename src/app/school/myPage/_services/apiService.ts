@@ -154,6 +154,32 @@ class MyPageApiService {
 
     return data.item;
   }
+  /**
+   * 사용자 정보 수정
+   */
+  static async updateUser(userId: number, updateData: Partial<User>): Promise<User> {
+    this.restoreToken();
+
+    console.log("API 서비스에서 받은 updateData:", updateData);
+    console.log("업데이트 요청 URL:", `${API_BASE_URL}/users/${userId}`);
+
+    const response = await fetch(`${API_BASE_URL}/users/${userId}`, {
+      method: "PATCH",
+      headers: this.getHeaders(true),
+      body: JSON.stringify(updateData),
+    });
+
+    console.log("업데이트 응답 상태:", response.status);
+    const data: ApiResponse<User> = await response.json();
+    console.log("업데이트 응답 데이터:", data);
+
+    if (data.ok !== 1 || !data.item) {
+      throw new Error(data.message || "사용자 정보 수정에 실패했습니다.");
+    }
+
+    console.log("최종 반환할 사용자 데이터:", data.item);
+    return data.item;
+  }
 }
 
 export default MyPageApiService;
