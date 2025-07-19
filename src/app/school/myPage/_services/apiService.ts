@@ -3,6 +3,10 @@
  */
 // 로그인 API 응답의 구조
 import { LoginResponse } from "@/app/school/myPage/_types/user";
+// 사용자 정보의 구조
+import { User } from "@/app/school/myPage/_types/user";
+// 일반적인 API 응답 구조
+import { ApiResponse } from "@/app/school/myPage/_types/user";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 const CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID;
@@ -11,7 +15,7 @@ class MyPageApiService {
   // 로그인 성공 시 여기에 토큰이 저장
   private static token: string | null = null;
   // 현재 로그인한 사용자 정보 저장
-  private static currentUser: any = null;
+  private static currentUser: User | null = null;
 
   // 헤더 생성
   private static getHeaders(includeAuth = false, isFormData = false) {
@@ -101,6 +105,54 @@ class MyPageApiService {
         }
       }
     }
+  }
+
+  /**
+   * 현재 로그인한 사용자의 ID 반환
+   */
+  static getCurrentUserId(): number | null {
+    if (this.currentUser && this.currentUser._id) {
+      return this.currentUser._id;
+    }
+
+    this.restoreToken();
+    return this.currentUser && this.currentUser._id ? this.currentUser._id : null;
+  }
+
+  /**
+   * 현재 로그인한 사용자 정보 반환
+   */
+  static getCurrentUser(): User | null {
+    if (this.currentUser) {
+      return this.currentUser;
+    }
+
+    this.restoreToken();
+    return this.currentUser;
+  }
+
+  /**
+   * 사용자 정보 조회
+   */
+  static async getUserById(userId: number): Promise<User> {
+    this.restoreToken();
+
+    console.log("API 요청 시작 - 사용자 ID:", userId);
+    console.log("사용중인 토큰:", this.token ? "O" : "X");
+
+    const response = await fetch(`${API_BASE_URL}/users/${userId}`, {
+      headers: this.getHeaders(true),
+    });
+
+    console.log("API 응답 상태:", response.status);
+    const data: ApiResponse<User> = await response.json();
+    console.log("API 응답 데이터:", data);
+
+    if (data.ok !== 1 || !data.item) {
+      throw new Error(data.message || "사용자 정보를 가져올 수 없습니다.");
+    }
+
+    return data.item;
   }
 }
 
