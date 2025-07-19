@@ -13,6 +13,11 @@ export interface LoginResponse {
     address?: string;
     type: string;
     image?: string;
+    extra?: {
+      nickname?: string;
+      bank?: string;
+      bankNumber?: number;
+    };
     token: {
       accessToken: string;
       refreshToken: string;
@@ -29,6 +34,11 @@ export interface User {
   address?: string;
   type: string;
   image?: string;
+  extra?: {
+    nickname?: string;
+    bank?: string;
+    bankNumber?: number;
+  };
 }
 
 // 사용자 프로필 업데이트 시 필요한 데이터
@@ -36,4 +46,5 @@ export interface UserProfileFormData {
   nickname: string;
   bank: string;
   accountNumber: string;
+  profileImage?: string | null;
 }
