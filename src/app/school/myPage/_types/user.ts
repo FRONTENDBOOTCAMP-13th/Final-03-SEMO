@@ -9,7 +9,10 @@ export interface LoginResponse {
     _id: number;
     email: string;
     name: string;
+    phone?: string;
+    address?: string;
     type: string;
+    image?: string;
     token: {
       accessToken: string;
       refreshToken: string;
@@ -22,7 +25,10 @@ export interface User {
   _id: number;
   email: string;
   name: string;
+  phone?: string;
+  address?: string;
   type: string;
+  image?: string;
 }
 
 // 사용자 프로필 업데이트 시 필요한 데이터
