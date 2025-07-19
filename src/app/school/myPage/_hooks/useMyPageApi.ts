@@ -3,8 +3,8 @@
  */
 
 import { useState, useCallback } from "react";
-import MyPageApiService, { type User } from "../_services/apiService";
-
+import MyPageApiService from "../_services/apiService";
+import type { User } from "@/app/school/myPage/_types/user";
 // 사용자 프로필 업데이트 시 필요한 데이터
 export interface UserProfileFormData {
   nickname: string;
