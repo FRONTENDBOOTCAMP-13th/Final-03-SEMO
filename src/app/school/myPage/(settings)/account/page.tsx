@@ -109,13 +109,32 @@ export default function MyPageAccount() {
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // 이 부분은 다음 커밋에서 구현됩니다.
-    console.log("handleImageUpload 호출됨 (아직 구현되지 않음)");
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        alert("파일 크기는 5MB 이하만 업로드 가능합니다.");
+        return;
+      }
+      if (!file.type.startsWith("image/")) {
+        alert("이미지 파일만 업로드 가능합니다.");
+        return;
+      }
+
+      // 파일을 상태에 저장 (실제 업로드는 저장 시)
+      setUploadFile(file);
+
+      // 미리보기를 위해 base64 변환
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setProfileImage(event.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleImageRemove = () => {
-    // 이 부분은 다음 커밋에서 구현됩니다.
-    console.log("handleImageRemove 호출됨 (아직 구현되지 않음)");
+    setProfileImage(null);
+    setUploadFile(null); // 업로드할 파일도 제거
   };
 
   // 저장 핸들러 (아직 구현되지 않음)
