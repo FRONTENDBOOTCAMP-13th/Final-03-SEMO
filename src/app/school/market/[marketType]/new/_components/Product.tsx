@@ -1,7 +1,11 @@
 // 상품 정보 컴포넌트
 
 import PhotoUpload from "./imgUpdate";
-export default function Product() {
+interface ProductProps {
+  images: string[];
+  setImages: React.Dispatch<React.SetStateAction<string[]>>;
+}
+export default function Product({ images, setImages }: ProductProps) {
   return (
     <section>
       <h1 className="sr-only">상품 등록</h1>
@@ -24,7 +28,7 @@ export default function Product() {
           placeholder="사진 추가"
           className="w-full bg-uni-gray-200 rounded-md p-3 text-16"
         /> */}
-        <PhotoUpload />
+        <PhotoUpload images={images} setImages={setImages} />
       </div>
     </section>
   );

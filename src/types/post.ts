@@ -6,6 +6,7 @@ export interface Post {
   type: string;
   title: string;
   content: string;
+  image?: string;
   user: Pick<User, "_id" | "name" | "image">;
   repliesCount: number;
   createdAt: string;

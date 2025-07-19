@@ -38,13 +38,14 @@ export default function MarketDetailPage() {
     <div className="min-w-[320px] max-w-[480px] mx-auto px-4 py-6 min-h-screen bg-uni-white">
       {/* 이미지 */}
       <div className="rounded-lg overflow-hidden mb-4 bg-uni-gray-100">
-        {post.product?.image ? (
+        {post.image ? (
           <Image
-            src={post.product.image}
+            src={post.image}
             alt={post.title}
             width={350}
             height={300}
             className="w-full h-auto object-cover"
+            unoptimized={true}
           />
         ) : (
           <div className="w-full h-[300px] bg-uni-gray-100 rounded-lg mb-4" />

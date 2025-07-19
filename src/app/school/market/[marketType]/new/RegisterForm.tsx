@@ -13,42 +13,46 @@ interface Props {
 export default function RegisterForm({ boardType }: Props) {
   const [selected, setSelected] = useState<"registered" | "new">("registered");
   const [tradeType, setTradeType] = useState<"sell" | "buy" | "group">("sell");
+  const [images, setImages] = useState<string[]>([]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
+    try {
+      const imageData = images.length > 0 ? images[0] : "";
+      const payload = {
+        type: boardType,
+        title: formData.get("title"),
+        content: formData.get("content"),
+        image: imageData,
+        extra: {
+          category: formData.get("category"),
+          price: formData.get("price"),
+          location: formData.get("location"),
+        },
+      };
 
-    const payload = {
-      type: boardType,
-      title: formData.get("title"),
-      content: formData.get("content"),
-      image: formData.get("image"),
-      extra: {
-        category: formData.get("category"),
-        price: formData.get("price"),
-        location: formData.get("location"),
-      },
-    };
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/posts`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Client-Id": process.env.NEXT_PUBLIC_CLIENT_ID!,
+        },
+        body: JSON.stringify(payload),
+      });
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/posts`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Client-Id": process.env.NEXT_PUBLIC_CLIENT_ID!,
-      },
-      body: JSON.stringify(payload),
-    });
-
-    const json = await res.json();
-    console.log(json);
+      const json = await res.json();
+      console.log(json);
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    }
   };
-
   return (
     <form onSubmit={handleSubmit}>
       <input type="hidden" name="type" value={boardType} />
 
       <main className="min-w-[320px] max-w-[480px] mx-auto px-4 py-6 min-h-screen bg-uni-white">
-        <Product />
+        <Product images={images} setImages={setImages} />
 
         {/* <section role="group" aria-label="거래 유형" className="mb-5">
           {(["sell", "buy", "group"] as const).map((t) => (

@@ -1,47 +1,62 @@
 "use client";
-import React, { useState, useRef } from "react";
-import { Plus, X, ChevronLeft, ChevronRight } from "lucide-react";
+import React, { useRef } from "react";
+import { Plus, X } from "lucide-react";
 
-export default function PhotoUpload() {
-  const [images, setImages] = useState<string[]>([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
+interface PhotoUploadProps {
+  images: string[];
+  setImages: React.Dispatch<React.SetStateAction<string[]>>;
+}
+
+export default function PhotoUpload({ images, setImages }: PhotoUploadProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files) return;
+  // 이미지 압축
+  const compressImage = (file: File, maxWidth = 800, quality = 0.8): Promise<string> => {
+    return new Promise((resolve) => {
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d")!;
+      const img = new Image();
 
-    Array.from(files).forEach((file) => {
+      img.onload = () => {
+        // 비율 유지하면서 크기 조정
+        const ratio = Math.min(maxWidth / img.width, maxWidth / img.height);
+        canvas.width = img.width * ratio;
+        canvas.height = img.height * ratio;
+
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+        const compressedDataUrl = canvas.toDataURL("image/jpeg", quality);
+        resolve(compressedDataUrl);
+      };
+
       const reader = new FileReader();
-      reader.onload = () => {
-        setImages((prev) => [...prev, reader.result as string]);
+      reader.onload = (e) => {
+        img.src = e.target?.result as string;
       };
       reader.readAsDataURL(file);
     });
   };
 
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    const file = files[0];
+    try {
+      const compressedImage = await compressImage(file);
+      setImages([compressedImage]); // 기존 이미지 대체
+    } catch (error) {
+      console.error("이미지 압축 실패:", error);
+      const reader = new FileReader();
+      reader.onload = () => {
+        setImages([reader.result as string]);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const removeImage = () => {
-    setImages((prev) => {
-      const newImages = prev.filter((_, index) => index !== currentIndex);
-      if (currentIndex >= newImages.length && newImages.length > 0) {
-        setCurrentIndex(newImages.length - 1);
-      } else if (newImages.length === 0) {
-        setCurrentIndex(0);
-      }
-      return newImages;
-    });
-  };
-
-  const next = () => {
-    if (currentIndex < images.length - 1) {
-      setCurrentIndex(currentIndex + 1);
-    }
-  };
-
-  const prev = () => {
-    if (currentIndex > 0) {
-      setCurrentIndex(currentIndex - 1);
-    }
+    setImages([]);
   };
 
   return (
@@ -59,47 +74,19 @@ export default function PhotoUpload() {
         </div>
       ) : (
         <div className="relative w-full h-48 bg-uni-gray-100 rounded-md overflow-hidden">
-          <img src={images[currentIndex]} alt="사진" className="w-full h-full object-cover" />
+          {/* 
+          왜 img 태그를 사용했는가? -> 
+          이 코드에서는 Data URL을 사용하여 이미 이미지를 압축시켰기 때문에 Next.js의 Image를 사용할 필요가 없다고 판단함  */}
+          <img src={images[0]} alt="사진" className="w-full h-full object-cover" />
 
           {/* 삭제 버튼 */}
           <button
+            type="button"
             onClick={removeImage}
             className="absolute top-2 right-2 w-8 h-8 bg-uni-black bg-opacity-50 rounded-full flex items-center justify-center hover:bg-opacity-70"
           >
             <X className="w-4 h-4 text-white" />
           </button>
-
-          {/* 화살표 */}
-          {images.length > 1 && (
-            <>
-              <button
-                onClick={prev}
-                className="absolute left-2 top-1/2 transform -translate-y-1/2 w-8 h-8 rounded-full flex items-center justify-center bg-uni-black bg-opacity-50 hover:bg-opacity-70"
-              >
-                <ChevronLeft className="w-4 h-4 text-uni-white" />
-              </button>
-
-              <button
-                onClick={next}
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 w-8 h-8 rounded-full flex items-center justify-center bg-uni-black bg-opacity-50 hover:bg-opacity-70"
-              >
-                <ChevronRight className="w-4 h-4 text-uni-white" />
-              </button>
-            </>
-          )}
-
-          {/* 점 표시 */}
-          {images.length > 1 && (
-            <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex space-x-1">
-              {images.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentIndex(index)}
-                  className={`w-2 h-2 rounded-full ${index === currentIndex ? "bg-white" : "bg-white bg-opacity-50"}`}
-                />
-              ))}
-            </div>
-          )}
         </div>
       )}
 
@@ -108,7 +95,6 @@ export default function PhotoUpload() {
         id="item-image"
         name="product.image"
         type="file"
-        multiple
         accept="image/*"
         onChange={handleUpload}
         className="hidden"
