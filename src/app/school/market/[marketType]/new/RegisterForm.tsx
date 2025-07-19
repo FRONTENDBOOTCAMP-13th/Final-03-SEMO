@@ -14,14 +14,15 @@ interface Props {
 export default function RegisterForm({ boardType }: Props) {
   const router = useRouter();
   const [selected, setSelected] = useState<"registered" | "new">("registered");
-  const [tradeType, setTradeType] = useState<"sell" | "buy" | "group">("sell");
-  const [images, setImages] = useState<string[]>([]);
+  const [tradeType, setTradeType] = useState<"sell" | "buy" | "group">("sell"); // 거래 유형 상태
+  const [images, setImages] = useState<string[]>([]); // 업로드된 이미지 저장 (Data URL 배열)
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const formData = new FormData(e.currentTarget);
+    const formData = new FormData(e.currentTarget); // 폼의 모든 입력값들을 FormData 객체로 수집
     try {
-      const imageData = images.length > 0 ? images[0] : "";
+      const imageData = images.length > 0 ? images[0] : ""; // 이미지가 있으면 첫 번째 이미지 사용, 없으면 빈 문자열을 서버로 보냄
+      // 서버로 보낼 데이터
       const payload = {
         type: tradeType,
         title: formData.get("title"),
@@ -45,10 +46,31 @@ export default function RegisterForm({ boardType }: Props) {
 
       const json = await res.json();
       console.log(json);
+
+      // 사용자가 선택한 타입에 맞는 페이지로 이동
       const redirectType = tradeType;
       router.push(`/school/market/${redirectType}`);
     } catch (error) {
       console.error("Error submitting form:", error);
+    }
+  };
+
+  const getButtonStyle = (buttonType: string, currentType: string) => {
+    // 선택 안된 버튼은 모두 회색
+    if (buttonType !== currentType) {
+      return "border-2 border-uni-gray-200 text-uni-gray-400";
+    }
+
+    // 선택된 버튼은 타입별 색상
+    switch (buttonType) {
+      case "sell":
+        return "bg-yellow-100 text-uni-black";
+      case "buy":
+        return "bg-uni-red-200 text-uni-black";
+      case "group":
+        return "bg-uni-blue-200 text-uni-black";
+      default:
+        return "border-2 border-uni-gray-200 text-uni-gray-400";
     }
   };
   return (
@@ -57,48 +79,19 @@ export default function RegisterForm({ boardType }: Props) {
 
       <main className="min-w-[320px] max-w-[480px] mx-auto px-4 py-6 min-h-screen bg-uni-white">
         <Product images={images} setImages={setImages} />
-
-        {/* <section role="group" aria-label="거래 유형" className="mb-5">
-          {(["sell", "buy", "group"] as const).map((t) => (
-            <label key={t} className="mr-2">
-              <input
-                type="radio"
-                name="tradeType"
-                value={t}
-                checked={tradeType === t}
-                onChange={() => setTradeType(t)}
-              />
-              {t === "sell" ? "팔래요" : t === "buy" ? "살래요" : "모여요"}
-            </label>
-          ))}
-        </section> */}
         <section role="group" aria-label="거래 유형" className="mb-5 flex gap-3">
+          {/* 팔래요, 살래요, 모여요 버튼 생성 */}
           {(["sell", "buy", "group"] as const).map((t) => (
             <label
               key={t}
-              className={`
-        flex items-center justify-center px-5 py-2 rounded-xl font-medium text-14 cursor-pointer
-        ${
-          tradeType === t
-            ? t === "sell"
-              ? "bg-yellow-100 text-uni-black"
-              : t === "buy"
-                ? "bg-uni-red-200 text-uni-black"
-                : "bg-uni-blue-200 text-uni-black"
-            : t === "sell"
-              ? "border-2 border-uni-gray-200 text-uni-gray-400"
-              : t === "buy"
-                ? "border-2 border-uni-gray-200 text-uni-gray-400"
-                : "border-2 border-uni-gray-200 text-uni-gray-400"
-        }
-      `}
+              className={`flex items-center justify-center px-5 py-2 rounded-xl font-medium text-14 cursor-pointer ${getButtonStyle(t, tradeType)} }`}
             >
               <input
                 type="radio"
                 name="tradeType"
                 value={t}
                 checked={tradeType === t}
-                onChange={() => setTradeType(t)}
+                onChange={() => setTradeType(t)} // 버튼 클릭시 tradeType 상태 업데이트
                 className="hidden"
               />
               {t === "sell" ? "팔래요" : t === "buy" ? "살래요" : "모여요"}
@@ -108,33 +101,6 @@ export default function RegisterForm({ boardType }: Props) {
 
         <ProductDesc />
         {tradeType === "group" && <GroupPurchase />}
-
-        {/* <section className="mb-8">
-          <fieldset>
-            <legend>계좌 정보</legend>
-            <label className="block">
-              <input
-                type="radio"
-                name="account"
-                value="registered"
-                checked={selected === "registered"}
-                onChange={() => setSelected("registered")}
-              />
-              등록된 계좌
-            </label>
-            <label className="block mt-2">
-              <input
-                type="radio"
-                name="account"
-                value="new"
-                checked={selected === "new"}
-                onChange={() => setSelected("new")}
-              />
-              새로운 계좌
-            </label>
-          </fieldset>
-          {selected === "new" && <NewAccount />}
-        </section> */}
         <section className="mb-8">
           <fieldset className="flex flex-col gap-3">
             <label
