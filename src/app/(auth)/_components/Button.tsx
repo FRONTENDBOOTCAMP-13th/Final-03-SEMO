@@ -1,11 +1,13 @@
 interface ButtonProps {
-  type?: 'primary' | 'outline' | 'kakao' | 'google';
+  type?: "primary" | "outline" | "kakao" | "google";
   onClick?: () => void;
   children: React.ReactNode;
+  disabled?: boolean;
+  className?: string;
 }
 
-export default function Button({ type = 'primary', onClick, children }: ButtonProps) {
-  const base = 'w-full py-3 rounded-md font-semibold text-sm flex justify-center items-center';
+export default function Button({ type = "primary", onClick, children, className, ...props }: ButtonProps) {
+  const base = "w-full py-3 rounded-md font-semibold text-sm flex justify-center items-center";
 
   const styleMap = {
     primary: `${base} bg-uni-blue-400 text-white`,
@@ -15,7 +17,7 @@ export default function Button({ type = 'primary', onClick, children }: ButtonPr
   };
 
   return (
-    <button onClick={onClick} className={styleMap[type]}>
+    <button onClick={onClick} className={`${styleMap[type]} ${className ?? ""}`} {...props}>
       {children}
     </button>
   );

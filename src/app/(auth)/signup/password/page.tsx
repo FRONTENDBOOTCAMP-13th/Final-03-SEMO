@@ -5,14 +5,14 @@ import { useRouter } from "next/navigation";
 import BackButton from "../../_components/BackButton";
 import Logo from "../../_components/LogoLow";
 import Button from "../../_components/Button";
-import Image from "next/image";
+import PasswordInput from "../../_components/PasswordInput";
 import Input from "../../_components/Input";
+import { useUserStore } from "@/store/userStore";
 
 export default function SignupPasswordPage() {
   const router = useRouter();
-  const [password, setPassword] = useState("");
+  const { password, setPassword } = useUserStore();
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
 
   const handleNext = () => {
     if (password.length < 8 || !/\d/.test(password) || !/[a-zA-Z]/.test(password)) {
@@ -38,23 +38,9 @@ export default function SignupPasswordPage() {
         <Logo />
 
         <div className="w-full max-w-sm flex flex-col gap-4">
-          {/* 비밀번호 필드 - eye 토글 포함 */}
+          {/* 비밀번호 */}
           <div className="relative">
-            <input
-              type={showPassword ? "text" : "password"}
-              placeholder="비밀번호(영문, 숫자 8자 이상)"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full border border-uni-gray-200 rounded-md px-4 py-3 text-sm focus:outline-uni-blue-400 focus:border-uni-blue-400 transition-colors "
-              style={{ backgroundColor: "var(--color-uni-gray-100)" }}
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 transform -translate-y-1/2"
-            >
-              <Image src="/assets/eye.svg" alt="비밀번호 보기" width={24} height={24} />
-            </button>
+            <PasswordInput value={password} onChange={(e) => setPassword(e.target.value)} placeholder="PW" />
           </div>
 
           {/* 비밀번호 확인 필드 */}
