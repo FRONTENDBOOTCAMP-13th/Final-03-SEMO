@@ -1,6 +1,7 @@
 "use client";
 import React, { useRef } from "react";
 import { Plus, X } from "lucide-react";
+import { uploadFile } from "@/app/api/market/action/file";
 
 interface PhotoUploadProps {
   images: string[];
@@ -10,65 +11,25 @@ interface PhotoUploadProps {
 export default function PhotoUpload({ images, setImages }: PhotoUploadProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // 이미지 압축
-  const compressImage = (file: File, maxWidth = 800, quality = 0.8): Promise<string> => {
-    return new Promise((resolve) => {
-      const canvas = document.createElement("canvas");
-      const ctx = canvas.getContext("2d")!;
-      const img = new Image();
-
-      img.onload = () => {
-        // 비율 유지하면서 크기 조정
-        const ratio = Math.min(maxWidth / img.width, maxWidth / img.height);
-        canvas.width = img.width * ratio;
-        canvas.height = img.height * ratio;
-
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
-        const compressedDataUrl = canvas.toDataURL("image/jpeg", quality);
-        resolve(compressedDataUrl);
-      };
-
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        img.src = e.target?.result as string;
-      };
-      reader.readAsDataURL(file);
-    });
-  };
-
-  // 파일 업로드 함수
-  async function uploadFileToServer(file: File) {
-    const formData = new FormData();
-    formData.append("attach", file);
-
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/files`, {
-      method: "POST",
-      headers: {
-        "Client-Id": process.env.NEXT_PUBLIC_CLIENT_ID!,
-      },
-      body: formData,
-    });
-    return res.json();
-  }
-
-  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  async function handleUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const files = e.target.files;
     if (!files || files.length === 0) return;
 
     const file = files[0];
     try {
-      const compressedImage = await compressImage(file);
-      setImages([compressedImage]); // 기존 이미지 대체
-    } catch (error) {
-      console.error("이미지 압축 실패:", error);
-      const reader = new FileReader();
-      reader.onload = () => {
-        setImages([reader.result as string]);
-      };
-      reader.readAsDataURL(file);
+      const formData = new FormData();
+      formData.append("attach", file);
+      const result = await uploadFile(formData);
+
+      if (result.ok) {
+        setImages([result.item[0].path]);
+      } else {
+        console.error("파일 업로드 실패");
+      }
+    } catch (err) {
+      console.error("업로드 실패", err);
     }
-  };
+  }
 
   // 이미지 삭제 함수
   const removeImage = () => {
