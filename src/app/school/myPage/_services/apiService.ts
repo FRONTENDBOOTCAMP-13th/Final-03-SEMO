@@ -47,18 +47,17 @@ class MyPageApiService {
       const img = new Image();
 
       img.onload = () => {
-        try {
-          // 비율 유지하면서 크기 조정
-          const ratio = Math.min(maxWidth / img.width, maxWidth / img.height);
-          canvas.width = img.width * ratio;
-          canvas.height = img.height * ratio;
+        // 비율 유지하면서 크기 조정
+        const ratio = Math.min(maxWidth / img.width, maxWidth / img.height);
+        canvas.width = img.width * ratio;
+        canvas.height = img.height * ratio;
 
-          // 이미지 그리기
+        // 이미지 그리기
         ctx?.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-          // Data URL로 변환 (압축)
-          const dataUrl = canvas.toDataURL("image/jpeg", quality);
-          resolve(dataUrl);
+        // Data URL로 변환 (압축)
+        const dataUrl = canvas.toDataURL("image/jpeg", quality);
+        resolve(dataUrl);
       };
 
       img.onerror = () => reject(new Error("이미지 로드 실패"));
