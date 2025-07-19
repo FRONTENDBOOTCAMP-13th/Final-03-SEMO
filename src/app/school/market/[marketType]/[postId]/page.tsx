@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import CommentList from "./_components/CommentList";
 import { Post } from "@/types";
+import { getImageUrl } from "@/app/api/market/action/file";
 
 export default function MarketDetailPage() {
   const { postId } = useParams<{ postId: string }>();
@@ -40,7 +41,7 @@ export default function MarketDetailPage() {
       <div className="rounded-lg overflow-hidden mb-4 bg-uni-gray-100">
         {post.image ? (
           <Image
-            src={post.image}
+            src={getImageUrl(post.image)}
             alt={post.title}
             width={350}
             height={300}
