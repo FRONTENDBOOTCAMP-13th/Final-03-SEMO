@@ -37,6 +37,59 @@ class MyPageApiService {
   }
 
   /**
+   * 이미지 압축 및 Data URL 변환
+   * Canvas API를 사용한 이미지 최적화
+   */
+  private static compressImage(file: File, maxWidth = 800, quality = 0.8): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+
+      if (!ctx) {
+        reject(new Error("Canvas context를 생성할 수 없습니다."));
+        return;
+      }
+
+      const img = new Image();
+
+      img.onload = () => {
+        try {
+          // 비율 유지하면서 크기 조정
+          const ratio = Math.min(maxWidth / img.width, maxWidth / img.height);
+          canvas.width = img.width * ratio;
+          canvas.height = img.height * ratio;
+
+          // 캔버스 초기화 (투명도 처리)
+          ctx.fillStyle = "#FFFFFF";
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          // 이미지 그리기
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+          // Data URL로 변환 (압축)
+          const dataUrl = canvas.toDataURL("image/jpeg", quality);
+
+          // 압축 결과 로그
+          const originalSize = file.size;
+          const compressedSize = Math.round(((dataUrl.length - "data:image/jpeg;base64,".length) * 3) / 4);
+          console.log(
+            `이미지 압축 완료: ${originalSize}bytes → ${compressedSize}bytes (${Math.round((compressedSize / originalSize) * 100)}%)`
+          );
+
+          resolve(dataUrl);
+        } catch (error) {
+          reject(new Error("이미지 압축 중 오류가 발생했습니다."));
+        }
+      };
+
+      img.onerror = () => reject(new Error("이미지 로드 실패"));
+
+      // 파일을 이미지 객체로 로드
+      img.src = URL.createObjectURL(file);
+    });
+  }
+
+  /**
    * 로그인 API
    */
   static async login(email: string, password: string): Promise<LoginResponse> {
@@ -187,11 +240,18 @@ class MyPageApiService {
     this.restoreToken();
 
     try {
+      console.log("파일 업로드 시작:", file.name, "크기:", file.size);
+
+      // 이미지 압축
+      const compressedDataUrl = await this.compressImage(file);
+
+      // Data URL을 Blob으로 변환
+      const response = await fetch(compressedDataUrl);
+      const blob = await response.blob();
+
       // FormData 생성
       const formData = new FormData();
-      formData.append("attach", file);
-
-      console.log("파일 업로드 시작:", file.name, file.size, file.type);
+      formData.append("attach", blob, file.name);
 
       const uploadResponse = await fetch(`${API_BASE_URL}/files/`, {
         method: "POST",
