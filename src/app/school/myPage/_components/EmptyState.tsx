@@ -16,8 +16,8 @@ interface EmptyStateProps {
 
 export default function EmptyState({ message }: EmptyStateProps) {
   return (
-    <div className="text-center p-8 text-gray-600 bg-gray-100 rounded-xl border border-gray-100">
-      <p className="text-sm font-semibold">{message}</p>
+    <div className="text-center p-8 text-uni-gray-400 bg-uni-gray-100 rounded-xl border border-uni-gray-100">
+      <p className="text-14 font-semibold font-pretendard">{message}</p>
     </div>
   );
 }
