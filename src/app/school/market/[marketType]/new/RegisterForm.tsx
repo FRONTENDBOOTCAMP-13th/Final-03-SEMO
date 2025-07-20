@@ -6,7 +6,7 @@ import GroupPurchase from "./_components/GroupPurchase";
 import ProductDesc from "./_components/ProductDesc";
 import Product from "./_components/Product";
 import NewAccount from "./_components/NewAccount";
-import { createPost } from "@/app/api/market/action/post_test";
+import { createPost } from "@/app/api/market/action/post";
 
 interface Props {
   boardType: string;
