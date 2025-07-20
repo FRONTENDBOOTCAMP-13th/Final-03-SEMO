@@ -1,5 +1,3 @@
-import { ArrowLeft } from "lucide-react";
-
 export default function AppInfoPage() {
   return (
     <div className="min-h-screen flex flex-col">

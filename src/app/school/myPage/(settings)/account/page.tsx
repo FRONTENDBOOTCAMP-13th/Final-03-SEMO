@@ -1,10 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
 import SaveFloatingButton from "../../_components/SaveFloatingButton";
 import InputField from "../../_components/InputField";
 import { validateNickname, validateAccountNumber, validateBankSelection } from "./utils/validation";
+import { useMyPageApi } from "../../_hooks/useMyPageApi";
+import MyPageApiService from "../../_services/apiService";
+import type { User } from "../../_types/user";
 
 export default function MyPageAccount() {
   const [nickname, setNickname] = useState("김세모");
@@ -12,10 +15,81 @@ export default function MyPageAccount() {
   const [accountNumber, setAccountNumber] = useState("");
   const [accountError, setAccountError] = useState("");
   const [nicknameError, setNicknameError] = useState("");
+  // 프로필 사진 미리보기용 URL
   const [profileImage, setProfileImage] = useState<string | null>("");
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [userData, setUserData] = useState<User | null>(null);
+  // 사용자가 새로 선택한 업로드할 이미지 파일을 저장하는 상태
+  const [uploadFile, setUploadFile] = useState<File | null>(null);
+  // 현재 로그인한 사용자의 이메일 상태
+  const [userEmail, setUserEmail] = useState<string>("");
 
-  const userId = "semo2024@university.ac.kr";
+  const { getUserProfile, updateUserProfile, uploadProfileImage, loading } = useMyPageApi();
   const banks = ["은행사", "국민은행", "신한은행", "우리은행", "하나은행", "농협은행", "기업은행"];
+
+  // 컴포넌트 마운트 시 사용자 데이터 로드
+  useEffect(() => {
+    const loadUserData = async () => {
+      const currentUserId = MyPageApiService.getCurrentUserId();
+      if (!currentUserId) {
+        // 사용자에게 알림 대신, 로그인 페이지로 리다이렉트하거나 다른 처리
+        console.warn("로그인이 필요합니다.");
+        return;
+      }
+
+      const user = await getUserProfile(currentUserId);
+      if (user) {
+        setUserData(user);
+        setUserEmail(user.email); // 실제 로그인한 사용자의 이메일 설정
+        setNickname(user.extra?.nickname || user.name);
+        setSelectedBank(user.extra?.bank || "은행사");
+        setAccountNumber(user.extra?.bankNumber ? String(user.extra.bankNumber) : "");
+        if (user.image && typeof user.image === "string" && user.image !== "undefined" && user.image.trim() !== "") {
+          setProfileImage(user.image);
+        } else {
+          setProfileImage(null);
+        }
+      }
+    };
+    loadUserData();
+  }, [getUserProfile]);
+
+  // 이미지 URL을 메모이제이션하여 불필요한 재생성 방지
+  const memoizedImageUrl = useMemo(() => {
+    if (
+      profileImage &&
+      typeof profileImage === "string" &&
+      profileImage !== "undefined" &&
+      profileImage.trim() !== ""
+    ) {
+      return profileImage;
+    }
+    return null;
+  }, [profileImage]);
+
+  // 이미지 렌더링을 메모이제이션하여 불필요한 요청 방지
+  const imageElement = useMemo(() => {
+    if (memoizedImageUrl) {
+      return (
+        <Image
+          src={memoizedImageUrl}
+          alt="프로필 이미지"
+          fill
+          className="object-cover"
+          unoptimized
+          priority
+          onError={() => {
+            setProfileImage(null);
+          }}
+        />
+      );
+    }
+    return (
+      <svg className="w-14 h-14 text-uni-gray-400" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+      </svg>
+    );
+  }, [memoizedImageUrl]);
 
   {
     /*(닉네임/계쫘번호/이미지) 입력 핸들러*/
@@ -45,6 +119,11 @@ export default function MyPageAccount() {
         alert("이미지 파일만 업로드 가능합니다.");
         return;
       }
+
+      // 파일을 상태에 저장 (실제 업로드는 저장 시)
+      setUploadFile(file);
+
+      // 미리보기를 위해 base64 변환
       const reader = new FileReader();
       reader.onload = (event) => {
         setProfileImage(event.target?.result as string);
@@ -55,10 +134,11 @@ export default function MyPageAccount() {
 
   const handleImageRemove = () => {
     setProfileImage(null);
+    setUploadFile(null); // 업로드할 파일도 제거
   };
 
   // 저장 핸들러
-  const handleSave = () => {
+  const handleSave = async () => {
     const bankError = validateBankSelection(selectedBank);
     const nicknameValidationError = validateNickname(nickname);
     const accountValidationError = validateAccountNumber(accountNumber);
@@ -66,15 +146,59 @@ export default function MyPageAccount() {
       alert(bankError || nicknameValidationError || accountValidationError);
       return;
     }
-    console.log("저장 데이터:", {
-      nickname: nickname.trim(),
-      bank: selectedBank,
-      accountNumber,
-      profileImage: profileImage ? "업로드된 이미지" : "기본 이미지",
-    });
+
+    try {
+      let finalImageUrl = profileImage;
+
+      // 새로 업로드할 파일이 있는 경우
+      if (uploadFile) {
+        console.log("새 이미지 업로드 시작:", uploadFile.name);
+        const uploadedImageUrl = await uploadProfileImage(uploadFile);
+        if (uploadedImageUrl) {
+          finalImageUrl = uploadedImageUrl;
+          console.log("이미지 업로드 성공:", uploadedImageUrl);
+        } else {
+          alert("이미지 업로드에 실패했습니다.");
+          return;
+        }
+      }
+
+      // 프로필 업데이트
+      const profileData = {
+        nickname: nickname.trim(),
+        bank: selectedBank,
+        accountNumber,
+        profileImage: finalImageUrl,
+      };
+
+      console.log("프로필 업데이트 시작:", profileData);
+      const currentUserId = MyPageApiService.getCurrentUserId();
+      if (!currentUserId) {
+        alert("로그인이 필요합니다.");
+        return;
+      }
+
+      const success = await updateUserProfile(currentUserId, profileData);
+
+      if (success) {
+        alert("프로필이 성공적으로 저장되었습니다.");
+        setUploadFile(null); // 업로드 완료 후 파일 상태 초기화
+
+        // 사용자 데이터 다시 로드하여 최신 정보 반영
+        const updatedUser = await getUserProfile(currentUserId);
+        if (updatedUser && updatedUser.image) {
+          setProfileImage(updatedUser.image);
+        }
+      } else {
+        alert("프로필 저장에 실패했습니다.");
+      }
+    } catch (error) {
+      console.error("저장 중 오류:", error);
+      alert("저장 중 오류가 발생했습니다.");
+    }
   };
 
-  // 탈퇴 핸들러ㅌ
+  // 탈퇴 핸들러 (아직 구현되지 않음)
   const handleWithdraw = () => {
     console.log("탈퇴하기 버튼 클릭");
   };
@@ -86,13 +210,7 @@ export default function MyPageAccount() {
         <div className="flex flex-col items-center mb-6">
           <div className="relative group">
             <div className="w-28 h-28 bg-gradient-to-br from-uni-gray-200 to-uni-gray-300 rounded-full flex items-center justify-center overflow-hidden relative border-4 border-uni-white shadow-lg">
-              {profileImage ? (
-                <Image src={profileImage} alt="프로필 이미지" fill className="object-cover" />
-              ) : (
-                <svg className="w-14 h-14 text-uni-gray-400" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-                </svg>
-              )}
+              {imageElement}
 
               {/* 호버 오버레이 */}
               <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-full">
@@ -145,7 +263,7 @@ export default function MyPageAccount() {
 
         {/* 아이디 섹션 (읽기 전용)(inputField 컴포넌트 사용) */}
         <div className="mb-6">
-          <InputField label="아이디" value={userId} readOnly />
+          <InputField label="아이디" value={userEmail} readOnly />
         </div>
 
         {/* 닉네임 섹션 (inputField 컴포넌트 사용)
@@ -218,7 +336,7 @@ export default function MyPageAccount() {
 
       {/* SaveFloatingButton 컴포넌트 사용 
       2. 최종 저장 시 검사*/}
-      <SaveFloatingButton onClick={handleSave}>저장하기</SaveFloatingButton>
+      <SaveFloatingButton onClick={handleSave}>{loading ? "저장 중..." : "저장하기"}</SaveFloatingButton>
     </div>
   );
 }
