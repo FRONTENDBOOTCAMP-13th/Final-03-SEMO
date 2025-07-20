@@ -19,11 +19,13 @@ export async function createPost(postData: {
     location: string;
   };
 }): ApiResPromise<Post> {
+  const accessToken = localStorage.getItem("accessToken");
   const res = await fetch(`${API_URL}/posts`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       "Client-Id": CLIENT_ID,
+      Authorization: `Bearer ${accessToken}`,
     },
     body: JSON.stringify(postData),
   });
