@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import GroupPurchase from "./_components/GroupPurchase";
-import ProductDesc from "./_components/ProductDesc";
-import Product from "./_components/Product";
-import NewAccount from "./_components/NewAccount";
+import GroupPurchase from "./GroupPurchase";
+import ProductDesc from "./ProductDesc";
+import Product from "./Product";
+import NewAccount from "./NewAccount";
 import { createPost } from "@/app/api/market/action/post";
 
 interface Props {
@@ -75,7 +75,7 @@ export default function RegisterForm({ boardType }: Props) {
         <Product images={images} setImages={setImages} />
         <section role="group" aria-label="거래 유형" className="mb-5 flex gap-3">
           {/* 팔래요, 살래요, 모여요 버튼 생성 */}
-          {(["sell", "buy", "group"] as const).map((t) => (
+          {(["buy", "sell", "group"] as const).map((t) => (
             <label
               key={t}
               className={`flex items-center justify-center px-5 py-2 rounded-xl font-medium text-14 cursor-pointer ${getButtonStyle(t, tradeType)} }`}
@@ -88,7 +88,7 @@ export default function RegisterForm({ boardType }: Props) {
                 onChange={() => setTradeType(t)} // 버튼 클릭시 tradeType 상태 업데이트
                 className="hidden"
               />
-              {t === "sell" ? "팔래요" : t === "buy" ? "살래요" : "모여요"}
+              {t === "buy" ? "살래요" : t === "sell" ? "팔래요" : "모여요"}
             </label>
           ))}
         </section>

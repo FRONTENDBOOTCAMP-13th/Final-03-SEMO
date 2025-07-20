@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import RegisterForm from "./RegisterForm";
+import RegisterForm from "./_components/RegisterForm";
 
 export const metadata: Metadata = {
   title: "UniStuff | 게시글 작성",
