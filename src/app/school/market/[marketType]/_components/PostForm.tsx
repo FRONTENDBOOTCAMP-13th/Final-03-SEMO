@@ -1,12 +1,14 @@
+// 게시글 공용 폼 컴포넌트
 "use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import GroupPurchase from "../../_components/GroupPurchase";
-import ProductDesc from "../../_components/ProductDesc";
-import Product from "../../_components/Product";
-import NewAccount from "../../_components/NewAccount";
 import { createPost } from "@/app/api/market/action/post";
+import { Post } from "@/types";
+import GroupPurchase from "./GroupPurchase";
+import ProductDesc from "./ProductDesc";
+import Product from "./Product";
+import NewAccount from "./NewAccount";
 
 interface Props {
   boardType: string;
