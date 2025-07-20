@@ -37,11 +37,11 @@ export default function SignupCompleteForm() {
     try {
       setLoading(true);
 
-      const res = await fetch("https://fesp-api.koyeb.app/market/users", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "client-id": "openmarket",
+          "client-id": process.env.NEXT_PUBLIC_CLIENT_ID ?? "",
         },
         body: JSON.stringify({
           email,

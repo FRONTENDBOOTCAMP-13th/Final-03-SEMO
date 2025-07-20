@@ -16,11 +16,11 @@ export default function LoginForm() {
 
   const handleLogin = async () => {
     try {
-      const response = await fetch("https://fesp-api.koyeb.app/market/users/login", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "client-id": "openmarket",
+          "client-id": process.env.NEXT_PUBLIC_CLIENT_ID ?? "",
         },
         body: JSON.stringify({ email, password }),
       });
@@ -32,7 +32,8 @@ export default function LoginForm() {
         throw new Error(result.message || "로그인 실패");
       }
 
-      // 예시: accessToken 저장 및 리다이렉트
+      alert("로그인 성공!");
+
       localStorage.setItem("accessToken", result?.accessToken || "");
       router.push("/school");
     } catch (error) {
