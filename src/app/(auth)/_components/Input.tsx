@@ -13,8 +13,7 @@ export default function Input({ type = "text", placeholder, value, onChange }: I
       placeholder={placeholder}
       value={value}
       onChange={onChange}
-      className="w-full border border-uni-gray-200 rounded-md px-4 py-3 text-sm focus:outline-uni-blue-400 focus:border-uni-blue-400  "
-      style={{ backgroundColor: "var(--color-uni-gray-100)" }}
+      className="w-full border border-uni-gray-200 rounded-md px-4 py-3 text-sm focus:outline-uni-blue-400 focus:border-uni-blue-400 bg-uni-gray-100"
     />
   );
 }
