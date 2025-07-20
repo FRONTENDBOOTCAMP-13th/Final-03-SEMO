@@ -6,10 +6,13 @@ export const metadata: Metadata = {
   description: "Market 게시글 작성 페이지입니다.",
 };
 interface NewPageProps {
-  params: { marketType: string };
+  params: Promise<{ marketType: string }>;
+  // params: { marketType: string };
 }
 
-export default function NewPage({ params }: NewPageProps) {
-  const { marketType } = params;
+// export default function NewPage({ params }: NewPageProps) {
+export default async function NewPage({ params }: NewPageProps) {
+  // const { marketType } = params;
+  const { marketType } = await params;
   return <RegisterForm boardType={marketType} />;
 }

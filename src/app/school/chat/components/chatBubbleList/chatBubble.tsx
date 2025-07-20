@@ -18,7 +18,7 @@ const ChatBubble = ({ msg }: ChatBubbleProps) => {
 
     return (
       <div className="text-xs text-yellow-500 mb-1">
-        💬 <span className="font-semibold">{msg.toNickName}</span>에게 귓속말
+        <span className="font-semibold">{msg.toNickName}</span>에게 귓속말
       </div>
     );
   };

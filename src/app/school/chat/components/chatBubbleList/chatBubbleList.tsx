@@ -4,7 +4,7 @@
 import { useEffect, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import { useChatStore } from "../../chatRoom/useChatStore";
-import ChatBubble from "../chatBubble/page";
+import ChatBubble from "./chatBubble";
 
 interface ChatBubbleListProps {
   myUserId: string;
@@ -29,7 +29,7 @@ const ChatBubbleList = ({ myUserId, myNickName }: ChatBubbleListProps) => {
 
   return (
     <div className="flex flex-col">
-      {messages.map((msg, idx) => (
+      {messages.map((msg: any, idx: number) => (
         <ChatBubble
           key={`${msg.id || idx}`}
           msg={{
