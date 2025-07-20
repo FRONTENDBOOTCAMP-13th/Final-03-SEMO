@@ -1,47 +1,81 @@
 "use client";
 
-import { createPost } from "@/app/api/market/action/post";
 import { useState } from "react";
 
 const CreateChatPost = () => {
+  // "판매자 아이디"와 "상품 아이디"를 받고
+  // "구매자"가 "채팅하기"를 눌러야 위 정보를 기반으로 채팅방(채팅게시물)이 생성되어야함
+  const buyerId = "hansol";
+  const [sellerId, setSellerId] = useState("");
+  const [productId, setProductId] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleCreate = async () => {
-    setLoading(true);
+  const handleCreateChatPost = async () => {
+    if (!sellerId || !productId) {
+      // 임시로 입력을 받음
+      // 원래는 게시물에 판매자와 상품아이디가 있어 그걸 받음
+      alert("판매자 ID와 상품 ID를 입력해주세요");
+      return;
+    }
 
-    const buyerId = "hansol";
-    // const buyerNick = "한솔";
-    const sellerId = "minji";
-    // const sellerNick = "민지";
-    const productId = "test-product-123";
+    setLoading(true);
 
     const formData = new FormData();
     formData.append("type", "chat");
-    formData.append("userId", buyerId);
+    formData.append("userId", "buyerId");
     formData.append("title", `${buyerId} -> ${sellerId}`);
-    formData.append("content", "채팅을 시작합니다.");
+    formData.append("content", "채팅을 시작합니다");
     formData.append("productId", productId);
 
-    const res = await createPost(null, formData);
+    const res = await fetch(`{process.env.NEXT_PUBLIC_API_URL}/posts`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Client-Id": process.env.NEXT_PUBLIC_CLIENT_ID!,
+      },
+      body: JSON.stringify(Object.fromEntries(formData.entries())),
+    });
+
+    const json = await res.json();
     setLoading(false);
 
-    if (res.ok) {
-      console.log("채팅 게시글 생성 성공: ", res.item);
-      alert(`게시글 생성완료 postId: ${res.item._id}`);
+    if (json.ok === 1) {
+      alert(`채팅 게시글 생성 성공 postId: ${json.item._id}`);
+      console.log("게시글 내용: ", json.item);
     } else {
-      console.error("생성실패", res.message);
-      alert(`실패: ${res.message}`);
+      alert(`실패: ${json.message}`);
     }
   };
   return (
-    <div className="p-4 border rounded-md">
-      <h2 className="text-lg font-bold mb-2">채팅 게시글 생성 테스트</h2>
+    <div className="max-w-md mx-auto p-6 bg-white border rounded-lg shadow">
+      <h2 className="text-xl font-bold mb-4">채팅방 생성 (테스트)</h2>
+
+      <div className="mb-3">
+        <label className="block text-sm mb-1">판매자 ID</label>
+        <input
+          value={sellerId}
+          onChange={(e) => setSellerId(e.target.value)}
+          className="w-full border px-3 py-2 rounded"
+          placeholder="예: minji"
+        />
+      </div>
+
+      <div className="mb-3">
+        <label className="block text-sm mb-1">상품 ID</label>
+        <input
+          value={productId}
+          onChange={(e) => setProductId(e.target.value)}
+          className="w-full border px-3 py-2 rounded"
+          placeholder="예: product-123"
+        />
+      </div>
+
       <button
-        onClick={handleCreate}
+        onClick={handleCreateChatPost}
         disabled={loading}
-        className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+        className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded"
       >
-        {loading ? "생성 중..." : "채팅하기 (테스트)"}
+        {loading ? "생성 중..." : "채팅 게시글 생성"}
       </button>
     </div>
   );

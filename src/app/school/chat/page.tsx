@@ -21,11 +21,10 @@ const ChatLogin = () => {
 
   return (
     <div className="flex flex-col items-center justify-center h-screen gap-6 px-4">
-      <h1 className="text-3xl font-bold text-uni-black">Global Chat 로그인(테스트용)</h1>
-      <form
-        onSubmit={handleEnterChat}
-        className="bg-white rounded-lg shadow-md p-6 w-full max-w-sm flex flex-col gap-4"
-      >
+      <h1 className="text-3xl font-bold text-uni-black">Global Chat 로그인</h1>
+      <p className="text-12 text-uni-black">채팅 테스트용입니다.</p>
+      <p className="text-12 text-uni-black">3000, 3001로 접속해서 두개의 User ID, 닉네임적고 테스트해보세요</p>
+      <form onSubmit={handleEnterChat} className="rounded-lg p-6 w-full max-w-sm flex flex-col gap-4">
         <div>
           <label className="block text-gray-700 text-sm font-semibold mb-1">User ID</label>
           <input
