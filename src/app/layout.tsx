@@ -8,12 +8,12 @@ import "./globals.css";
 
 interface MyPageLayoutProps {
   children: ReactNode;
-  modal?: ReactNode;
+  // modal?: ReactNode;
 }
 
 const AUTH_PATHS = ["/login", "/signup", "/onBoarding"];
 
-export default function RootLayout({ children, modal }: MyPageLayoutProps) {
+export default function RootLayout({ children /*modal*/ }: MyPageLayoutProps) {
   const pathname = usePathname();
   const isAuthPage = AUTH_PATHS.some((path) => pathname.startsWith(path));
 
@@ -42,7 +42,7 @@ export default function RootLayout({ children, modal }: MyPageLayoutProps) {
             <main className="pb-20">{children}</main>
 
             {/* 모달 (Intercepting Route 예정) */}
-            {modal}
+            {/*modal*/}
 
             {/* 하단 네비게이션 */}
             <nav className="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-md bg-white border-t border-gray-200 px-3 py-2 z-10">

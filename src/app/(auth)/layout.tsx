@@ -3,10 +3,10 @@ import "../globals.css";
 
 interface MyPageLayoutProps {
   children: ReactNode;
-  modal?: ReactNode;
+  // modal?: ReactNode;
 }
 
-export default function RootLayout({ children, modal }: MyPageLayoutProps) {
+export default function RootLayout({ children /* modal*/ }: MyPageLayoutProps) {
   return (
     <html lang="ko">
       <body>
@@ -15,7 +15,7 @@ export default function RootLayout({ children, modal }: MyPageLayoutProps) {
           <main className="pb-20">{children}</main>
 
           {/* 모달 (Intercepting Route로 구현예쩡) */}
-          {modal}
+          {/*modal*/}
         </div>
       </body>
     </html>
