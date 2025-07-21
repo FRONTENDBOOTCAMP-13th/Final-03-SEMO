@@ -24,6 +24,7 @@ export default function MyPage() {
   );
 
   useSetPageHeader(headerConfig);
+  
   return (
     <div className="px-4 py-6 space-y-6">
       {/* API 테스트 컴포넌트 (개발용) - 임시로 비활성화 */}

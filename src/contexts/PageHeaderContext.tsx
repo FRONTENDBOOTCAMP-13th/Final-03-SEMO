@@ -5,22 +5,41 @@
  * 각 페이지에서 개별적으로 헤더를 설정할 수 있도록 하는 Context와 Hook을 제공합니다.
  * Layout 파일 수정 없이 각자의 페이지에서 헤더 정보를 설정할 수 있어 Git 충돌을 방지합니다.
  *
- * @example
  * // 각자의 페이지 컴포넌트에서 사용
+ * @example (미트볼 UI 사용 (메뉴 버튼 포함 헤더) )
  * import { useSetPageHeader } from "@/context/PageHeaderContext";
+ * import { useCallback, useMemo } from "react";
  *
- * export default function MyPage() {
- *   useSetPageHeader({
- *     title: "페이지 제목",
- *     backLink: "/school/home",
- *     type: "meatball", // "default" | "meatball"
- *     onMeatballClick: () => {
- *       console.log("메뉴 버튼 클릭!");
- *       // 메뉴 모달 열기 등의 로직
- *     }
- *   });
+ * const handleMeatballClick = useCallback(() => {
+ *    console.log("내 정보 메뉴 열기");
+ *    // 실제 메뉴 로직 구현
+ *  }, []);
  *
- *   return <div>페이지 내용</div>;
+ *  const headerConfig = useMemo(
+ *   () => ({
+ *     title: "내 정보(테스트)",
+ *      backLink: "/",
+ *     type: "meatball" as const,
+ *     onMeatballClick: handleMeatballClick,
+ *   }),
+ *   [handleMeatballClick]
+ *  );
+ *
+ *  useSetPageHeader(headerConfig);
+ *
+ * @example ( 기본 UI 사용 (뒤로가기만 있는 헤더) )
+ *  return <div>내 정보 콘텐츠…</div>;
+ *
+ * import { useSetPageHeader } from "@/contexts/PageHeaderContext";
+ *
+ * export default function DetailPage() {
+ *  useSetPageHeader({
+ *    title: "상세 페이지",
+ *    backLink: "/school/home",
+ *     type: "default",
+ * });
+ *
+ * return <div>상세 콘텐츠</div>;
  * }
  */
 
