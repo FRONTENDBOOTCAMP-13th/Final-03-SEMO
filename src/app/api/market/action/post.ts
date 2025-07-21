@@ -1,4 +1,5 @@
-import { type ApiResPromise, type Post } from "@/types";
+import { type ApiResPromise, type ApiRes, type Post } from "@/types";
+import { revalidatePath } from "next/cache";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID || "";
@@ -91,4 +92,41 @@ export async function deletePost(postId: string | number): ApiResPromise<Post> {
     },
   });
   return res.json();
+}
+
+/**
+ * 댓글을 생성하는 함수
+ * @param {ApiRes<PostReply> | null} state - 이전 상태(사용하지 않음)
+ * @param {FormData} formData - 댓글 정보를 담은 FormData 객체
+ * @returns {Promise<ApiRes<PostReply>>} - 생성 결과 응답 객체
+ * @description
+ * 댓글을 생성하고, 성공 시 해당 게시글의 댓글 목록을 갱신합니다.
+ */
+
+export async function createReply(state: ApiRes<Post[]> | null, formData: FormData): ApiResPromise<Post[]> {
+  const body = Object.fromEntries(formData.entries());
+  const accessToken = localStorage.getItem("accessToken");
+
+  let res: Response;
+  let data: ApiRes<Post[]>;
+
+  try {
+    res = await fetch(`${API_URL}/posts/${body._id}/replies`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Client-Id": CLIENT_ID,
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify(body),
+    });
+    data = await res.json();
+  } catch (err) {
+    console.log(err);
+    return { ok: 0, message: "일시적인 네트워크 문제로 등록에 실패하였습니다." };
+  }
+  if (data.ok) {
+    revalidatePath(`/market/${body._id}`);
+  }
+  return data;
 }
