@@ -3,22 +3,31 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { createPost } from "@/app/api/market/action/post";
+import { createPost, updatePost } from "@/app/api/market/action/post";
 import { Post } from "@/types";
 import GroupPurchase from "./GroupPurchase";
 import ProductDesc from "./ProductDesc";
 import Product from "./Product";
 import NewAccount from "./NewAccount";
 
-interface Props {
-  boardType: string;
+// interface Props {
+//   boardType: string;
+// }
+
+interface PostFormProps {
+  mode: "create" | "edit";
+  initialData?: Post; // 수정 모드에서 기존 게시글 데이터
+  marketType: string; // 게시판 타입
+  postId?: string; // 수정 모드에서 게시글 ID
 }
 
-export default function RegisterForm({ boardType }: Props) {
+export default function PostForm({ mode, initialData, marketType, postId }: PostFormProps) {
   const router = useRouter();
-  const [selected, setSelected] = useState<"registered" | "new">("registered");
-  const [tradeType, setTradeType] = useState<"sell" | "buy" | "group">("sell"); // 거래 유형 상태
-  const [images, setImages] = useState<string[]>([]); // 업로드된 이미지 저장 (Data URL 배열)
+  const [selected, setSelected] = useState<"registered" | "new">("registered"); // 계좌 유형 선택 상태 관리
+  const [tradeType, setTradeType] = useState<"sell" | "buy" | "group">( // 거래 유형 상태 관리
+    (initialData?.type as "sell" | "buy" | "group") || "sell"
+  );
+  const [images, setImages] = useState<string[]>(initialData?.image ? [initialData.image] : []); // 이미지 배열(초기값 : 이미지 한장만 가능하게 설정, 추후 변경)
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -26,7 +35,7 @@ export default function RegisterForm({ boardType }: Props) {
     try {
       const imageData = images.length > 0 ? images[0] : "";
       // 서버로 보낼 데이터
-      const result = await createPost({
+      const payload = {
         type: tradeType,
         title: formData.get("title") as string,
         content: formData.get("content") as string,
@@ -36,17 +45,25 @@ export default function RegisterForm({ boardType }: Props) {
           price: formData.get("price") as string,
           location: formData.get("location") as string,
         },
-      });
-      console.log(result);
+      };
+      let result;
 
+      // mode에 따라 createPost or updatePost 호출
+      if (mode === "create") {
+        result = await createPost(payload);
+      } else {
+        result = await updatePost(postId!, payload);
+      }
+
+      // 결과에 따른 처리(console.log 메시지 출력)
       if (result.ok) {
-        console.log("게시글이 등록되었습니다!");
+        console.log(`게시글이 ${mode === "create" ? "등록" : "수정"}되었습니다!`);
         router.push(`/school/market/${tradeType}`);
       } else {
-        console.log("게시글 등록에 실패했습니다.");
+        console.log(`게시글 ${mode === "create" ? "등록" : "수정"}에 실패했습니다.`);
       }
-    } catch (error) {
-      console.error("Error submitting form:", error);
+    } catch (err) {
+      console.error(`${mode} err:`, err);
       console.log("네트워크 오류가 발생했습니다.");
     }
   };
@@ -69,12 +86,13 @@ export default function RegisterForm({ boardType }: Props) {
         return "border-2 border-uni-gray-200 text-uni-gray-400";
     }
   };
+
   return (
     <form onSubmit={handleSubmit}>
-      <input type="hidden" name="type" value={boardType} />
+      <input type="hidden" name="type" value={marketType} />
 
       <main className="min-w-[320px] max-w-[480px] mx-auto px-4 py-6 min-h-screen bg-uni-white">
-        <Product images={images} setImages={setImages} />
+        <Product images={images} setImages={setImages} initialTitle={initialData?.title} />
         <section role="group" aria-label="거래 유형" className="mb-5 flex gap-3">
           {/* 팔래요, 살래요, 모여요 버튼 생성 */}
           {(["buy", "sell", "group"] as const).map((t) => (
@@ -86,8 +104,9 @@ export default function RegisterForm({ boardType }: Props) {
                 type="radio"
                 name="tradeType"
                 value={t}
+                disabled={mode === "edit"}
                 checked={tradeType === t}
-                onChange={() => setTradeType(t)} // 버튼 클릭시 tradeType 상태 업데이트
+                onChange={() => mode === "create" && setTradeType(t)} // 버튼 클릭시 tradeType 상태 업데이트
                 className="hidden"
               />
               {t === "buy" ? "살래요" : t === "sell" ? "팔래요" : "모여요"}
@@ -95,7 +114,7 @@ export default function RegisterForm({ boardType }: Props) {
           ))}
         </section>
 
-        <ProductDesc />
+        <ProductDesc initialData={initialData} />
         {tradeType === "group" && <GroupPurchase />}
         <section className="mb-8">
           <fieldset className="flex flex-col gap-3">
@@ -135,7 +154,7 @@ export default function RegisterForm({ boardType }: Props) {
 
         <div className="flex justify-end">
           <button type="submit" className="w-full bg-uni-blue-400 text-uni-white px-4 py-2 rounded-lg cursor-pointer">
-            등록하기
+            {mode === "create" ? "등록하기" : "수정하기"}
           </button>
         </div>
       </main>

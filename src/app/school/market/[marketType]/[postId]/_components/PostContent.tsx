@@ -1,15 +1,42 @@
 "use client";
 
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import CommentList from "./CommentList";
 import { Post } from "@/types";
 import { getImageUrl } from "@/app/api/market/action/file";
+import { deletePost } from "@/app/api/market/action/post";
 
 interface PostContentProps {
   post: Post;
 }
 
 export default function PostContent({ post }: PostContentProps) {
+  const router = useRouter();
+
+  // 임시: 내 게시글인지 확인 (실제로는 localStorage의 currentUser와 비교)
+  const currentUser = JSON.parse(localStorage.getItem("currentUser") || "{}");
+  const isMyPost = currentUser._id === post.user._id;
+
+  const handleEdit = () => {
+    // 수정 페이지로 이동
+    router.push(`/school/market/${post.type}/${post._id}/edit`);
+  };
+
+  const handleDelete = async () => {
+    if (!confirm("정말 삭제하시겠습니까?")) return;
+    try {
+      const res = await deletePost(post._id.toString());
+      if (res.ok) {
+        console.log("게시글이 삭제되었습니다.");
+        router.push(`/school/market/${post.type}`);
+      } else {
+        console.log("게시글 삭제에 실패했습니다.");
+      }
+    } catch (err) {
+      console.error("게시글 삭제 중 오류 발생:", err);
+    }
+  };
   return (
     <div className="min-w-[320px] max-w-[480px] mx-auto px-4 py-6 min-h-screen bg-uni-white">
       {/* 이미지 */}
@@ -33,6 +60,23 @@ export default function PostContent({ post }: PostContentProps) {
         <h2 className="font-bold text-22">{post?.title}</h2>
         <button>❤️</button>
       </div>
+
+      {isMyPost && (
+        <div className="flex gap-2 mb-4">
+          <button
+            onClick={handleEdit}
+            className="px-4 py-2 bg-blue-500 text-white rounded-lg text-14 hover:bg-blue-600 transition-colors"
+          >
+            수정
+          </button>
+          <button
+            onClick={handleDelete}
+            className="px-4 py-2 bg-blue-500 text-white rounded-lg text-14 hover:bg-blue-600 transition-colors"
+          >
+            삭제
+          </button>
+        </div>
+      )}
 
       {/* 가격 */}
       <p className="text-14 text-uni-gray-400 mb-4">
