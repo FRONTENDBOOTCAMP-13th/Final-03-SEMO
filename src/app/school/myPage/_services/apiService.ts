@@ -76,7 +76,6 @@ class MyPageApiService {
   static async updateUserExtra(
     userId: number,
     extraData: {
-      nickname?: string;
       bank?: string;
       bankNumber?: number;
       [key: string]: any;

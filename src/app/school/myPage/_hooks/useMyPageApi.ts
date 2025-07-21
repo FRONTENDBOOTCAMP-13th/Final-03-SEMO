@@ -5,14 +5,7 @@
 
 import { useState, useCallback } from "react";
 import MyPageApiService, { ImageService, UserService } from "../_services/apiService";
-import type { User } from "@/app/school/myPage/_types/user";
-// 사용자 프로필 업데이트 시 필요한 데이터
-export interface UserProfileFormData {
-  nickname: string;
-  bank: string;
-  accountNumber: string;
-  profileImage?: string | null;
-}
+import type { User, UserProfileFormData } from "@/app/school/myPage/_types/user";
 
 interface UseMyPageApiReturn {
   loading: boolean;
@@ -81,12 +74,28 @@ export const useMyPageApi = (): UseMyPageApiReturn => {
     setError(null);
 
     try {
-      // extra 정보 업데이트
-      await UserService.updateUserExtra(userId, {
-        nickname: profileData.nickname,
-        bank: profileData.bank,
-        bankNumber: parseInt(profileData.accountNumber, 10),
-      });
+      // 기본 사용자 정보 업데이트 (name 등 루트 User 타입에 있는 필드들)
+      const updateData: Partial<User> = {
+        name: profileData.name,
+      };
+
+      await MyPageApiService.updateUser(userId, updateData);
+
+      // extra 정보 업데이트 (루트 User 타입에 없는 필드들)
+      if (profileData.bank || profileData.accountNumber) {
+        const extraData: { bank?: string; bankNumber?: number } = {};
+
+        if (profileData.bank) {
+          extraData.bank = profileData.bank;
+        }
+
+        if (profileData.accountNumber) {
+          extraData.bankNumber = parseInt(profileData.accountNumber, 10);
+        }
+
+        await UserService.updateUserExtra(userId, extraData);
+        console.log("extra 정보 업데이트 완료:", extraData);
+      }
 
       // 이미지 처리
       if (profileData.profileImage === null) {

@@ -55,9 +55,9 @@ export default function ApiTestComponent() {
       return;
     }
     const success = await updateUserProfile(currentUserId, {
-      nickname: "테스트 닉네임",
-      bank: "국민은행",
-      accountNumber: "123456789123",
+      name: "테스트 사용자명", // 기본 User 필드
+      bank: "국민은행", // extra 필드에 저장
+      accountNumber: "123456789123", // extra 필드에 bankNumber로 저장
       profileImage: userData?.image,
     });
     if (success) {

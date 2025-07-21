@@ -165,7 +165,7 @@ export default function MyPageAccount() {
 
       // 프로필 업데이트
       const profileData = {
-        nickname: nickname.trim(),
+        name: nickname.trim(), // 'name' is required by UserProfileFormData
         bank: selectedBank,
         accountNumber,
         profileImage: finalImageUrl,

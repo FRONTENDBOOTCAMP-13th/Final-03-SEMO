@@ -40,11 +40,12 @@ class TempAuthService {
         _id: data.item._id,
         email: data.item.email,
         name: data.item.name,
-        phone: data.item.phone,
         address: data.item.address,
         type: data.item.type,
         image: data.item.image,
         extra: data.item.extra,
+        createdAt: data.item.createdAt,
+        updatedAt: data.item.updatedAt,
       };
 
       //   임시 로컬 스토리지 저장
