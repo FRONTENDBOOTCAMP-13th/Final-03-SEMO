@@ -6,6 +6,16 @@ interface EditPageProps {
   params: Promise<{ marketType: string; postId: string }>;
 }
 
+/**
+ * 상품 수정 user flow
+ * 1. 유저가 상품 상세 페이지에서 수정 버튼 클릭
+ * + /school/market/sell or buy/[postId]/edit로 이동
+ * 2. [postId]/edit/page.tsx를 통해 해당 상품 상세 정보 가져옴
+ * 3. PostForm 컴포넌트에서 mode를 'edit'으로 설정하면 prop를 통해 기존 게시글 데이터가 전달됨
+ * 4. 유저가 수정 완료 후 등록 버튼 클릭시 PostForm.tsx의 handleSubmit 함수가 호출됨
+ * + action/post.ts의 updatePost가 서버에 수정된
+ */
+
 export default async function EditPage({ params }: EditPageProps) {
   const { marketType, postId } = await params;
 
