@@ -26,9 +26,9 @@ const CreateChatPost = () => {
     formData.append("title", `${buyerId} -> ${sellerId}`);
     formData.append("content", "채팅을 시작합니다");
     formData.append("productId", productId);
-    console.log("✅ 요청 주소:", `${process.env.NEXT_PUBLIC_API_URL}/market/posts`);
+    console.log("요청 주소:", `${process.env.NEXT_PUBLIC_API_URL}/posts`);
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/market/posts`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/posts`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
