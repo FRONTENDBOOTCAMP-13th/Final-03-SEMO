@@ -41,7 +41,7 @@ export default function SignupCompleteForm() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "client-id": process.env.NEXT_PUBLIC_CLIENT_ID ?? "",
+          "Client-Id": process.env.NEXT_PUBLIC_CLIENT_ID ?? "",
         },
         body: JSON.stringify({
           email,

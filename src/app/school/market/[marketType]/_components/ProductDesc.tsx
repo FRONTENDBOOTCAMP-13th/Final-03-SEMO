@@ -1,5 +1,16 @@
 // 상품 설명 입력 컴포넌트
-export default function ProductDesc() {
+import { Post } from "@/types";
+interface ProductDescProps {
+  initialData?: Post;
+}
+
+/*
+ * 수정 모드에서 initialData를 Props로 받아와서
+ * 해당 데이터를 초기값으로 설정
+ * 만약 초기값이 없다면 옵셔널로 세팅해서 문제 없이 동작
+ */
+
+export default function ProductDesc({ initialData }: ProductDescProps) {
   return (
     <section className="mb-5">
       <div className="mb-5">
@@ -10,6 +21,7 @@ export default function ProductDesc() {
         <select
           id="category"
           name="category"
+          defaultValue={initialData?.extra?.category || ""}
           className="w-full bg-uni-gray-200 rounded-lg p-3 text-16 text-uni-gray-600"
         >
           <option value="">카테고리</option>
@@ -27,6 +39,7 @@ export default function ProductDesc() {
           id="desc"
           name="content"
           placeholder="상품 설명"
+          defaultValue={initialData?.content || ""}
           className="w-full h-[150px] bg-uni-gray-200 rounded-lg p-3 text-16"
           maxLength={250}
         />
@@ -39,6 +52,7 @@ export default function ProductDesc() {
           id="price"
           name="price"
           type="text"
+          defaultValue={initialData?.extra.price || ""}
           placeholder="가격"
           className="w-full bg-uni-gray-200 rounded-lg p-3 text-16"
         />
@@ -51,6 +65,7 @@ export default function ProductDesc() {
           type="text"
           name="location"
           placeholder="거래 장소"
+          defaultValue={initialData?.extra.location || ""}
           className="w-full bg-uni-gray-200 rounded-lg p-3 text-16"
         />
       </div>

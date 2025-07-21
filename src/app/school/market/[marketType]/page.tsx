@@ -1,9 +1,18 @@
 import { Metadata } from "next";
-import ItemSection from "../itemSection";
+import ItemSection from "./itemSection";
 import FloatingButton from "@/components/common/FloatingButton";
 import Search from "@/components/common/Search";
 import Link from "next/link";
 import { Post, ApiRes } from "@/types";
+
+/**
+ * 상품 목록 user flow
+ * 1. 유저가 market 페이지 접속
+ * -> 유저가 /school/market/sell or buy 로 이동
+ * 2. 페이지가 로드되면, 해당 markeyType에 맞는 게시글 목록을 API에서 가져옴
+ * 3. 서버가 응답한 게시글 목록 function/post.ts의 getPosts 함수
+ * 가져온 게시글 데이터를 itemSection 컴포넌트에 전달하여 렌더링
+ */
 
 export const metadata: Metadata = {
   title: "UniStuff | Market",

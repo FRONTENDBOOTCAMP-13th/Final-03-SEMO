@@ -1,21 +1,33 @@
+// 게시글 공용 폼 컴포넌트
 "use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import GroupPurchase from "./_components/GroupPurchase";
-import ProductDesc from "./_components/ProductDesc";
-import Product from "./_components/Product";
-import NewAccount from "./_components/NewAccount";
+import { createPost, updatePost } from "@/app/api/market/action/post";
+import { Post } from "@/types";
+import GroupPurchase from "./GroupPurchase";
+import ProductDesc from "./ProductDesc";
+import Product from "./Product";
+import NewAccount from "./NewAccount";
 
-interface Props {
-  boardType: string;
+// interface Props {
+//   boardType: string;
+// }
+
+interface PostFormProps {
+  mode: "create" | "edit";
+  initialData?: Post; // 수정 모드에서 기존 게시글 데이터
+  marketType: string; // 게시판 타입
+  postId?: string; // 수정 모드에서 게시글 ID
 }
 
-export default function RegisterForm({ boardType }: Props) {
+export default function PostForm({ mode, initialData, marketType, postId }: PostFormProps) {
   const router = useRouter();
-  const [selected, setSelected] = useState<"registered" | "new">("registered");
-  const [tradeType, setTradeType] = useState<"sell" | "buy" | "group">("sell"); // 거래 유형 상태
-  const [images, setImages] = useState<string[]>([]); // 업로드된 이미지 저장 (Data URL 배열)
+  const [selected, setSelected] = useState<"registered" | "new">("registered"); // 계좌 유형 선택 상태 관리
+  const [tradeType, setTradeType] = useState<"sell" | "buy" | "group">( // 거래 유형 상태 관리
+    (initialData?.type as "sell" | "buy" | "group") || "sell"
+  );
+  const [images, setImages] = useState<string[]>(initialData?.image ? [initialData.image] : []); // 이미지 배열(초기값 : 이미지 한장만 가능하게 설정, 추후 변경)
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -25,33 +37,34 @@ export default function RegisterForm({ boardType }: Props) {
       // 서버로 보낼 데이터
       const payload = {
         type: tradeType,
-        title: formData.get("title"),
-        content: formData.get("content"),
+        title: formData.get("title") as string,
+        content: formData.get("content") as string,
         image: imageData,
         extra: {
-          category: formData.get("category"),
-          price: formData.get("price"),
-          location: formData.get("location"),
+          category: formData.get("category") as string,
+          price: formData.get("price") as string,
+          location: formData.get("location") as string,
         },
       };
+      let result;
 
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/posts`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Client-Id": process.env.NEXT_PUBLIC_CLIENT_ID!,
-        },
-        body: JSON.stringify(payload),
-      });
+      // mode에 따라 createPost or updatePost 호출
+      if (mode === "create") {
+        result = await createPost(payload);
+      } else {
+        result = await updatePost(postId!, payload);
+      }
 
-      const json = await res.json();
-      console.log(json);
-
-      // 사용자가 선택한 타입에 맞는 페이지로 이동
-      const redirectType = tradeType;
-      router.push(`/school/market/${redirectType}`);
-    } catch (error) {
-      console.error("Error submitting form:", error);
+      // 결과에 따른 처리(console.log 메시지 출력)
+      if (result.ok) {
+        console.log(`게시글이 ${mode === "create" ? "등록" : "수정"}되었습니다!`);
+        router.push(`/school/market/${tradeType}`);
+      } else {
+        console.log(`게시글 ${mode === "create" ? "등록" : "수정"}에 실패했습니다.`);
+      }
+    } catch (err) {
+      console.error(`${mode} err:`, err);
+      console.log("네트워크 오류가 발생했습니다.");
     }
   };
 
@@ -73,15 +86,16 @@ export default function RegisterForm({ boardType }: Props) {
         return "border-2 border-uni-gray-200 text-uni-gray-400";
     }
   };
+
   return (
     <form onSubmit={handleSubmit}>
-      <input type="hidden" name="type" value={boardType} />
+      <input type="hidden" name="type" value={marketType} />
 
       <main className="min-w-[320px] max-w-[480px] mx-auto px-4 py-6 min-h-screen bg-uni-white">
-        <Product images={images} setImages={setImages} />
+        <Product images={images} setImages={setImages} initialTitle={initialData?.title} />
         <section role="group" aria-label="거래 유형" className="mb-5 flex gap-3">
           {/* 팔래요, 살래요, 모여요 버튼 생성 */}
-          {(["sell", "buy", "group"] as const).map((t) => (
+          {(["buy", "sell", "group"] as const).map((t) => (
             <label
               key={t}
               className={`flex items-center justify-center px-5 py-2 rounded-xl font-medium text-14 cursor-pointer ${getButtonStyle(t, tradeType)} }`}
@@ -90,16 +104,17 @@ export default function RegisterForm({ boardType }: Props) {
                 type="radio"
                 name="tradeType"
                 value={t}
+                disabled={mode === "edit"}
                 checked={tradeType === t}
-                onChange={() => setTradeType(t)} // 버튼 클릭시 tradeType 상태 업데이트
+                onChange={() => mode === "create" && setTradeType(t)} // 버튼 클릭시 tradeType 상태 업데이트
                 className="hidden"
               />
-              {t === "sell" ? "팔래요" : t === "buy" ? "살래요" : "모여요"}
+              {t === "buy" ? "살래요" : t === "sell" ? "팔래요" : "모여요"}
             </label>
           ))}
         </section>
 
-        <ProductDesc />
+        <ProductDesc initialData={initialData} />
         {tradeType === "group" && <GroupPurchase />}
         <section className="mb-8">
           <fieldset className="flex flex-col gap-3">
@@ -139,7 +154,7 @@ export default function RegisterForm({ boardType }: Props) {
 
         <div className="flex justify-end">
           <button type="submit" className="w-full bg-uni-blue-400 text-uni-white px-4 py-2 rounded-lg cursor-pointer">
-            등록하기
+            {mode === "create" ? "등록하기" : "수정하기"}
           </button>
         </div>
       </main>
