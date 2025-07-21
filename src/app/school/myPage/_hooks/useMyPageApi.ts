@@ -1,9 +1,10 @@
 /**
- * 마이페이지 전용 API 훅
+ * 마이페이지 전용 API 훅 (리팩토링된 버전)
+ * 분리된 서비스들을 사용하여 구현
  */
 
 import { useState, useCallback } from "react";
-import MyPageApiService from "../_services/apiService";
+import MyPageApiService, { ImageService, UserService } from "../_services/apiService";
 import type { User } from "@/app/school/myPage/_types/user";
 // 사용자 프로필 업데이트 시 필요한 데이터
 export interface UserProfileFormData {
