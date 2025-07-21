@@ -28,7 +28,7 @@ export const useMyPageApi = (): UseMyPageApiReturn => {
   const [error, setError] = useState<string | null>(null);
 
   /**
-   * 로그인
+   *  임시 로그인 (추후 제거 예정)
    */
   const login = useCallback(async (email: string, password: string): Promise<boolean> => {
     setLoading(true);
@@ -60,7 +60,7 @@ export const useMyPageApi = (): UseMyPageApiReturn => {
     setError(null);
 
     try {
-      const user = await MyPageApiService.getUserById(userId);
+      const user = await UserService.getUserById(userId);
       console.log("훅에서 받은 사용자 데이터:", user);
       return user;
     } catch (err) {
@@ -81,8 +81,8 @@ export const useMyPageApi = (): UseMyPageApiReturn => {
     setError(null);
 
     try {
-      const updateData: Partial<User> = {
-        extra: {
+      // extra 정보 업데이트
+      await UserService.updateUserExtra(userId, {
           nickname: profileData.nickname,
           bank: profileData.bank,
           bankNumber: parseInt(profileData.accountNumber, 10),
@@ -91,9 +91,9 @@ export const useMyPageApi = (): UseMyPageApiReturn => {
 
       // 이미지 처리
       if (profileData.profileImage === null) {
-        // 이미지 제거를 원하는 경우
-        updateData.image = undefined;
-        console.log("이미지 제거 요청");
+        // 이미지 제거 요청
+        await UserService.updateUserProfileImage(userId, null, true);
+        console.log("이미지 제거 완료");
       } else if (
         profileData.profileImage &&
         typeof profileData.profileImage === "string" &&
