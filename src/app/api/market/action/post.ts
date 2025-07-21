@@ -81,15 +81,10 @@ export async function updatePost(
  */
 
 export async function deletePost(postId: string | number): ApiResPromise<Post> {
-  const accessToken = localStorage.getItem("accessToken");
-  if (!accessToken) {
-    throw new Error("로그인이 필요합니다.");
-  }
   const res = await fetch(`${API_URL}/posts/${postId}`, {
     method: "DELETE",
     headers: {
       "Client-Id": CLIENT_ID,
-      Authorization: `Bearer ${accessToken}`,
     },
   });
   return res.json();
@@ -104,10 +99,16 @@ export async function deletePost(postId: string | number): ApiResPromise<Post> {
  * 댓글을 생성하고, 성공 시 해당 게시글의 댓글 목록을 갱신합니다.
  */
 
-export async function createReply(state: ApiRes<Post[]> | null, formData: FormData): ApiResPromise<Post[]> {
+export async function createReply(
+  state: ApiRes<Post[]> | null,
+  formData: FormData,
+  retryCount = 0
+): ApiResPromise<Post[]> {
+  const MAX_RETRIES = 10;
+
   const body = Object.fromEntries(formData.entries());
   // 폼 데이터 객체로 변환 FormData -> {content: '하이', _id:523}
-  const accessToken = localStorage.getItem("accessToken");
+  // const accessToken = localStorage.getItem("accessToken");
   // 토큰 가져오기
 
   let res: Response;
@@ -119,11 +120,17 @@ export async function createReply(state: ApiRes<Post[]> | null, formData: FormDa
       headers: {
         "Content-Type": "application/json",
         "Client-Id": CLIENT_ID,
-        Authorization: `Bearer ${accessToken}`,
+        // Authorization: `Bearer ${accessToken}`,
       },
       body: JSON.stringify(body),
     });
     data = await res.json();
+
+    if (!res.ok && retryCount < MAX_RETRIES) {
+      console.warn(`createReply 실패, 재시도 ${retryCount + 1}/${MAX_RETRIES}`);
+      await new Promise((resolve) => setTimeout(resolve, 1000 * (retryCount + 1)));
+      return createReply(state, formData, retryCount + 1);
+    }
   } catch (err) {
     console.log(err);
     return { ok: 0, message: "일시적인 네트워크 문제로 등록에 실패하였습니다." };
