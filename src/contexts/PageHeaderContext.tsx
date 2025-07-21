@@ -26,9 +26,9 @@
  *  );
  *
  *  useSetPageHeader(headerConfig);
- *
+ * return <div>내 정보 콘텐츠…</div>;
  * @example ( 기본 UI 사용 (뒤로가기만 있는 헤더) )
- *  return <div>내 정보 콘텐츠…</div>;
+ *
  *
  * import { useSetPageHeader } from "@/contexts/PageHeaderContext";
  *
