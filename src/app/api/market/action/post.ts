@@ -1,3 +1,4 @@
+"use server";
 import { type ApiResPromise, type ApiRes, type Post } from "@/types";
 import { revalidatePath } from "next/cache";
 
@@ -128,7 +129,7 @@ export async function createReply(state: ApiRes<Post[]> | null, formData: FormDa
     return { ok: 0, message: "일시적인 네트워크 문제로 등록에 실패하였습니다." };
   }
   if (data.ok) {
-    revalidatePath(`/market/${body._id}`);
+    revalidatePath(`/market/${body._id}`); // 해당 게시글의 댓글 목록을 갱신(캐시 무효화)
   }
   return data;
 }

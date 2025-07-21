@@ -1,5 +1,6 @@
 import { Metadata } from "next";
-import ItemSection from "./itemSection";
+// import ItemSection from "./itemSection";
+import ItemSection from "@/app/school/market/[marketType]/itemSection";
 import FloatingButton from "@/components/common/FloatingButton";
 import Search from "@/components/common/Search";
 import Link from "next/link";
