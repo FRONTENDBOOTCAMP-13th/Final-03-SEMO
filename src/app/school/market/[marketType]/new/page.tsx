@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 // import PostForm from "./_components/PostForm";
 import PostForm from "@/app/school/market/[marketType]/_components/PostForm";
+import MarketPageHeader from "@/app/school/market/[marketType]/_components/MarketPageHeader";
 
 export const metadata: Metadata = {
   title: "UniStuff | 게시글 작성",
@@ -23,5 +24,10 @@ interface NewPageProps {
 
 export default async function NewPage({ params }: NewPageProps) {
   const { marketType } = await params;
-  return <PostForm mode="create" marketType={marketType} />;
+  return (
+    <>
+      <MarketPageHeader />
+      <PostForm mode="create" marketType={marketType} />;
+    </>
+  );
 }

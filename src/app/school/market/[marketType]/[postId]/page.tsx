@@ -1,4 +1,5 @@
 import PostContent from "./_components/PostContent";
+import MarketPageHeader from "@/app/school/market/[marketType]/_components/MarketPageHeader";
 
 interface PageProps {
   params: Promise<{ marketType: string; postId: string }>;
@@ -22,5 +23,10 @@ export default async function MarketDetailPage({ params }: PageProps) {
     cache: "no-store",
   });
   const json = await res.json();
-  return <PostContent post={json.item} />;
+  return (
+    <>
+      <MarketPageHeader />
+      <PostContent post={json.item} />;
+    </>
+  );
 }

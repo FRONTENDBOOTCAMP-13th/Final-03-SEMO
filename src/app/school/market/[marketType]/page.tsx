@@ -3,6 +3,7 @@ import { Metadata } from "next";
 import ItemSection from "@/app/school/market/[marketType]/itemSection";
 import FloatingButton from "@/components/common/FloatingButton";
 import Search from "@/components/common/Search";
+import MarketPageHeader from "@/app/school/market/[marketType]/_components/MarketPageHeader";
 import Link from "next/link";
 import { Post, ApiRes } from "@/types";
 
@@ -31,9 +32,9 @@ export default async function MarketPage({ params }: { params: Promise<{ marketT
   if (!res.ok) throw new Error("게시글 로드 실패");
   const json = (await res.json()) as ApiRes<Post[]>;
   if (json.ok !== 1) throw new Error("게시글 로드 실패");
-
   return (
     <main className="px-5 py-1 bg-uni-white min-h-screen">
+      <MarketPageHeader />
       <Search />
       <div className="flex justify-around mb-4 border-b border-uni-gray-300">
         {(["buy", "sell"] as const).map((i) => {
