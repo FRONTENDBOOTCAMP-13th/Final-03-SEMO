@@ -1,3 +1,7 @@
+/**
+ * @fileoverview 앱 전체 레이아웃 컴포넌트
+ *
+ */
 "use client";
 
 import { ReactNode } from "react";
@@ -32,7 +36,8 @@ function LayoutContent({ children }: MyPageLayoutProps) {
   //  나머지 일반 페이지는 공통 UI 포함
   return (
     <div className="min-h-screen bg-white min-w-[320px] w-full max-w-[480px] mx-auto relative">
-      {/* 헤더 컴포넌트 - 각 페이지에서 설정한 정보 사용 */}
+      {/* 헤더 컴포넌트 
+      - 각 페이지에서 설정한 정보 사용 */}
       {headerConfig && (
         <Header
           title={headerConfig.title}
