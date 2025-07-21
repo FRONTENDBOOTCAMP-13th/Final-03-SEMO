@@ -25,7 +25,7 @@ export default function CommentItem({ reply }: CommentItemProps) {
           <div className="flex-1">
             <p className="text-14 font-bold">
               {/* 동적 사용자 이름 */}
-              <Link href="" className="text-orange-400">
+              <Link href="" className="text-uni-blue-400">
                 {reply.user.name}
               </Link>
               {/* 동적 작성 날짜 */}

@@ -61,9 +61,6 @@ export default function CommentNew({ _id }: CommentNewProps) {
           </div>
         </form>
 
-        {/* 성공 메시지 */}
-        {state?.ok === 1 && <p className="mt-2 text-sm text-green-500">댓글이 등록되었습니다!</p>}
-
         {/* 일반적인 에러 메시지 */}
         {state?.ok === 0 && state.message && !state.errors && (
           <p className="mt-2 text-sm text-red-500">{state.message}</p>
