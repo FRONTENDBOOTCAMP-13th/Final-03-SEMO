@@ -44,3 +44,23 @@ export async function getPost(_id: number): ApiResPromise<Post> {
     return { ok: 0, message: "일시적인 네트워크 문제로 등록에 실패했습니다." };
   }
 }
+
+/**
+ * 특정 게시글의 댓글 목록을 가져옵니다.
+ * @param {number} _id - 게시글의 고유 ID
+ * @returns {Promise<ApiRes<PostReply[]>>} - 댓글 목록 응답 객체
+ * @Description 게시글 번호를 받아 해당하는 게시글의 댓글 목록을 가져옴
+ */
+export async function getReplies(_id: number): ApiResPromise<Post[]> {
+  try {
+    const res = await fetch(`${API_URL}/posts/${_id}/replies`, {
+      headers: {
+        "Client-Id": CLIENT_ID,
+      },
+    });
+    return res.json();
+  } catch (err) {
+    console.error(err);
+    return { ok: 0, message: "일시적인 네트워크 문제로 등록에 실패" };
+  }
+}
