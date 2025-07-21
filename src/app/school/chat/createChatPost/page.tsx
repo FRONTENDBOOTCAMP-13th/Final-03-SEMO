@@ -1,10 +1,12 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const CreateChatPost = () => {
   // "판매자 아이디"와 "상품 아이디"를 받고
   // "구매자"가 "채팅하기"를 눌러야 위 정보를 기반으로 채팅방(채팅게시물)이 생성되어야함
+  const router = useRouter();
   const buyerId = "hansol";
   const [sellerId, setSellerId] = useState("");
   const [productId, setProductId] = useState("");
@@ -43,6 +45,8 @@ const CreateChatPost = () => {
     if (json.ok === 1) {
       alert(`채팅 게시글 생성 성공 postId: ${json.item._id}`);
       console.log("게시글 내용: ", json.item);
+
+      router.push(`/school/chat/${json.item._id}`);
     } else {
       alert(`실패: ${json.message}`);
     }
