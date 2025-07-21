@@ -16,11 +16,11 @@ export default function LoginForm() {
 
   const handleLogin = async () => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/login`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/login?expiresIn=1d`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "client-id": process.env.NEXT_PUBLIC_CLIENT_ID ?? "",
+          "Client-Id": process.env.NEXT_PUBLIC_CLIENT_ID ?? "",
         },
         body: JSON.stringify({ email, password }),
       });
@@ -34,7 +34,15 @@ export default function LoginForm() {
 
       alert("로그인 성공!");
 
-      localStorage.setItem("accessToken", result?.accessToken || "");
+      const accessToken = result.item?.token?.accessToken;
+      const user = result.item;
+
+      if (accessToken) {
+        localStorage.setItem("accessToken", accessToken);
+      }
+      if (user) {
+        localStorage.setItem("user", JSON.stringify(user));
+      }
       router.push("/school");
     } catch (error) {
       if (error instanceof Error) {
