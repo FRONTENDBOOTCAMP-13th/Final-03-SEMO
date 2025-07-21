@@ -1,3 +1,12 @@
+/**
+ * @fileoverview 페이지별 헤더 설정을 위한 Context API
+ *
+ * @description
+ * 각 페이지에서 개별적으로 헤더를 설정할 수 있도록 하는 Context와 Hook을 제공합니다.
+ * Layout 파일 수정 없이 각자의 페이지에서 헤더 정보를 설정할 수 있어 Git 충돌을 방지합니다.
+ *
+ */
+
 "use client";
 
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
