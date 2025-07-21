@@ -21,13 +21,13 @@ export async function createPost(postData: {
     location: string;
   };
 }): ApiResPromise<Post> {
-  const accessToken = localStorage.getItem("accessToken");
+  // const accessToken = localStorage.getItem("accessToken");
   const res = await fetch(`${API_URL}/posts`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       "Client-Id": CLIENT_ID,
-      Authorization: `Bearer ${accessToken}`,
+      // Authorization: `Bearer ${accessToken}`,
     },
     body: JSON.stringify(postData),
   });
@@ -55,18 +55,18 @@ export async function updatePost(
     };
   }
 ): ApiResPromise<Post> {
-  const accessToken = localStorage.getItem("accessToken");
+  // const accessToken = localStorage.getItem("accessToken");
 
-  if (!accessToken) {
-    throw new Error("로그인이 필요합니다.");
-  }
+  // if (!accessToken) {
+  //   throw new Error("로그인이 필요합니다.");
+  // }
 
   const res = await fetch(`${API_URL}/posts/${postId}`, {
     method: "PATCH", // 수정은 PATCH 메서드
     headers: {
       "Content-Type": "application/json",
       "Client-Id": CLIENT_ID,
-      Authorization: `Bearer ${accessToken}`,
+      // Authorization: `Bearer ${accessToken}`,
     },
     body: JSON.stringify(postData),
   });
