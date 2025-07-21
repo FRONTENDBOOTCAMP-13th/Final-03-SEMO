@@ -117,7 +117,7 @@ class UserService {
     imageFile?: File | null,
     removeImage: boolean = false
   ): Promise<User> {
-    let updateData: Partial<User> = {};
+    const updateData: Partial<User> = {};
 
     if (removeImage) {
       // 이미지 제거
