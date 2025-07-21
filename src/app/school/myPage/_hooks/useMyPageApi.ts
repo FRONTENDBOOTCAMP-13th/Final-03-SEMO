@@ -83,11 +83,10 @@ export const useMyPageApi = (): UseMyPageApiReturn => {
     try {
       // extra 정보 업데이트
       await UserService.updateUserExtra(userId, {
-          nickname: profileData.nickname,
-          bank: profileData.bank,
-          bankNumber: parseInt(profileData.accountNumber, 10),
-        },
-      };
+        nickname: profileData.nickname,
+        bank: profileData.bank,
+        bankNumber: parseInt(profileData.accountNumber, 10),
+      });
 
       // 이미지 처리
       if (profileData.profileImage === null) {
@@ -100,30 +99,14 @@ export const useMyPageApi = (): UseMyPageApiReturn => {
         profileData.profileImage.trim() !== "" &&
         profileData.profileImage !== "undefined"
       ) {
-        // URL이 아니라 이미 상대 경로인 경우 그대로 사용
-        let imagePath = profileData.profileImage;
-
-        // 전체 URL인 경우 path 부분만 추출
-        if (imagePath.startsWith("http")) {
-          // API_BASE_URL 이후의 path 부분 추출
-          const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "https://fesp-api.koyeb.app/market";
-          const baseUrlPattern = apiBaseUrl.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // 정규식 이스케이프
-          const pathMatch = imagePath.match(new RegExp(`${baseUrlPattern}/(.+)$`));
-          if (pathMatch) {
-            imagePath = pathMatch[1]; // "files/client-id/filename.jpg"
-            console.log("URL에서 path 추출:", imagePath);
-          }
+        // 이미지 경로 업데이트
+        const imagePath = ImageService.extractImagePath(profileData.profileImage);
+        if (imagePath) {
+          await MyPageApiService.updateUser(userId, { image: imagePath });
+          console.log("이미지 경로 업데이트 완료:", imagePath);
         }
-
-        updateData.image = imagePath;
-        console.log("이미지 포함하여 업데이트 (path):", imagePath);
-      } else {
-        console.log("이미지 제외하고 업데이트 (이미지 값:", profileData.profileImage, ")");
-        // 이미지 필드를 아예 보내지 않음
       }
 
-      console.log("최종 전달할 updateData:", updateData);
-      await MyPageApiService.updateUser(userId, updateData);
       return true;
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "프로필 업데이트에 실패했습니다.";
@@ -144,7 +127,7 @@ export const useMyPageApi = (): UseMyPageApiReturn => {
     setError(null);
 
     try {
-      const imageUrl = await MyPageApiService.uploadFile(file);
+      const imageUrl = await ImageService.uploadFile(file);
       console.log("훅에서 받은 이미지 URL:", imageUrl);
       return imageUrl;
     } catch (err) {
