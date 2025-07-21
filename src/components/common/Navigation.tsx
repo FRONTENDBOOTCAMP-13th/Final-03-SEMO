@@ -55,7 +55,8 @@ export default function Navigation() {
       <div className="flex h-16">
         {navItems.map((item) => {
           const Icon = item.icon;
-          const isActive = pathname === item.href;
+          // 정확히 일치하거나 하위 경로인 경우 활성화
+          const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
 
           return (
             <Link
