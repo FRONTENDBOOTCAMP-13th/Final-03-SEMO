@@ -59,6 +59,7 @@ function LayoutContent({ children }: MyPageLayoutProps) {
   );
 }
 
+// Layout 전체를 Context Provider로 감싸도록 구조 변경
 export default function RootLayout({ children /*modal*/ }: MyPageLayoutProps) {
   return (
     <html lang="ko">
