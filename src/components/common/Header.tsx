@@ -3,6 +3,13 @@
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 
+interface HeaderProps {
+  title: string;
+  backLink?: string;
+  type?: "default" | "meatball";
+  onMeatballClick?: () => void;
+}
+
 export default function Header({ title, backLink = "/", type = "default", onMeatballClick }: HeaderProps) {
   return (
     <header className="bg-white border-b border-gray-200 px-3 py-2 sticky top-0 z-10">
