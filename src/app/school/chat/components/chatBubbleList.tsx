@@ -3,7 +3,7 @@
 
 import { useEffect, useRef } from "react";
 import { useSearchParams } from "next/navigation";
-import { useChatStore } from "../../chatRoom/useChatStore";
+import { useChatStore } from "../chatRoom/useChatStore";
 import ChatBubble from "./chatBubble";
 
 interface ChatBubbleListProps {

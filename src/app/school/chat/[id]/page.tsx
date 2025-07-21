@@ -1,4 +1,7 @@
-import { notFound } from "next/navigation";
+import { notFound, useSearchParams } from "next/navigation";
+import ProductInfo from "../components/productInfo";
+import ChatBubbleList from "../components/chatBubbleList";
+import InputChat from "../components/inputChat";
 
 interface ChatPageProps {
   params: Promise<{ id: string }>;
@@ -7,13 +10,18 @@ interface ChatPageProps {
 const ChatPage = async ({ params }: ChatPageProps) => {
   const { id } = await params;
   if (!id) return notFound();
+  const searchParams = useSearchParams();
+
+  const buyerId = searchParams.get("buyerId") || "";
+  const sellerId = searchParams.get("sellerId") || "";
+  const productId = searchParams.get("productId") || "";
 
   return (
-    <main className="p-4">
-      <h1 className="text-16 font-bold mdb-4">채팅방 #{id}</h1>
-      {/* 여기에 채팅 UI 또는 컴포넌트 불러오기 */}
-      <p>여기서 채팅 내용을 불러와서 보여줄 수 있습니다.</p>
-    </main>
+    <>
+      <ProductInfo />
+      <ChatBubbleList myUserId={buyerId} />
+      <InputChat userId={userId} />
+    </>
   );
 };
 

@@ -2,8 +2,8 @@
 
 import { Send } from "lucide-react";
 import { useState } from "react";
-import { socket } from "../../chatRoom/useChatSoket";
-import { useChatStore, Message } from "../../chatRoom/useChatStore";
+import { socket } from "../chatRoom/useChatSoket";
+import { useChatStore, Message } from "../chatRoom/useChatStore";
 
 interface InputChatProps {
   userId: string;
@@ -56,15 +56,6 @@ const InputChat = ({ userId, nickName }: InputChatProps) => {
     }
   };
 
-  const getPlaceholder = () => {
-    if (whisperTargetId === "all") {
-      return "메시지 입력...";
-    }
-
-    const targetUser = userList.find((u) => u.user_id === whisperTargetId);
-    return `${targetUser?.nickName || ""}에게 귓속말...`;
-  };
-
   return (
     <div className="w-full min-w-[360px] max-w-[480px] px-4 py-3">
       <div className="flex gap-2">
@@ -91,7 +82,7 @@ const InputChat = ({ userId, nickName }: InputChatProps) => {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder={getPlaceholder()}
+            placeholder={"메시지 입력..."}
             className="flex-1 bg-transparent outline-none mx-4 placeholder-uni-gray-600 text-16 text-uni-black"
           />
           <button

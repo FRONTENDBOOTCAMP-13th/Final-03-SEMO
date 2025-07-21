@@ -46,7 +46,7 @@ const CreateChatPost = () => {
       alert(`채팅 게시글 생성 성공 postId: ${json.item._id}`);
       console.log("게시글 내용: ", json.item);
 
-      router.push(`/school/chat/${json.item._id}`);
+      router.push(`/school/chat/${json.item._id}?buyerId=${buyerId}&sellerId=${sellerId}&productId=${productId}`);
     } else {
       alert(`실패: ${json.message}`);
     }
