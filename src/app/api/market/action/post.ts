@@ -105,7 +105,9 @@ export async function deletePost(postId: string | number): ApiResPromise<Post> {
 
 export async function createReply(state: ApiRes<Post[]> | null, formData: FormData): ApiResPromise<Post[]> {
   const body = Object.fromEntries(formData.entries());
+  // 폼 데이터 객체로 변환 FormData -> {content: '하이', _id:523}
   const accessToken = localStorage.getItem("accessToken");
+  // 토큰 가져오기
 
   let res: Response;
   let data: ApiRes<Post[]>;
