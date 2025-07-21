@@ -120,13 +120,13 @@ class UserService {
     const updateData: Partial<User> = {};
 
     if (removeImage) {
-      // 이미지 제거
-      updateData.image = undefined;
+      // 이미지 제거 - 빈 문자열로 설정
+      updateData.image = "";
     } else if (imageFile) {
       // 새 이미지 업로드 후 업데이트
       const imageUrl = await ImageService.uploadFile(imageFile);
       const imagePath = ImageService.extractImagePath(imageUrl);
-      updateData.image = imagePath || undefined;
+      updateData.image = imagePath || "";
     }
 
     return this.updateUser(userId, updateData);

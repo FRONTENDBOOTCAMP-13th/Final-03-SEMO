@@ -115,11 +115,13 @@ class ImageService {
 
     // path가 "files/client-id/filename" 형태라면 API_BASE_URL만 앞에 붙임
     if (imagePath.startsWith("files/")) {
-      return `${API_CONFIG.BASE_URL}/${imagePath}`;
+      const finalUrl = `${API_CONFIG.BASE_URL}/${imagePath}`;
+      return finalUrl;
     }
 
     // 기존 방식 (파일명만 있는 경우)
-    return `${API_CONFIG.BASE_URL}/files/${API_CONFIG.CLIENT_ID}/${imagePath}`;
+    const finalUrl = `${API_CONFIG.BASE_URL}/files/${API_CONFIG.CLIENT_ID}/${imagePath}`;
+    return finalUrl;
   }
 
   /**
