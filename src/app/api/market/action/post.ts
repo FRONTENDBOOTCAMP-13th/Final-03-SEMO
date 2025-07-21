@@ -1,51 +1,94 @@
-"use server";
-
-import { ApiRes, ApiResPromise, Post } from "@/types";
-import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
+import { type ApiResPromise, type Post } from "@/types";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID || "";
 
 /**
- * 게시글을 생성하는 함수
- * @param {ApiRes<Post> | null} state - 이전 상태(사용하지 않음)
- * @param {FormData} formData - 게시글 정보를 담은 FormData 객체
- * @returns {Promise<ApiRes<Post>>} - 생성 결과 응답 객체
- * @throws {Error} - 네트워크 오류 발생 시
- * @description
- * 게시글을 생성하고, 성공 시 해당 게시판으로 리다이렉트합니다.
- * 실패 시 에러 메시지를 반환합니다.
+ * 게시글 작성 함수
+ * @param postData - 게시글 데이터 객체
+ * @returns 게시글 작성 결과를 반환하는 Promise
  */
-export async function createPost(state: ApiRes<Post> | null, formData: FormData): ApiResPromise<Post> {
-  // FormData를 일반 Object로 변환
-  const body = Object.fromEntries(formData.entries());
+export async function createPost(postData: {
+  type: string;
+  title: string;
+  content: string;
+  image: string;
+  extra: {
+    category: string;
+    price: string;
+    location: string;
+  };
+}): ApiResPromise<Post> {
+  const accessToken = localStorage.getItem("accessToken");
+  const res = await fetch(`${API_URL}/posts`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Client-Id": CLIENT_ID,
+      Authorization: `Bearer ${accessToken}`,
+    },
+    body: JSON.stringify(postData),
+  });
 
-  let res: Response;
-  let data: ApiRes<Post>;
+  return res.json();
+}
 
-  try {
-    res = await fetch(`${API_URL}/posts`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Client-Id": CLIENT_ID,
-      },
-      body: JSON.stringify(body),
-    });
+/**
+ * 게시글 수정 함수
+ * @param postId - 수정할 게시글 ID
+ * @param postData - 수정할 게시글 데이터 객체
+ * @returns 게시글 수정 결과를 반환하는 Promise
+ */
+export async function updatePost(
+  postId: string,
+  postData: {
+    type: string;
+    title: string;
+    content: string;
+    image: string;
+    extra: {
+      category: string;
+      price: string;
+      location: string;
+    };
+  }
+): ApiResPromise<Post> {
+  const accessToken = localStorage.getItem("accessToken");
 
-    data = await res.json();
-  } catch (error) {
-    // 네트워크 오류 처리
-    console.error(error);
-    return { ok: 0, message: "일시적인 네트워크 문제로 등록에 실패했습니다." };
+  if (!accessToken) {
+    throw new Error("로그인이 필요합니다.");
   }
 
-  // redirect는 예외를 throw 하는 방식이라서 try 문에서 사용하면 catch로 처리되므로 제대로 동작하지 않음
-  if (data.ok) {
-    revalidatePath(`/school/market/${body.type}`);
-    redirect(`/school/market/${body.type}`);
-  } else {
-    return data;
+  const res = await fetch(`${API_URL}/posts/${postId}`, {
+    method: "PATCH", // 수정은 PATCH 메서드
+    headers: {
+      "Content-Type": "application/json",
+      "Client-Id": CLIENT_ID,
+      Authorization: `Bearer ${accessToken}`,
+    },
+    body: JSON.stringify(postData),
+  });
+
+  return res.json();
+}
+
+/**
+ * 게시글 삭제 함수
+ * @param postId - 삭제할 게시글 Id
+ *
+ */
+
+export async function deletePost(postId: string | number): ApiResPromise<Post> {
+  const accessToken = localStorage.getItem("accessToken");
+  if (!accessToken) {
+    throw new Error("로그인이 필요합니다.");
   }
+  const res = await fetch(`${API_URL}/posts/${postId}`, {
+    method: "DELETE",
+    headers: {
+      "Client-Id": CLIENT_ID,
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+  return res.json();
 }
