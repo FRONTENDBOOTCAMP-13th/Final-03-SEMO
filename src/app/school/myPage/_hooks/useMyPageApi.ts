@@ -99,8 +99,9 @@ export const useMyPageApi = (): UseMyPageApiReturn => {
 
       // 이미지 처리
       if (profileData.profileImage === null) {
-        // 이미지 제거 요청
-        await UserService.updateUserProfileImage(userId, null, true);
+        // 이미지 제거 요청 - 빈 문자열로 설정
+        console.log("이미지 제거 요청 시작...");
+        await MyPageApiService.updateUser(userId, { image: "" });
         console.log("이미지 제거 완료");
       } else if (
         profileData.profileImage &&
@@ -114,6 +115,9 @@ export const useMyPageApi = (): UseMyPageApiReturn => {
           await MyPageApiService.updateUser(userId, { image: imagePath });
           console.log("이미지 경로 업데이트 완료:", imagePath);
         }
+      } else if (profileData.profileImage === undefined) {
+        // profileImage가 undefined인 경우 이미지 필드를 변경하지 않음
+        console.log("이미지 필드 변경 없음 (undefined)");
       }
 
       return true;
