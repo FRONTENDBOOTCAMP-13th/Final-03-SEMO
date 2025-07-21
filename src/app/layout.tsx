@@ -43,14 +43,14 @@ function LayoutContent({ children }: MyPageLayoutProps) {
     return (
       //  로그인/회원가입/온보딩 페이지는 헤더·네비 제거
 
-      <div className="min-h-screen bg-white min-w-[320px] w-full max-w-[480px] mx-auto flex flex-col justify-center">
+      <div className="min-h-screen bg-uni-white min-w-[320px] w-full max-w-[480px] mx-auto flex flex-col justify-center">
         {children}
       </div>
     );
   }
   //  나머지 일반 페이지는 공통 UI 포함
   return (
-    <div className="min-h-screen bg-white min-w-[320px] w-full max-w-[480px] mx-auto relative">
+    <div className="min-h-screen bg-uni-white min-w-[320px] w-full max-w-[480px] mx-auto relative">
       {/* 헤더 컴포넌트 
       - 각 페이지에서 설정한 정보 사용 */}
       {headerConfig && (

@@ -51,12 +51,12 @@ export default function Navigation() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-md bg-white border-t border-gray-200 px-3 py-2 z-10">
+    <nav className="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-md bg-uni-white border-t border-uni-gray-200 px-3 py-2 z-10">
       <div className="flex h-16">
         {navItems.map((item) => {
           const Icon = item.icon;
           // 정확히 일치하거나 하위 경로인 경우 활성화
-          const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
+          const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
 
           return (
             <Link
@@ -64,8 +64,10 @@ export default function Navigation() {
               href={item.href}
               className="flex-1 flex flex-col items-center justify-center py-2 px-1"
             >
-              <Icon className={`w-5 h-5 mb-1 ${isActive ? "text-blue-400" : "text-gray-400"}`} />
-              <div className={`text-xs font-medium ${isActive ? "text-blue-400 font-semibold" : "text-gray-400"}`}>
+              <Icon className={`w-5 h-5 mb-1 ${isActive ? "text-uni-blue-400" : "text-uni-gray-400"}`} />
+              <div
+                className={`text-12 font-medium font-pretendard ${isActive ? "text-uni-blue-400 font-semibold" : "text-uni-gray-400"}`}
+              >
                 {item.label}
               </div>
             </Link>
