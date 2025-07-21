@@ -12,6 +12,8 @@ interface MyPageLayoutProps {
   // modal?: ReactNode;
 }
 
+const AUTH_PATHS = ["/login", "/signup", "/onBoarding"];
+
 function LayoutContent({ children }: MyPageLayoutProps) {
   const pathname = usePathname();
   const isAuthPage = AUTH_PATHS.some((path) => pathname.startsWith(path));
