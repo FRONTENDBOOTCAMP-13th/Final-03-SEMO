@@ -15,6 +15,7 @@ interface MyPageLayoutProps {
 const AUTH_PATHS = ["/login", "/signup", "/onBoarding"];
 
 function LayoutContent({ children }: MyPageLayoutProps) {
+  //usePathname 기반 레이아웃 분기 로직 구현
   const pathname = usePathname();
   const isAuthPage = AUTH_PATHS.some((path) => pathname.startsWith(path));
   const { headerConfig } = usePageHeader();
