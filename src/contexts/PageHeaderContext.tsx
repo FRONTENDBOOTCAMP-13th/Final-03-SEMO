@@ -5,6 +5,23 @@
  * 각 페이지에서 개별적으로 헤더를 설정할 수 있도록 하는 Context와 Hook을 제공합니다.
  * Layout 파일 수정 없이 각자의 페이지에서 헤더 정보를 설정할 수 있어 Git 충돌을 방지합니다.
  *
+ * @example
+ * // 각자의 페이지 컴포넌트에서 사용
+ * import { useSetPageHeader } from "@/context/PageHeaderContext";
+ *
+ * export default function MyPage() {
+ *   useSetPageHeader({
+ *     title: "페이지 제목",
+ *     backLink: "/school/home",
+ *     type: "meatball", // "default" | "meatball"
+ *     onMeatballClick: () => {
+ *       console.log("메뉴 버튼 클릭!");
+ *       // 메뉴 모달 열기 등의 로직
+ *     }
+ *   });
+ *
+ *   return <div>페이지 내용</div>;
+ * }
  */
 
 "use client";
