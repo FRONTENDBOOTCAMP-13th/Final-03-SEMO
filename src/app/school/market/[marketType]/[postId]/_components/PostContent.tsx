@@ -100,7 +100,7 @@ export default function PostContent({ post }: PostContentProps) {
       {/* 설명 */}
       <p className="text-gray-700 mb-2">{post?.content}</p>
       <p className="text-12 text-uni-gray-400 mb-6">{post?.createdAt}</p>
-      <CommentList />
+      <CommentList _id={post._id} />
     </div>
   );
 }
