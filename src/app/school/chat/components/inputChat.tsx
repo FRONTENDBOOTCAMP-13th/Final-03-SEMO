@@ -2,8 +2,8 @@
 
 import { Send } from "lucide-react";
 import { useState } from "react";
-import { socket } from "../chatRoom/useChatSoket";
-import { useChatStore, Message } from "../chatRoom/useChatStore";
+import { socket } from "../chatRoomTest/useChatSoket";
+import { useChatStore, Message } from "../chatRoomTest/useChatStore";
 
 interface InputChatProps {
   userId: string;

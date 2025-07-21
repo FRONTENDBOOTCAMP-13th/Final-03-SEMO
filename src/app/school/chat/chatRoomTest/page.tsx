@@ -2,7 +2,7 @@
 
 import { useChatSocket } from "./useChatSoket";
 import InputChat from "../components/inputChat";
-import ProductInfo from "../components/productInfo";
+// import ProductInfo from "../components/productInfo";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import ChatBubbleList from "../components/chatBubbleList";
@@ -17,7 +17,7 @@ const ChatRoomContent = () => {
 
   return (
     <>
-      <ProductInfo />
+      {/* <ProductInfo /> */}
       <ChatBubbleList myUserId={userId} />
       <InputChat userId={userId} nickName={nickName} />
     </>
