@@ -54,14 +54,41 @@ export default function ApiTestComponent() {
       alert("로그인이 필요합니다.");
       return;
     }
+
+    console.log("현재 사용자 데이터:", userData);
+
     const success = await updateUserProfile(currentUserId, {
-      name: "테스트 사용자명", // 기본 User 필드
-      bank: "국민은행", // extra 필드에 저장
-      accountNumber: "123456789123", // extra 필드에 bankNumber로 저장
-      profileImage: userData?.image,
+      name: userData?.name || "기본 사용자명", // 현재 사용자 이름 유지
+      bank: userData?.extra?.bank || "국민은행",
+      accountNumber: userData?.extra?.bankNumber?.toString() || "123456789123",
+      profileImage: userData?.image, // 현재 이미지 유지 (undefined면 제거됨)
     });
+
     if (success) {
       alert("프로필 업데이트 성공!");
+      handleGetUser(); // 업데이트된 정보 다시 가져오기
+    }
+  };
+
+  // 이미지 제거 테스트
+  const handleRemoveImage = async () => {
+    const currentUserId = getCurrentUserId();
+    if (!currentUserId) {
+      alert("로그인이 필요합니다.");
+      return;
+    }
+
+    console.log("이미지 제거 시작...");
+
+    const success = await updateUserProfile(currentUserId, {
+      name: userData?.name || "기본 사용자명", // 현재 사용자 이름 유지
+      bank: userData?.extra?.bank || "국민은행",
+      accountNumber: userData?.extra?.bankNumber?.toString() || "123456789123",
+      profileImage: null, // 명시적으로 null로 설정하여 이미지 제거
+    });
+
+    if (success) {
+      alert("이미지 제거 성공!");
       handleGetUser(); // 업데이트된 정보 다시 가져오기
     }
   };
@@ -76,16 +103,23 @@ export default function ApiTestComponent() {
 
       if (imageUrl) {
         alert(`이미지 업로드 성공: ${imageUrl}`);
-        // 업로드된 이미지로 프로필 업데이트 (일시적으로 주석 처리)
-        /*
-        await updateUserProfile(testUserId, {
-          nickname: userData?.extra?.nickname || "테스트 닉네임",
-          bank: userData?.extra?.bank || "국민은행",
-          accountNumber: userData?.extra?.bankNumber?.toString() || "123456789123",
-          profileImage: imageUrl,
-        });
-        handleGetUser(); // 업데이트된 정보 다시 가져오기
-        */
+
+        // 업로드된 이미지로 프로필 업데이트
+        const currentUserId = getCurrentUserId();
+        if (currentUserId) {
+          console.log("이미지 업로드 후 프로필 업데이트 시작...");
+          const success = await updateUserProfile(currentUserId, {
+            name: userData?.name || "테스트 사용자명",
+            bank: userData?.extra?.bank || "국민은행",
+            accountNumber: userData?.extra?.bankNumber?.toString() || "123456789123",
+            profileImage: imageUrl, // 새로 업로드된 이미지 URL 사용
+          });
+
+          if (success) {
+            console.log("이미지 업로드 후 프로필 업데이트 성공!");
+            handleGetUser(); // 업데이트된 정보 다시 가져오기
+          }
+        }
       }
     }
     // 파일 input 초기화
@@ -157,25 +191,46 @@ export default function ApiTestComponent() {
       {/* 프로필 업데이트 섹션 */}
       <div className="bg-white p-4 rounded border">
         <h3 className="font-semibold mb-3">3. 프로필 업데이트 테스트</h3>
-        <button
-          onClick={handleUpdateUser}
-          disabled={loading || !isLoggedIn || !userData}
-          className="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600 disabled:opacity-50"
-        >
-          프로필 업데이트
-        </button>
+        <div className="space-y-3">
+          <button
+            onClick={handleUpdateUser}
+            disabled={loading || !isLoggedIn || !userData}
+            className="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600 disabled:opacity-50"
+          >
+            프로필 업데이트 (현재 정보 유지)
+          </button>
+          <button
+            onClick={handleRemoveImage}
+            disabled={loading || !isLoggedIn || !userData || !userData.image}
+            className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 disabled:opacity-50"
+          >
+            이미지 제거
+          </button>
+        </div>
       </div>
 
       {/* 이미지 업로드 섹션 */}
       <div className="bg-white p-4 rounded border">
         <h3 className="font-semibold mb-3">4. 이미지 업로드 테스트</h3>
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleImageUpload}
-          disabled={loading || !isLoggedIn}
-          className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-        />
+        <div className="space-y-3">
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageUpload}
+            disabled={loading || !isLoggedIn}
+            className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+          />
+          <button
+            onClick={() => {
+              console.log("수동 새로고침 실행");
+              handleGetUser();
+            }}
+            disabled={loading || !isLoggedIn}
+            className="bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600 disabled:opacity-50"
+          >
+            프로필 정보 새로고침
+          </button>
+        </div>
       </div>
 
       {/* 현재 이미지 표시 */}
