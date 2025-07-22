@@ -12,7 +12,7 @@ class AuthService {
     this.accessToken = token;
     if (typeof window !== "undefined") {
       localStorage.setItem("accessToken", token);
-      localStorage.setItem("currentUser", JSON.stringify(user));
+      localStorage.setItem("user", JSON.stringify(user));
     }
   }
 
@@ -20,7 +20,7 @@ class AuthService {
   static restoreAuth() {
     if (typeof window !== "undefined") {
       const token = localStorage.getItem("accessToken");
-      const userJson = localStorage.getItem("currentUser");
+      const userJson = localStorage.getItem("user");
       if (token && userJson) {
         this.accessToken = token;
         this.currentUser = JSON.parse(userJson);
