@@ -8,11 +8,15 @@ import Button from "../_components/Button";
 import LogoLow from "../_components/LogoLow";
 import BackButton from "../_components/BackButton";
 import PasswordInput from "../_components/PasswordInput";
+import { useUserStore } from "@/store/userStore";
+// import { useAuthGuard } from "@/lib/useAuthGuard";
 
 export default function LoginForm() {
+  // useAuthGuard(false);
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { setUser } = useUserStore();
 
   const handleLogin = async () => {
     try {
@@ -34,15 +38,17 @@ export default function LoginForm() {
 
       alert("로그인 성공!");
 
-      const accessToken = result.item?.token?.accessToken;
+      const accessToken = result.token?.accessToken;
       const user = result.item;
 
       if (accessToken) {
         localStorage.setItem("accessToken", accessToken);
       }
+
       if (user) {
-        localStorage.setItem("user", JSON.stringify(user));
+        setUser(user);
       }
+
       router.push("/school");
     } catch (error) {
       if (error instanceof Error) {

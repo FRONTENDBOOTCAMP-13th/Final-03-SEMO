@@ -8,28 +8,18 @@ import Logo from "../../_components/LogoLow";
 import Button from "../../_components/Button";
 import Input from "../../_components/Input";
 import { useUserStore } from "@/store/userStore";
+// import { useAuthGuard } from "@/lib/useAuthGuard";
 
 export default function SignupCompleteForm() {
+  // useAuthGuard(false);
   const router = useRouter();
-  const {
-    email,
-    password,
-    university,
-    department,
-    studentId,
-    dormitory,
-    nickname,
-    setUniversity,
-    setDepartment,
-    setStudentId,
-    setDormitory,
-    setNickname,
-  } = useUserStore();
+  const { user, setUser } = useUserStore();
+  const { email, password, university, department, studentId, dormitory, name } = user;
 
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async () => {
-    if (!university || !department || !studentId || !nickname) {
+    if (!university || !department || !studentId || !name) {
       alert("모든 항목을 입력해 주세요!");
       return;
     }
@@ -46,7 +36,7 @@ export default function SignupCompleteForm() {
         body: JSON.stringify({
           email,
           password,
-          name: nickname,
+          name: name,
           type: "user",
           address: dormitory,
           extra: {
@@ -75,6 +65,10 @@ export default function SignupCompleteForm() {
     }
   };
 
+  const handleChange = (field: keyof typeof user, value: string) => {
+    setUser({ ...user, [field]: value });
+  };
+
   return (
     <main className="bg-white min-h-screen flex justify-center items-center">
       <div className="min-w-[320px] w-full max-w-[480px] px-6 flex flex-col items-center gap-6">
@@ -88,8 +82,8 @@ export default function SignupCompleteForm() {
           {/* 학교 선택 */}
           <div className="relative w-full">
             <select
-              value={university}
-              onChange={(e) => setUniversity(e.target.value)}
+              value={user.university ?? ""}
+              onChange={(e) => handleChange("university", e.target.value)}
               className="appearance-none w-full px-4 py-3 pr-10 rounded border border-[var(--color-uni-gray-200)] bg-[var(--color-uni-gray-100)] text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-uni-blue-400)] focus:bg-white"
             >
               <option value="">대학교 선택</option>
@@ -102,10 +96,29 @@ export default function SignupCompleteForm() {
             </div>
           </div>
 
-          <Input placeholder="소속 학과" value={department} onChange={(e) => setDepartment(e.target.value)} />
-          <Input placeholder="소속 학번" value={studentId} onChange={(e) => setStudentId(e.target.value)} />
-          <Input placeholder="기숙사 호관" value={dormitory} onChange={(e) => setDormitory(e.target.value)} />
-          <Input placeholder="닉네임" value={nickname} onChange={(e) => setNickname(e.target.value)} />
+          <Input
+            placeholder="소속 학과"
+            value={user.department ?? ""}
+            onChange={(e) => setUser({ ...user, department: e.target.value })}
+          />
+
+          <Input
+            placeholder="소속 학번"
+            value={user.studentId ?? ""}
+            onChange={(e) => setUser({ ...user, studentId: e.target.value })}
+          />
+
+          <Input
+            placeholder="기숙사 호관"
+            value={user.dormitory ?? ""}
+            onChange={(e) => setUser({ ...user, dormitory: e.target.value })}
+          />
+
+          <Input
+            placeholder="닉네임"
+            value={user.name ?? ""}
+            onChange={(e) => setUser({ ...user, name: e.target.value })}
+          />
         </div>
 
         <Button onClick={handleSubmit} disabled={loading} className="mt-6 w-full max-w-sm">

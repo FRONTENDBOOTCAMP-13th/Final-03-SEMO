@@ -5,10 +5,17 @@ import { useUserStore } from "@/store/userStore";
 import Input from "../_components/Input";
 import Button from "../_components/Button";
 import BackButton from "../_components/BackButton";
+// import { useAuthGuard } from "@/lib/useAuthGuard";
 
 export default function SignupForm() {
+  // useAuthGuard(false);
   const router = useRouter();
-  const { email, setEmail } = useUserStore();
+  const { user, setUser } = useUserStore();
+  const email = user.email ?? "";
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUser({ ...user, email: e.target.value });
+  };
 
   const handleEmailSubmit = () => {
     const isValidEmail = email.includes("@") && email.endsWith(".ac.kr");
@@ -38,7 +45,7 @@ export default function SignupForm() {
 
         {/* 이메일 입력 영역 */}
         <div className="w-full max-w-sm space-y-16">
-          <Input type="email" placeholder="학교 이메일" value={email} onChange={(e) => setEmail(e.target.value)} />
+          <Input type="email" placeholder="학교 이메일" value={email} onChange={handleEmailChange} />
           <Button type="primary" onClick={handleEmailSubmit}>
             이메일 입력
           </Button>
