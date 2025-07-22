@@ -4,13 +4,13 @@
  */
 
 import { useState, useCallback } from "react";
-import { UserService, ImageService, AuthService } from "../_services";
+import { UserService, ImageService } from "../_services";
 import type { User, UserProfileFormData } from "@/app/school/myPage/_types/user";
 
 interface UseMyPageApiReturn {
   loading: boolean;
   error: string | null;
-  
+
   getUserProfile: (userId: number) => Promise<User | null>;
   updateUserProfile: (userId: number, profileData: UserProfileFormData) => Promise<boolean>;
   uploadProfileImage: (file: File) => Promise<string | null>;
@@ -19,8 +19,6 @@ interface UseMyPageApiReturn {
 export const useMyPageApi = (): UseMyPageApiReturn => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  
 
   /**
    * 사용자 프로필 조회

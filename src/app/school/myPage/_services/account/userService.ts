@@ -9,8 +9,8 @@
  * 사용자 정보 조회, 수정 등을 담당
  */
 import { User } from "@/app/school/myPage/_types/user";
-import apiClient from "./apiClient";
-import ImageService from "./imageService";
+import apiClient from "../apiClient";
+import ImageService from "../imageService";
 
 class UserService {
   /**
