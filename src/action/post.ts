@@ -79,6 +79,7 @@ export async function updatePost(state: ApiRes<Post> | null, formData: FormData)
     },
   };
 
+  let result: any;
   try {
     const res = await fetch(`${API_URL}/posts/${postId}`, {
       method: "PATCH", // 수정은 PATCH 메서드
@@ -90,18 +91,17 @@ export async function updatePost(state: ApiRes<Post> | null, formData: FormData)
       body: JSON.stringify(postData),
     });
 
-    const data = await res.json();
-
-    if (data.ok) {
-      revalidateTag(`posts/${postId}`);
-      revalidateTag(`posts?type=${type}`);
-      redirect(`/school/market/${type}/${postId}`);
-    }
-    return data;
+    result = await res.json();
   } catch (err) {
     console.error("게시글 수정 오류", err);
     return { ok: 0, message: "게시글 수정 중 오류 발생" };
   }
+  if (result.ok) {
+    revalidateTag(`posts/${postId}`);
+    revalidateTag(`posts?type=${type}`);
+    redirect(`/school/market/${type}/${postId}`);
+  }
+  return result;
 }
 
 /**
