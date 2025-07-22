@@ -1,4 +1,3 @@
-// ChatBubbleList.tsx
 "use client";
 
 import { useEffect, useRef } from "react";
@@ -36,7 +35,7 @@ const ChatBubbleList = ({ myUserId, myNickName }: ChatBubbleListProps) => {
             content: msg.content,
             nickName: msg.nickName,
             isMine: isMyMessage(msg),
-            isWhisper: msg.msgType === "whisper",
+            msgType: msg.msgType,
             toNickName: msg.toNickName,
           }}
         />

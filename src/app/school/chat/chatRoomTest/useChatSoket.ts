@@ -4,29 +4,29 @@ import { Message, useChatStore } from "./useChatStore";
 
 export const socket = io("https://fesp-api.koyeb.app/ws/sample", { autoConnect: false });
 
-interface useChatSocketProps {
+interface UseChatSocketProps {
   userId: string;
   nickName: string;
   roomId: string;
 }
 
-// 커스텀 훅 -> 생성(createRoom), 입장(joinRoom)
-export const useChatSocket = ({ userId, nickName, roomId }: useChatSocketProps) => {
-  // 현재 방 아이디를 저장하는 함수 가져옴(useChatStore), 성공 시 roomId 저장
-  const setRoomId = useChatStore((state) => state.setRoomId);
-  const GlOBAL_ROOM_ID = "global";
+const GLOBAL_ROOM_ID = "global";
+
+export const useChatSocket = ({ userId, nickName, roomId }: UseChatSocketProps) => {
+  const { setRoomId, setUserList, addMessage } = useChatStore();
 
   useEffect(() => {
     socket.connect();
 
-    socket.on("connect", () => {
-      console.log("소켓 연결:", userId, nickName, roomId, socket.id);
-      setRoomId(GlOBAL_ROOM_ID);
+    const handleConnect = () => {
+      console.log("소켓 연결:", userId, nickName, socket.id);
+      setRoomId(GLOBAL_ROOM_ID);
 
+      // 방 생성 후 입장
       socket.emit(
         "createRoom",
         {
-          roomId: GlOBAL_ROOM_ID,
+          roomId: GLOBAL_ROOM_ID,
           user_id: userId,
           hostName: nickName,
           roomName: "Global Room",
@@ -36,10 +36,11 @@ export const useChatSocket = ({ userId, nickName, roomId }: useChatSocketProps) 
           if (!res.ok) {
             console.warn("Global 룸 이미 존재:", res.message);
           }
+
           socket.emit(
             "joinRoom",
             {
-              roomId: GlOBAL_ROOM_ID,
+              roomId: GLOBAL_ROOM_ID,
               user_id: userId,
               nickName,
             },
@@ -53,74 +54,73 @@ export const useChatSocket = ({ userId, nickName, roomId }: useChatSocketProps) 
           );
         }
       );
-    });
+    };
 
-    socket.on("members", (memberListObj) => {
-      const list = Object.entries(memberListObj).map(([user_id, value]: [string, any]) => ({
+    const handleMembers = (memberListObj: Record<string, any>) => {
+      const userList = Object.entries(memberListObj).map(([user_id, value]) => ({
         user_id,
         nickName: value.nickName,
         joinTime: value.joinTime,
       }));
-      useChatStore.getState().setUserList(list);
-    });
+      setUserList(userList);
+    };
 
-    if (!socket) return;
-
-    socket.off("message");
-    socket.off("sendTo"); // 귓속말 이벤트도 정리
-
-    // 모두에게 메시지 수신
-    socket.on("message", (data) => {
+    const handleMessage = (data: any) => {
       console.log("메시지 수신:", data);
 
       const raw =
-        typeof data.msg === "object" ? data.msg : { msg: data.msg, nickName: data.nickName, user_id: data.user_id };
+        typeof data.msg === "object"
+          ? data.msg
+          : {
+              msg: data.msg,
+              nickName: data.nickName,
+              user_id: data.user_id,
+            };
 
-      const msg: Message = {
+      // 귓속말 여부 확인
+      const isWhisper = data.msgType === "whisper";
+
+      const message: Message = {
         id: Date.now().toString(),
-        roomId: GlOBAL_ROOM_ID,
+        roomId: GLOBAL_ROOM_ID,
         content: raw.msg,
         type: "text",
-        msgType: "all",
+        msgType: isWhisper ? "whisper" : "all",
         createdAt: data.timestamp ?? new Date().toISOString(),
         user_id: raw.user_id ?? "system",
         nickName: raw.nickName ?? "시스템",
+        ...(isWhisper && {
+          toUserId: data.toUserId,
+          toNickName: data.toNickName,
+        }),
       };
-      useChatStore.getState().addMessage(msg);
-    });
 
-    // 귓속말 수신
-    socket.on("sendTo", (data) => {
-      console.log("귓속말 수신:", data);
+      addMessage(message);
 
-      const msg: Message = {
-        id: Date.now().toString(),
-        roomId: GlOBAL_ROOM_ID,
-        content: data.msg,
-        type: "text",
-        msgType: "whisper",
-        createdAt: data.timestamp ?? new Date().toISOString(),
-        user_id: data.user_id,
-        nickName: data.nickName,
-        toUserId: data.toUserId,
-        toNickName: data.toNickName,
-      };
-      useChatStore.getState().addMessage(msg);
-
-      const isReceiver = data.toUserId === userId || data.toNickName === nickName || data.msg?.includes(nickName); // 혹시나 닉네임 포함
-
-      const isNotSender = data.user_id !== userId;
-
-      if (isReceiver && isNotSender) {
-        alert(`${data.nickName}님이 보낸 귓속말: ${data.msg}`);
+      // 귓속말 알림 (받는 사람이고 보낸 사람이 아닐 때)
+      if (isWhisper && data.user_id !== userId) {
+        console.log("귓속말 알림 표시: ", data);
+        alert(`${data.nickName}님이 귓속말을 보냈습니다.`);
       }
-    });
+    };
+    const handleWhisper = (data: any) => {
+      console.log("귓속말 수신:", data);
+      // sendTo 이벤트로 온 메시지도 동일하게 처리
+      handleMessage({ ...data, msgType: "whisper" });
+    };
+
+    socket.on("connect", handleConnect);
+    socket.on("members", handleMembers);
+    socket.on("message", handleMessage);
+    socket.on("sendTo", handleWhisper);
 
     return () => {
-      socket.off("message");
-      socket.off("sendTo"); // 정리할 때 귓속말 이벤트도 제거
+      socket.off("connect", handleConnect);
+      socket.off("members", handleMembers);
+      socket.off("message", handleMessage);
+      socket.off("sendTo", handleWhisper);
       socket.emit("leaveRoom");
       socket.disconnect();
     };
-  }, [userId, nickName, roomId, setRoomId]);
+  }, [userId, nickName, roomId, setRoomId, setUserList, addMessage]);
 };
