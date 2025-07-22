@@ -1,21 +1,6 @@
-// interface CommentNewProps {
-//   _id: number;
-// }
-
-// export default function CommentNew({ _id }: CommentNewProps) {
-//   return (
-//     <div className="min-w-[320px] max-w-[480px]">
-//       {/* 댓글 */}
-//       <div>
-//         <input placeholder="댓글을 입력하세요" className="w-full bg-uni-gray-200 rounded-md p-3 mb-8 text-16" />
-//       </div>
-//     </div>
-//   );
-// }
-
 "use client";
 import { createReply } from "@/app/api/market/action/post";
-import { useActionState } from "react";
+import { useActionState, useState, useEffect } from "react";
 
 interface CommentNewProps {
   _id: number;
@@ -23,6 +8,14 @@ interface CommentNewProps {
 
 export default function CommentNew({ _id }: CommentNewProps) {
   const [state, formAction, isLoading] = useActionState(createReply, null);
+  const [accessToken, setAccessToken] = useState<string>("");
+
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+    if (token) {
+      setAccessToken(token);
+    }
+  }, []);
 
   console.log(isLoading, state);
 
@@ -33,6 +26,7 @@ export default function CommentNew({ _id }: CommentNewProps) {
         <form action={formAction}>
           {/* 숨겨진 게시글 ID */}
           <input type="hidden" name="_id" value={_id} />
+          <input type="hidden" name="accessToken" value={accessToken} />
 
           {/* 댓글 입력 필드 */}
           <div className="mb-4">

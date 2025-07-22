@@ -31,6 +31,14 @@ export default function PostForm({ mode, initialData, marketType, postId }: Post
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const accessToken = localStorage.getItem("accessToken");
+
+    if (!accessToken) {
+      alert("로그인이 필요합니다.");
+      router.push("/login");
+      return;
+    }
+
     const formData = new FormData(e.currentTarget); // 폼의 모든 입력값들을 FormData 객체로 수집
     try {
       const imageData = images.length > 0 ? images[0] : "";
@@ -45,6 +53,7 @@ export default function PostForm({ mode, initialData, marketType, postId }: Post
           price: formData.get("price") as string,
           location: formData.get("location") as string,
         },
+        accessToken,
       };
       let result;
 

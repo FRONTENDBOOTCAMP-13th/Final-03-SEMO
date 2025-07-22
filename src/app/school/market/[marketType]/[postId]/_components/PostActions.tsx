@@ -12,7 +12,7 @@ export default function PostActions({ post }: PostActionsProps) {
   const router = useRouter();
 
   // 임시: 내 게시글인지 확인 (실제로는 localStorage의 currentUser와 비교)
-  const currentUser = JSON.parse(localStorage.getItem("currentUser") || "{}");
+  const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
   const isMyPost = currentUser._id === post.user._id;
 
   const handleEdit = () => {
@@ -23,7 +23,8 @@ export default function PostActions({ post }: PostActionsProps) {
   const handleDelete = async () => {
     if (!confirm("정말 삭제하시겠습니까?")) return;
     try {
-      const res = await deletePost(post._id.toString());
+      const accessToken = localStorage.getItem("accessToken");
+      const res = await deletePost(post._id.toString(), accessToken as string);
       if (res.ok) {
         console.log("게시글이 삭제되었습니다.");
         router.push(`/school/market/${post.type}`);
