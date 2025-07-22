@@ -1,5 +1,5 @@
 "use server";
-import { type ApiResPromise, type ApiRes, type Post } from "@/types";
+import { type ApiResPromise, type ApiRes, type Post, type PostReply } from "@/types";
 import { revalidatePath } from "next/cache";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -20,16 +20,17 @@ export async function createPost(postData: {
     price: string;
     location: string;
   };
+  accessToken: string;
 }): ApiResPromise<Post> {
-  // const accessToken = localStorage.getItem("accessToken");
+  const { accessToken, ...bodyData } = postData;
   const res = await fetch(`${API_URL}/posts`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       "Client-Id": CLIENT_ID,
-      // Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${accessToken}`,
     },
-    body: JSON.stringify(postData),
+    body: JSON.stringify(bodyData),
   });
 
   return res.json();
@@ -53,22 +54,19 @@ export async function updatePost(
       price: string;
       location: string;
     };
+    accessToken: string;
   }
 ): ApiResPromise<Post> {
-  // const accessToken = localStorage.getItem("accessToken");
-
-  // if (!accessToken) {
-  //   throw new Error("로그인이 필요합니다.");
-  // }
+  const { accessToken, ...bodyData } = postData;
 
   const res = await fetch(`${API_URL}/posts/${postId}`, {
     method: "PATCH", // 수정은 PATCH 메서드
     headers: {
       "Content-Type": "application/json",
       "Client-Id": CLIENT_ID,
-      // Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${accessToken}`,
     },
-    body: JSON.stringify(postData),
+    body: JSON.stringify(bodyData),
   });
 
   return res.json();
@@ -80,11 +78,12 @@ export async function updatePost(
  *
  */
 
-export async function deletePost(postId: string | number): ApiResPromise<Post> {
+export async function deletePost(postId: string | number, accessToken: string): ApiResPromise<Post> {
   const res = await fetch(`${API_URL}/posts/${postId}`, {
     method: "DELETE",
     headers: {
       "Client-Id": CLIENT_ID,
+      Authorization: `Bearer ${accessToken}`,
     },
   });
   return res.json();
@@ -108,7 +107,7 @@ export async function createReply(
 
   const body = Object.fromEntries(formData.entries());
   // 폼 데이터 객체로 변환 FormData -> {content: '하이', _id:523}
-  // const accessToken = localStorage.getItem("accessToken");
+  const accessToken = formData.get("accessToken") as string;
   // 토큰 가져오기
 
   let res: Response;
@@ -120,7 +119,7 @@ export async function createReply(
       headers: {
         "Content-Type": "application/json",
         "Client-Id": CLIENT_ID,
-        // Authorization: `Bearer ${accessToken}`,
+        Authorization: `Bearer ${accessToken}`,
       },
       body: JSON.stringify(body),
     });
@@ -139,4 +138,25 @@ export async function createReply(
     revalidatePath(`/market/${body._id}`); // 해당 게시글의 댓글 목록을 갱신(캐시 무효화)
   }
   return data;
+}
+
+/**
+ * 특정 게시글의 댓글 목록을 가져옵니다.
+ * @param {number} _id - 게시글의 고유 ID
+ * @returns {Promise<ApiRes<PostReply[]>>} - 댓글 목록 응답 객체
+ */
+export async function getReplies(_id: number): ApiResPromise<PostReply[]> {
+  try {
+    const res = await fetch(`${API_URL}/posts/${_id}/replies`, {
+      headers: {
+        "Client-Id": CLIENT_ID,
+      },
+      cache: "no-store", // 댓글은 실시간으로 업데이트되어야 하므로
+    });
+    return res.json();
+  } catch (error) {
+    // 네트워크 오류 처리
+    console.error(error);
+    return { ok: 0, message: "댓글을 불러오는데 실패했습니다." };
+  }
 }
