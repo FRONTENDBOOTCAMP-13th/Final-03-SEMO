@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { User, Package, Star, Heart, Bell, Info, LogOut } from "lucide-react";
-// import ApiTestComponent from "./_test/ApiTestComponent";
 import { useSetPageHeader } from "@/contexts/PageHeaderContext";
 import { useCallback, useMemo } from "react";
 
@@ -24,12 +23,9 @@ export default function MyPage() {
   );
 
   useSetPageHeader(headerConfig);
-  
+
   return (
     <div className="px-4 py-6 space-y-6">
-      {/* API 테스트 컴포넌트 (개발용) - 임시로 비활성화 */}
-      {/* {process.env.NODE_ENV === "development" && <ApiTestComponent />} */}
-
       {/* 사용자 프로필 */}
       <div className="flex flex-col items-center text-center bg-uni-white py-8">
         <div className="w-24 h-24 mb-4 bg-uni-gray-200 rounded-full flex items-center justify-center">
