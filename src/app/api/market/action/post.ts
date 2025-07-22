@@ -1,6 +1,7 @@
 "use server";
 import { type ApiResPromise, type ApiRes, type Post, type PostReply } from "@/types";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
+import { redirect } from "next/navigation";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID || "";
@@ -10,30 +11,52 @@ const CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID || "";
  * @param postData - 게시글 데이터 객체
  * @returns 게시글 작성 결과를 반환하는 Promise
  */
-export async function createPost(postData: {
-  type: string;
-  title: string;
-  content: string;
-  image: string;
-  extra: {
-    category: string;
-    price: string;
-    location: string;
-  };
-  accessToken: string;
-}): ApiResPromise<Post> {
-  const { accessToken, ...bodyData } = postData;
-  const res = await fetch(`${API_URL}/posts`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Client-Id": CLIENT_ID,
-      Authorization: `Bearer ${accessToken}`,
-    },
-    body: JSON.stringify(bodyData),
-  });
+export async function createPost(state: ApiRes<Post> | null, formData: FormData): ApiResPromise<Post> {
+  const accessToken = formData.get("accessToken") as string;
+  const type = formData.get("type") as string;
 
-  return res.json();
+  if (!accessToken) {
+    return { ok: 0, message: "로그인이 필요합니다." };
+  }
+
+  // FormData에서 데이터 추출
+  const postData = {
+    type,
+    title: formData.get("title") as string,
+    content: formData.get("content") as string,
+    image: formData.get("image") as string,
+    extra: {
+      category: formData.get("category") as string,
+      price: formData.get("price") as string,
+      location: formData.get("location") as string,
+    },
+  };
+
+  try {
+    const res = await fetch(`${API_URL}/posts`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Client-Id": CLIENT_ID,
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify(postData),
+    });
+
+    const data = await res.json();
+
+    if (data.ok) {
+      // 캐시 무효화
+      revalidateTag(`posts?type=${type}`);
+      // 리다이렉트
+      redirect(`/school/market/${type}`);
+    }
+
+    return data;
+  } catch (error) {
+    console.error("게시글 작성 오류:", error);
+    return { ok: 0, message: "게시글 작성 중 오류가 발생했습니다." };
+  }
 }
 
 /**
