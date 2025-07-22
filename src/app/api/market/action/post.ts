@@ -65,34 +65,46 @@ export async function createPost(state: ApiRes<Post> | null, formData: FormData)
  * @param postData - 수정할 게시글 데이터 객체
  * @returns 게시글 수정 결과를 반환하는 Promise
  */
-export async function updatePost(
-  postId: string,
-  postData: {
-    type: string;
-    title: string;
-    content: string;
-    image: string;
+export async function updatePost(state: ApiRes<Post> | null, formData: FormData): ApiResPromise<Post> {
+  const accessToken = formData.get("accessToken") as string;
+  const postId = formData.get("type") as string;
+  const type = formData.get("type") as string;
+
+  const postData = {
+    type,
+    title: formData.get("title") as string,
+    content: formData.get("content") as string,
+    image: formData.get("image") as string,
     extra: {
-      category: string;
-      price: string;
-      location: string;
-    };
-    accessToken: string;
-  }
-): ApiResPromise<Post> {
-  const { accessToken, ...bodyData } = postData;
-
-  const res = await fetch(`${API_URL}/posts/${postId}`, {
-    method: "PATCH", // 수정은 PATCH 메서드
-    headers: {
-      "Content-Type": "application/json",
-      "Client-Id": CLIENT_ID,
-      Authorization: `Bearer ${accessToken}`,
+      category: formData.get("category") as string,
+      price: formData.get("price") as string,
+      location: formData.get("location") as string,
     },
-    body: JSON.stringify(bodyData),
-  });
+  };
 
-  return res.json();
+  try {
+    const res = await fetch(`${API_URL}/posts/${postId}`, {
+      method: "PATCH", // 수정은 PATCH 메서드
+      headers: {
+        "Content-Type": "application/json",
+        "Client-Id": CLIENT_ID,
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify(postData),
+    });
+
+    const data = await res.json();
+
+    if (data.ok) {
+      revalidateTag(`posts/${postId}`);
+      revalidateTag(`posts?type=${type}`);
+      redirect(`/school/market/${type}/${postId}`);
+    }
+    return data;
+  } catch (err) {
+    console.error("게시글 수정 오류", err);
+    return { ok: 0, message: "게시글 수정 중 오류 발생" };
+  }
 }
 
 /**
