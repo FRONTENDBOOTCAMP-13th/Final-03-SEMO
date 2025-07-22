@@ -1,5 +1,5 @@
 "use client";
-import { createReply } from "@/app/api/market/action/post";
+import { createReply } from "@/action/post";
 import { useActionState, useState, useEffect } from "react";
 
 interface CommentNewProps {

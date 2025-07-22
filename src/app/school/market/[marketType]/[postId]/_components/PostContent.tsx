@@ -2,7 +2,7 @@ import Image from "next/image";
 import CommentList from "./CommentList";
 import PostActions from "./PostActions";
 import { Post } from "@/types";
-import { getImageUrl } from "@/app/api/market/action/file";
+import { getImageUrl } from "@/action/file";
 interface PostContentProps {
   post: Post;
 }

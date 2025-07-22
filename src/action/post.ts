@@ -67,7 +67,7 @@ export async function createPost(state: ApiRes<Post> | null, formData: FormData)
  */
 export async function updatePost(state: ApiRes<Post> | null, formData: FormData): ApiResPromise<Post> {
   const accessToken = formData.get("accessToken") as string;
-  const postId = formData.get("type") as string;
+  const postId = formData.get("postId") as string;
   const type = formData.get("type") as string;
 
   const postData = {
@@ -113,15 +113,33 @@ export async function updatePost(state: ApiRes<Post> | null, formData: FormData)
  *
  */
 
-export async function deletePost(postId: string | number, accessToken: string): ApiResPromise<Post> {
-  const res = await fetch(`${API_URL}/posts/${postId}`, {
-    method: "DELETE",
-    headers: {
-      "Client-Id": CLIENT_ID,
-      Authorization: `Bearer ${accessToken}`,
-    },
-  });
-  return res.json();
+export async function deletePost(state: ApiRes<Post> | null, formData: FormData): ApiResPromise<Post> {
+  const accessToken = formData.get("accessToken") as string;
+  const postId = formData.get("postId") as string;
+  const type = formData.get("type") as string;
+
+  try {
+    const res = await fetch(`${API_URL}/posts/${postId}`, {
+      method: "DELETE",
+      headers: {
+        "Client-Id": CLIENT_ID,
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    const data = await res.json();
+
+    if (data.ok) {
+      // 캐시 무효화
+      revalidateTag(`posts/${postId}`);
+      revalidateTag(`posts?type=${type}`);
+      // 목록 페이지로 리다이렉트
+      redirect(`/school/market/${type}`);
+    }
+    return data;
+  } catch (err) {
+    console.error("게시글 삭제 오류", err);
+    return { ok: 0, message: "게시글 삭제 중 오류 발생" };
+  }
 }
 
 /**

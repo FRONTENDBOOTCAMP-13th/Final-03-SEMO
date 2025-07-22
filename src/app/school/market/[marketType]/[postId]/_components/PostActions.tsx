@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { Post } from "@/types";
-import { deletePost } from "@/app/api/market/action/post";
+import { deletePost } from "@/action/post";
 
 interface PostActionsProps {
   post: Post;
