@@ -31,7 +31,7 @@ export async function createPost(state: ApiRes<Post> | null, formData: FormData)
       location: formData.get("location") as string,
     },
   };
-
+  let result: any;
   try {
     const res = await fetch(`${API_URL}/posts`, {
       method: "POST",
@@ -42,21 +42,18 @@ export async function createPost(state: ApiRes<Post> | null, formData: FormData)
       },
       body: JSON.stringify(postData),
     });
-
-    const data = await res.json();
-
-    if (data.ok) {
-      // 캐시 무효화
-      revalidateTag(`posts?type=${type}`);
-      // 리다이렉트
-      redirect(`/school/market/${type}`);
-    }
-
-    return data;
+    result = await res.json();
   } catch (error) {
     console.error("게시글 작성 오류:", error);
     return { ok: 0, message: "게시글 작성 중 오류가 발생했습니다." };
   }
+  if (result.ok === 1) {
+    // 캐시 무효화
+    revalidateTag(`posts?type=${type}`);
+    // 리다이렉트
+    redirect(`/school/market/${type}`);
+  }
+  return result;
 }
 
 /**
