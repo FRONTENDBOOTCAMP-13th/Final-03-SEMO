@@ -1,5 +1,9 @@
-import { API_CONFIG } from "./apiConfig";
 import AuthService from "./authService";
+
+export const API_CONFIG = {
+  BASE_URL: process.env.NEXT_PUBLIC_API_URL,
+  CLIENT_ID: process.env.NEXT_PUBLIC_CLIENT_ID,
+} as const;
 
 // API 요청에 필요한 공통 헤더를 생성
 
