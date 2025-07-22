@@ -9,8 +9,7 @@
  * 이미지 압축, 업로드, URL 생성 등을 담당
  */
 
-import { API_CONFIG, ApiUtils } from "./apiConfig";
-import TempAuthService from "./tempAuthService";
+import apiClient, { API_CONFIG } from "./apiClient";
 
 class ImageService {
   /**
@@ -23,12 +22,9 @@ class ImageService {
       const img = new Image();
 
       img.onload = () => {
-        // 비율 유지하면서 크기 조정
         const ratio = Math.min(maxWidth / img.width, maxWidth / img.height);
         canvas.width = img.width * ratio;
         canvas.height = img.height * ratio;
-
-        // 이미지 그리기
         ctx?.drawImage(img, 0, 0, canvas.width, canvas.height);
 
         // Data URL로 변환 (압축)
@@ -47,57 +43,23 @@ class ImageService {
    * 파일 업로드 (압축된 이미지)
    */
   static async uploadFile(file: File): Promise<string> {
-    console.log("파일 업로드 시작:", file.name, file.size, file.type);
+    // 이미지 압축
+    const compressedDataUrl = await this.compressImage(file);
 
-    try {
-      // 이미지 압축
-      const compressedDataUrl = await this.compressImage(file);
+    // Data URL을 Blob으로 변환
+    const response = await fetch(compressedDataUrl);
+    const blob = await response.blob();
 
-      // Data URL을 Blob으로 변환
-      const response = await fetch(compressedDataUrl);
-      const blob = await response.blob();
+    // FormData 생성
+    const formData = new FormData();
+    formData.append("attach", blob, file.name);
 
-      // FormData 생성
-      const formData = new FormData();
-      formData.append("attach", blob, file.name);
-
-      // 임시 토큰 사용
-      const token = TempAuthService.getCurrentToken();
-
-      const uploadResponse = await fetch(`${API_CONFIG.BASE_URL}/files/`, {
-        method: "POST",
-        headers: ApiUtils.createHeaders({
-          includeAuth: true,
-          isFormData: true,
-          token,
-        }),
-        body: formData,
-      });
-
-      console.log("파일 업로드 응답 상태:", uploadResponse.status);
-      const data = await uploadResponse.json();
-      console.log("파일 업로드 응답 데이터:", data);
-
-      if (data.ok !== 1 || !data.item || !Array.isArray(data.item) || data.item.length === 0) {
-        ApiUtils.handleApiError(data, "파일 업로드에 실패했습니다.");
-      }
-
-      const fileInfo = data.item[0];
-      console.log("업로드된 파일 정보:", fileInfo);
-
-      if (!fileInfo.path) {
-        throw new Error("업로드된 파일 경로를 찾을 수 없습니다.");
-      }
-
-      // 전체 URL 반환
-      const finalUrl = `${API_CONFIG.BASE_URL}/${fileInfo.path}`;
-      console.log("생성된 최종 URL:", finalUrl);
-
-      return finalUrl;
-    } catch (error) {
-      console.error("파일 업로드 실패:", error);
-      throw error;
+    const result = await apiClient.upload<{ path: string }[]>("/files/", formData);
+    if (!result || result.length === 0 || !result[0].path) {
+      throw new Error("파일 업로드에 실패했습니다.");
     }
+
+    return `${API_CONFIG.BASE_URL}/${result[0].path}`;
   }
 
   /**
@@ -115,13 +77,10 @@ class ImageService {
 
     // path가 "files/client-id/filename" 형태라면 API_BASE_URL만 앞에 붙임
     if (imagePath.startsWith("files/")) {
-      const finalUrl = `${API_CONFIG.BASE_URL}/${imagePath}`;
-      return finalUrl;
+      return `${API_CONFIG.BASE_URL}/${imagePath}`;
     }
-
     // 기존 방식 (파일명만 있는 경우)
-    const finalUrl = `${API_CONFIG.BASE_URL}/files/${API_CONFIG.CLIENT_ID}/${imagePath}`;
-    return finalUrl;
+    return `${API_CONFIG.BASE_URL}/files/${API_CONFIG.CLIENT_ID}/${imagePath}`;
   }
 
   /**
@@ -147,9 +106,8 @@ class ImageService {
 
     // 전체 URL에서 path 부분만 추출
     const apiBaseUrl = API_CONFIG.BASE_URL || "";
-    const baseUrlPattern = apiBaseUrl.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const baseUrlPattern = apiBaseUrl.replace(/[.*+?^${}()|[\\]/g, "\\$&");
     const pathMatch = imageUrl.match(new RegExp(`${baseUrlPattern}/(.+)$`));
-
     return pathMatch ? pathMatch[1] : null;
   }
 
@@ -160,7 +118,6 @@ class ImageService {
     if (!imagePath || typeof imagePath !== "string" || imagePath === "undefined" || imagePath.trim() === "") {
       return false;
     }
-
     return (
       imagePath.startsWith("http") ||
       imagePath.startsWith("data:") ||
