@@ -13,21 +13,11 @@ interface ChatBubbleProps {
 
 const ChatBubble = ({ msg }: ChatBubbleProps) => {
   // 보내는 사람만 귓속말 정보 표시
-  const renderWhisperInfo = () => {
-    if (!msg.isWhisper || !msg.isMine || !msg.toNickName) return null;
-
-    return (
-      <div className="text-xs text-yellow-500 mb-1">
-        <span className="font-semibold">{msg.toNickName}</span>에게 귓속말
-      </div>
-    );
-  };
 
   return msg.isMine ? (
     // 내가 보낸 메시지
     <div className="flex justify-end items-end gap-2 min-h-[104px] p-4">
       <div className="max-w-[70%] text-right">
-        {renderWhisperInfo()}
         <div className="px-4 py-3 rounded-xl text-16 bg-uni-blue-400 text-uni-white">{msg.content}</div>
       </div>
       <div>

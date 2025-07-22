@@ -89,14 +89,14 @@ export const useChatSocket = ({ userId, nickName, roomId }: useChatSocketProps) 
       useChatStore.getState().addMessage(msg);
     });
 
-    // 귓속말 수신 - 이벤트 리스너 수정
+    // 귓속말 수신
     socket.on("sendTo", (data) => {
       console.log("귓속말 수신:", data);
 
       const msg: Message = {
         id: Date.now().toString(),
         roomId: GlOBAL_ROOM_ID,
-        content: data.msg, // content가 아니라 msg로 수정
+        content: data.msg,
         type: "text",
         msgType: "whisper",
         createdAt: data.timestamp ?? new Date().toISOString(),
@@ -106,6 +106,14 @@ export const useChatSocket = ({ userId, nickName, roomId }: useChatSocketProps) 
         toNickName: data.toNickName,
       };
       useChatStore.getState().addMessage(msg);
+
+      const isReceiver = data.toUserId === userId || data.toNickName === nickName || data.msg?.includes(nickName); // 혹시나 닉네임 포함
+
+      const isNotSender = data.user_id !== userId;
+
+      if (isReceiver && isNotSender) {
+        alert(`${data.nickName}님이 보낸 귓속말: ${data.msg}`);
+      }
     });
 
     return () => {

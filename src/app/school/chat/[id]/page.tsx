@@ -5,9 +5,9 @@ import ProductInfo from "../components/productInfo";
 import ChatBubbleList from "../components/chatBubbleList";
 import InputChat from "../components/inputChat";
 import { notFound } from "next/navigation";
-// import { useEffect } from "react";
 import { socket, useChatSocket } from "../chatRoomTest/useChatSoket";
 import { useChatStore } from "../chatRoomTest/useChatStore";
+import { useState } from "react";
 
 const ChatPage = () => {
   const params = useParams();
@@ -18,6 +18,8 @@ const ChatPage = () => {
   const sellerId = searchParams.get("sellerId") || "";
   const productId = searchParams.get("productId") || "";
   const sellerNickName = searchParams.get("sellerNickName") || "";
+
+  const [joinedRoom, setJoinedRoom] = useState(false);
 
   console.log("채팅방 Id: ", id);
   console.log("구매자 Id: ", buyerId);
@@ -31,20 +33,36 @@ const ChatPage = () => {
     const privateRoomId = [buyerId, sellerId].sort().join("-");
 
     socket.emit(
-      "joinRoom",
+      "createRoom",
       {
         roomId: privateRoomId,
         user_id: buyerId,
-        nickName: buyerId,
+        hostName: buyerId,
+        roomName: `${buyerId} <-> ${sellerId}`,
+        autoClose: false,
       },
-      (res: any) => {
-        if (res.ok) {
-          console.log("✅ 개인방 입장:", privateRoomId);
-          useChatStore.getState().setRoomId(privateRoomId);
-          handleJoinRoom();
-        } else {
-          console.warn("❌ 개인방 입장 실패:", res.message);
+      (createRes: any) => {
+        if (!createRes.ok) {
+          console.warn("개인방 이미 존재:", createRes.message);
         }
+
+        socket.emit(
+          "joinRoom",
+          {
+            roomId: privateRoomId,
+            user_id: buyerId,
+            nickName: buyerId,
+          },
+          (joinRes: any) => {
+            if (joinRes.ok) {
+              console.log("개인방 입장 성공:", privateRoomId);
+              useChatStore.getState().setRoomId(privateRoomId);
+              setJoinedRoom(true);
+            } else {
+              console.warn("개인방 입장 실패:", joinRes.message);
+            }
+          }
+        );
       }
     );
   };
@@ -54,8 +72,12 @@ const ChatPage = () => {
     <>
       <ProductInfo productId={productId} sellerId={sellerId} />
       <div className="px-4 my-2">
-        <button onClick={handleJoinRoom} className="bg-uni-blue-500 text-uni-white px-4 py-2 rounded">
-          {/* {handleJoinRoom ? "개인 채팅 중..." : "민지와 1:1 채팅 시작하기"} */}
+        <button
+          onClick={handleJoinRoom}
+          className="bg-uni-blue-500 text-uni-white px-4 py-2 rounded"
+          disabled={joinedRoom}
+        >
+          {joinedRoom ? "개인 채팅 중..." : "민지와 1:1 채팅 시작하기"}
         </button>
       </div>
       <ChatBubbleList myUserId={buyerId} />
