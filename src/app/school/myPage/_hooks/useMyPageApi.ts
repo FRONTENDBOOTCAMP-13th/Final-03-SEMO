@@ -10,7 +10,7 @@ import type { User, UserProfileFormData } from "@/app/school/myPage/_types/user"
 interface UseMyPageApiReturn {
   loading: boolean;
   error: string | null;
-  login: (email: string, password: string) => Promise<boolean>;
+  
   getUserProfile: (userId: number) => Promise<User | null>;
   updateUserProfile: (userId: number, profileData: UserProfileFormData) => Promise<boolean>;
   uploadProfileImage: (file: File) => Promise<string | null>;
@@ -20,23 +20,7 @@ export const useMyPageApi = (): UseMyPageApiReturn => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  /**
-   *  임시 로그인 (추후 제거 예정)
-   */
-  const login = useCallback(async (email: string, password: string): Promise<boolean> => {
-    setLoading(true);
-    setError(null);
-    try {
-      await AuthService.login(email, password);
-      return true;
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "로그인에 실패했습니다.";
-      setError(errorMessage);
-      return false;
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  
 
   /**
    * 사용자 프로필 조회
@@ -134,7 +118,6 @@ export const useMyPageApi = (): UseMyPageApiReturn => {
   return {
     loading,
     error,
-    login,
     getUserProfile,
     updateUserProfile,
     uploadProfileImage,

@@ -34,7 +34,7 @@ class AuthService {
     this.currentUser = null;
     if (typeof window !== "undefined") {
       localStorage.removeItem("accessToken");
-      localStorage.removeItem("currentUser");
+      localStorage.removeItem("user");
     }
   }
 
