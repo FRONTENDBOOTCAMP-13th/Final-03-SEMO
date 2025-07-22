@@ -70,7 +70,7 @@ export default function PostForm({ mode, initialData, marketType, postId }: Post
       <input type="hidden" name="accessToken" value={accessToken} />
       <input type="hidden" name="type" value={tradeType} />
       <input type="hidden" name="postId" value={postId} />
-      <input type="hidden" name="image" value={images[0]} />
+      <input type="hidden" name="image" value={images.length > 0 ? images[0] : ""} />
       <main className="min-w-[320px] max-w-[480px] mx-auto px-4 py-6 min-h-screen bg-uni-white">
         <Product images={images} setImages={setImages} initialTitle={initialData?.title} />
         <section role="group" aria-label="거래 유형" className="mb-5 flex gap-3">
