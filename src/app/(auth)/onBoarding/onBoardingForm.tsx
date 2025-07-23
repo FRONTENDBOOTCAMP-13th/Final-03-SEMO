@@ -3,8 +3,10 @@
 import { useRouter } from "next/navigation";
 import Button from "../_components/Button";
 import Logo from "../_components/Logo";
+import { useAuthGuard } from "@/lib/useAuthGuard";
 
 export default function OnBoardingClient() {
+  useAuthGuard(false);
   const router = useRouter();
 
   return (
