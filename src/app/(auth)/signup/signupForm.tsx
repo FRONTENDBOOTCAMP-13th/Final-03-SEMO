@@ -37,10 +37,10 @@ export default function SignupForm() {
 
         {/* 텍스트 환영 문구 */}
         <div className="text-left w-full max-w-sm mb-10">
-          <p className="font-semibold color-uni-black text-20">
-            <span className="color-uni-blue-400 text-35">UniStuff</span> 에 오신걸
+          <p className="font-semibold text-uni-black text-20">
+            <span className="text-uni-blue-400 text-35">UniStuff</span> 에 오신걸
           </p>
-          <p className="font-bold color-uni-black text-35">환영합니다!</p>
+          <p className="font-bold text-uni-black text-35">환영합니다!</p>
         </div>
 
         {/* 이메일 입력 영역 */}
