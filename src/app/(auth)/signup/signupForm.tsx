@@ -5,6 +5,7 @@ import { useUserStore } from "@/store/userStore";
 import Input from "../_components/Input";
 import Button from "../_components/Button";
 import BackButton from "../_components/BackButton";
+import { checkEmailDuplicate } from "@/lib/actions/checkDuplicate";
 // import { useAuthGuard } from "@/lib/useAuthGuard";
 
 export default function SignupForm() {
@@ -17,11 +18,17 @@ export default function SignupForm() {
     setUser({ ...user, email: e.target.value });
   };
 
-  const handleEmailSubmit = () => {
+  const handleEmailSubmit = async () => {
     const isValidEmail = email.includes("@") && email.endsWith(".ac.kr");
 
     if (!isValidEmail) {
       alert("올바른 학교 이메일(@...ac.kr) 형식이 아닙니다.");
+      return;
+    }
+
+    const { ok, message } = await checkEmailDuplicate(email);
+    if (!ok) {
+      alert(message);
       return;
     }
 

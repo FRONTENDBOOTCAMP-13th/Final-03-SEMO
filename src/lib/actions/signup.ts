@@ -1,5 +1,6 @@
 "use client";
 
+import { checkEmailDuplicate, checkNameDuplicate } from "./checkDuplicate";
 import { User } from "@/types/user";
 import { useRouter } from "next/navigation";
 
@@ -19,8 +20,25 @@ export const handleSignup = async ({ user, setLoading, router }: SignupParams) =
     return;
   }
 
+  if (!email) {
+    alert("이메일 정보가 없습니다. 처음 단계부터 다시 진행해주세요.");
+    return;
+  }
+
   try {
     setLoading(true);
+
+    const emailCheck = await checkEmailDuplicate(email);
+    if (!emailCheck.ok) {
+      alert(emailCheck.message); // "이미 가입한 이메일입니다."
+      return;
+    }
+
+    const nameCheck = await checkNameDuplicate(name);
+    if (!nameCheck.ok) {
+      alert(nameCheck.message); // "이미 사용 중인 닉네임입니다."
+      return;
+    }
 
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users`, {
       method: "POST",
@@ -32,7 +50,7 @@ export const handleSignup = async ({ user, setLoading, router }: SignupParams) =
         email,
         password,
         name,
-        type: "user",
+        type: "seller",
         address: dormitory,
         extra: {
           university,
