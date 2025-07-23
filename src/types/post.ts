@@ -10,12 +10,12 @@ export interface Post {
   user: Pick<User, "_id" | "name" | "image">;
   repliesCount: number;
   createdAt: string;
+  tag: string;
   updatedAt: string;
-  product?: {
-    image?: string | null;
-  };
   extra: {
-    category: string;
+    product?: {
+      image?: string | null;
+    };
     price: number;
     location: string;
     crt: string;

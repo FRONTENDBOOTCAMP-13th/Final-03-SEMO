@@ -19,9 +19,9 @@ export default function ProductDesc({ initialData }: ProductDescProps) {
         </label>
         {/* 카테고리 셀렉트 */}
         <select
-          id="category"
-          name="category"
-          defaultValue={initialData?.extra?.category || ""}
+          id="tag"
+          name="tag"
+          defaultValue={initialData?.tag || ""}
           className="w-full bg-uni-gray-200 rounded-lg p-3 text-16 text-uni-gray-600"
         >
           <option value="">카테고리</option>
