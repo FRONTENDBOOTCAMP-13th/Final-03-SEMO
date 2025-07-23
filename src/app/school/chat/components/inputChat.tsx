@@ -2,11 +2,11 @@
 
 import { Send } from "lucide-react";
 import { useState } from "react";
-import { socket } from "../../chatRoom/useChatSoket";
-import { useChatStore, Message } from "../../chatRoom/useChatStore";
+import { socket } from "../../../api/chat/useChatSoket";
+import { useChatStore, Message } from "../../../api/chat/useChatStore";
 
 interface InputChatProps {
-  userId: string;
+  userId: string | number;
   nickName: string;
 }
 
@@ -38,9 +38,9 @@ const InputChat = ({ userId, nickName }: InputChatProps) => {
         type: "text",
         msgType: "whisper",
         createdAt: new Date().toISOString(),
-        user_id: userId,
+        user_id: userId.toString(),
         nickName,
-        toUserId: targetUser.user_id,
+        toUserId: targetUser.user_id.toString(),
         toNickName: targetUser.nickName,
       };
 
@@ -54,15 +54,6 @@ const InputChat = ({ userId, nickName }: InputChatProps) => {
     if (e.key === "Enter") {
       handleSend();
     }
-  };
-
-  const getPlaceholder = () => {
-    if (whisperTargetId === "all") {
-      return "메시지 입력...";
-    }
-
-    const targetUser = userList.find((u) => u.user_id === whisperTargetId);
-    return `${targetUser?.nickName || ""}에게 귓속말...`;
   };
 
   return (
@@ -91,7 +82,7 @@ const InputChat = ({ userId, nickName }: InputChatProps) => {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder={getPlaceholder()}
+            placeholder={"메시지 입력..."}
             className="flex-1 bg-transparent outline-none mx-4 placeholder-uni-gray-600 text-16 text-uni-black"
           />
           <button
