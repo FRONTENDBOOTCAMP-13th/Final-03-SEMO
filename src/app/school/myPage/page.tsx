@@ -2,28 +2,9 @@
 
 import Link from "next/link";
 import { User, Package, Star, Heart, Bell, Info, LogOut } from "lucide-react";
-import { useSetPageHeader } from "@/contexts/PageHeaderContext";
-import { useCallback, useMemo } from "react";
 
 // TODO: n건 나오는 부분 link 되어있는 페이지의 데이터 수를 나타내기
 export default function MyPage() {
-  const handleMeatballClick = useCallback(() => {
-    console.log("내 정보 메뉴 열기");
-    // 실제 메뉴 로직 구현
-  }, []);
-
-  const headerConfig = useMemo(
-    () => ({
-      title: "내 정보(테스트)",
-      backLink: "/",
-      type: "meatball" as const,
-      onMeatballClick: handleMeatballClick,
-    }),
-    [handleMeatballClick]
-  );
-
-  useSetPageHeader(headerConfig);
-
   return (
     <div className="px-4 py-6 space-y-6">
       {/* 사용자 프로필 */}
