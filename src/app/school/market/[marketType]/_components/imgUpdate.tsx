@@ -1,8 +1,8 @@
 "use client";
 import React, { useRef } from "react";
 import { Plus, X } from "lucide-react";
-import { uploadFile } from "@/app/api/market/action/file";
-import { getImageUrl } from "@/app/api/market/action/file";
+import { uploadFile } from "@/data/actions/file";
+import { getImageUrl } from "@/data/actions/file";
 
 interface PhotoUploadProps {
   images: string[];

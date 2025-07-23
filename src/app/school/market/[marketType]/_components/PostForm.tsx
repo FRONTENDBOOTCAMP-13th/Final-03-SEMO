@@ -1,9 +1,8 @@
 // 게시글 공용 폼 컴포넌트
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { createPost, updatePost } from "@/app/api/market/action/post";
+import { useState, useActionState, useEffect } from "react";
+import { createPost, updatePost } from "@/data/actions/post";
 import { Post } from "@/types";
 import GroupPurchase from "./GroupPurchase";
 import ProductDesc from "./ProductDesc";
@@ -22,51 +21,30 @@ interface PostFormProps {
 }
 
 export default function PostForm({ mode, initialData, marketType, postId }: PostFormProps) {
-  const router = useRouter();
   const [selected, setSelected] = useState<"registered" | "new">("registered"); // 계좌 유형 선택 상태 관리
   const [tradeType, setTradeType] = useState<"sell" | "buy" | "group">( // 거래 유형 상태 관리
-    (initialData?.type as "sell" | "buy" | "group") || "sell"
+    (initialData?.type as "sell" | "buy" | "group") || (marketType as "sell" | "buy" | "group") || "sell"
   );
   const [images, setImages] = useState<string[]>(initialData?.image ? [initialData.image] : []); // 이미지 배열(초기값 : 이미지 한장만 가능하게 설정, 추후 변경)
+  const [accessToken, setAccessToken] = useState<string>("");
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget); // 폼의 모든 입력값들을 FormData 객체로 수집
-    try {
-      const imageData = images.length > 0 ? images[0] : "";
-      // 서버로 보낼 데이터
-      const payload = {
-        type: tradeType,
-        title: formData.get("title") as string,
-        content: formData.get("content") as string,
-        image: imageData,
-        extra: {
-          category: formData.get("category") as string,
-          price: formData.get("price") as string,
-          location: formData.get("location") as string,
-        },
-      };
-      let result;
+  // 서버 액션 사용
+  const [state, formAction] = useActionState(mode === "create" ? createPost : updatePost, null);
 
-      // mode에 따라 createPost or updatePost 호출
-      if (mode === "create") {
-        result = await createPost(payload);
-      } else {
-        result = await updatePost(postId!, payload);
-      }
-
-      // 결과에 따른 처리(console.log 메시지 출력)
-      if (result.ok) {
-        console.log(`게시글이 ${mode === "create" ? "등록" : "수정"}되었습니다!`);
-        router.push(`/school/market/${tradeType}`);
-      } else {
-        console.log(`게시글 ${mode === "create" ? "등록" : "수정"}에 실패했습니다.`);
-      }
-    } catch (err) {
-      console.error(`${mode} err:`, err);
-      console.log("네트워크 오류가 발생했습니다.");
+  // 로그인 토큰 가져오기
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+    if (token) {
+      setAccessToken(token);
     }
-  };
+  }, []);
+
+  // 서버 액션 결과 처리
+  useEffect(() => {
+    if (state?.ok === 0 && state.message) {
+      alert(`오류: ${state.message}`);
+    }
+  }, [state]);
 
   const getButtonStyle = (buttonType: string, currentType: string) => {
     // 선택 안된 버튼은 모두 회색
@@ -88,9 +66,11 @@ export default function PostForm({ mode, initialData, marketType, postId }: Post
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input type="hidden" name="type" value={marketType} />
-
+    <form action={formAction}>
+      <input type="hidden" name="accessToken" value={accessToken} />
+      <input type="hidden" name="type" value={tradeType} />
+      <input type="hidden" name="postId" value={postId} />
+      <input type="hidden" name="image" value={images.length > 0 ? images[0] : ""} />
       <main className="min-w-[320px] max-w-[480px] mx-auto px-4 py-6 min-h-screen bg-uni-white">
         <Product images={images} setImages={setImages} initialTitle={initialData?.title} />
         <section role="group" aria-label="거래 유형" className="mb-5 flex gap-3">
@@ -102,7 +82,7 @@ export default function PostForm({ mode, initialData, marketType, postId }: Post
             >
               <input
                 type="radio"
-                name="tradeType"
+                name="tradeTypeInput"
                 value={t}
                 disabled={mode === "edit"}
                 checked={tradeType === t}
