@@ -1,6 +1,7 @@
 import { PostReply } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
+import CommentDeleteForm from "@/app/school/market/[marketType]/[postId]/_components/CommentDeleteForm";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID || "";
@@ -39,6 +40,7 @@ export default function CommentItem({ reply }: CommentItemProps) {
             </p>
             {/* 동적 댓글 내용 */}
             <p className="text-14">{reply.content}</p>
+            <CommentDeleteForm reply={reply} />
           </div>
         </div>
       </div>
