@@ -16,7 +16,7 @@
 
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface HeaderProps {
   title: string;
@@ -33,6 +33,28 @@ export default function Header({ title, backLink = "/", type = "default", onMeat
     setIsMenuOpen(!isMenuOpen);
     onMeatballClick?.();
   };
+
+  useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setIsMenuOpen(false);
+      }
+    };
+
+    if (isMenuOpen) {
+      document.addEventListener("keydown", handleEsc);
+      // 스크롤 방지
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+
+    return () => {
+      document.removeEventListener("keydown", handleEsc);
+      document.body.style.overflow = "unset";
+    };
+  }, [isMenuOpen]);
+
   return (
     <>
       <header className="bg-uni-white border-b border-uni-gray-200 px-3 py-2 sticky top-0 z-10">
