@@ -4,7 +4,7 @@ export interface User {
   password: string;
   name: string; // 닉네임
   address?: string;
-  type: "user";
+  type: "seller";
 
   // 회원가입 관련
   university?: string;
