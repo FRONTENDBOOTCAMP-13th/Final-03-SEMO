@@ -203,13 +203,14 @@ export async function createReply(
 export async function deleteReply(state: ApiRes<PostReply> | null, formData: FormData): ApiResPromise<PostReply> {
   const accessToken = formData.get("accessToken");
   const replyId = formData.get("replyId");
-  const _id = formData.get("_id");
+  const postId = formData.get("_id") as string;
 
   let res: Response;
   let data: ApiRes<PostReply>;
+  const body = Object.fromEntries(formData.entries());
 
   try {
-    res = await fetch(`${API_URL}/posts/${_id}/replies/${replyId}`, {
+    res = await fetch(`${API_URL}/posts/${postId}/replies/${replyId}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -223,7 +224,7 @@ export async function deleteReply(state: ApiRes<PostReply> | null, formData: For
     return { ok: 0, message: "일시적인 네트워크 문제가 발생했습니다." };
   }
   if (data.ok) {
-    revalidatePath(`posts/${_id}/replies`);
+    revalidatePath(`/school/market/[marketType]/${body._id}`);
   }
   return data;
 }
