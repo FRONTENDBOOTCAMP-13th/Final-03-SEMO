@@ -8,13 +8,17 @@ import Button from "../../_components/Button";
 import PasswordInput from "../../_components/PasswordInput";
 import Input from "../../_components/Input";
 import { useUserStore } from "@/store/userStore";
+// import { useAuthGuard } from "@/lib/useAuthGuard";
 
 export default function SignupPasswordForm() {
+  // useAuthGuard(false);
   const router = useRouter();
-  const { password, setPassword } = useUserStore();
+  const { user, setUser } = useUserStore();
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const handleNext = () => {
+    const password = user.password ?? "";
+
     if (password.length < 8 || !/\d/.test(password) || !/[a-zA-Z]/.test(password)) {
       alert("비밀번호는 영문 + 숫자 조합으로 8자 이상이어야 합니다.");
       return;
@@ -26,6 +30,10 @@ export default function SignupPasswordForm() {
     }
 
     router.push("/signup/complete");
+  };
+
+  const handlePasswordChange = (value: string) => {
+    setUser({ ...user, password: value });
   };
 
   return (
@@ -40,7 +48,11 @@ export default function SignupPasswordForm() {
         <div className="w-full max-w-sm flex flex-col gap-4">
           {/* 비밀번호 */}
           <div className="relative">
-            <PasswordInput value={password} onChange={(e) => setPassword(e.target.value)} placeholder="PW" />
+            <PasswordInput
+              value={user.password ?? ""}
+              onChange={(e) => handlePasswordChange(e.target.value)}
+              placeholder="PW"
+            />
           </div>
 
           {/* 비밀번호 확인 */}

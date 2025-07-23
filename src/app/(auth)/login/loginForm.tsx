@@ -8,49 +8,35 @@ import Button from "../_components/Button";
 import LogoLow from "../_components/LogoLow";
 import BackButton from "../_components/BackButton";
 import PasswordInput from "../_components/PasswordInput";
+import { useUserStore } from "@/store/userStore";
+import { login } from "@/lib/actions/login";
+// import { useAuthGuard } from "@/lib/useAuthGuard";
 
 export default function LoginForm() {
+  // useAuthGuard(false);
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { setUser } = useUserStore();
 
   const handleLogin = async () => {
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/login?expiresIn=1d`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Client-Id": process.env.NEXT_PUBLIC_CLIENT_ID ?? "",
-        },
-        body: JSON.stringify({ email, password }),
-      });
+    const result = await login(email, password);
 
-      const result = await response.json();
-      console.log("API 응답:", result);
-
-      if (!response.ok) {
-        throw new Error(result.message || "로그인 실패");
-      }
-
-      alert("로그인 성공!");
-
-      const accessToken = result.item?.token?.accessToken;
-      const user = result.item;
-
-      if (accessToken) {
-        localStorage.setItem("accessToken", accessToken);
-      }
-      if (user) {
-        localStorage.setItem("user", JSON.stringify(user));
-      }
-      router.push("/school");
-    } catch (error) {
-      if (error instanceof Error) {
-        alert(`로그인 실패: ${error.message || "알 수 없는 오류"}`);
-      } else {
-        alert("로그인 실패: 알 수 없는 오류");
-      }
+    if (!result.ok) {
+      alert(`로그인 실패: ${result.message}`);
+      return;
     }
+
+    if (result.token) {
+      localStorage.setItem("accessToken", result.token);
+    }
+
+    if (result.user) {
+      setUser(result.user);
+    }
+
+    alert("로그인 성공!");
+    router.push("/school");
   };
 
   return (
