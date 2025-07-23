@@ -5,8 +5,8 @@ import { Message, useChatStore } from "./useChatStore";
 export const socket = io("https://fesp-api.koyeb.app/ws/sample", { autoConnect: false });
 
 interface UseChatSocketProps {
-  userId: string | number;
-  nickName: string | number;
+  userId: string;
+  nickName: string;
   roomId: string;
 }
 
@@ -87,10 +87,10 @@ export const useChatSocket = ({ userId, nickName, roomId }: UseChatSocketProps) 
         type: "text",
         msgType: isWhisper ? "whisper" : "all",
         createdAt: data.timestamp ?? new Date().toISOString(),
-        user_id: raw.user_id ?? "system",
+        user_id: String(raw.user_id ?? "system"),
         nickName: raw.nickName ?? "시스템",
         ...(isWhisper && {
-          toUserId: data.toUserId,
+          toUserId: String(data.toUserId),
           toNickName: data.toNickName,
         }),
       };
@@ -98,13 +98,7 @@ export const useChatSocket = ({ userId, nickName, roomId }: UseChatSocketProps) 
       addMessage(message);
       console.log("귓속말 수신 전체 데이터 확인:", data);
 
-      // 귓속말 알림 (받는 사람이고 보낸 사람이 아닐 때)
-      if (isWhisper && data.user_id !== userId) {
-        // console.log("조건 통과");
-        // const confirmed = window.confirm(`${data.nickName}님이 귓속말을 보냈습니다. 1:1 채팅방으로 이동하시겠습니까?`);
-
-        // if (!confirmed) return;
-
+      if (isWhisper && String(data.user_id) !== String(userId)) {
         const privateRoomId = [data.user_id, data.toUserId].sort().join("-");
         const handleJoinPrivateRoom = () => {
           socket.emit(
@@ -130,10 +124,10 @@ export const useChatSocket = ({ userId, nickName, roomId }: UseChatSocketProps) 
                 },
                 (joinRes: any) => {
                   if (joinRes.ok) {
-                    console.log("✅ 자동 입장 성공:", privateRoomId);
+                    console.log("자동 입장 성공:", privateRoomId);
                     useChatStore.getState().setRoomId(privateRoomId);
                   } else {
-                    console.warn("❌ 자동 입장 실패:", joinRes.message);
+                    console.warn("자동 입장 실패:", joinRes.message);
                   }
                 }
               );

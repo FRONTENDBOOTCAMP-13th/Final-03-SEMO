@@ -18,7 +18,7 @@ const ChatRoomContent = () => {
   return (
     <>
       {/* <ProductInfo /> */}
-      <ChatBubbleList myUserId={userId} />
+      <ChatBubbleList />
       <InputChat userId={userId} nickName={nickName} />
     </>
   );

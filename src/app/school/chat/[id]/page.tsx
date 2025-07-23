@@ -31,7 +31,7 @@ const ChatPage = () => {
   console.log("판매자 Id: ", sellerId);
   console.log("판매자 nickName: ", sellerNickName);
 
-  useChatSocket({ userId: buyerId, nickName: buyerNickName, roomId: "global" });
+  useChatSocket({ userId: String(buyerId), nickName: buyerNickName, roomId: "global" });
 
   const handleJoinRoom = () => {
     const privateRoomId = [buyerId, sellerId].sort().join("-");
@@ -84,7 +84,7 @@ const ChatPage = () => {
           {joinedRoom ? "개인 채팅 중..." : "민지와 1:1 채팅 시작하기"}
         </button>
       </div>
-      <ChatBubbleList myUserId={buyerId} />
+      <ChatBubbleList />
       <InputChat userId={buyerId} nickName={sellerNickName} />
     </>
   );
