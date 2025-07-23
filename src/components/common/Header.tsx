@@ -88,7 +88,7 @@ export default function Header({ title, backLink = "/", type = "default", onMeat
         </div>
       </header>
       {isMenuOpen && (
-        <div className="fixed inset-0 z-30 bg-transparent">
+        <div className="fixed inset-0 z-30 bg-transparent" onClick={() => setIsMenuOpen(false)}>
           {/* 드롭다운 메뉴 */}
           <div className="absolute top-15 left-0 w-full bg-uni-white shadow-lg" onClick={(e) => e.stopPropagation()}>
             {/* 메뉴 아이템들 */}
