@@ -13,14 +13,13 @@ const CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID || "";
  */
 export async function createPost(state: ApiRes<Post> | null, formData: FormData): ApiResPromise<Post> {
   const accessToken = formData.get("accessToken") as string;
-  // const postId = formData.get("PostId") as string;
   const type = formData.get("type") as string;
 
   if (!accessToken) {
     return { ok: 0, message: "로그인이 필요합니다." };
   }
 
-  // ====================== 테스트 ====================== //
+  // FormData에서 데이터 추출
   const title = formData.get("title") as string;
   const content = formData.get("content") as string;
   const image = formData.get("image") as string;
@@ -28,7 +27,7 @@ export async function createPost(state: ApiRes<Post> | null, formData: FormData)
   const price = formData.get("price") as string;
   const location = formData.get("location") as string;
 
-  // FormData에서 데이터 추출
+  // 게시글 데이터 구성
   const postData = {
     type,
     title,
@@ -40,26 +39,10 @@ export async function createPost(state: ApiRes<Post> | null, formData: FormData)
       location,
     },
   };
-
-  // 2. 상품 데이터 구성 (수량은 항상 1로 고정)
-  const productData = {
-    price: parseInt(price) || 0,
-    quantity: 1, // 고정값
-    name: title, // 게시글 제목을 상품명으로 사용
-    content,
-    mainImages: image ? [{ path: image }] : [],
-    extra: {
-      category,
-      location,
-      marketType: type, // 마켓 타입 추가 정보
-    },
-  };
-
-  console.log("게시글 데이터:", postData);
-  console.log("상품 데이터:", productData);
-
-  let result: any;
+  // let shouldRedirect = false;
   try {
+    // 1. 게시글 등록
+    console.log("게시글 등록 시작...");
     const postRes = await fetch(`${API_URL}/posts`, {
       method: "POST",
       headers: {
@@ -69,16 +52,44 @@ export async function createPost(state: ApiRes<Post> | null, formData: FormData)
       },
       body: JSON.stringify(postData),
     });
-    const postResult = await postRes.json();
-    console.log(postRes);
 
-    if (postResult.ok == !1) {
-      return { ok: 0, message: `게시글 등록 실패` };
+    const postResult = await postRes.json();
+    console.log("게시글 등록 응답:", postResult);
+
+    // 조건 체크
+    if (postResult.ok !== 1) {
+      console.log("게시글 등록 실패:", postResult);
+      return { ok: 0, message: `게시글 등록 실패: ${postResult.message || "Unknown error"}` };
     }
-    // ====================== 테스트 ====================== //
-    console.log("게시글 등록 성공! 상품 등록 시작");
-    console.log("상품 데이터 준비:", productData);
-    console.log("상품 API 호출 시작! URL:", `${API_URL}/seller/products`);
+
+    console.log("게시글 등록 성공! 이제 상품 등록 시작...");
+
+    // 2. 상품 등록
+    console.log("상품 등록 시작...");
+    console.log("상품 API URL:", `${API_URL}/seller/products`);
+
+    //===========================================================
+    const productData = {
+      price: parseInt(price) || 0, // 정수로 변환
+      quantity: 1, // 정수 1로 고정
+      name: title, // 제목을 상품명으로
+      content: content, // 내용을 상품 설명으로
+      mainImages: image
+        ? [
+            {
+              path: image,
+              name: image.split("/").pop() || "product-image",
+              originalname: image.split("/").pop() || "product-image",
+            },
+          ]
+        : [],
+      extra: {
+        category,
+        location,
+        marketType: type,
+      },
+    };
+
     const productRes = await fetch(`${API_URL}/seller/products`, {
       method: "POST",
       headers: {
@@ -88,25 +99,121 @@ export async function createPost(state: ApiRes<Post> | null, formData: FormData)
       },
       body: JSON.stringify(productData),
     });
+
     console.log("상품 응답 받음:", productRes.status, productRes.statusText);
     const productResult = await productRes.json();
     console.log("상품 등록 결과:", productResult);
 
-    if (productResult.ok == !1) {
+    if (productResult.ok !== 1) {
       console.warn("상품 등록 실패:", productResult.message);
+    } else {
+      console.log("상품 등록 성공!");
     }
 
-    // revalidateTag(`posts?type=${type}`);
-    // revalidateTag(`posts/${postId}`);
-    // 리다이렉트
-    redirect(`/school/market/${type}`);
+    // shouldRedirect = true; // eslint-disable-line @typescript-eslint/no-unused-vars
   } catch (error) {
-    console.error("게시글 작성 오류:", error);
-    return { ok: 0, message: "게시글 작성 중 오류가 발생했습니다." };
+    console.error("💥 오류 발생:", error);
+    return { ok: 0, message: "등록 중 오류가 발생했습니다!!!!!!" };
   }
-
-  return result;
+  // 3. 리다이렉트
+  redirect(`/school/market/${type}`);
 }
+// export async function createPost(state: ApiRes<Post> | null, formData: FormData): ApiResPromise<Post> {
+//   const accessToken = formData.get("accessToken") as string;
+//   const postId = formData.get("PostId") as string;
+//   const type = formData.get("type") as string;
+
+//   if (!accessToken) {
+//     return { ok: 0, message: "로그인이 필요합니다." };
+//   }
+
+//   // ====================== 테스트 ====================== //
+//   const title = formData.get("title") as string;
+//   const content = formData.get("content") as string;
+//   const image = formData.get("image") as string;
+//   const category = formData.get("category") as string;
+//   const price = formData.get("price") as string;
+//   const location = formData.get("location") as string;
+
+//   // FormData에서 데이터 추출
+//   const postData = {
+//     type,
+//     title,
+//     content,
+//     image,
+//     extra: {
+//       category,
+//       price,
+//       location,
+//     },
+//   };
+
+//   // 2. 상품 데이터 구성 (수량은 항상 1로 고정)
+//   const productData = {
+//     price: parseInt(price) || 0,
+//     quantity: 1, // 고정값
+//     name: title, // 게시글 제목을 상품명으로 사용
+//     content,
+//     mainImages: image ? [{ path: image }] : [],
+//     extra: {
+//       category,
+//       location,
+//       marketType: type, // 마켓 타입 추가 정보
+//     },
+//   };
+
+//   console.log("게시글 데이터:", postData);
+//   console.log("상품 데이터:", productData);
+
+//   let result: any;
+//   try {
+//     const postRes = await fetch(`${API_URL}/posts`, {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json",
+//         "Client-Id": CLIENT_ID,
+//         Authorization: `Bearer ${accessToken}`,
+//       },
+//       body: JSON.stringify(postData),
+//     });
+//     const postResult = await postRes.json();
+//     console.log(postRes);
+
+//     if (postResult.ok !== 1) {
+//       return { ok: 0, message: `게시글 등록 실패` };
+//     }
+//     // ====================== 테스트 ====================== //
+//     console.log("게시글 등록 성공! 상품 등록 시작");
+//     console.log("상품 데이터 준비:", productData);
+//     console.log("상품 API 호출 시작! URL:", `${API_URL}/seller/products`);
+//     const productRes = await fetch(`${API_URL}/seller/products`, {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json",
+//         "Client-Id": CLIENT_ID,
+//         Authorization: `Bearer ${accessToken}`,
+//       },
+//       body: JSON.stringify(productData),
+//     });
+//     console.log("상품 응답 받음:", productRes.status, productRes.statusText);
+//     const productResult = await productRes.json();
+//     console.log("상품 등록 결과:", productResult);
+
+//     if (productResult.ok == !1) {
+//       console.warn("상품 등록 실패:", productResult.message);
+//     }
+
+//     revalidateTag(`posts?type=${type}`);
+//     revalidateTag(`posts/${postId}`);
+//     // 리다이렉트
+//     redirect(`/school/market/${type}`);
+//   } catch (error) {
+//     console.error("게시글 작성 오류:", error);
+//     return { ok: 0, message: "게시글 작성 중 오류가 발생했습니다." };
+//   }
+
+//   return result;
+// }
 
 /**
  * 게시글 수정 함수
