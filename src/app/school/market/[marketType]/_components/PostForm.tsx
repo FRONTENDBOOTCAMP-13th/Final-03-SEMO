@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useActionState, useEffect } from "react";
-import { createPost, updatePost } from "@/action/post";
+import { createPost, updatePost } from "@/data/actions/post";
 import { Post } from "@/types";
 import GroupPurchase from "./GroupPurchase";
 import ProductDesc from "./ProductDesc";
