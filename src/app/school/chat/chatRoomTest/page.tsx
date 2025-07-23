@@ -1,6 +1,6 @@
 "use client";
 
-import { useChatSocket } from "./useChatSoket";
+import { useChatSocket } from "../../../api/chat/useChatSoket";
 import InputChat from "../components/inputChat";
 // import ProductInfo from "../components/productInfo";
 import { useSearchParams } from "next/navigation";

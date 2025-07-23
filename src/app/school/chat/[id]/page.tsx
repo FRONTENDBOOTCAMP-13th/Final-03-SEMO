@@ -5,8 +5,8 @@ import ProductInfo from "../components/productInfo";
 import ChatBubbleList from "../components/chatBubbleList";
 import InputChat from "../components/inputChat";
 import { notFound } from "next/navigation";
-import { socket, useChatSocket } from "../chatRoomTest/useChatSoket";
-import { useChatStore } from "../chatRoomTest/useChatStore";
+import { socket, useChatSocket } from "../../../api/chat/useChatSoket";
+import { useChatStore } from "../../../api/chat/useChatStore";
 import { useState } from "react";
 
 const ChatPage = () => {

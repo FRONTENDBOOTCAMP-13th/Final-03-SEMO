@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { io } from "socket.io-client";
-import { Message, useChatStore } from "./useChatStore";
 import { toast } from "react-toastify";
+import { Message, useChatStore } from "./useChatStore";
 export const socket = io("https://fesp-api.koyeb.app/ws/sample", { autoConnect: false });
 
 interface UseChatSocketProps {

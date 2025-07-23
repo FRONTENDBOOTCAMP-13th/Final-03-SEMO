@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { useSearchParams } from "next/navigation";
-import { useChatStore } from "../chatRoomTest/useChatStore";
+import { useChatStore } from "../../../api/chat/useChatStore";
 import ChatBubble from "./chatBubble";
 
 interface ChatBubbleListProps {
