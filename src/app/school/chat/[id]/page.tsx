@@ -8,16 +8,20 @@ import { notFound } from "next/navigation";
 import { socket, useChatSocket } from "../../../api/chat/useChatSoket";
 import { useChatStore } from "../../../api/chat/useChatStore";
 import { useState } from "react";
+import { useUserStore } from "@/store/userStore";
 
 const ChatPage = () => {
   const params = useParams();
   const searchParams = useSearchParams();
-
   const id = params?.id; // 채팅방 postId
-  const buyerId = searchParams.get("buyerId") || "";
+
   const sellerId = searchParams.get("sellerId") || "";
   const productId = searchParams.get("productId") || "";
   const sellerNickName = searchParams.get("sellerNickName") || "";
+
+  const user = useUserStore((state) => state.user);
+  const buyerId = user._id || "";
+  const buyerNickName = user.name || "";
 
   const [joinedRoom, setJoinedRoom] = useState(false);
 
@@ -27,7 +31,7 @@ const ChatPage = () => {
   console.log("판매자 Id: ", sellerId);
   console.log("판매자 nickName: ", sellerNickName);
 
-  useChatSocket({ userId: buyerId, nickName: buyerId, roomId: "global" });
+  useChatSocket({ userId: buyerId, nickName: buyerNickName, roomId: "global" });
 
   const handleJoinRoom = () => {
     const privateRoomId = [buyerId, sellerId].sort().join("-");

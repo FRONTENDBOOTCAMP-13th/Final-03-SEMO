@@ -6,7 +6,7 @@ import { socket } from "../../../api/chat/useChatSoket";
 import { useChatStore, Message } from "../../../api/chat/useChatStore";
 
 interface InputChatProps {
-  userId: string;
+  userId: string | number;
   nickName: string;
 }
 
@@ -38,9 +38,9 @@ const InputChat = ({ userId, nickName }: InputChatProps) => {
         type: "text",
         msgType: "whisper",
         createdAt: new Date().toISOString(),
-        user_id: userId,
+        user_id: userId.toString(),
         nickName,
-        toUserId: targetUser.user_id,
+        toUserId: targetUser.user_id.toString(),
         toNickName: targetUser.nickName,
       };
 

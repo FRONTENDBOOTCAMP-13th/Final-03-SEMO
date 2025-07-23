@@ -6,7 +6,7 @@ import { useChatStore } from "../../../api/chat/useChatStore";
 import ChatBubble from "./chatBubble";
 
 interface ChatBubbleListProps {
-  myUserId: string;
+  myUserId: string | number;
   myNickName?: string;
 }
 

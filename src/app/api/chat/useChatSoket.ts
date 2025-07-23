@@ -5,8 +5,8 @@ import { Message, useChatStore } from "./useChatStore";
 export const socket = io("https://fesp-api.koyeb.app/ws/sample", { autoConnect: false });
 
 interface UseChatSocketProps {
-  userId: string;
-  nickName: string;
+  userId: string | number;
+  nickName: string | number;
   roomId: string;
 }
 
