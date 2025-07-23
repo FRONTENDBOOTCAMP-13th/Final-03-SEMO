@@ -83,6 +83,7 @@ export async function createPost(state: ApiRes<Post> | null, formData: FormData)
         category,
         location,
         marketType: type,
+        crt: "판매중",
       },
     };
 
