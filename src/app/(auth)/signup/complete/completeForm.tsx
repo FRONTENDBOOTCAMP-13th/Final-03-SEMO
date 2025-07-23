@@ -8,62 +8,14 @@ import Logo from "../../_components/LogoLow";
 import Button from "../../_components/Button";
 import Input from "../../_components/Input";
 import { useUserStore } from "@/store/userStore";
+import { handleSignup } from "@/lib/actions/signup";
 // import { useAuthGuard } from "@/lib/useAuthGuard";
 
 export default function SignupCompleteForm() {
   // useAuthGuard(false);
   const router = useRouter();
   const { user, setUser } = useUserStore();
-  const { email, password, university, department, studentId, dormitory, name } = user;
-
   const [loading, setLoading] = useState(false);
-
-  const handleSubmit = async () => {
-    if (!university || !department || !studentId || !name) {
-      alert("모든 항목을 입력해 주세요!");
-      return;
-    }
-
-    try {
-      setLoading(true);
-
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Client-Id": process.env.NEXT_PUBLIC_CLIENT_ID ?? "",
-        },
-        body: JSON.stringify({
-          email,
-          password,
-          name: name,
-          type: "user",
-          address: dormitory,
-          extra: {
-            university,
-            department,
-            studentId,
-          },
-        }),
-      });
-
-      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-
-      const data = await res.json();
-
-      if (data.ok === 1) {
-        alert("회원가입 완료!");
-        router.push("/signup/code");
-      } else {
-        alert(`회원가입 실패: ${data.message}`);
-      }
-    } catch (err) {
-      console.error("회원가입 에러:", err);
-      alert("회원가입 중 오류가 발생했습니다.");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleChange = (field: keyof typeof user, value: string) => {
     setUser({ ...user, [field]: value });
@@ -121,7 +73,11 @@ export default function SignupCompleteForm() {
           />
         </div>
 
-        <Button onClick={handleSubmit} disabled={loading} className="mt-6 w-full max-w-sm">
+        <Button
+          onClick={() => handleSignup({ user, setLoading, router })}
+          disabled={loading}
+          className="mt-6 w-full max-w-sm"
+        >
           {loading ? "가입 중..." : "회원가입"}
         </Button>
       </div>
