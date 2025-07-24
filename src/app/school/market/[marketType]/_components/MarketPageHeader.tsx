@@ -28,6 +28,7 @@ export default function MarketPageHeader() {
   // useCallback사용하여 함수 재생성 방지
   const handleMeatballClick = useCallback(() => {
     console.log("미트볼 스파게티");
+    // 실제 메뉴 로직 구현
   }, []);
 
   const headerConfig = useMemo(() => {
