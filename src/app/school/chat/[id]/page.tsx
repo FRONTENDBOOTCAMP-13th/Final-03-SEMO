@@ -85,7 +85,7 @@ const ChatPage = () => {
         </button>
       </div>
       <ChatBubbleList />
-      <InputChat userId={buyerId} nickName={sellerNickName} />
+      <InputChat userId={buyerId} nickName={sellerNickName} sellerId={sellerId} sellerNickName={sellerNickName} />
     </>
   );
 };

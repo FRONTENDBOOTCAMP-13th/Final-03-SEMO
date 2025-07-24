@@ -1,7 +1,7 @@
 "use client";
 
 import { Send } from "lucide-react";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { socket } from "../../../api/chat/useChatSoket";
 import { useChatStore, Message } from "../../../api/chat/useChatStore";
 
@@ -9,27 +9,18 @@ interface InputChatProps {
   userId: string | number;
   nickName: string;
   sellerId: string;
+  sellerNickName: string;
 }
 
-const InputChat = ({ userId, nickName, sellerId }: InputChatProps) => {
+const InputChat = ({ userId, nickName, sellerId, sellerNickName }: InputChatProps) => {
   const [input, setInput] = useState("");
-  // const [whisperTargetId, setWhisperTargetId] = useState("all");
-  const inputRef = useRef<HTMLInputElement | null>(null);
 
   const roomId = useChatStore((state) => state.currentRoomId);
-  const userList = useChatStore((state) => state.userList);
 
   const handleSend = () => {
     if (!input.trim() || !roomId) return;
 
-    // if (whisperTargetId === "all") {
-    //   // 전체 메시지 전송
-    //   socket.emit("message", input);
-    // } else {
-    //   // 귓속말 전송
-    //   const targetUser = userList.find((u) => u.user_id === whisperTargetId);
-    //   if (!targetUser) return;
-
+    // 귓속말 전송
     socket.emit("sendTo", sellerId, input);
 
     // 내가 보낸 귓속말을 내 화면에 표시
@@ -42,64 +33,42 @@ const InputChat = ({ userId, nickName, sellerId }: InputChatProps) => {
       createdAt: new Date().toISOString(),
       user_id: userId.toString(),
       nickName,
-      // toUserId: targetUser.user_id.toString(),
-      // toNickName: targetUser.nickName,
       toUserId: sellerId,
-      toNickName: sellerId,
+      toNickName: sellerNickName,
     };
 
     useChatStore.getState().addMessage(myWhisperMessage);
+
     setInput("");
-    inputRef.current?.focus();
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
-      e.preventDefault();
       handleSend();
     }
   };
 
   return (
     <div className="w-full min-w-[360px] max-w-[480px] px-4 py-3">
-      <div className="flex gap-2">
-        {/* 수신자 선택 드롭다운 */}
-        <select
-          className="rounded-md border px-2 py-1 text-sm bg-white text-uni-black cursor-pointer"
-          // value={whisperTargetId}
-          // onChange={(e) => setWhisperTargetId(e.target.value)}
+      <div className="flex items-center bg-uni-gray-200 rounded-[12px] h-12 flex-1">
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={handleKeyDown}
+          placeholder={`민지에게 귓속말 보내기...`}
+          className="flex-1 bg-transparent outline-none mx-4 placeholder-uni-gray-600 text-16 text-uni-black"
+        />
+        <button
+          onClick={handleSend}
+          className="text-uni-black p-2 hover:opacity-70 transition-opacity"
+          disabled={!input.trim()}
         >
-          <option value="all">전체</option>
-          {userList
-            .filter((user) => user.user_id !== userId)
-            .map((user) => (
-              <option key={user.user_id} value={user.user_id}>
-                {user.nickName}
-              </option>
-            ))}
-        </select>
-
-        {/* 메시지 입력 영역 */}
-        <div className="flex items-center bg-uni-gray-200 rounded-[12px] h-12 flex-1">
-          <input
-            ref={inputRef}
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder={"메시지 입력..."}
-            className="flex-1 bg-transparent outline-none mx-4 placeholder-uni-gray-600 text-16 text-uni-black"
-          />
-          <button
-            onClick={handleSend}
-            className="text-uni-black p-2 hover:opacity-70 transition-opacity"
-            disabled={!input.trim()}
-          >
-            <Send size={20} />
-          </button>
-        </div>
+          <Send size={20} />
+        </button>
       </div>
     </div>
   );
 };
+
 export default InputChat;
