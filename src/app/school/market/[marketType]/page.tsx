@@ -3,7 +3,7 @@ import { Metadata } from "next";
 import ItemSection from "@/app/school/market/[marketType]/itemSection";
 import FloatingButton from "@/components/common/FloatingButton";
 import MarketPageHeader from "@/app/school/market/[marketType]/_components/MarketPageHeader";
-import MarketSearch from "@/app/school/market/[marketType]/_components/MarketSearch";
+import Search from "@/components/common/Search";
 import Link from "next/link";
 import { Post, ApiRes } from "@/types";
 
@@ -35,7 +35,7 @@ export default async function MarketPage({ params }: { params: Promise<{ marketT
   return (
     <main className="px-5 py-1 bg-uni-white min-h-screen">
       <MarketPageHeader />
-      <MarketSearch />
+      <Search />
       <div className="flex justify-around mb-4 border-b border-uni-gray-300">
         {(["buy", "sell"] as const).map((i) => {
           // 읽기 전용 [buy, sell] 튜플 리터럴
