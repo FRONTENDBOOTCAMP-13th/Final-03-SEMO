@@ -2,7 +2,9 @@
 
 import { useSetPageHeader } from "@/contexts/PageHeaderContext";
 import { useCallback, useMemo, useState, useEffect } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useActionState } from "react";
+import { deletePost } from "@/data/actions/post";
 
 const HEADER_CONFIGS = {
   list: {
@@ -12,28 +14,49 @@ const HEADER_CONFIGS = {
   },
   new: {
     title: "상품 등록",
-    backLink: "", // backLink 추가 예정
+    backLink: "",
     showMeatball: false,
   },
   detail: {
     title: "상품 상세",
-    backLink: "", // backLink 추가 예정
+    backLink: "",
     showMeatball: true,
   },
 };
 
 export default function MarketPageHeader() {
   const pathname = usePathname();
+  const router = useRouter();
   const [showMenu, setShowMenu] = useState(false);
+  const [accessToken, setAccessToken] = useState<string>("");
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [postData, setPostData] = useState<any>(null);
+  const [state, formAction, isLoading] = useActionState(deletePost, null);
+  console.log(state, isLoading);
 
+  // 로그인 유저 데이터 가져오기
   useEffect(() => {
-    const user = localStorage.getItem("user");
+    const user = localStorage.getItem("user"); // user의 정보를 로컬스토리지에서 가져옴
+    const token = localStorage.getItem("accessToken"); // user의 토큰을 가져옴
+
     if (user) {
+      // user의 정보를 currentUser에 저장
       setCurrentUser(JSON.parse(user));
     }
+    if (token) {
+      //
+      setAccessToken(token);
+    }
   }, []);
+
+  useEffect(() => {
+    if (state?.ok === 1) {
+      console.log("삭제 성공");
+      const marketType = postData?.type || "buy";
+      router.push(`/school/market/${marketType}`);
+      setShowMenu(false); // 메뉴 닫기
+    }
+  }, [state, postData?.type, router]);
 
   // 게시글 데이터 가져오기 (상세 페이지에서만)
   useEffect(() => {
@@ -42,7 +65,7 @@ export default function MarketPageHeader() {
       const marketIndex = pathSegments.indexOf("market");
       const postId = pathSegments[marketIndex + 2];
 
-      // 상세 페이지(postId가 있고 "new"가 아닌 경우)에서만 게시글 데이터 가져오기
+      // 상세 페이지(postId가 있고 "new"가 아닌 경우)에서 게시글 데이터 가져오기
       if (postId && postId !== "new") {
         try {
           const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/posts/${postId}`, {
@@ -62,6 +85,7 @@ export default function MarketPageHeader() {
 
     fetchPostData();
   }, [pathname]);
+
   const isMyPost = currentUser && postData && currentUser._id === postData.user._id;
 
   // 메뉴가 열릴 때 스크롤 막기
@@ -82,6 +106,35 @@ export default function MarketPageHeader() {
   const handleMeatballClick = useCallback(() => {
     setShowMenu(!showMenu); // 메뉴 토글 추가
   }, [showMenu]);
+
+  // 수정 페이지로 이동
+  const handleEdit = () => {
+    if (postData) {
+      router.push(`/school/market/${postData.type}/${postData._id}/edit`);
+      setShowMenu(false); // 메뉴 닫기
+    }
+  };
+
+  // 삭제 처리
+  const handleDelete = async () => {
+    if (!window.confirm("정말 삭제하시겠습니까?")) {
+      return;
+    }
+
+    if (postData && accessToken) {
+      try {
+        const formData = new FormData();
+        formData.append("accessToken", accessToken);
+        formData.append("postId", postData._id.toString());
+        formData.append("type", postData.type);
+
+        formAction(formData);
+      } catch (error) {
+        console.error("삭제 중 오류:", error);
+        alert("삭제 중 오류가 발생했습니다.");
+      }
+    }
+  };
 
   const headerConfig = useMemo(() => {
     const pathSegments = pathname.split("/").filter(Boolean);
@@ -115,15 +168,13 @@ export default function MarketPageHeader() {
       {isMyPost ? (
         // 내 게시글일 때: 수정, 삭제, 공유
         <>
-          <button
-            onClick={() => setShowMenu(false)}
-            className="w-full px-4 py-2 text-left text-uni-gray-400 hover:bg-uni-gray-100"
-          >
+          <button onClick={handleEdit} className="w-full px-4 py-2 text-left text-uni-gray-400 hover:bg-uni-gray-100">
             수정하기
           </button>
           <button
-            onClick={() => setShowMenu(false)}
-            className="w-full px-4 py-2 text-left text-uni-gray-400 hover:bg-uni-gray-100"
+            onClick={handleDelete}
+            disabled={isLoading}
+            className="w-full px-4 py-2 text-left text-uni-gray-400 hover:bg-uni-gray-100 disabled:opacity-50"
           >
             삭제하기
           </button>

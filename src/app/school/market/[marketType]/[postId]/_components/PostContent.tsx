@@ -1,6 +1,6 @@
 import Image from "next/image";
 import CommentList from "./CommentList";
-import PostActions from "./PostActions";
+// import PostActions from "./PostActions";
 import { Post } from "@/types";
 import { getImageUrl } from "@/data/actions/file";
 interface PostContentProps {
@@ -39,7 +39,7 @@ export default function PostContent({ post }: PostContentProps) {
         <button>❤️</button>
       </div>
 
-      <PostActions post={post} />
+      {/* <PostActions post={post} /> */}
 
       {/* 가격 */}
       <p className="text-14 text-uni-gray-400 mb-4">
