@@ -311,3 +311,29 @@ export async function getReplies(_id: number): ApiResPromise<PostReply[]> {
  * @params {number} _id - 게시글 ID
  * @returns - 좋아요(찜) 응답 객체
  */
+
+// export async function addLike(
+//   state: ApiRes<LikeData[]> | null,
+//   formData: FormData
+// ): ApiResPromise<Like[]> {
+//   const target_id = FormData.get("target_id") as string;
+//   const accessToken = formData.get("accessToken") as string;
+
+//   try {
+//     const requestBody = {
+//       target_id: Number(target_id),
+//       extra: {
+//         type: "POST"
+//       }
+//     }
+//         const res = await fetch(`${API_URL}/bookmarks/post`, {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json",
+//         "Client-Id": CLIENT_ID,
+//         "Authorization": `Bearer ${accessToken}`,
+//       },
+//       body: JSON.stringify(requestBody),
+//     });
+//   }
+// }
