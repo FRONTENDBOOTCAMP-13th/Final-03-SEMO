@@ -5,6 +5,7 @@ import { useCallback, useMemo, useState, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useActionState } from "react";
 import { deletePost } from "@/data/actions/post";
+import { Trash2, PenLine, ExternalLink } from "lucide-react";
 
 const HEADER_CONFIGS = {
   list: {
@@ -168,21 +169,27 @@ export default function MarketPageHeader() {
       {isMyPost ? (
         // 내 게시글일 때: 수정, 삭제, 공유
         <>
-          <button onClick={handleEdit} className="w-full px-4 py-2 text-left text-uni-gray-400 hover:bg-uni-gray-100">
-            수정하기
+          <button
+            onClick={handleEdit}
+            className="w-full px-4 py-3 text-left flex justify-between items-center text-uni-gray-400 hover:bg-uni-gray-100 !cursor-pointer"
+          >
+            <span>수정하기</span>
+            <PenLine size={20} />
           </button>
           <button
             onClick={handleDelete}
             disabled={isLoading}
-            className="w-full px-4 py-2 text-left text-uni-gray-400 hover:bg-uni-gray-100 disabled:opacity-50"
+            className="w-full px-4 py-3 text-left flex justify-between items-center text-uni-gray-400 hover:bg-uni-gray-100 !cursor-pointer"
           >
-            삭제하기
+            <span>삭제하기</span>
+            <Trash2 size={20} />
           </button>
           <button
             onClick={() => setShowMenu(false)}
-            className="w-full px-4 py-2 text-left text-uni-gray-400 hover:bg-uni-gray-100"
+            className="w-full px-4 py-3 text-left flex justify-between items-center text-uni-gray-400 hover:bg-uni-gray-100 !cursor-pointer"
           >
-            공유하기
+            <span>공유하기</span>
+            <ExternalLink size={20} />
           </button>
         </>
       ) : (
