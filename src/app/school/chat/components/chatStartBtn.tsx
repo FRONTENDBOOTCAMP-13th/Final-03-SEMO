@@ -58,7 +58,7 @@ export default function ChatStartButton({ sellerId, sellerNickName, productId }:
   return (
     <button
       onClick={handleStartChat}
-      className="w-full bg-uni-blue-500 text-white py-3 rounded-lg font-bold text-base hover:bg-uni-blue-600"
+      className="w-full bg-uni-blue-500 text-white py-3 rounded-md font-bold text-16 hover:bg-uni-blue-600"
     >
       채팅하기
     </button>
