@@ -16,7 +16,7 @@ const ChatLogin = () => {
       return;
     }
 
-    router.push(`/school/chat/chatRoom?userId=${userId}&nickName=${nickName}`);
+    router.push(`/school/chat/chatRoomTest?userId=${userId}&nickName=${nickName}`);
   };
 
   return (
