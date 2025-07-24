@@ -5,7 +5,7 @@ import ProductInfo from "../components/productInfo";
 import ChatBubbleList from "../components/chatBubbleList";
 import InputChat from "../components/inputChat";
 import { notFound } from "next/navigation";
-import { socket, useChatSocket } from "../../../api/chat/useChatSoket";
+import { socket /*useChatSocket*/ } from "../../../api/chat/useChatSoket";
 import { useChatStore } from "../../../api/chat/useChatStore";
 import { useState } from "react";
 import { useUserStore } from "@/store/userStore";
@@ -21,7 +21,7 @@ const ChatPage = () => {
 
   const user = useUserStore((state) => state.user);
   const buyerId = user._id || "";
-  const buyerNickName = user.name || "";
+  // const buyerNickName = user.name || "";
 
   const [joinedRoom, setJoinedRoom] = useState(false);
 
@@ -31,7 +31,7 @@ const ChatPage = () => {
   console.log("판매자 Id: ", sellerId);
   console.log("판매자 nickName: ", sellerNickName);
 
-  useChatSocket({ userId: String(buyerId), nickName: buyerNickName, roomId: "global" });
+  // useChatSocket({ userId: String(buyerId), nickName: buyerNickName, roomId: "global" });
 
   const handleJoinRoom = () => {
     const privateRoomId = [buyerId, sellerId].sort().join("-");

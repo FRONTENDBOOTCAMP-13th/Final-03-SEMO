@@ -32,7 +32,7 @@ const ChatBubbleList = (/*{ myUserId, myNickName }: ChatBubbleListProps*/) => {
     <div className="flex flex-col">
       {messages.map((msg: any, idx: number) => (
         <ChatBubble
-          key={`${msg.id || idx}`}
+          key={`msg-${msg.id}-${idx}`}
           msg={{
             content: msg.content,
             nickName: msg.nickName,

@@ -22,11 +22,11 @@ export default function GlobalSocketManager({ isAuthPage }: GlobalSocketManagerP
   // 로그인 상태 확인 (user._id와 user.name이 있으면 로그인된 것으로 간주)
   const isLoggedIn = user._id && user.name;
 
-  // 소켓 연결 조건: 로그인되어 있고 + 인증 페이지가 아닐 때
+  // 소켓 연결 조건: 로그인되어 있고 인증 페이지가 아닐 때
   const shouldConnectSocket = isLoggedIn && !isAuthPage;
 
-  // React Hooks 규칙: 항상 같은 순서로 훅을 호출해야 함
   // 로그인되고 인증페이지가 아닐 때만 유효한 데이터 전달
+
   useChatSocket({
     userId: shouldConnectSocket && user._id ? String(user._id) : "",
     nickName: shouldConnectSocket && user.name ? user.name : "",
@@ -35,13 +35,13 @@ export default function GlobalSocketManager({ isAuthPage }: GlobalSocketManagerP
 
   useEffect(() => {
     if (shouldConnectSocket) {
-      console.log("🔌 글로벌 소켓 연결 시작:", {
+      console.log("글로벌 소켓 연결 시작:", {
         userId: user._id,
         nickName: user.name,
         isAuthPage,
       });
     } else {
-      console.log("❌ 소켓 연결 조건 미충족:", {
+      console.log("소켓 연결 조건 미충족:", {
         isLoggedIn,
         isAuthPage,
         userId: user._id,

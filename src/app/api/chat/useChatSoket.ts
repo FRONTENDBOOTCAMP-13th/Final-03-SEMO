@@ -80,6 +80,12 @@ export const useChatSocket = ({ userId, nickName, roomId }: UseChatSocketProps) 
       // 귓속말 여부 확인
       const isWhisper = data.msgType === "whisper";
 
+      if (String(data.user_id) === String(userId && isWhisper)) {
+        return;
+      }
+
+      const senderId = raw.user_id || data.user_id || userId;
+
       const message: Message = {
         id: Date.now().toString(),
         roomId: GLOBAL_ROOM_ID,
@@ -87,7 +93,7 @@ export const useChatSocket = ({ userId, nickName, roomId }: UseChatSocketProps) 
         type: "text",
         msgType: isWhisper ? "whisper" : "all",
         createdAt: data.timestamp ?? new Date().toISOString(),
-        user_id: String(raw.user_id ?? "system"),
+        user_id: String(senderId),
         nickName: raw.nickName ?? "시스템",
         ...(isWhisper && {
           toUserId: String(data.toUserId),

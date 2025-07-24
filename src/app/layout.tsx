@@ -53,10 +53,11 @@ function LayoutContent({ children }: MyPageLayoutProps) {
   //  나머지 일반 페이지는 공통 UI 포함
   return (
     <div className="min-h-screen bg-uni-white min-w-[320px] w-full max-w-[480px] mx-auto relative">
-      {/* 헤더 컴포넌트 
-      - 각 페이지에서 설정한 정보 사용 */}
+      {/* 로그인시 글로벌룸에 참여 */}
       <GlobalSocketManager isAuthPage={isAuthPage} />
 
+      {/* 헤더 컴포넌트
+      - 각 페이지에서 설정한 정보 사용 */}
       {headerConfig && (
         <Header
           title={headerConfig.title}
