@@ -1,18 +1,20 @@
 "use client";
 
 import { Send } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { socket } from "../../../api/chat/useChatSoket";
 import { useChatStore, Message } from "../../../api/chat/useChatStore";
 
 interface InputChatProps {
   userId: string | number;
   nickName: string;
+  sellerId: string;
 }
 
-const InputChat = ({ userId, nickName }: InputChatProps) => {
+const InputChat = ({ userId, nickName, sellerId }: InputChatProps) => {
   const [input, setInput] = useState("");
-  const [whisperTargetId, setWhisperTargetId] = useState("all");
+  // const [whisperTargetId, setWhisperTargetId] = useState("all");
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   const roomId = useChatStore((state) => state.currentRoomId);
   const userList = useChatStore((state) => state.userList);
@@ -20,38 +22,40 @@ const InputChat = ({ userId, nickName }: InputChatProps) => {
   const handleSend = () => {
     if (!input.trim() || !roomId) return;
 
-    if (whisperTargetId === "all") {
-      // 전체 메시지 전송
-      socket.emit("message", input);
-    } else {
-      // 귓속말 전송
-      const targetUser = userList.find((u) => u.user_id === whisperTargetId);
-      if (!targetUser) return;
+    // if (whisperTargetId === "all") {
+    //   // 전체 메시지 전송
+    //   socket.emit("message", input);
+    // } else {
+    //   // 귓속말 전송
+    //   const targetUser = userList.find((u) => u.user_id === whisperTargetId);
+    //   if (!targetUser) return;
 
-      socket.emit("sendTo", whisperTargetId, input);
+    socket.emit("sendTo", sellerId, input);
 
-      // 내가 보낸 귓속말을 내 화면에 표시
-      const myWhisperMessage: Message = {
-        id: Date.now().toString(),
-        roomId,
-        content: input,
-        type: "text",
-        msgType: "whisper",
-        createdAt: new Date().toISOString(),
-        user_id: userId.toString(),
-        nickName,
-        toUserId: targetUser.user_id.toString(),
-        toNickName: targetUser.nickName,
-      };
+    // 내가 보낸 귓속말을 내 화면에 표시
+    const myWhisperMessage: Message = {
+      id: Date.now().toString(),
+      roomId,
+      content: input,
+      type: "text",
+      msgType: "whisper",
+      createdAt: new Date().toISOString(),
+      user_id: userId.toString(),
+      nickName,
+      // toUserId: targetUser.user_id.toString(),
+      // toNickName: targetUser.nickName,
+      toUserId: sellerId,
+      toNickName: sellerId,
+    };
 
-      useChatStore.getState().addMessage(myWhisperMessage);
-    }
-
+    useChatStore.getState().addMessage(myWhisperMessage);
     setInput("");
+    inputRef.current?.focus();
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
+      e.preventDefault();
       handleSend();
     }
   };
@@ -62,8 +66,8 @@ const InputChat = ({ userId, nickName }: InputChatProps) => {
         {/* 수신자 선택 드롭다운 */}
         <select
           className="rounded-md border px-2 py-1 text-sm bg-white text-uni-black cursor-pointer"
-          value={whisperTargetId}
-          onChange={(e) => setWhisperTargetId(e.target.value)}
+          // value={whisperTargetId}
+          // onChange={(e) => setWhisperTargetId(e.target.value)}
         >
           <option value="all">전체</option>
           {userList
@@ -78,6 +82,7 @@ const InputChat = ({ userId, nickName }: InputChatProps) => {
         {/* 메시지 입력 영역 */}
         <div className="flex items-center bg-uni-gray-200 rounded-[12px] h-12 flex-1">
           <input
+            ref={inputRef}
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
@@ -97,5 +102,4 @@ const InputChat = ({ userId, nickName }: InputChatProps) => {
     </div>
   );
 };
-
 export default InputChat;
