@@ -305,3 +305,9 @@ export async function getReplies(_id: number): ApiResPromise<PostReply[]> {
     return { ok: 0, message: "댓글을 불러오는데 실패했습니다." };
   }
 }
+
+/**
+ * 게시글 좋아요(찜) 추가하는 함수
+ * @params {number} _id - 게시글 ID
+ * @returns - 좋아요(찜) 응답 객체
+ */
