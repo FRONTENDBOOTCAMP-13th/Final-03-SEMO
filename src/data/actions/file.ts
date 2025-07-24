@@ -39,5 +39,8 @@ export function getImageUrl(imagePath: string | undefined): string {
   if (imagePath?.startsWith("files/")) {
     return `${API_URL}/${imagePath}`;
   }
+  if (!imagePath.startsWith("http") && !imagePath.startsWith("/")) {
+    return `/${imagePath}`;
+  }
   return imagePath;
 }
