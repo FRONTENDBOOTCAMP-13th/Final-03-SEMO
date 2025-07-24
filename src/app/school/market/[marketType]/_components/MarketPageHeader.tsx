@@ -1,7 +1,7 @@
 "use client";
 
 import { useSetPageHeader } from "@/contexts/PageHeaderContext";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 
 const HEADER_CONFIGS = {
@@ -25,6 +25,20 @@ const HEADER_CONFIGS = {
 export default function MarketPageHeader() {
   const pathname = usePathname();
   const [showMenu, setShowMenu] = useState(false);
+
+  // 메뉴가 열릴 때 스크롤 막기
+  useEffect(() => {
+    if (showMenu) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+
+    // 컴포넌트 언마운트 시 스크롤 복원
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [showMenu]);
 
   // 미트볼 클릭시 메뉴 토글
   const handleMeatballClick = useCallback(() => {
