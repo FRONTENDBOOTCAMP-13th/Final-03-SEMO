@@ -25,6 +25,7 @@ import Header from "../../src/components/common/Header";
 import Navigation from "../../src/components/common/Navigation";
 import { PageHeaderProvider, usePageHeader } from "../../src/contexts/PageHeaderContext";
 import "./globals.css";
+import { ToastContainer } from "react-toastify";
 
 interface MyPageLayoutProps {
   children: ReactNode;
@@ -81,6 +82,18 @@ export default function RootLayout({ children /*modal*/ }: MyPageLayoutProps) {
       <body>
         <PageHeaderProvider>
           <LayoutContent>{children}</LayoutContent>
+          <ToastContainer
+            position="top-center"
+            autoClose={3000}
+            hideProgressBar={false}
+            newestOnTop
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
+          />
         </PageHeaderProvider>
       </body>
     </html>

@@ -1,11 +1,11 @@
 "use client";
 
-import { useChatSocket } from "./useChatSoket";
-import ChatBubbleList from "../components/chatBubbleList/chatBubbleList";
-import InputChat from "../components/inputChat/input";
-import ProductInfo from "../components/productInfo/page";
+import { useChatSocket } from "../../../api/chat/useChatSoket";
+import InputChat from "../components/inputChat";
+// import ProductInfo from "../components/productInfo";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
+import ChatBubbleList from "../components/chatBubbleList";
 
 const ChatRoomContent = () => {
   const searchParams = useSearchParams();
@@ -17,7 +17,7 @@ const ChatRoomContent = () => {
 
   return (
     <>
-      <ProductInfo />
+      {/* <ProductInfo /> */}
       <ChatBubbleList myUserId={userId} />
       <InputChat userId={userId} nickName={nickName} />
     </>
