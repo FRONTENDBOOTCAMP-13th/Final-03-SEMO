@@ -34,7 +34,7 @@ export default function MarketPageHeader() {
       document.body.style.overflow = "auto";
     }
 
-    // 컴포넌트 언마운트 시 스크롤 복원
+    // 스크롤 복원
     return () => {
       document.body.style.overflow = "auto";
     };
@@ -73,7 +73,7 @@ export default function MarketPageHeader() {
 
   // 메뉴 렌더링
   return showMenu ? (
-    <div className="absolute top-16 right-4 bg-uni-white rounded-lg shadow-lg border border-uni-gray-200 z-50 min-w-[320px] max-w-[480px] mx-auto px-4 py-3">
+    <div className="fixed inset-x-0 top-16 bg-uni-white rounded-b-lg shadow-lg border-b border-uni-gray-200 z-50 min-w-[320px] max-w-[480px] mx-auto px-4 py-3">
       <button
         onClick={() => setShowMenu(false)}
         className="w-full px-4 py-2 text-left text-uni-gray-400 hover:bg-uni-gray-100"
