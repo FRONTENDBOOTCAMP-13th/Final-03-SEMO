@@ -13,7 +13,7 @@ import { getImageUrl } from "@/data/actions/file";
 interface Props {
   items: Post[];
   market: "buy" | "sell";
-  _id: number;
+  _id?: number;
 }
 
 export default function ItemSection({ items, market }: Props) {

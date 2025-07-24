@@ -307,33 +307,39 @@ export async function getReplies(_id: number): ApiResPromise<PostReply[]> {
 }
 
 /**
- * 게시글 좋아요(찜) 추가하는 함수
- * @params {number} _id - 게시글 ID
- * @returns - 좋아요(찜) 응답 객체
+ * 키워드 검색하는 함수
+ * @params keyword - 검색 키워드
+ * @params type - 게시판 타입(buy | sell)
+ * @return 검색 결과
  */
 
-// export async function addLike(
-//   state: ApiRes<LikeData[]> | null,
-//   formData: FormData
-// ): ApiResPromise<Like[]> {
-//   const target_id = FormData.get("target_id") as string;
-//   const accessToken = formData.get("accessToken") as string;
+export async function searchPost(keyword: string, type: "buy" | "sell"): ApiResPromise<Post[]> {
+  try {
+    const urlParams = new URLSearchParams({
+      type: type,
+      keyword: keyword.trim(),
+    });
+    console.log("검색 URL:", `${API_URL}/posts?${urlParams.toString()}`); // 디버깅
 
-//   try {
-//     const requestBody = {
-//       target_id: Number(target_id),
-//       extra: {
-//         type: "POST"
-//       }
-//     }
-//         const res = await fetch(`${API_URL}/bookmarks/post`, {
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json",
-//         "Client-Id": CLIENT_ID,
-//         "Authorization": `Bearer ${accessToken}`,
-//       },
-//       body: JSON.stringify(requestBody),
-//     });
-//   }
-// }
+    const res = await fetch(`${API_URL}/posts?${urlParams.toString()}`, {
+      headers: {
+        "Client-Id": CLIENT_ID,
+      },
+      cache: "no-store", // 검색은 실시간 데이터
+    });
+    console.log("응답상태: ", res.status);
+
+    const data = await res.json();
+
+    if (data.ok) {
+      console.log(
+        "검색된 게시글 제목들:",
+        data.item.map((post: Post) => post.title)
+      );
+    }
+    return data;
+  } catch (err) {
+    console.error(err);
+    return { ok: 0, message: "검색 중 오류 발생" };
+  }
+}
