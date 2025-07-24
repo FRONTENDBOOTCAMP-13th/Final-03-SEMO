@@ -18,6 +18,11 @@ export async function addPostLike(state: any, formData: FormData): ApiResPromise
   const accessToken = formData.get("accessToken") as string;
   const memo = formData.get("memo") as string;
 
+  console.log("=== 게시글 좋아요 추가 시작 ===");
+  console.log("게시글 ID:", target_id);
+  console.log("accessToken:", accessToken ? "있음" : "없음");
+  console.log("메모:", memo);
+
   try {
     const requestBody = {
       target_id: Number(target_id),
