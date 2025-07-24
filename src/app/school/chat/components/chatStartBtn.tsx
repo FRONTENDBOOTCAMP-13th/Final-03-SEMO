@@ -14,6 +14,8 @@ export default function ChatStartButton({ sellerId, sellerNickName, productId }:
   const router = useRouter();
   const buyerId = useUserStore((state) => state.user._id);
 
+  if (String(buyerId) === sellerId) return null;
+
   const handleStartChat = async () => {
     if (!buyerId || !sellerId || !productId) {
       alert("채팅방 생성 정보가 부족합니다.");
