@@ -7,7 +7,7 @@ import InputChat from "../components/inputChat";
 import { notFound } from "next/navigation";
 import { socket /*useChatSocket*/ } from "../../../api/chat/useChatSoket";
 import { useChatStore } from "../../../api/chat/useChatStore";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useUserStore } from "@/store/userStore";
 
 const ChatPage = () => {
@@ -32,6 +32,13 @@ const ChatPage = () => {
   console.log("판매자 nickName: ", sellerNickName);
 
   // useChatSocket({ userId: String(buyerId), nickName: buyerNickName, roomId: "global" });
+  useEffect(() => {
+    if (!joinedRoom && buyerId && sellerId) {
+      console.log("buyerId:", buyerId);
+      console.log("sellerId:", sellerId);
+      handleJoinRoom();
+    }
+  }, [buyerId, sellerId, joinedRoom]);
 
   const handleJoinRoom = () => {
     const privateRoomId = [buyerId, sellerId].sort().join("-");
@@ -78,7 +85,7 @@ const ChatPage = () => {
       <div className="px-4 my-2">
         <button
           onClick={handleJoinRoom}
-          className="bg-uni-blue-500 text-uni-white px-4 py-2 rounded"
+          className="bg-uni-blue-500 text-uni-white px-4 py-2 rounded  hover:bg-uni-blue-600"
           disabled={joinedRoom}
         >
           {joinedRoom ? "개인 채팅 중..." : "민지와 1:1 채팅 시작하기"}

@@ -130,7 +130,7 @@ export const useChatSocket = ({ userId, nickName, roomId }: UseChatSocketProps) 
                 },
                 (joinRes: any) => {
                   if (joinRes.ok) {
-                    console.log("자동 입장 성공:", privateRoomId);
+                    console.log(`[WebSocket] "${userId}"님이 "${privateRoomId}"에 참여했습니다.`);
                     useChatStore.getState().setRoomId(privateRoomId);
                   } else {
                     console.warn("자동 입장 실패:", joinRes.message);
