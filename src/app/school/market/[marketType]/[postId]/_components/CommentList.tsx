@@ -11,7 +11,7 @@ export default async function CommentList({ _id }: CommentListProps) {
   const res = await getReplies(_id);
   return (
     <div className="min-w-[320px] max-w-[480px]">
-      <h3 className="font-bold text-22 mt-5 mb-2">댓글 {res.ok ? res.item.length : 0}개</h3>
+      <h3 className="font-bold text-18 mt-5 mb-2">댓글 {res.ok ? res.item.length : 0}개</h3>
 
       <CommentNew _id={_id} />
 

@@ -1,6 +1,7 @@
 "use client";
 import { createReply } from "@/data/actions/post";
 import { useActionState, useState, useEffect } from "react";
+import { MessageCircle } from "lucide-react";
 
 interface CommentNewProps {
   _id: number;
@@ -29,11 +30,11 @@ export default function CommentNew({ _id }: CommentNewProps) {
           <input type="hidden" name="accessToken" value={accessToken} />
 
           {/* 댓글 입력 필드 */}
-          <div className="mb-4">
+          <div className="flex gap-3 items-start mb-4">
             <textarea
               name="content"
               placeholder="댓글을 입력하세요"
-              className="w-full bg-uni-gray-200 rounded-md p-3 text-16 resize-none"
+              className="w-full h-13 bg-uni-gray-200 rounded-md p-3 text-16 resize-none"
               rows={3}
             />
 
@@ -41,16 +42,14 @@ export default function CommentNew({ _id }: CommentNewProps) {
             {state?.ok === 0 && state.errors?.content?.msg && (
               <p className="mt-2 text-sm text-red-500">{state.errors.content.msg}</p>
             )}
-          </div>
 
-          {/* 등록 버튼 */}
-          <div className="flex justify-end">
+            {/* 등록 버튼 */}
             <button
               type="submit"
               disabled={isLoading}
-              className="bg-uni-blue-400 text-uni-white px-4 py-2 rounded-lg text-14 hover:bg-uni-blue-500 disabled:bg-uni-gray-400 transition-colors"
+              className="bg-uni-blue-400 text-uni-white h-13 px-4 py-2 rounded-lg text-14 hover:bg-uni-blue-500 disabled:bg-uni-gray-400 transition-colors"
             >
-              {isLoading ? "등록 중..." : "댓글 등록"}
+              <MessageCircle size={20} />
             </button>
           </div>
         </form>
