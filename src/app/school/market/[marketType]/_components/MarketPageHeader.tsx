@@ -1,7 +1,7 @@
 "use client";
 
 import { useSetPageHeader } from "@/contexts/PageHeaderContext";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { usePathname } from "next/navigation";
 
 const HEADER_CONFIGS = {
@@ -23,31 +23,28 @@ const HEADER_CONFIGS = {
 };
 
 export default function MarketPageHeader() {
-  const pathname = usePathname(); // 현재 경로 가져오기
+  const pathname = usePathname();
+  const [showMenu, setShowMenu] = useState(false);
 
-  // useCallback사용하여 함수 재생성 방지
+  // 미트볼 클릭시 메뉴 토글
   const handleMeatballClick = useCallback(() => {
-    console.log("미트볼 스파게티");
-    // 실제 메뉴 로직 구현
-  }, []);
+    setShowMenu(!showMenu); // 메뉴 토글 추가
+  }, [showMenu]);
 
   const headerConfig = useMemo(() => {
-    const pathSegments = pathname.split("/").filter(Boolean); // "/" 기준으로 경로 분리하고 빈 문자열 제거(맨 앞에)
-    const marketIndex = pathSegments.indexOf("market"); // 배열에서 "market"의 인덱스 찾기
+    const pathSegments = pathname.split("/").filter(Boolean);
+    const marketIndex = pathSegments.indexOf("market");
     const marketType = pathSegments[marketIndex + 1]; // buy or sell
     const subPage = pathSegments[marketIndex + 2]; // new or postId
 
     let config = HEADER_CONFIGS.list; // 기본값
 
-    // 경로에 따른 설정 변경
-    // subPage가 new면 등록 페이지로 세팅, 아니면 상세 페이지로 세팅
     if (subPage === "new") {
       config = HEADER_CONFIGS.new;
     } else if (subPage) {
       config = HEADER_CONFIGS.detail;
     }
 
-    // backLink 동적 생성
     const backLink = subPage ? `/school/market/${marketType}` : config.backLink;
 
     return {
@@ -55,10 +52,32 @@ export default function MarketPageHeader() {
       backLink: backLink,
       type: config.showMeatball ? ("meatball" as const) : ("default" as const),
       ...(config.showMeatball && { onMeatballClick: handleMeatballClick }),
-      // 스프레드 연산자 사용하여 showMeatball이 true일 때만 onMeatballClick 추가
     };
   }, [pathname, handleMeatballClick]);
+
   useSetPageHeader(headerConfig);
 
-  return null;
+  // 메뉴 렌더링
+  return showMenu ? (
+    <div className="absolute top-16 right-4 bg-uni-white rounded-lg shadow-lg border border-uni-gray-200 z-50 min-w-[320px] max-w-[480px] mx-auto px-4 py-3">
+      <button
+        onClick={() => setShowMenu(false)}
+        className="w-full px-4 py-2 text-left text-uni-gray-400 hover:bg-uni-gray-100"
+      >
+        수정하기
+      </button>
+      <button
+        onClick={() => setShowMenu(false)}
+        className="w-full px-4 py-2 text-left text-uni-gray-400 hover:bg-uni-gray-100"
+      >
+        삭제하기
+      </button>
+      <button
+        onClick={() => setShowMenu(false)}
+        className="w-full px-4 py-2 text-left text-uni-gray-400 hover:bg-uni-gray-100"
+      >
+        공유하기
+      </button>
+    </div>
+  ) : null;
 }
