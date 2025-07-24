@@ -1,7 +1,25 @@
+"use client";
+
+import { useEffect } from "react";
+import { logout } from "@/lib/actions/logout";
+import { useRouter } from "next/navigation";
+
 export default function LogoutPage() {
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-uni-gray-100">
-      <p className="text-16 text-uni-black font-pretendard">로그인 화면으로 라우팅 될 페이지 입니다</p>
-    </div>
-  );
+  const router = useRouter();
+
+  useEffect(() => {
+    const doLogout = async () => {
+      try {
+        await logout(); // Zustand + fetch
+        router.replace("/login");
+      } catch {
+        alert("로그아웃 실패!");
+        router.replace("/school/myPage");
+      }
+    };
+
+    doLogout();
+  }, [router]);
+
+  return <p className="text-16 text-uni-black font-pretendard text-center mt-20">로그아웃 중입니다...</p>;
 }
