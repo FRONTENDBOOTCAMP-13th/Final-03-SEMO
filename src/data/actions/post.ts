@@ -33,8 +33,8 @@ export async function createPost(state: ApiRes<Post> | null, formData: FormData)
     title,
     content,
     image,
+    tag,
     extra: {
-      tag,
       price,
       location,
       crt: "판매중",
