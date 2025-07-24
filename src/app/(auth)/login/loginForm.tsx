@@ -50,7 +50,13 @@ export default function LoginForm() {
           <LogoLow />
         </div>
 
-        <div className="w-full max-w-sm space-y-4 gap-2">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleLogin();
+          }}
+          className="w-full max-w-sm space-y-4 gap-2"
+        >
           <Input type="email" placeholder="ID (학교 이메일)" value={email} onChange={(e) => setEmail(e.target.value)} />
           <PasswordInput value={password} onChange={(e) => setPassword(e.target.value)} placeholder="PW" />
 
@@ -61,14 +67,14 @@ export default function LoginForm() {
               color: "var(--color-uni-gray-400)",
             }}
           >
-            <button type="button" onClick={() => router.push("")} className="hover:underline">
+            <button type="submit" onClick={() => router.push("")} className="hover:underline">
               아이디 / 비밀번호 찾기
             </button>
-            <button type="button" onClick={() => router.push("/signup")} className="hover:underline ">
+            <button type="submit" onClick={() => router.push("/signup")} className="hover:underline ">
               회원가입
             </button>
           </div>
-        </div>
+        </form>
 
         <div className="w-full max-w-sm mt-6">
           <Button type="primary" onClick={handleLogin}>
