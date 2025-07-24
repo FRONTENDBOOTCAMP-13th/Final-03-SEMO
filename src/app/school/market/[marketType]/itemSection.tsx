@@ -13,6 +13,7 @@ import { getImageUrl } from "@/data/actions/file";
 interface Props {
   items: Post[];
   market: "buy" | "sell";
+  _id: number;
 }
 
 export default function ItemSection({ items, market }: Props) {
@@ -39,7 +40,7 @@ export default function ItemSection({ items, market }: Props) {
             {/* 댓글 */}
             <div className="flex items-center">
               <MessageCircleMore size={15} color="gray" strokeWidth={2} />
-              <span className="ml-1">0</span>
+              <span className="ml-1">{item.repliesCount || 0}</span>
             </div>
           </div>
         </Link>
