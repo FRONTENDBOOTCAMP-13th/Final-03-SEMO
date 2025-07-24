@@ -2,6 +2,7 @@ import Image from "next/image";
 import CommentList from "./CommentList";
 // import PostActions from "./PostActions";
 import { Post } from "@/types";
+import { Heart } from "lucide-react";
 import { getImageUrl } from "@/data/actions/file";
 interface PostContentProps {
   post: Post;
@@ -36,7 +37,7 @@ export default function PostContent({ post }: PostContentProps) {
       {/* 제목 + 좋아요 */}
       <div className="flex justify-between items-center mb-2">
         <h2 className="font-bold text-22">{post?.title}</h2>
-        <button>❤️</button>
+        <Heart size={20} color="red" strokeWidth={2} />
       </div>
 
       {/* <PostActions post={post} /> */}
