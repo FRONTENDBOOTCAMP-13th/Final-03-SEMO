@@ -64,6 +64,7 @@ class AuthService {
       const user: User = {
         _id: response.item._id ?? 0,
         email: response.item.email ?? "",
+        password: password,
         name: response.item.name ?? "",
         address: response.item.address ?? "",
         type: response.item.type ?? "",

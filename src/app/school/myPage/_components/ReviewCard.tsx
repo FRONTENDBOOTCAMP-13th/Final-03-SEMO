@@ -20,10 +20,8 @@
  * @param review.image - 썸네일 이미지 컴포넌트(JSX.Element)
  */
 
-"use client";
-
 import Link from "next/link";
-import { Review } from "../data/reviewsData";
+import { Review } from "../_utils/postConverter";
 
 export default function ReviewCard({ review }: { review: Review }) {
   return (
