@@ -19,8 +19,6 @@
  * @param status - 판매중 or 판매완료
  */
 
-"use client";
-
 // 아이템 공통 타입
 export interface Item {
   id: number;

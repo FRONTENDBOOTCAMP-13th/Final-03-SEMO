@@ -1,4 +1,4 @@
-import AuthService from "./authService";
+import { useUserStore } from "@/store/userStore";
 
 export const API_CONFIG = {
   BASE_URL: process.env.NEXT_PUBLIC_API_URL,
@@ -9,7 +9,7 @@ export const API_CONFIG = {
 
 // 기본적으로 "client-id"와 "Content-Type"을 설정하고
 
-// AuthService에서 토큰을 가져와서 "Authorization" 헤더에 추가
+// useUserStore에서 토큰을 가져와서 "Authorization" 헤더에 추가
 const createApiHeaders = (isFormData = false): HeadersInit => {
   const headers: HeadersInit = {
     "client-id": API_CONFIG.CLIENT_ID ?? "",
@@ -19,7 +19,7 @@ const createApiHeaders = (isFormData = false): HeadersInit => {
     headers["Content-Type"] = "application/json";
   }
 
-  const token = AuthService.getAccessToken();
+  const token = useUserStore.getState().user.token?.accessToken;
   if (token) {
     headers["Authorization"] = `Bearer ${token}`;
   }
@@ -32,6 +32,10 @@ const handleApiResponse = async (response: Response) => {
   const data = await response.json();
   if (!response.ok || data.ok !== 1) {
     throw new Error(data.message || "API 요청에 실패했습니다.");
+  }
+  // data.item이 없거나 배열이 아닌 경우 전체 data 객체를 반환
+  if (data.item === undefined || !Array.isArray(data.item)) {
+    return data;
   }
   return data.item;
 };
