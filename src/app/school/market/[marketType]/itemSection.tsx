@@ -26,7 +26,7 @@ export default function ItemSection({ items, market }: Props) {
             alt={item.title}
             width={160}
             height={160}
-            className="rounded-lg object-cover w-[160px] h-[160px]"
+            className="rounded-lg object-cover w-full h-[160px]"
           />
           <p className="mt-2 text-16 font-medium truncate">{item.title}</p>
           <div className="flex items-center justify-between text-14 text-uni-gray-400 mt-1">
