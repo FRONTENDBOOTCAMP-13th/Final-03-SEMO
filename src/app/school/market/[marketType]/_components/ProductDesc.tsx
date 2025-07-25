@@ -19,15 +19,17 @@ export default function ProductDesc({ initialData }: ProductDescProps) {
         </label>
         {/* 카테고리 셀렉트 */}
         <select
-          id="category"
-          name="category"
-          defaultValue={initialData?.extra?.category || ""}
+          id="tag"
+          name="tag"
+          defaultValue={initialData?.tag || ""}
           className="w-full bg-uni-gray-200 rounded-lg p-3 text-16 text-uni-gray-600"
         >
           <option value="">카테고리</option>
-          <option value="음식">음식</option>
-          <option value="서적">서적</option>
+          <option value="식품">식품</option>
+          <option value="도서">도서</option>
+          <option value="의류">의류</option>
           <option value="생활용품">생활용품</option>
+          <option value="생활가전">생활가전</option>
           <option value="학용품">학용품</option>
         </select>
       </div>

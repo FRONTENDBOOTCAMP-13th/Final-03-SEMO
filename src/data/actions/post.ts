@@ -23,7 +23,7 @@ export async function createPost(state: ApiRes<Post> | null, formData: FormData)
   const title = formData.get("title") as string;
   const content = formData.get("content") as string;
   const image = formData.get("image") as string;
-  const category = formData.get("category") as string;
+  const tag = formData.get("tag") as string;
   const price = formData.get("price") as string;
   const location = formData.get("location") as string;
 
@@ -33,10 +33,11 @@ export async function createPost(state: ApiRes<Post> | null, formData: FormData)
     title,
     content,
     image,
+    tag,
     extra: {
-      category,
       price,
       location,
+      crt: "판매중",
     },
   };
   try {
@@ -80,7 +81,7 @@ export async function createPost(state: ApiRes<Post> | null, formData: FormData)
           ]
         : [],
       extra: {
-        category,
+        tag,
         location,
         marketType: type,
         crt: "판매중",
@@ -129,8 +130,8 @@ export async function updatePost(state: ApiRes<Post> | null, formData: FormData)
     title: formData.get("title") as string,
     content: formData.get("content") as string,
     image: formData.get("image") as string,
+    tag: formData.get("tag") as string,
     extra: {
-      category: formData.get("category") as string,
       price: formData.get("price") as string,
       location: formData.get("location") as string,
     },
@@ -302,5 +303,43 @@ export async function getReplies(_id: number): ApiResPromise<PostReply[]> {
     // 네트워크 오류 처리
     console.error(error);
     return { ok: 0, message: "댓글을 불러오는데 실패했습니다." };
+  }
+}
+
+/**
+ * 키워드 검색하는 함수
+ * @params keyword - 검색 키워드
+ * @params type - 게시판 타입(buy | sell)
+ * @return 검색 결과
+ */
+
+export async function searchPost(keyword: string, type: "buy" | "sell"): ApiResPromise<Post[]> {
+  try {
+    const urlParams = new URLSearchParams({
+      type: type,
+      keyword: keyword.trim(),
+    });
+    console.log("검색 URL:", `${API_URL}/posts?${urlParams.toString()}`); // 디버깅
+
+    const res = await fetch(`${API_URL}/posts?${urlParams.toString()}`, {
+      headers: {
+        "Client-Id": CLIENT_ID,
+      },
+      cache: "no-store", // 검색은 실시간 데이터
+    });
+    console.log("응답상태: ", res.status);
+
+    const data = await res.json();
+
+    if (data.ok) {
+      console.log(
+        "검색된 게시글 제목들:",
+        data.item.map((post: Post) => post.title)
+      );
+    }
+    return data;
+  } catch (err) {
+    console.error(err);
+    return { ok: 0, message: "검색 중 오류 발생" };
   }
 }

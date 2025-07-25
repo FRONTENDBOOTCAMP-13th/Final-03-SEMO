@@ -1,8 +1,11 @@
 import Image from "next/image";
 import CommentList from "./CommentList";
-import PostActions from "./PostActions";
+// import PostActions from "./PostActions";
 import { Post } from "@/types";
+// import { Heart } from "lucide-react";
 import { getImageUrl } from "@/data/actions/file";
+import PostLikeButton from "./PostLikeButton";
+
 import ChatStartButton from "@/app/school/chat/components/chatStartBtn";
 interface PostContentProps {
   post: Post;
@@ -17,7 +20,7 @@ export default function PostContent({ post }: PostContentProps) {
   //   );
   // }
   return (
-    <div className="min-w-[320px] max-w-[480px] mx-auto px-4 py-6 min-h-screen bg-uni-white">
+    <div className="min-w-[320px] max-w-[480px] mx-auto px-4 min-h-screen bg-uni-white">
       {/* 이미지 */}
       <div className="rounded-lg overflow-hidden mb-4 bg-uni-gray-100">
         {post?.image ? (
@@ -37,10 +40,11 @@ export default function PostContent({ post }: PostContentProps) {
       {/* 제목 + 좋아요 */}
       <div className="flex justify-between items-center mb-2">
         <h2 className="font-bold text-22">{post?.title}</h2>
-        <button>❤️</button>
+        {/* <Heart size={20} color="red" strokeWidth={2} /> */}
+        <PostLikeButton postId={post._id} />
       </div>
 
-      <PostActions post={post} />
+      {/* <PostActions post={post} /> */}
 
       {/* 가격 */}
       <p className="text-14 text-uni-gray-400 mb-4">
@@ -48,7 +52,7 @@ export default function PostContent({ post }: PostContentProps) {
       </p>
 
       {/* 작성자 */}
-      <div className="flex items-center gap-3 mb-2">
+      <div className="flex items-center gap-3 my-2">
         <Image src="/img/profile.png" alt="" width={56} height={56} className="rounded-full" />
         <div>
           <p className="text-16">{post?.user.name}</p>
@@ -57,13 +61,15 @@ export default function PostContent({ post }: PostContentProps) {
       </div>
 
       {/* 상태 */}
-      <span className="inline-block px-3 py-1 bg-uni-green-400 text-uni-white text-14 font-bold rounded-[12px] mb-4 p-10">
-        {post?.extra.crt}
-      </span>
+      <div className="my-3">
+        <span className="inline-block bg-uni-green-400 text-uni-white text-14 font-bold rounded-[12px] p-10 px-4.5 py-1.5">
+          {post?.extra.crt}
+        </span>
+      </div>
 
       {/* 설명 */}
-      <p className="text-gray-700 mb-2">{post?.content}</p>
-      <p className="text-12 text-uni-gray-400 mb-6">{post?.createdAt}</p>
+      <p className="text-gray-700 mb-2 text-16">{post?.content}</p>
+      <p className="text-12 text-uni-gray-300 mb-6">{post?.createdAt}</p>
       {post?._id && Number.isInteger(post._id) && <CommentList _id={post._id} />}
 
       <div className=" w-full max-w-[480px] bg-white">

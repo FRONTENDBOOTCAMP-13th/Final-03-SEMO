@@ -63,11 +63,8 @@ export default function CommentDeleteForm({ reply }: { reply: PostReply }) {
       <input type="hidden" name="accessToken" value={accessToken} />
       <input type="hidden" name="_id" value={postId} />
       <input type="hidden" name="replyId" value={reply._id} />
-      <button
-        type="submit"
-        className="px-4 py-2 bg-blue-500 text-white rounded-lg text-14 hover:bg-blue-600 transition-colors"
-      >
-        댓글 삭제
+      <button type="submit" className="px-3 text-13 text-uni-gray-300 !cursor-pointer">
+        삭제
       </button>
     </form>
   );

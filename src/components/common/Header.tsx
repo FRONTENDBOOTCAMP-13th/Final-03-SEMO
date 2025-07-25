@@ -43,7 +43,7 @@ export default function Header({ title, backLink = "/", type = "default", onMeat
           {type === "meatball" && (
             <button
               onClick={() => {
-                console.log("미트볼 버튼 클릭됨");
+                // console.log("미트볼 버튼 클릭됨");
                 onMeatballClick?.();
               }}
               className="p-2 flex items-center justify-center hover:bg-uni-gray-100 rounded-full"

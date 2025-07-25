@@ -38,9 +38,13 @@ export default function CommentItem({ reply }: CommentItemProps) {
                 })}
               </span>
             </p>
-            {/* 동적 댓글 내용 */}
-            <p className="text-14">{reply.content}</p>
-            <CommentDeleteForm reply={reply} />
+            <div className="flex justify-between item-start mb-3 py-2">
+              {/* 동적 댓글 내용 */}
+              <p className="text-14 flex-1 pr-2">{reply.content}</p>
+              <div className="flex-shrink-0">
+                <CommentDeleteForm reply={reply} />
+              </div>
+            </div>
           </div>
         </div>
       </div>
