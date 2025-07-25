@@ -1,13 +1,14 @@
 //my-post와 로직 동일
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import TabNavigation from "../../_components/TabNavigation";
 import ItemCard, { Item } from "../../_components/ItemCard";
 import EmptyState from "../../_components/EmptyState";
-import { myPageWishlistData, MyPageWishlist } from "../../data/wishlistData";
+import { useMyBookmarks } from "../../_hooks/useHistoryApi";
+import { bookmarksToWishlistItems } from "../../_utils/postConverter";
 
-export default function MyPageMyPost() {
+export default function MyPageWishlist() {
   const [activeTab, setActiveTab] = useState("전체");
 
   // 컴포넌트가 로드되는지 확인
