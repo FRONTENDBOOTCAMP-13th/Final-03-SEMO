@@ -45,6 +45,7 @@ export default function AccountForm() {
 
   // 이미지 렌더링을 메모이제이션하여 불필요한 요청 방지
   const imageElement = useMemo(() => {
+    console.log("memoizedImageUrl:", memoizedImageUrl);
     if (memoizedImageUrl) {
       return (
         <Image
@@ -137,6 +138,9 @@ export default function AccountForm() {
           alert("이미지 업로드에 실패했습니다.");
           return;
         }
+      } else if (profileImage && profileImage.startsWith("data:")) {
+        // base64 이미지인 경우 서버에 보내지 않음
+        finalImageUrl = null;
       }
 
       // 프로필 업데이트
@@ -153,18 +157,24 @@ export default function AccountForm() {
         alert("로그인이 필요합니다.");
         return;
       }
-
-      const success = await updateUserProfile(currentUserId, profileData);
+      const success = await updateUserProfile(user._id, profileData);
 
       if (success) {
         alert("프로필이 성공적으로 저장되었습니다.");
         setUploadFile(null); // 업로드 완료 후 파일 상태 초기화
 
-        // 사용자 데이터 다시 로드하여 최신 정보 반영
-        const updatedUser = await getUserProfile(currentUserId);
-        if (updatedUser && updatedUser.image) {
-          setProfileImage(updatedUser.image);
-        }
+        // Zustand 스토어 업데이트
+        setUser({
+          ...user,
+          name: profileData.name,
+          image: profileData.profileImage,
+          extra: {
+            ...user.extra,
+            nickname: profileData.name,
+            bank: profileData.bank,
+            bankNumber: profileData.accountNumber,
+          },
+        });
       } else {
         alert("프로필 저장에 실패했습니다.");
       }
