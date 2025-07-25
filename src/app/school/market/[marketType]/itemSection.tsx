@@ -20,7 +20,7 @@ export default function ItemSection({ items, market }: Props) {
   return (
     <div className="grid grid-cols-2 gap-4">
       {items.map((item) => (
-        <Link key={item._id} href={`/school/market/${market}/${item._id}`} className="block rounded-lg p-2">
+        <Link key={item._id} href={`/school/market/${market}/${item._id}`} className="block rounded-lg">
           <Image
             src={getImageUrl(item.image)}
             alt={item.title}
