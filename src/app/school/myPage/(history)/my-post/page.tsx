@@ -1,21 +1,30 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import TabNavigation from "../../_components/TabNavigation";
 import ItemCard, { Item } from "../../_components/ItemCard";
 import EmptyState from "../../_components/EmptyState";
 import Pagination from "../../_components/Pagination";
 import SectionHeader from "../../_components/SectionHeader";
-import { myPageItemsData, MyPageItem } from "../../data/postData";
+import { useMyProducts } from "../../_hooks/useHistoryApi";
+import { productsToMyPageItems } from "../../_utils/postConverter";
 import { useResponsivePagination } from "../../_hooks/pagination/useResponsivePagination";
 
 export default function MyPageMyPost() {
   const [activeTab, setActiveTab] = useState("전체");
 
-  // reviewsData에서 카테고리별로 필터링
-  const sellItems: Item[] = myPageItemsData
-    .filter((item: MyPageItem) => item.category === "팔래요")
-    .map((item: MyPageItem) => ({
+  // API로부터 내가 판매한 상품 목록 가져오기
+  const { products, isLoading, error, refetch } = useMyProducts();
+
+  // API 데이터를 마이페이지 아이템 형식으로 변환
+  const myPageItems = useMemo(() => {
+    return productsToMyPageItems(products);
+  }, [products]);
+
+  // myPageItems에서 카테고리별로 필터링
+  const sellItems: Item[] = myPageItems
+    .filter((item) => item.category === "팔래요")
+    .map((item) => ({
       id: item.id,
       title: item.title,
       price: item.price,
@@ -23,9 +32,9 @@ export default function MyPageMyPost() {
       status: item.status,
     }));
 
-  const buyItems: Item[] = myPageItemsData
-    .filter((item: MyPageItem) => item.category === "살래요")
-    .map((item: MyPageItem) => ({
+  const buyItems: Item[] = myPageItems
+    .filter((item) => item.category === "살래요")
+    .map((item) => ({
       id: item.id,
       title: item.title,
       price: item.price,
@@ -33,9 +42,9 @@ export default function MyPageMyPost() {
       status: item.status,
     }));
 
-  const gatheringsItems: Item[] = myPageItemsData
-    .filter((item: MyPageItem) => item.category === "모여요")
-    .map((item: MyPageItem) => ({
+  const gatheringsItems: Item[] = myPageItems
+    .filter((item) => item.category === "모여요")
+    .map((item) => ({
       id: item.id,
       title: item.title,
       price: item.price,
@@ -71,6 +80,33 @@ export default function MyPageMyPost() {
   });
 
   const tabs = ["전체", "팔래요", "살래요", "모여요"];
+
+  // 로딩 상태 처리
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-uni-white">
+        <TabNavigation tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
+        <div className="flex items-center justify-center py-20">
+          <div className="text-uni-gray-400 font-pretendard">상품 목록을 불러오는 중...</div>
+        </div>
+      </div>
+    );
+  }
+
+  // 에러 상태 처리
+  if (error) {
+    return (
+      <div className="min-h-screen bg-uni-white">
+        <TabNavigation tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
+        <div className="flex flex-col items-center justify-center py-20 space-y-4">
+          <div className="text-uni-gray-400 font-pretendard">{error}</div>
+          <button onClick={refetch} className="px-4 py-2 bg-uni-blue text-white rounded-lg font-pretendard">
+            다시 시도
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-uni-white">

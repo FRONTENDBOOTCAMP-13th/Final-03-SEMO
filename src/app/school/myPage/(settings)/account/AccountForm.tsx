@@ -6,61 +6,44 @@ import SaveFloatingButton from "../../_components/SaveFloatingButton";
 import InputField from "../../_components/InputField";
 import { validateNickname, validateAccountNumber, validateBankSelection } from "./utils/validation";
 import { useMyPageApi } from "../../_hooks/useMyPageApi";
-import { AuthService } from "../../_services";
-import type { User } from "../../_types/user";
+import { getImageUrl } from "@/data/actions/file";
+import { useUserStore } from "@/store/userStore";
+import { User } from "../../_types/user";
 
 export default function AccountForm() {
-  const [nickname, setNickname] = useState("김세모");
-  const [selectedBank, setSelectedBank] = useState("국민은행");
-  const [accountNumber, setAccountNumber] = useState("");
-  const [accountError, setAccountError] = useState("");
-  const [nicknameError, setNicknameError] = useState("");
-  // 프로필 사진 미리보기용 URL
-  const [profileImage, setProfileImage] = useState<string | null>("");
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [userData, setUserData] = useState<User | null>(null);
-  // 사용자가 새로 선택한 업로드할 이미지 파일을 저장하는 상태
-  const [uploadFile, setUploadFile] = useState<File | null>(null);
-  // 현재 로그인한 사용자의 이메일 상태
-  const [userEmail, setUserEmail] = useState<string>("");
+  const { user, setUser } = useUserStore();
 
-  const { getUserProfile, updateUserProfile, uploadProfileImage, loading } = useMyPageApi();
+  // 타입 안전한 user 캐스팅
+  const userWithExtra = user as User;
+
+  const [name, setName] = useState(userWithExtra.name || "");
+  const [selectedBank, setSelectedBank] = useState(userWithExtra?.extra?.bank || "은행사");
+  const [accountNumber, setAccountNumber] = useState(
+    userWithExtra?.extra?.bankNumber ? String(userWithExtra.extra.bankNumber) : ""
+  );
+  const [accountError, setAccountError] = useState("");
+  const [nameError, setNameError] = useState("");
+  const [profileImage, setProfileImage] = useState<string | null>(getImageUrl(userWithExtra.image) || null);
+  const [uploadFile, setUploadFile] = useState<File | null>(null);
+
+  const { updateUserProfile, uploadProfileImage, loading } = useMyPageApi();
   const banks = ["은행사", "국민은행", "신한은행", "우리은행", "하나은행", "농협은행", "기업은행"];
 
   // 컴포넌트 마운트 시 사용자 데이터 로드
   useEffect(() => {
-    const loadUserData = async () => {
-      const currentUserId = AuthService.getCurrentUserId();
-      if (!currentUserId) {
-        // 사용자에게 알림 대신, 로그인 페이지로 리다이렉트하거나 다른 처리
-        console.warn("로그인이 필요합니다.");
-        return;
-      }
-
-      const user = await getUserProfile(currentUserId);
-      if (user) {
-        setUserData(user);
-        setUserEmail(user.email); // 실제 로그인한 사용자의 이메일 설정
-        setNickname(user.extra?.nickname || user.name);
-        setSelectedBank(user.extra?.bank || "은행사");
-        setAccountNumber(user.extra?.bankNumber ? String(user.extra.bankNumber) : "");
-        if (user.image && typeof user.image === "string" && user.image !== "undefined" && user.image.trim() !== "") {
-          setProfileImage(user.image);
-        } else {
-          setProfileImage(null);
-        }
-      }
-    };
-    loadUserData();
-  }, [getUserProfile]);
+    const userWithExtra = user as User;
+    setName(userWithExtra.name || "");
+    setSelectedBank(userWithExtra?.extra?.bank || "은행사");
+    setAccountNumber(userWithExtra?.extra?.bankNumber ? String(userWithExtra.extra.bankNumber) : "");
+    setProfileImage(userWithExtra.image || null);
+  }, [user]);
 
   // 이미지 URL을 메모이제이션하여 불필요한 재생성 방지
   const memoizedImageUrl = useMemo(() => {
     if (
       profileImage &&
       typeof profileImage === "string" &&
-      profileImage !== "undefined" &&
-      profileImage.trim() !== ""
+      (profileImage.startsWith("http") || profileImage.startsWith("data:"))
     ) {
       return profileImage;
     }
@@ -69,6 +52,7 @@ export default function AccountForm() {
 
   // 이미지 렌더링을 메모이제이션하여 불필요한 요청 방지
   const imageElement = useMemo(() => {
+    console.log("memoizedImageUrl:", memoizedImageUrl);
     if (memoizedImageUrl) {
       return (
         <Image
@@ -94,11 +78,11 @@ export default function AccountForm() {
   {
     /*(닉네임/계쫘번호/이미지) 입력 핸들러*/
   }
-  const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    setNickname(value);
+    setName(value);
     const error = validateNickname(value);
-    setNicknameError(error);
+    setNameError(error);
   };
 
   const handleAccountNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -140,10 +124,10 @@ export default function AccountForm() {
   // 저장 핸들러
   const handleSave = async () => {
     const bankError = validateBankSelection(selectedBank);
-    const nicknameValidationError = validateNickname(nickname);
+    const nameValidationError = validateNickname(name);
     const accountValidationError = validateAccountNumber(accountNumber);
-    if (bankError || nicknameValidationError || accountValidationError) {
-      alert(bankError || nicknameValidationError || accountValidationError);
+    if (bankError || nameValidationError || accountValidationError) {
+      alert(bankError || nameValidationError || accountValidationError);
       return;
     }
 
@@ -161,34 +145,44 @@ export default function AccountForm() {
           alert("이미지 업로드에 실패했습니다.");
           return;
         }
+      } else if (profileImage && profileImage.startsWith("data:")) {
+        // base64 이미지인 경우 서버에 보내지 않음
+        finalImageUrl = null;
       }
 
       // 프로필 업데이트
       const profileData = {
-        name: nickname.trim(), // 'name' is required by UserProfileFormData
+        name: name.trim(), // 'name' is required by UserProfileFormData
         bank: selectedBank,
         accountNumber,
         profileImage: finalImageUrl,
       };
 
       console.log("프로필 업데이트 시작:", profileData);
-      const currentUserId = AuthService.getCurrentUserId();
-      if (!currentUserId) {
-        alert("로그인이 필요합니다.");
+      console.log("User ID for update:", user._id);
+      if (!user._id) {
+        alert("사용자 ID를 찾을 수 없습니다. 다시 로그인해주세요.");
         return;
       }
-
-      const success = await updateUserProfile(currentUserId, profileData);
+      const success = await updateUserProfile(user._id, profileData);
 
       if (success) {
         alert("프로필이 성공적으로 저장되었습니다.");
         setUploadFile(null); // 업로드 완료 후 파일 상태 초기화
 
-        // 사용자 데이터 다시 로드하여 최신 정보 반영
-        const updatedUser = await getUserProfile(currentUserId);
-        if (updatedUser && updatedUser.image) {
-          setProfileImage(updatedUser.image);
-        }
+        // Zustand 스토어 업데이트
+        const userWithExtra = user as User;
+        const updatedUser = {
+          ...user,
+          name: profileData.name,
+          image: profileData.profileImage || undefined,
+          extra: {
+            ...userWithExtra?.extra,
+            bank: profileData.bank,
+            bankNumber: profileData.accountNumber,
+          },
+        };
+        setUser(updatedUser as any); // 공용 타입과의 호환성을 위해 필요
       } else {
         alert("프로필 저장에 실패했습니다.");
       }
@@ -263,7 +257,7 @@ export default function AccountForm() {
 
         {/* 아이디 섹션 (읽기 전용)(inputField 컴포넌트 사용) */}
         <div className="mb-6">
-          <InputField label="아이디" value={userEmail} readOnly />
+          <InputField label="아이디" value={user.email || ""} readOnly />
         </div>
 
         {/* 닉네임 섹션 (inputField 컴포넌트 사용)
@@ -271,10 +265,10 @@ export default function AccountForm() {
         <div className="mb-6">
           <InputField
             label="닉네임"
-            value={nickname}
-            onChange={handleNicknameChange}
+            value={name}
+            onChange={handleNameChange}
             placeholder="닉네임을 입력해주세요"
-            error={nicknameError}
+            error={nameError}
             required
           />
           <p className="-mt-5 text-12 text-uni-gray-500 font-pretendard">* 2-10글자로 입력해주세요.</p>

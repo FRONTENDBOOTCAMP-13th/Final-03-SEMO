@@ -28,7 +28,6 @@ export const useMyPageApi = (): UseMyPageApiReturn => {
     setError(null);
     try {
       const user = await UserService.getUserById(userId);
-      console.log("훅에서 받은 사용자 데이터:", user);
       return user;
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "사용자 정보를 가져올 수 없습니다.";
@@ -43,7 +42,6 @@ export const useMyPageApi = (): UseMyPageApiReturn => {
    * 사용자 프로필 업데이트
    */
   const updateUserProfile = useCallback(async (userId: number, profileData: UserProfileFormData): Promise<boolean> => {
-    console.log("훅에서 받은 프로필 데이터:", profileData);
     setLoading(true);
     setError(null);
     try {
