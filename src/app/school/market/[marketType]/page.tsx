@@ -4,8 +4,9 @@ import ItemSection from "@/app/school/market/[marketType]/itemSection";
 import FloatingButton from "@/components/common/FloatingButton";
 import MarketPageHeader from "@/app/school/market/[marketType]/_components/MarketPageHeader";
 import Search from "@/components/common/Search";
+import { getPosts } from "@/app/api/market/functions/post";
 import Link from "next/link";
-import { Post, ApiRes } from "@/types";
+// import { Post, ApiRes } from "@/types";
 
 /**
  * 상품 목록 user flow
@@ -24,14 +25,9 @@ export const metadata: Metadata = {
 export default async function MarketPage({ params }: { params: Promise<{ marketType: "buy" | "sell" }> }) {
   const { marketType } = await params;
 
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/posts?type=${marketType}`, {
-    headers: { "Client-Id": process.env.NEXT_PUBLIC_CLIENT_ID! },
-    cache: "no-store", // 매번 최신 데이터 가져오기
-  });
+  const res = await getPosts(marketType);
 
   if (!res.ok) throw new Error("게시글 로드 실패");
-  const json = (await res.json()) as ApiRes<Post[]>;
-  if (json.ok !== 1) throw new Error("게시글 로드 실패");
   return (
     <main className="px-5 py-1 bg-uni-white min-h-screen">
       <MarketPageHeader />
@@ -55,7 +51,7 @@ export default async function MarketPage({ params }: { params: Promise<{ marketT
           );
         })}
       </div>
-      <ItemSection items={json.item} market={marketType} />
+      <ItemSection items={res.item} market={marketType} />
       <FloatingButton href={`/school/market/${marketType}/new`} />
     </main>
   );

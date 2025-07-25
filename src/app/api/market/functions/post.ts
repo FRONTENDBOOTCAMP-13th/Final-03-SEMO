@@ -14,7 +14,7 @@ export async function getPosts(boardType: string): ApiResPromise<Post[]> {
       headers: {
         "Client-Id": CLIENT_ID,
       },
-      cache: "force-cache",
+      cache: "no-store",
     });
     return res.json();
   } catch (error) {
