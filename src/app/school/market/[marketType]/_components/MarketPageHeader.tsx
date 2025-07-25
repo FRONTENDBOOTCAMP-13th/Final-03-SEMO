@@ -172,7 +172,7 @@ export default function MarketPageHeader() {
 
   // 메뉴 렌더링
   return showMenu ? (
-    <div className="fixed inset-x-0 top-16 bg-uni-white shadow-lg border-b border-uni-gray-200 z-50 min-w-[320px] max-w-[480px] mx-auto px-4 py-3 rounded-b-lg">
+    <div className="fixed inset-x-0 top-15 bg-uni-white shadow-lg border-b border-uni-gray-200 z-50 min-w-[320px] max-w-[480px] mx-auto px-4 py-3 rounded-b-lg">
       {isMyPost ? (
         // 내 게시글일 때: 수정, 삭제, 공유
         <>

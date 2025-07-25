@@ -7,6 +7,7 @@ import MarketPageHeader from "@/app/school/market/[marketType]/_components/Marke
 import { getPosts } from "@/app/api/market/functions/post";
 // 마켓검색 테스트
 import MarketSearch from "@/app/school/market/[marketType]/_components/MarketSearch";
+import MarketTagNav from "./_components/MarketTagNav";
 import Link from "next/link";
 // import { Post, ApiRes } from "@/types";
 
@@ -53,6 +54,7 @@ export default async function MarketPage({ params }: { params: Promise<{ marketT
           );
         })}
       </div>
+      <MarketTagNav />
       <ItemSection items={res.item} market={marketType} />
       <FloatingButton href={`/school/market/${marketType}/new`} />
     </main>
