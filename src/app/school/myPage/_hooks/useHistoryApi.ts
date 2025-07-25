@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
-import { getMyBookmarks } from "../_services/historyService";
-import { BookmarkItem } from "../_types/apiResponse";
+import { getMyBookmarks, getPurchasedItems, getMyProducts } from "../_services/historyService";
+import { BookmarkItem, OrderItem, ProductItem } from "../_types/apiResponse";
 
 /**
  * 북마크 목록을 가져오는 훅
