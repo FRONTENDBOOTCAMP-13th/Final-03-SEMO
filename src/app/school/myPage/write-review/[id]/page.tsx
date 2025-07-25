@@ -17,6 +17,8 @@ interface MyPageWriteReviewProps {
 export default function MyPageWriteReview({ params }: MyPageWriteReviewProps) {
   const [rating, setRating] = useState(3);
   const [review, setReview] = useState("");
+  const [reviewData, setReviewData] = useState<Review | null>(null);
+  const [isReviewDataLoading, setIsReviewDataLoading] = useState(true);
 
   const { id } = use(params);
   const { orders, isLoading, error } = usePurchasedItems();
