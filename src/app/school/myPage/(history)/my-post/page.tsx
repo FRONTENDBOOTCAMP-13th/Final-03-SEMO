@@ -1,21 +1,25 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import TabNavigation from "../../_components/TabNavigation";
 import ItemCard, { Item } from "../../_components/ItemCard";
 import EmptyState from "../../_components/EmptyState";
 import Pagination from "../../_components/Pagination";
 import SectionHeader from "../../_components/SectionHeader";
-import { myPageItemsData, MyPageItem } from "../../data/postData";
+import { useMyProducts } from "../../_hooks/useHistoryApi";
+import { productsToMyPageItems } from "../../_utils/postConverter";
 import { useResponsivePagination } from "../../_hooks/pagination/useResponsivePagination";
 
 export default function MyPageMyPost() {
   const [activeTab, setActiveTab] = useState("전체");
 
-  // reviewsData에서 카테고리별로 필터링
-  const sellItems: Item[] = myPageItemsData
-    .filter((item: MyPageItem) => item.category === "팔래요")
-    .map((item: MyPageItem) => ({
+  // API로부터 내가 판매한 상품 목록 가져오기
+  const { products, isLoading, error, refetch } = useMyProducts();
+
+  // myPageItems에서 카테고리별로 필터링
+  const sellItems: Item[] = myPageItems
+    .filter((item) => item.category === "팔래요")
+    .map((item) => ({
       id: item.id,
       title: item.title,
       price: item.price,
