@@ -63,3 +63,38 @@ export interface BookmarkItem {
   createdAt: string;
   post: PostItem;
 }
+
+export interface OrderItem {
+  _id: number;
+  products: Array<{
+    _id: number;
+    quantity: number;
+    seller_id: number;
+    name: string;
+    image: {
+      path: string;
+      name: string;
+      originalname: string;
+    };
+    price: number;
+    extra: {
+      category?: string;
+      location?: string;
+      crt: string;
+      type?: string;
+    };
+  }>;
+  state: string;
+  user_id: number;
+  createdAt: string;
+  updatedAt: string;
+  cost: {
+    products: number;
+    shippingFees: number;
+    discount: {
+      products: number;
+      shippingFees: number;
+    };
+    total: number;
+  };
+}
