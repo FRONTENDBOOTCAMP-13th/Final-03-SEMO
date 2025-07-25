@@ -69,3 +69,46 @@ export async function getReplies(_id: number, retryCount = 0): ApiResPromise<Pos
     return { ok: 0, message: "일시적인 네트워크 문제로 등록에 실패" };
   }
 }
+
+/**
+ * 키워드 타입에 맞는 게시글 목록을 가져옵니다.
+ * @param {string} type - 게시판 타입(buy | sell)
+ * @param {string | null} keyword - 검색 키워드
+ * @returns {Promise<ApiRes<Post[]>>} 게시글 목록 응답 객체
+ */
+export async function getKeywordPosts(type: string, keyword: string | null): ApiResPromise<Post[]> {
+  try {
+    // keyword가 null이거나 빈 문자열인 경우 처리
+    if (!keyword || !keyword.trim()) {
+      return { ok: 0, message: "검색 키워드를 입력해주세요." };
+    }
+
+    const urlParams = new URLSearchParams({
+      type: type,
+      keyword: keyword.trim(),
+    });
+
+    console.log("검색 URL: ", `${API_URL}/posts?${urlParams.toString()}`);
+
+    const res = await fetch(`${API_URL}/posts?${urlParams.toString()}`, {
+      method: "GET", // 선택사항: GET은 기본값이므로 생략 가능
+      headers: {
+        "Client-Id": CLIENT_ID,
+      },
+      cache: "no-store", // 검색은 실시간 데이터
+    });
+
+    // 응답 상태 확인
+    if (!res.ok) {
+      console.error("HTTP 오류:", res.status, res.statusText);
+      return { ok: 0, message: "서버에서 데이터를 가져오는데 실패했습니다." };
+    }
+
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    // 네트워크 오류 처리
+    console.error("검색 중 오류 발생:", error);
+    return { ok: 0, message: "일시적인 네트워크 문제로 검색에 실패했습니다." };
+  }
+}
