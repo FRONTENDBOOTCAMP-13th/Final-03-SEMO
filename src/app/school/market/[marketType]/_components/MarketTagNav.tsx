@@ -7,8 +7,8 @@ export default function MarketTagNav() {
   const [activeTag, setActiveTag] = useState("전체");
 
   return (
-    <div className="w-full min-w-[340px] max-w-[480px] mx-auto scrollbar-none pt-1 pb-5">
-      <div className="flex gap-2 overflow-x-auto px-2">
+    <div className="w-full min-w-[340px] max-w-[480px] mx-auto pt-1 pb-5">
+      <div className="flex gap-2 overflow-x-auto px-2 hide-scrollbar">
         {tags.map((tag) => (
           <button
             key={tag}
