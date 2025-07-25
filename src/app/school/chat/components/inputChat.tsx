@@ -4,6 +4,7 @@ import { Send } from "lucide-react";
 import { useState } from "react";
 import { socket } from "../../../api/chat/useChatSoket";
 import { useChatStore, Message } from "../../../api/chat/useChatStore";
+import { useParams, useSearchParams } from "next/navigation";
 
 interface InputChatProps {
   userId: string | number;
@@ -14,16 +15,34 @@ interface InputChatProps {
 
 const InputChat = ({ userId, nickName, sellerId, sellerNickName }: InputChatProps) => {
   const [input, setInput] = useState("");
-
   const roomId = useChatStore((state) => state.currentRoomId);
+
+  const params = useParams();
+  const searchParams = useSearchParams();
+
+  const productId = searchParams.get("productId");
+  const postId = params?.id;
 
   const handleSend = () => {
     if (!input.trim() || !roomId) return;
 
-    // 귓속말 전송
-    socket.emit("sendTo", sellerId, input);
+    const whisperPayload = {
+      msg: input,
+      user_id: userId,
+      nickName,
+      toUserId: sellerId,
+      toNickName: sellerNickName,
+      productId,
+      buyerId: userId,
+      sellerId,
+      sellerNickName,
+      postId,
+    };
 
-    // 내가 보낸 귓속말을 내 화면에 표시
+    // 귓속말 전송
+    socket.emit("sendTo", sellerId, whisperPayload);
+
+    // 내 화면에는 내가 보낸 메시지 바로 표시
     const myWhisperMessage: Message = {
       id: Date.now().toString(),
       roomId,
@@ -38,10 +57,8 @@ const InputChat = ({ userId, nickName, sellerId, sellerNickName }: InputChatProp
     };
 
     useChatStore.getState().addMessage(myWhisperMessage);
-
     setInput("");
   };
-
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
       handleSend();

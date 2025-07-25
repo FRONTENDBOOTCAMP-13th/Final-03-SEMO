@@ -1,7 +1,9 @@
 import { useEffect } from "react";
 import { io } from "socket.io-client";
 import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 import { Message, useChatStore } from "./useChatStore";
+
 export const socket = io("https://fesp-api.koyeb.app/ws/sample", { autoConnect: false });
 
 interface UseChatSocketProps {
@@ -14,15 +16,17 @@ const GLOBAL_ROOM_ID = "global";
 
 export const useChatSocket = ({ userId, nickName, roomId }: UseChatSocketProps) => {
   const { setRoomId, setUserList, addMessage } = useChatStore();
+  const router = useRouter();
 
   useEffect(() => {
+    if (!userId || !nickName) return;
+
     socket.connect();
 
     const handleConnect = () => {
       console.log("소켓 연결:", userId, nickName, socket.id);
       setRoomId(GLOBAL_ROOM_ID);
 
-      // 방 생성 후 입장
       socket.emit(
         "createRoom",
         {
@@ -68,23 +72,12 @@ export const useChatSocket = ({ userId, nickName, roomId }: UseChatSocketProps) 
     const handleMessage = (data: any) => {
       console.log("메시지 수신:", data);
 
-      const raw =
-        typeof data.msg === "object"
-          ? data.msg
-          : {
-              msg: data.msg,
-              nickName: data.nickName,
-              user_id: data.user_id,
-            };
-
-      // 귓속말 여부 확인
+      const raw = typeof data.msg === "object" ? data.msg : data;
       const isWhisper = data.msgType === "whisper";
 
-      if (String(data.user_id) === String(userId && isWhisper)) {
-        return;
-      }
+      if (isWhisper && String(raw.user_id) === String(userId)) return;
 
-      const senderId = raw.user_id || data.user_id || userId;
+      const senderId = raw.user_id || userId;
 
       const message: Message = {
         id: Date.now().toString(),
@@ -96,60 +89,66 @@ export const useChatSocket = ({ userId, nickName, roomId }: UseChatSocketProps) 
         user_id: String(senderId),
         nickName: raw.nickName ?? "시스템",
         ...(isWhisper && {
-          toUserId: String(data.toUserId),
-          toNickName: data.toNickName,
+          toUserId: raw.toUserId,
+          toNickName: raw.toNickName,
         }),
       };
 
       addMessage(message);
-      console.log("귓속말 수신 전체 데이터 확인:", data);
 
-      if (isWhisper && String(data.user_id) !== String(userId)) {
-        const privateRoomId = [data.user_id, data.toUserId].sort().join("-");
-        const handleJoinPrivateRoom = () => {
-          socket.emit(
-            "createRoom",
-            {
-              roomId: privateRoomId,
-              user_id: userId,
-              hostName: nickName,
-              roomName: `${data.user_id} <-> ${data.toUserId}`,
-              autoClose: false,
-            },
-            (createRes: any) => {
-              if (!createRes.ok) {
-                console.warn("개인방 이미 존재:", createRes.message);
-              }
-
-              socket.emit(
-                "joinRoom",
-                {
-                  roomId: privateRoomId,
-                  user_id: userId,
-                  nickName: nickName,
-                },
-                (joinRes: any) => {
-                  if (joinRes.ok) {
-                    console.log(`[WebSocket] "${userId}"님이 "${privateRoomId}"에 참여했습니다.`);
-                    useChatStore.getState().setRoomId(privateRoomId);
-                  } else {
-                    console.warn("자동 입장 실패:", joinRes.message);
-                  }
-                }
-              );
-            }
-          );
-        };
-        toast.info(`${data.nickName}님이 개인 메시지를 보냈습니다. 클릭하여 개인방으로 이동하세요.`, {
+      if (isWhisper && String(raw.user_id) !== String(userId)) {
+        toast.info(`${raw.nickName}님이 개인 메시지를 보냈습니다. 클릭하여 개인방으로 이동하세요.`, {
           autoClose: false,
-          onClick: () => handleJoinPrivateRoom(),
+          onClick: () => {
+            const privateRoomId = [raw.buyerId, raw.sellerId].sort().join("-");
+
+            socket.emit(
+              "createRoom",
+              {
+                roomId: privateRoomId,
+                user_id: userId,
+                hostName: nickName,
+                roomName: `${raw.buyerId} <-> ${raw.sellerId}`,
+                autoClose: false,
+              },
+              (createRes: any) => {
+                if (!createRes.ok) {
+                  console.warn("개인방 이미 존재:", createRes.message);
+                }
+
+                socket.emit(
+                  "joinRoom",
+                  {
+                    roomId: privateRoomId,
+                    user_id: userId,
+                    nickName: nickName,
+                  },
+                  (joinRes: any) => {
+                    if (joinRes.ok) {
+                      useChatStore.getState().setRoomId(privateRoomId);
+
+                      const { postId, buyerId, sellerId, sellerNickName, productId } = raw;
+                      if (postId && buyerId && sellerId && sellerNickName && productId) {
+                        router.push(
+                          `/school/chat/${postId}?buyerId=${buyerId}&sellerId=${sellerId}&sellerNickName=${sellerNickName}&productId=${productId}`
+                        );
+                      } else {
+                        alert("채팅 이동 정보가 부족합니다.");
+                      }
+                    } else {
+                      console.warn("자동 입장 실패:", joinRes.message);
+                    }
+                  }
+                );
+              }
+            );
+          },
         });
       }
     };
 
     const handleWhisper = (data: any) => {
       console.log("귓속말 수신:", data);
-      // sendTo 이벤트로 온 메시지도 동일하게 처리
       handleMessage({ ...data, msgType: "whisper" });
     };
 
@@ -163,8 +162,8 @@ export const useChatSocket = ({ userId, nickName, roomId }: UseChatSocketProps) 
       socket.off("members", handleMembers);
       socket.off("message", handleMessage);
       socket.off("sendTo", handleWhisper);
-      socket.emit("leaveRoom");
+      // socket.emit("leaveRoom");
       socket.disconnect();
     };
-  }, [userId, nickName, roomId, setRoomId, setUserList, addMessage]);
+  }, [userId, nickName, roomId, setRoomId, setUserList, addMessage, router]);
 };
