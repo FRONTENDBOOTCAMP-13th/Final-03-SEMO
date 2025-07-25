@@ -43,9 +43,9 @@ export default function MyPageMyPost() {
       status: item.status,
     }));
 
-  const buyItems: Item[] = myPageWishlistData
-    .filter((item: MyPageWishlist) => item.category === "살래요")
-    .map((item: MyPageWishlist) => ({
+  const buyItems: Item[] = wishlistItems
+    .filter((item) => item.category === "살래요")
+    .map((item) => ({
       id: item.id,
       title: item.title,
       price: item.price,
@@ -53,9 +53,9 @@ export default function MyPageMyPost() {
       status: item.status,
     }));
 
-  const gatheringsItems: Item[] = myPageWishlistData
-    .filter((item: MyPageWishlist) => item.category === "모여요")
-    .map((item: MyPageWishlist) => ({
+  const gatheringsItems: Item[] = wishlistItems
+    .filter((item) => item.category === "모여요")
+    .map((item) => ({
       id: item.id,
       title: item.title,
       price: item.price,
@@ -70,7 +70,7 @@ export default function MyPageMyPost() {
       {/* Tab Navigation */}
       <TabNavigation tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
 
-      <main className="p-4 space-y-6">
+      <main className="p-4 space-y-6 pb-24">
         {/* 팔래요 Section */}
         {(activeTab === "전체" || activeTab === "팔래요") && (
           <section>
