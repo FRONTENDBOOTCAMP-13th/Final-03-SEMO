@@ -1,5 +1,3 @@
-"use client";
-
 import Link from "next/link";
 import { User, Package, Star, Heart, Bell, Info, LogOut } from "lucide-react";
 
