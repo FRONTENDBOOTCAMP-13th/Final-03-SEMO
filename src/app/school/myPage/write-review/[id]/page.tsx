@@ -4,7 +4,9 @@ import { useState, use } from "react";
 import Image from "next/image";
 import { Star } from "lucide-react";
 import SaveFloatingButton from "../../_components/SaveFloatingButton";
-import { getReviewById } from "../../data/reviewsData";
+import { usePurchasedItems } from "../../_hooks/useHistoryApi";
+import { orderToReviewItems } from "../../_utils/postConverter";
+import { Review } from "../../_utils/postConverter";
 
 interface MyPageWriteReviewProps {
   params: Promise<{
@@ -17,12 +19,60 @@ export default function MyPageWriteReview({ params }: MyPageWriteReviewProps) {
   const [review, setReview] = useState("");
 
   const { id } = use(params);
+  const { orders, isLoading, error } = usePurchasedItems();
 
-  // URL에서 받은 id로 해당하는 리뷰 데이터 찾기
-  const currentReview = getReviewById(parseInt(id));
+  useEffect(() => {
+    const fetchReviewData = async () => {
+      if (orders.length > 0) {
+        setIsReviewDataLoading(true);
+        try {
+          // 모든 주문을 리뷰 아이템으로 변환합니다.
+          const allReviews = await Promise.all(orders.map((order) => orderToReviewItems(order)));
+          const flatReviews = allReviews.flat();
 
-  // 해당 id의 데이터가 없는 경우 기본값 사용
-  const reviewData = currentReview || {
+          // URL의 id와 일치하는 리뷰 아이템을 찾습니다.
+          const foundReview = flatReviews.find((item) => item.id === parseInt(id));
+
+          if (foundReview) {
+            setReviewData(foundReview);
+          } else {
+            setReviewData(null);
+          }
+        } catch (err) {
+          console.error("리뷰 데이터 로딩 실패:", err);
+          setReviewData(null);
+        } finally {
+          setIsReviewDataLoading(false);
+        }
+      } else {
+        setReviewData(null);
+        setIsReviewDataLoading(false);
+      }
+    };
+
+    fetchReviewData();
+  }, [orders, id]);
+
+  // 로딩 상태
+  if (isLoading || isReviewDataLoading) {
+    return (
+      <div className="min-h-screen bg-uni-white flex items-center justify-center">
+        <div className="text-uni-gray-400 font-pretendard">상품 정보를 불러오는 중...</div>
+      </div>
+    );
+  }
+
+  // 에러 상태
+  if (error) {
+    return (
+      <div className="min-h-screen bg-uni-white flex items-center justify-center">
+        <div className="text-uni-gray-400 font-pretendard">상품 정보를 불러올 수 없습니다.</div>
+      </div>
+    );
+  }
+
+  // 리뷰 데이터가 없는 경우 기본값
+  const defaultReviewData: Review = {
     id: parseInt(id),
     title: "상품 정보",
     author: "판매자",
