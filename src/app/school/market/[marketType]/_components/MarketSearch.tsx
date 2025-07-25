@@ -36,7 +36,7 @@ const Search = () => {
       <form onSubmit={handleSubmit}>
         <div className="flex items-center bg-uni-gray-200 rounded-[12px] h-12 w-full">
           <button type="submit" className="text-uni-black cursor-pointer">
-            <SearchIcon size={24} className="ml-4 my-3" />
+            <SearchIcon size={24} className="ml-4 text-uni-gray-600" />
           </button>
           <input
             type="text"

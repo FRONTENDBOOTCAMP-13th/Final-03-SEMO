@@ -30,8 +30,8 @@ export default function PostLikeButton({ postId }: PostLikeButtonProps) {
       <input type="hidden" name="memo" value="좋아요한 게시글" />
 
       {/* 좋아요 버튼 */}
-      <button type="submit" className="flex items-center gap-1 px-3 py-1">
-        <Heart size={20} color="red" />
+      <button type="submit" className="flex items-center gap-1">
+        <Heart size={24} className="text-uni-red-500" />
       </button>
     </form>
   );

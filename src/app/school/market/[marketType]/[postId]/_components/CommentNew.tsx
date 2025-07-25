@@ -34,7 +34,7 @@ export default function CommentNew({ _id }: CommentNewProps) {
             <textarea
               name="content"
               placeholder="댓글을 입력하세요"
-              className="w-full h-13 bg-uni-gray-200 rounded-md p-3 text-16 resize-none"
+              className="w-full h-13 bg-uni-gray-200 rounded-lg p-3 text-16 resize-none"
               rows={3}
             />
 
@@ -49,7 +49,7 @@ export default function CommentNew({ _id }: CommentNewProps) {
               disabled={isLoading}
               className="bg-uni-blue-400 text-uni-white h-13 px-4 py-2 rounded-lg text-14 hover:bg-uni-blue-500 disabled:bg-uni-gray-400 transition-colors"
             >
-              <MessageCircle size={20} />
+              <MessageCircle size={22} />
             </button>
           </div>
         </form>
