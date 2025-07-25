@@ -35,7 +35,7 @@ export default async function MarketPage({ params }: { params: Promise<{ marketT
     <main className="px-5 py-1 bg-uni-white min-h-screen">
       <MarketPageHeader />
       <MarketSearch />
-      <div className="flex justify-around mb-4 border-b border-uni-gray-300">
+      <div className="flex justify-around mb-4 border-b border-uni-gray-100">
         {(["buy", "sell"] as const).map((i) => {
           // 읽기 전용 [buy, sell] 튜플 리터럴
           const label = i === "buy" ? "사고 싶어요" : "팔고 싶어요";

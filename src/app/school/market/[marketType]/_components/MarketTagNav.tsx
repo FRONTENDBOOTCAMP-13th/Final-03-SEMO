@@ -25,7 +25,7 @@ export default function MarketTagNav() {
 
   return (
     <div className="w-full min-w-[340px] max-w-[480px] mx-auto pt-1 pb-5">
-      <div className="flex gap-2 overflow-x-auto px-2 hide-scrollbar">
+      <div className="flex gap-2 overflow-x-auto hide-scrollbar">
         {tags.map((tag) => (
           <button
             key={tag}
