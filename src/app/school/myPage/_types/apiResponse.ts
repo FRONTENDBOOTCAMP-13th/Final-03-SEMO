@@ -57,3 +57,9 @@ export interface PostItem {
     image: string;
   };
 }
+
+export interface BookmarkItem {
+  _id: number;
+  createdAt: string;
+  post: PostItem;
+}
