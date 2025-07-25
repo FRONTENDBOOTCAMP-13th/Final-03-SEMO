@@ -2,7 +2,7 @@
 
 import { Send } from "lucide-react";
 import { useState } from "react";
-import { socket } from "../../../api/chat/useChatSoket";
+import { GLOBAL_ROOM_ID, socket } from "../../../api/chat/useChatSoket";
 import { useChatStore, Message } from "../../../api/chat/useChatStore";
 import { useParams, useSearchParams } from "next/navigation";
 
@@ -26,6 +26,10 @@ const InputChat = ({ userId, nickName, sellerId, sellerNickName }: InputChatProp
   const handleSend = () => {
     if (!input.trim() || !roomId) return;
 
+    if (roomId !== GLOBAL_ROOM_ID) {
+      console.warn("글로벌룸 아님");
+      return;
+    }
     const whisperPayload = {
       msg: input,
       user_id: userId,
@@ -38,6 +42,7 @@ const InputChat = ({ userId, nickName, sellerId, sellerNickName }: InputChatProp
       sellerNickName,
       postId,
     };
+    console.log("귓속말 전송 데이터:", whisperPayload);
 
     // 귓속말 전송
     socket.emit("sendTo", sellerId, whisperPayload);
@@ -59,6 +64,7 @@ const InputChat = ({ userId, nickName, sellerId, sellerNickName }: InputChatProp
     useChatStore.getState().addMessage(myWhisperMessage);
     setInput("");
   };
+
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
       handleSend();
@@ -73,7 +79,7 @@ const InputChat = ({ userId, nickName, sellerId, sellerNickName }: InputChatProp
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder={`민지에게 귓속말 보내기...`}
+          placeholder={`${sellerNickName}에게 귓속말 보내기...`}
           className="flex-1 bg-transparent outline-none mx-4 placeholder-uni-gray-600 text-16 text-uni-black"
         />
         <button

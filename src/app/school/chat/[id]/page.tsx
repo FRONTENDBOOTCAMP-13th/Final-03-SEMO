@@ -5,7 +5,7 @@ import ProductInfo from "../components/productInfo";
 import ChatBubbleList from "../components/chatBubbleList";
 import InputChat from "../components/inputChat";
 import { notFound } from "next/navigation";
-import { socket /*useChatSocket*/ } from "../../../api/chat/useChatSoket";
+import { socket /*useChatSocket*/, useChatSocket } from "../../../api/chat/useChatSoket";
 import { useChatStore } from "../../../api/chat/useChatStore";
 import { useEffect, useState } from "react";
 import { useUserStore } from "@/store/userStore";
@@ -21,22 +21,22 @@ const ChatPage = () => {
 
   const user = useUserStore((state) => state.user);
   const buyerId = user._id || "";
-  // const buyerNickName = user.name || "";
+  const buyerNickName = user.name || "";
 
   const [joinedRoom, setJoinedRoom] = useState(false);
+  useEffect(() => {
+    console.log("채팅방 Id: ", id);
+    console.log("구매자 Id: ", buyerId);
+    console.log("상품 Id: ", productId);
+    console.log("판매자 Id: ", sellerId);
+    console.log("판매자 nickName: ", sellerNickName);
+  }, []);
 
-  console.log("채팅방 Id: ", id);
-  console.log("구매자 Id: ", buyerId);
-  console.log("상품 Id: ", productId);
-  console.log("판매자 Id: ", sellerId);
-  console.log("판매자 nickName: ", sellerNickName);
-
-  // useChatSocket({ userId: String(buyerId), nickName: buyerNickName, roomId: "global" });
+  useChatSocket({ userId: String(buyerId), nickName: buyerNickName, roomId: "global" });
   useEffect(() => {
     if (!joinedRoom && buyerId && sellerId) {
       console.log("buyerId:", buyerId);
       console.log("sellerId:", sellerId);
-      handleJoinRoom();
     }
   }, [buyerId, sellerId, joinedRoom]);
 
@@ -62,7 +62,7 @@ const ChatPage = () => {
           {
             roomId: privateRoomId,
             user_id: buyerId,
-            nickName: buyerId,
+            nickName: buyerNickName,
           },
           (joinRes: any) => {
             if (joinRes.ok) {
@@ -92,7 +92,7 @@ const ChatPage = () => {
         </button>
       </div>
       <ChatBubbleList />
-      <InputChat userId={buyerId} nickName={sellerNickName} sellerId={sellerId} sellerNickName={sellerNickName} />
+      <InputChat userId={buyerId} nickName={buyerNickName} sellerId={sellerId} sellerNickName={sellerNickName} />
     </>
   );
 };

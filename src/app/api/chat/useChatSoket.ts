@@ -12,7 +12,7 @@ interface UseChatSocketProps {
   roomId: string;
 }
 
-const GLOBAL_ROOM_ID = "global";
+export const GLOBAL_ROOM_ID = "global";
 
 export const useChatSocket = ({ userId, nickName, roomId }: UseChatSocketProps) => {
   const { setRoomId, setUserList, addMessage } = useChatStore();
@@ -72,10 +72,32 @@ export const useChatSocket = ({ userId, nickName, roomId }: UseChatSocketProps) 
     const handleMessage = (data: any) => {
       console.log("메시지 수신:", data);
 
-      const raw = typeof data.msg === "object" ? data.msg : data;
+      const raw =
+        typeof data.msg === "object"
+          ? data.msg
+          : {
+              msg: data.msg,
+              nickName: data.nickName,
+              user_id: data.user_id,
+              toUserId: data.toUserId,
+              toNickName: data.toNickName,
+              buyerId: data.buyerId,
+              sellerId: data.sellerId,
+              sellerNickName: data.sellerNickName,
+              postId: data.postId,
+              productId: data.productId,
+            };
+
       const isWhisper = data.msgType === "whisper";
 
-      if (isWhisper && String(raw.user_id) === String(userId)) return;
+      console.log("isWhisper:", isWhisper);
+      console.log("raw.user_id:", raw.user_id);
+      console.log("내 userId:", userId);
+
+      // if (isWhisper && data.user_id === String(userId)) return;
+      if (isWhisper && raw.toUserId && String(raw.toUserId) !== String(userId)) return;
+
+      // if (isWhisper && String(data.user_id) === String(userId)) return;
 
       const senderId = raw.user_id || userId;
 
