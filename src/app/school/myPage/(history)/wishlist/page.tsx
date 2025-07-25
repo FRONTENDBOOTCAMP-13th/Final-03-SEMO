@@ -10,10 +10,16 @@ import { myPageWishlistData, MyPageWishlist } from "../../data/wishlistData";
 export default function MyPageMyPost() {
   const [activeTab, setActiveTab] = useState("전체");
 
-  // reviewsData에서 카테고리별로 필터링
-  const sellItems: Item[] = myPageWishlistData
-    .filter((item: MyPageWishlist) => item.category === "팔래요")
-    .map((item: MyPageWishlist) => ({
+  // 컴포넌트가 로드되는지 확인
+  console.log("🌟 MyPageWishlist 컴포넌트 시작!");
+
+  // API로부터 북마크 목록 가져오기
+  const { bookmarks, isLoading, error, refetch } = useMyBookmarks();
+
+  // 카테고리별로 필터링
+  const sellItems: Item[] = wishlistItems
+    .filter((item) => item.category === "팔래요")
+    .map((item) => ({
       id: item.id,
       title: item.title,
       price: item.price,
