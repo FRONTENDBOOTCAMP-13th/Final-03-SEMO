@@ -19,7 +19,7 @@ export const metadata: Metadata = {
  */
 
 interface NewPageProps {
-  params: Promise<{ marketType: string }>; // ← 타입 추가
+  params: Promise<{ marketType: string }>;
 }
 
 export default async function NewPage({ params }: NewPageProps) {
