@@ -1,5 +1,7 @@
 export interface User {
-  _id: number;
+  _id?: number; // 사용자 ID (생략 가능, oauth 계정의 경우 providerAccountId로 대체)
+  providerAccountId?: string; // oauth 계정 ID
+
   email: string;
   password: string;
   name: string; // 닉네임
