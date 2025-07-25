@@ -39,6 +39,20 @@ export default function LoginForm() {
     router.push("/school");
   };
 
+  const handleKakaoLogin = () => {
+    const REST_API_KEY = process.env.NEXT_PUBLIC_KAKAO_REST_API_KEY;
+    const REDIRECT_URI = process.env.NEXT_PUBLIC_KAKAO_REDIRECT_URI;
+
+    if (!REST_API_KEY || !REDIRECT_URI) {
+      alert("카카오 설정이 누락되었습니다.");
+      return;
+    }
+
+    const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}`;
+
+    window.location.href = KAKAO_AUTH_URL;
+  };
+
   return (
     <main className="flex justify-center items-center min-h-screen bg-white">
       <div className="min-w-[320px] w-full max-w-[480px] px-6 py-12 flex flex-col items-center">
@@ -89,7 +103,7 @@ export default function LoginForm() {
             <div className="flex-grow h-px bg-gray-300" />
           </div>
 
-          <Button type="kakao" onClick={() => alert("카카오 로그인")}>
+          <Button type="kakao" onClick={handleKakaoLogin}>
             <Image src="/assets/kakao.svg" alt="Kakao" width={20} height={20} className="mr-2" />
             카카오 로그인
           </Button>
