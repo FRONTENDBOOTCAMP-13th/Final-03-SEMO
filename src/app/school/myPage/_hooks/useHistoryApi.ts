@@ -73,3 +73,39 @@ export function usePurchasedItems() {
     refetch: fetchOrders,
   };
 }
+
+/**
+ * 내가 판매한 상품 목록을 가져오는 훅
+ */
+export function useMyProducts() {
+  const [products, setProducts] = useState<ProductItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchProducts = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+
+      const response = await getMyProducts();
+      console.log("🔍 [useMyProducts] getMyProducts 응답:", response); // 임시 로그
+      setProducts(response);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "판매 상품을 불러올 수 없습니다.");
+      setProducts([]);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchProducts();
+  }, [fetchProducts]);
+
+  return {
+    products,
+    isLoading,
+    error,
+    refetch: fetchProducts,
+  };
+}
