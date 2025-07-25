@@ -54,6 +54,37 @@ export default function MyPageReviewsToWrite() {
     // 헤더, 페이지네이션, 네비게이션을 위한 충분한 공간
   });
 
+  // 로딩 상태 처리
+  if (isLoading || isReviewsLoading) {
+    return (
+      <div className="bg-uni-white min-h-screen p-4 space-y-6 pb-24">
+        <section>
+          <h2 className="text-20 font-semibold mb-3 text-uni-black font-pretendard">미작성 후기</h2>
+          <div className="flex items-center justify-center py-20">
+            <div className="text-uni-gray-400 font-pretendard">구매 목록을 불러오는 중...</div>
+          </div>
+        </section>
+      </div>
+    );
+  }
+
+  // 에러 상태 처리
+  if (error) {
+    return (
+      <div className="bg-uni-white min-h-screen p-4 space-y-6 pb-24">
+        <section>
+          <h2 className="text-20 font-semibold mb-3 text-uni-black font-pretendard">미작성 후기</h2>
+          <div className="flex flex-col items-center justify-center py-20 space-y-4">
+            <div className="text-uni-gray-400 font-pretendard">{error}</div>
+            <button onClick={refetch} className="px-4 py-2 bg-uni-blue text-white rounded-lg font-pretendard">
+              다시 시도
+            </button>
+          </div>
+        </section>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-uni-white min-h-screen p-4 space-y-6 pb-24">
       {/* 소제목 */}
