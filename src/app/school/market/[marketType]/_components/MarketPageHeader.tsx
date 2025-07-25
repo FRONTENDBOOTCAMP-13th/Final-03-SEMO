@@ -178,7 +178,7 @@ export default function MarketPageHeader() {
         <>
           <button
             onClick={handleEdit}
-            className="w-full px-4 py-3 text-left flex justify-between items-center text-uni-gray-400 hover:bg-uni-gray-100 !cursor-pointer"
+            className="w-full px-4 py-3 text-left flex justify-between items-center text-uni-black hover:bg-uni-gray-100 !cursor-pointer"
           >
             <span>수정하기</span>
             <PenLine size={20} />
@@ -186,14 +186,14 @@ export default function MarketPageHeader() {
           <button
             onClick={handleDelete}
             disabled={isLoading}
-            className="w-full px-4 py-3 text-left flex justify-between items-center text-uni-gray-400 hover:bg-uni-gray-100 !cursor-pointer"
+            className="w-full px-4 py-3 text-left flex justify-between items-center text-uni-black hover:bg-uni-gray-100 !cursor-pointer"
           >
             <span>삭제하기</span>
             <Trash2 size={20} />
           </button>
           <button
             onClick={() => setShowMenu(false)}
-            className="w-full px-4 py-3 text-left flex justify-between items-center text-uni-gray-400 hover:bg-uni-gray-100 !cursor-pointer"
+            className="w-full px-4 py-3 text-left flex justify-between items-center text-uni-black hover:bg-uni-gray-100 !cursor-pointer"
           >
             <span>공유하기</span>
             <ExternalLink size={20} />
@@ -204,24 +204,27 @@ export default function MarketPageHeader() {
         <>
           <button
             onClick={() => setShowMenu(false)}
-            className="w-full px-4 py-2 text-left text-uni-gray-400 hover:bg-uni-gray-100"
+            className="w-full px-4 py-2 text-left text-uni-gray-600 hover:bg-uni-gray-100"
           >
             신고하기
           </button>
           <button
             onClick={() => setShowMenu(false)}
-            className="w-full px-4 py-2 text-left text-uni-gray-400 hover:bg-uni-gray-100"
+            className="w-full px-4 py-2 text-left text-uni-gray-600 hover:bg-uni-gray-100"
           >
             차단하기
           </button>
           <button
             onClick={() => setShowMenu(false)}
-            className="w-full px-4 py-2 text-left text-uni-gray-400 hover:bg-uni-gray-100"
+            className="w-full px-4 py-2 text-left text-uni-black hover:bg-uni-gray-100"
           >
             공유하기
           </button>
         </>
       )}
+      <div className="flex justify-center pt-2">
+        <div className="w-12 h-1 bg-uni-gray-300 rounded-full"></div>
+      </div>
     </div>
   ) : null;
 }
