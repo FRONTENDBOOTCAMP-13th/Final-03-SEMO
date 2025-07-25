@@ -152,9 +152,9 @@ export default function AccountForm() {
       };
 
       console.log("프로필 업데이트 시작:", profileData);
-      const currentUserId = AuthService.getCurrentUserId();
-      if (!currentUserId) {
-        alert("로그인이 필요합니다.");
+      console.log("User ID for update:", user._id);
+      if (!user._id) {
+        alert("사용자 ID를 찾을 수 없습니다. 다시 로그인해주세요.");
         return;
       }
       const success = await updateUserProfile(user._id, profileData);
