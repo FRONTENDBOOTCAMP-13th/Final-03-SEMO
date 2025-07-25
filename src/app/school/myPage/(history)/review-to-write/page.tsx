@@ -1,14 +1,16 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Pagination from "../../_components/Pagination";
 import ReviewCard from "../../_components/ReviewCard";
 import EmptyState from "../../_components/EmptyState";
-import { getAllReviews } from "../../data/reviewsData";
 import { useResponsivePagination } from "../../_hooks/pagination/useResponsivePagination";
+import { usePurchasedItems } from "../../_hooks/useHistoryApi";
+import { ordersToReviewItems, Review } from "../../_utils/postConverter";
 
 export default function MyPageReviewsToWrite() {
-  // 공통 데이터에서 리뷰 목록 가져오기
-  const reviewsData = getAllReviews();
+  // API로부터 구매한 상품 목록 가져오기 (리뷰 작성 대상)
+  const { orders, isLoading, error, refetch } = usePurchasedItems();
 
   // 반응형 페이지네이션 로직을 hook으로 분리
   const {
