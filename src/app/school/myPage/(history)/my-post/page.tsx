@@ -16,6 +16,11 @@ export default function MyPageMyPost() {
   // API로부터 내가 판매한 상품 목록 가져오기
   const { products, isLoading, error, refetch } = useMyProducts();
 
+  // API 데이터를 마이페이지 아이템 형식으로 변환
+  const myPageItems = useMemo(() => {
+    return productsToMyPageItems(products);
+  }, [products]);
+
   // myPageItems에서 카테고리별로 필터링
   const sellItems: Item[] = myPageItems
     .filter((item) => item.category === "팔래요")
