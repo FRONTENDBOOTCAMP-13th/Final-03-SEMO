@@ -6,6 +6,7 @@ import { Post } from "@/types";
 import { getImageUrl } from "@/data/actions/file";
 import PostLikeButton from "./PostLikeButton";
 
+import ChatStartButton from "@/app/school/chat/components/chatStartBtn";
 interface PostContentProps {
   post: Post;
 }
@@ -70,6 +71,14 @@ export default function PostContent({ post }: PostContentProps) {
       <p className="text-gray-700 mb-2 text-16">{post?.content}</p>
       <p className="text-12 text-uni-gray-300 mb-6">{post?.createdAt}</p>
       {post?._id && Number.isInteger(post._id) && <CommentList _id={post._id} />}
+
+      <div className=" w-full max-w-[480px] bg-white">
+        <ChatStartButton
+          sellerId={post.user._id.toString()}
+          sellerNickName={post.user.name}
+          productId={post._id.toString()}
+        />
+      </div>
     </div>
   );
 }
