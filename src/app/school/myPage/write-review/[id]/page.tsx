@@ -106,8 +106,8 @@ export default function MyPageWriteReview({ params }: MyPageWriteReviewProps) {
           <div className="flex items-start justify-between">
             <div className="flex-1">
               <p className="text-10 text-uni-gray-400 mb-1 font-pretendard">거래 완료</p>
-              <h2 className="text-14 font-semibold text-uni-black mb-1 font-pretendard">{reviewData.title}</h2>
-              <p className="text-10 text-uni-gray-400 font-pretendard">{reviewData.date}</p>
+              <h2 className="text-14 font-semibold text-uni-black mb-1 font-pretendard">{currentReviewData.title}</h2>
+              <p className="text-10 text-uni-gray-400 font-pretendard">{currentReviewData.date}</p>
             </div>
             <div className="ml-4">
               <div className="w-30 h-20 bg-uni-gray-100 rounded-lg overflow-hidden relative">
