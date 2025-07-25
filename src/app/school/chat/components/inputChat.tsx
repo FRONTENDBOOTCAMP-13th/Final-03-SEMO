@@ -2,51 +2,66 @@
 
 import { Send } from "lucide-react";
 import { useState } from "react";
-import { socket } from "../../../api/chat/useChatSoket";
+import { GLOBAL_ROOM_ID, socket } from "../../../api/chat/useChatSoket";
 import { useChatStore, Message } from "../../../api/chat/useChatStore";
+import { useParams, useSearchParams } from "next/navigation";
 
 interface InputChatProps {
   userId: string | number;
   nickName: string;
+  sellerId: string;
+  sellerNickName: string;
 }
 
-const InputChat = ({ userId, nickName }: InputChatProps) => {
+const InputChat = ({ userId, nickName, sellerId, sellerNickName }: InputChatProps) => {
   const [input, setInput] = useState("");
-  const [whisperTargetId, setWhisperTargetId] = useState("all");
-
   const roomId = useChatStore((state) => state.currentRoomId);
-  const userList = useChatStore((state) => state.userList);
+
+  const params = useParams();
+  const searchParams = useSearchParams();
+
+  const productId = searchParams.get("productId");
+  const postId = params?.id;
 
   const handleSend = () => {
     if (!input.trim() || !roomId) return;
 
-    if (whisperTargetId === "all") {
-      // 전체 메시지 전송
-      socket.emit("message", input);
-    } else {
-      // 귓속말 전송
-      const targetUser = userList.find((u) => u.user_id === whisperTargetId);
-      if (!targetUser) return;
-
-      socket.emit("sendTo", whisperTargetId, input);
-
-      // 내가 보낸 귓속말을 내 화면에 표시
-      const myWhisperMessage: Message = {
-        id: Date.now().toString(),
-        roomId,
-        content: input,
-        type: "text",
-        msgType: "whisper",
-        createdAt: new Date().toISOString(),
-        user_id: userId.toString(),
-        nickName,
-        toUserId: targetUser.user_id.toString(),
-        toNickName: targetUser.nickName,
-      };
-
-      useChatStore.getState().addMessage(myWhisperMessage);
+    if (roomId !== GLOBAL_ROOM_ID) {
+      console.warn("글로벌룸 아님");
+      return;
     }
+    const whisperPayload = {
+      msg: input,
+      user_id: userId,
+      nickName,
+      toUserId: sellerId,
+      toNickName: sellerNickName,
+      productId,
+      buyerId: userId,
+      sellerId,
+      sellerNickName,
+      postId,
+    };
+    console.log("귓속말 전송 데이터:", whisperPayload);
 
+    // 귓속말 전송
+    socket.emit("sendTo", sellerId, whisperPayload);
+
+    // 내 화면에는 내가 보낸 메시지 바로 표시
+    const myWhisperMessage: Message = {
+      id: Date.now().toString(),
+      roomId,
+      content: input,
+      type: "text",
+      msgType: "whisper",
+      createdAt: new Date().toISOString(),
+      user_id: userId.toString(),
+      nickName,
+      toUserId: sellerId,
+      toNickName: sellerNickName,
+    };
+
+    useChatStore.getState().addMessage(myWhisperMessage);
     setInput("");
   };
 
@@ -58,41 +73,22 @@ const InputChat = ({ userId, nickName }: InputChatProps) => {
 
   return (
     <div className="w-full min-w-[360px] max-w-[480px] px-4 py-3">
-      <div className="flex gap-2">
-        {/* 수신자 선택 드롭다운 */}
-        <select
-          className="rounded-md border px-2 py-1 text-sm bg-white text-uni-black cursor-pointer"
-          value={whisperTargetId}
-          onChange={(e) => setWhisperTargetId(e.target.value)}
+      <div className="flex items-center bg-uni-gray-200 rounded-[12px] h-12 flex-1">
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={handleKeyDown}
+          placeholder={`${sellerNickName}에게 귓속말 보내기...`}
+          className="flex-1 bg-transparent outline-none mx-4 placeholder-uni-gray-600 text-16 text-uni-black"
+        />
+        <button
+          onClick={handleSend}
+          className="text-uni-black p-2 hover:opacity-70 transition-opacity"
+          disabled={!input.trim()}
         >
-          <option value="all">전체</option>
-          {userList
-            .filter((user) => user.user_id !== userId)
-            .map((user) => (
-              <option key={user.user_id} value={user.user_id}>
-                {user.nickName}
-              </option>
-            ))}
-        </select>
-
-        {/* 메시지 입력 영역 */}
-        <div className="flex items-center bg-uni-gray-200 rounded-[12px] h-12 flex-1">
-          <input
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder={"메시지 입력..."}
-            className="flex-1 bg-transparent outline-none mx-4 placeholder-uni-gray-600 text-16 text-uni-black"
-          />
-          <button
-            onClick={handleSend}
-            className="text-uni-black p-2 hover:opacity-70 transition-opacity"
-            disabled={!input.trim()}
-          >
-            <Send size={20} />
-          </button>
-        </div>
+          <Send size={20} />
+        </button>
       </div>
     </div>
   );

@@ -14,6 +14,8 @@ export default function ChatStartButton({ sellerId, sellerNickName, productId }:
   const router = useRouter();
   const buyerId = useUserStore((state) => state.user._id);
 
+  if (String(buyerId) === sellerId) return null;
+
   const handleStartChat = async () => {
     if (!buyerId || !sellerId || !productId) {
       alert("채팅방 생성 정보가 부족합니다.");
@@ -58,7 +60,7 @@ export default function ChatStartButton({ sellerId, sellerNickName, productId }:
   return (
     <button
       onClick={handleStartChat}
-      className="w-full bg-uni-blue-500 text-white py-3 rounded-lg font-bold text-base hover:bg-uni-blue-600"
+      className="w-full bg-uni-blue-500 text-white py-3 rounded-md font-bold text-16 hover:bg-uni-blue-600"
     >
       채팅하기
     </button>
