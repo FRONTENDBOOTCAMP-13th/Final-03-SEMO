@@ -1,6 +1,8 @@
 "use client";
 import { createReply } from "@/data/actions/post";
-import { useActionState, useState, useEffect } from "react";
+// import { useActionState, useState, useEffect } from "react";
+import { useActionState } from "react";
+import { useUserStore } from "@/store/userStore";
 import { MessageCircle } from "lucide-react";
 
 interface CommentNewProps {
@@ -9,14 +11,16 @@ interface CommentNewProps {
 
 export default function CommentNew({ _id }: CommentNewProps) {
   const [state, formAction, isLoading] = useActionState(createReply, null);
-  const [accessToken, setAccessToken] = useState<string>("");
+  // const [accessToken, setAccessToken] = useState<string>("");
+  // store 토큰 전역 관리
+  const { user } = useUserStore();
 
-  useEffect(() => {
-    const token = localStorage.getItem("accessToken");
-    if (token) {
-      setAccessToken(token);
-    }
-  }, []);
+  // useEffect(() => {
+  //   const token = localStorage.getItem("accessToken");
+  //   if (token) {
+  //     setAccessToken(token);
+  //   }
+  // }, []);
 
   console.log(isLoading, state);
 
@@ -27,7 +31,7 @@ export default function CommentNew({ _id }: CommentNewProps) {
         <form action={formAction}>
           {/* 숨겨진 게시글 ID */}
           <input type="hidden" name="_id" value={_id} />
-          <input type="hidden" name="accessToken" value={accessToken} />
+          <input type="hidden" name="accessToken" value={user?.token?.accessToken ?? ""} />
 
           {/* 댓글 입력 필드 */}
           <div className="flex gap-3 items-start mb-4">
