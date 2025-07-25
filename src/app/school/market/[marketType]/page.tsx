@@ -32,7 +32,7 @@ export default async function MarketPage({ params }: { params: Promise<{ marketT
 
   if (!res.ok) throw new Error("게시글 로드 실패");
   return (
-    <main className="min-w-[320px] max-w-[480px] px-5 py-1 bg-uni-white min-h-screen">
+    <main className="relative min-w-[320px] max-w-[480px] px-5 py-1 bg-uni-white min-h-screen">
       <MarketPageHeader />
       <MarketSearch />
       <div className="flex relative justify-around mb-4 border-b border-uni-gray-100 -mx-5">
