@@ -29,19 +29,7 @@ export default function AccountForm() {
 
   // 컴포넌트 마운트 시 사용자 데이터 로드
   useEffect(() => {
-    const loadUserData = async () => {
-      const currentUserId = AuthService.getCurrentUserId();
-      if (!currentUserId) {
-        // 사용자에게 알림 대신, 로그인 페이지로 리다이렉트하거나 다른 처리
-        console.warn("로그인이 필요합니다.");
-        return;
-      }
-
-      const user = await getUserProfile(currentUserId);
-      if (user) {
-        setUserData(user);
-        setUserEmail(user.email); // 실제 로그인한 사용자의 이메일 설정
-        setNickname(user.extra?.nickname || user.name);
+    setNickname(user.extra?.nickname || user.name || "");
         setSelectedBank(user.extra?.bank || "은행사");
         setAccountNumber(user.extra?.bankNumber ? String(user.extra.bankNumber) : "");
         if (user.image && typeof user.image === "string" && user.image !== "undefined" && user.image.trim() !== "") {
