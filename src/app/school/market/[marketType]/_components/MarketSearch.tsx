@@ -21,6 +21,7 @@ const Search = () => {
     }
 
     // 검색 결과 페이지로 이동
+    // encodeURIComponent : 한글, 특수문자, 공백 등 URL 형식으로 인코딩
     router.push(`/school/market/${marketType}/search?keyword=${encodeURIComponent(keyword.trim())}`);
   };
 
