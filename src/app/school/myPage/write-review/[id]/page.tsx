@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, use } from "react";
+import { useState, use, useEffect } from "react";
 import Image from "next/image";
 import { Star } from "lucide-react";
 import SaveFloatingButton from "../../_components/SaveFloatingButton";
@@ -78,10 +78,12 @@ export default function MyPageWriteReview({ params }: MyPageWriteReviewProps) {
     id: parseInt(id),
     title: "상품 정보",
     author: "판매자",
-    image: "👤",
+    image: "/assets/defaultimg.png",
     location: "기숙사",
     date: "2025년 07월 15일",
   };
+
+  const currentReviewData = reviewData || defaultReviewData;
 
   const handleStarClick = (starIndex: number) => {
     setRating(starIndex + 1);
@@ -90,7 +92,7 @@ export default function MyPageWriteReview({ params }: MyPageWriteReviewProps) {
   const handleSubmit = () => {
     console.log({
       reviewId: id,
-      productTitle: reviewData.title,
+      productTitle: currentReviewData.title,
       rating,
       review,
     });
