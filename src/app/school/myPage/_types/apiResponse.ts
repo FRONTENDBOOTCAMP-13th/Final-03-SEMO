@@ -36,3 +36,24 @@ export interface ProductItem {
   orders?: number;
   ordersQuantity?: number;
 }
+
+export interface PostItem {
+  _id: number;
+  extra: {
+    category: string;
+    price: number;
+    location: string;
+    crt: string;
+    newAccount: string;
+  };
+  image: string;
+  type: string;
+  title: string;
+  user: {
+    _id: number;
+    type: string;
+    name: string;
+    email: string;
+    image: string;
+  };
+}
