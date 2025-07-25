@@ -1,5 +1,7 @@
 import ItemSection from "../itemSection";
 import { getKeywordPosts } from "@/app/api/market/functions/post";
+import MarketPageHeader from "../_components/MarketPageHeader";
+import MarketSearch from "@/app/school/market/[marketType]/_components/MarketSearch";
 import Link from "next/link";
 
 interface SearchPageProps {
@@ -15,22 +17,12 @@ export default async function SearchPage({ params, searchParams }: SearchPagePro
 
   return (
     <main className="px-5 py-1 bg-uni-white min-h-screen">
+      <MarketPageHeader />
+      <MarketSearch />
       {/* 헤더 */}
       <div className="flex items-center mb-4">
-        <Link href={`/school/market/${marketType}`} className="mr-4">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path
-              d="M15 18L9 12L15 6"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </Link>
+        <Link href={`/school/market/${marketType}`} className="mr-4"></Link>
       </div>
-
-      {/* 검색 결과 - 무조건 ItemSection만 */}
       <ItemSection items={res.ok ? res.item : []} market={marketType} />
     </main>
   );

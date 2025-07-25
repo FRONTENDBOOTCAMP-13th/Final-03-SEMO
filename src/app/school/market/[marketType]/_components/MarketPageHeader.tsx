@@ -18,6 +18,11 @@ const HEADER_CONFIGS = {
     backLink: "",
     showMeatball: false,
   },
+  search: {
+    title: "상품 검색",
+    backLink: "",
+    showMeatball: false,
+  },
   detail: {
     title: "상품 상세",
     backLink: "",
@@ -147,6 +152,8 @@ export default function MarketPageHeader() {
 
     if (subPage === "new") {
       config = HEADER_CONFIGS.new;
+    } else if (subPage === "search") {
+      config = HEADER_CONFIGS.search;
     } else if (subPage) {
       config = HEADER_CONFIGS.detail;
     }
