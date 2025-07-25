@@ -36,8 +36,7 @@ export default function AccountForm() {
     if (
       profileImage &&
       typeof profileImage === "string" &&
-      profileImage !== "undefined" &&
-      profileImage.trim() !== ""
+      (profileImage.startsWith("http") || profileImage.startsWith("data:"))
     ) {
       return profileImage;
     }
