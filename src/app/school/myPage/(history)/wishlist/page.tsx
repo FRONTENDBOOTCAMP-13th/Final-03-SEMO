@@ -17,18 +17,10 @@ export default function MyPageWishlist() {
   // API로부터 북마크 목록 가져오기
   const { bookmarks, isLoading, error, refetch } = useMyBookmarks();
 
-  // 디버깅을 위한 콘솔 로그
-  console.log(`🎯 [Wishlist] 페이지 로드됨`);
-  console.log(`🎯 [Wishlist] bookmarks 배열:`, bookmarks);
-  console.log(`🎯 [Wishlist] bookmarks 길이:`, bookmarks?.length || 0);
-  console.log(`🎯 [Wishlist] isLoading:`, isLoading);
-  console.log(`🎯 [Wishlist] error:`, error);
-
   // API 데이터를 위시리스트 아이템 형식으로 변환
   const wishlistItems = useMemo(() => {
     console.log(`🔄 [Wishlist] bookmarks 변환 시작:`, bookmarks);
     const items = bookmarksToWishlistItems(bookmarks);
-    console.log(`🔄 [Wishlist] 변환 완료:`, items);
     console.log(`🔄 [Wishlist] 변환된 아이템 수:`, items.length);
     return items;
   }, [bookmarks]);
