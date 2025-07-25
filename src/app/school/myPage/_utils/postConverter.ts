@@ -117,3 +117,25 @@ export async function orderToReviewItems(order: OrderItem): Promise<Review[]> {
 
   return Promise.all(reviewPromises);
 }
+
+/**
+ * BookmarkItem 배열을 MyPageItem 배열로 변환합니다.
+ */
+export function bookmarksToWishlistItems(bookmarks: BookmarkItem[]): MyPageItem[] {
+  return bookmarks.map(bookmarkToWishlistItem);
+}
+
+/**
+ * ProductItem 배열을 MyPageItem 배열로 변환합니다.
+ */
+export function productsToMyPageItems(products: ProductItem[]): MyPageItem[] {
+  return products.map(productToMyPageItem);
+}
+
+/**
+ * OrderItem 배열을 Review 배열로 변환합니다.
+ */
+export async function ordersToReviewItems(orders: OrderItem[]): Promise<Review[]> {
+  const reviewPromises = orders.flatMap((order) => orderToReviewItems(order));
+  return (await Promise.all(reviewPromises)).flat(); // flatMap으로 중첩 배열 평면화
+}
