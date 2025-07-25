@@ -32,9 +32,9 @@ export default function MyPageMyPost() {
       status: item.status,
     }));
 
-  const buyItems: Item[] = myPageItemsData
-    .filter((item: MyPageItem) => item.category === "살래요")
-    .map((item: MyPageItem) => ({
+  const buyItems: Item[] = myPageItems
+    .filter((item) => item.category === "살래요")
+    .map((item) => ({
       id: item.id,
       title: item.title,
       price: item.price,
@@ -42,9 +42,9 @@ export default function MyPageMyPost() {
       status: item.status,
     }));
 
-  const gatheringsItems: Item[] = myPageItemsData
-    .filter((item: MyPageItem) => item.category === "모여요")
-    .map((item: MyPageItem) => ({
+  const gatheringsItems: Item[] = myPageItems
+    .filter((item) => item.category === "모여요")
+    .map((item) => ({
       id: item.id,
       title: item.title,
       price: item.price,
