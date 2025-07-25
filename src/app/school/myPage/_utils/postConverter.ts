@@ -79,3 +79,41 @@ export function productToMyPageItem(product: ProductItem): MyPageItem {
     category: getCategoryFromType(product.extra.type || product.extra.marketType || "sell"),
   };
 }
+
+/**
+ * OrderItem을 Review 배열로 변환합니다 (구매한 상품 리뷰 작성용).
+ */
+export async function orderToReviewItems(order: OrderItem): Promise<Review[]> {
+  // 주문의 extra에서 위치 정보를 가져옵니다.
+  const location = order.extra?.["location:"] || "";
+
+  const reviewPromises = order.products.map(async (product) => {
+    let authorName = "판매자";
+    if (product.seller_id) {
+      try {
+        const sellerData = await getUserById(product.seller_id);
+        authorName = sellerData.item?.name || `판매자 ${product.seller_id}`;
+      } catch (err) {
+        // 판매자 정보 로딩 실패 시 에러 로깅 제거
+      }
+    }
+
+    return {
+      id: product._id,
+      title: product.name,
+      author: authorName,
+      image: product.image ? `${process.env.NEXT_PUBLIC_API_URL}/${product.image["path "]}` : "/assets/defaultimg.png",
+      location: location, // 모든 리뷰 아이템에 동일한 위치 정보 적용
+      date: new Date(order.createdAt)
+        .toLocaleDateString("ko-KR", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+        })
+        .replace(/\. /g, "년 ")
+        .replace(/\.$/, "일"),
+    };
+  });
+
+  return Promise.all(reviewPromises);
+}
