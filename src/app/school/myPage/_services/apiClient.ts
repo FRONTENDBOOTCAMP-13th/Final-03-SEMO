@@ -19,7 +19,7 @@ const createApiHeaders = (isFormData = false): HeadersInit => {
     headers["Content-Type"] = "application/json";
   }
 
-  const token = AuthService.getAccessToken();
+  const token = useUserStore.getState().user.token?.accessToken;
   if (token) {
     headers["Authorization"] = `Bearer ${token}`;
   }
