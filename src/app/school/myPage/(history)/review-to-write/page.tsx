@@ -14,6 +14,28 @@ export default function MyPageReviewsToWrite() {
   const [reviewsData, setReviewsData] = useState<Review[]>([]);
   const [isReviewsLoading, setIsReviewsLoading] = useState(true);
 
+  useEffect(() => {
+    const fetchReviews = async () => {
+      if (orders.length > 0) {
+        setIsReviewsLoading(true);
+        try {
+          const items = await ordersToReviewItems(orders);
+          setReviewsData(items);
+        } catch (err) {
+          console.error("리뷰 데이터 변환 중 오류 발생:", err);
+          setReviewsData([]);
+        } finally {
+          setIsReviewsLoading(false);
+        }
+      } else {
+        setReviewsData([]);
+        setIsReviewsLoading(false);
+      }
+    };
+
+    fetchReviews();
+  }, [orders]);
+
   // 반응형 페이지네이션 로직을 hook으로 분리
   const {
     currentPage,
