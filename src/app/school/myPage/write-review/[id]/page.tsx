@@ -111,7 +111,12 @@ export default function MyPageWriteReview({ params }: MyPageWriteReviewProps) {
             </div>
             <div className="ml-4">
               <div className="w-30 h-20 bg-uni-gray-100 rounded-lg overflow-hidden relative">
-                <Image src="/api/placeholder/80/80" alt="상품 이미지" fill className="object-cover" />
+                <Image
+                  src={currentReviewData.image.startsWith("http") ? currentReviewData.image : "/api/placeholder/80/80"}
+                  alt="상품 이미지"
+                  fill
+                  className="object-cover"
+                />
               </div>
             </div>
           </div>
@@ -119,10 +124,18 @@ export default function MyPageWriteReview({ params }: MyPageWriteReviewProps) {
 
         {/* 판매자/리뷰어 정보 섹션 */}
         <section className="flex items-center space-x-3 py-2">
-          <div className="w-10 h-10 bg-uni-gray-100 rounded-full overflow-hidden relative">{reviewData.image} </div>
+          <div className="w-10 h-10 bg-uni-gray-100 rounded-full overflow-hidden relative">
+            {currentReviewData.image.startsWith("http") ? (
+              <Image src={currentReviewData.image} alt="프로필" fill className="object-cover" />
+            ) : (
+              currentReviewData.image
+            )}
+          </div>
           <div>
-            <p className="text-14 font-semibold text-uni-black font-pretendard">{reviewData.author}</p>
-            <p className="text-10 text-uni-gray-400 font-pretendard">{reviewData.location}</p>
+            <p className="text-14 font-semibold text-uni-black font-pretendard">{currentReviewData.author}</p>
+            <p className="text-10 text-uni-gray-400 font-pretendard">
+              {currentReviewData.location || "위치 정보 없음"}
+            </p>
           </div>
         </section>
 
