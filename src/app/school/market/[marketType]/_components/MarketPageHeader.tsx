@@ -2,6 +2,7 @@
 
 import { useSetPageHeader } from "@/contexts/PageHeaderContext";
 import { useCallback, useMemo, useState, useEffect } from "react";
+import { useUserStore } from "@/store/userStore";
 import { usePathname, useRouter } from "next/navigation";
 import { useActionState } from "react";
 import { deletePost } from "@/data/actions/post";
@@ -34,26 +35,11 @@ export default function MarketPageHeader() {
   const pathname = usePathname();
   const router = useRouter();
   const [showMenu, setShowMenu] = useState(false);
-  const [accessToken, setAccessToken] = useState<string>("");
-  const [currentUser, setCurrentUser] = useState<any>(null);
   const [postData, setPostData] = useState<any>(null);
   const [state, formAction, isLoading] = useActionState(deletePost, null);
+  // store 토큰 전역 관리
+  const { user } = useUserStore();
   console.log(state, isLoading);
-
-  // 로그인 유저 데이터 가져오기
-  useEffect(() => {
-    const user = localStorage.getItem("user"); // user의 정보를 로컬스토리지에서 가져옴
-    const token = localStorage.getItem("accessToken"); // user의 토큰을 가져옴
-
-    if (user) {
-      // user의 정보를 currentUser에 저장
-      setCurrentUser(JSON.parse(user));
-    }
-    if (token) {
-      //
-      setAccessToken(token);
-    }
-  }, []);
 
   useEffect(() => {
     if (state?.ok === 1) {
@@ -92,7 +78,7 @@ export default function MarketPageHeader() {
     fetchPostData();
   }, [pathname]);
 
-  const isMyPost = currentUser && postData && currentUser._id === postData.user._id;
+  const isMyPost = user && postData && user._id === postData.user._id;
 
   // 메뉴가 열릴 때 스크롤 막기
   useEffect(() => {
@@ -127,10 +113,10 @@ export default function MarketPageHeader() {
       return;
     }
 
-    if (postData && accessToken) {
+    if (postData && user?.token?.accessToken) {
       try {
         const formData = new FormData();
-        formData.append("accessToken", accessToken);
+        formData.append("accessToken", user?.token?.accessToken);
         formData.append("postId", postData._id.toString());
         formData.append("type", postData.type);
 
