@@ -11,6 +11,8 @@ import { ordersToReviewItems, Review } from "../../_utils/postConverter";
 export default function MyPageReviewsToWrite() {
   // API로부터 구매한 상품 목록 가져오기 (리뷰 작성 대상)
   const { orders, isLoading, error, refetch } = usePurchasedItems();
+  const [reviewsData, setReviewsData] = useState<Review[]>([]);
+  const [isReviewsLoading, setIsReviewsLoading] = useState(true);
 
   // 반응형 페이지네이션 로직을 hook으로 분리
   const {
