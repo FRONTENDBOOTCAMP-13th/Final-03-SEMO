@@ -98,3 +98,31 @@ export interface OrderItem {
     total: number;
   };
 }
+
+// API 응답 타입
+export interface BookmarkResponse {
+  ok: 1;
+  [key: string]: BookmarkItem | number; // 인덱스로 접근하는 형태
+}
+
+export interface OrderResponse {
+  ok: 1;
+  item: OrderItem[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+}
+
+export interface ProductResponse {
+  ok: 1;
+  item: ProductItem[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+}
