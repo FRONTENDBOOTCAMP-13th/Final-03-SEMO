@@ -57,3 +57,25 @@ export function bookmarkToWishlistItem(bookmark: BookmarkItem): MyPageItem {
     category: getCategoryFromType(post.type || post.extra.category || "sell"), // product.extra.type || product.extra.marketType 대신 post.type || post.extra.category 사용
   };
 }
+
+/**
+ * ProductItem을 MyPageItem 타입으로 변환합니다.
+ */
+export function productToMyPageItem(product: ProductItem): MyPageItem {
+  const mainImage = product.mainImages?.[0];
+
+  // 이미지 경로 안전 처리
+  let imageUrl = "/assets/defaultimg.png";
+  if (mainImage?.path) {
+    imageUrl = `${process.env.NEXT_PUBLIC_API_URL}/${mainImage.path}`;
+  }
+
+  return {
+    id: product._id,
+    title: product.name,
+    image: imageUrl,
+    price: `${product.price.toLocaleString()}원`,
+    status: product.extra.crt === "판매완료" ? "판매완료" : "판매중",
+    category: getCategoryFromType(product.extra.type || product.extra.marketType || "sell"),
+  };
+}
