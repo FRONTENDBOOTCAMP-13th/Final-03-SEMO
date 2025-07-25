@@ -6,41 +6,30 @@ import SaveFloatingButton from "../../_components/SaveFloatingButton";
 import InputField from "../../_components/InputField";
 import { validateNickname, validateAccountNumber, validateBankSelection } from "./utils/validation";
 import { useMyPageApi } from "../../_hooks/useMyPageApi";
-import { AuthService } from "../../_services";
+import { getImageUrl } from "@/data/actions/file";
+import { useUserStore } from "@/store/userStore";
 import type { User } from "../../_types/user";
 
 export default function AccountForm() {
-  const [nickname, setNickname] = useState("김세모");
-  const [selectedBank, setSelectedBank] = useState("국민은행");
-  const [accountNumber, setAccountNumber] = useState("");
+  const { user, setUser } = useUserStore();
+  const [nickname, setNickname] = useState(user.extra?.nickname || user.name || "");
+  const [selectedBank, setSelectedBank] = useState(user.extra?.bank || "은행사");
+  const [accountNumber, setAccountNumber] = useState(user.extra?.bankNumber ? String(user.extra.bankNumber) : "");
   const [accountError, setAccountError] = useState("");
   const [nicknameError, setNicknameError] = useState("");
-  // 프로필 사진 미리보기용 URL
-  const [profileImage, setProfileImage] = useState<string | null>("");
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [userData, setUserData] = useState<User | null>(null);
-  // 사용자가 새로 선택한 업로드할 이미지 파일을 저장하는 상태
+  const [profileImage, setProfileImage] = useState<string | null>(getImageUrl(user.image) || null);
   const [uploadFile, setUploadFile] = useState<File | null>(null);
-  // 현재 로그인한 사용자의 이메일 상태
-  const [userEmail, setUserEmail] = useState<string>("");
 
-  const { getUserProfile, updateUserProfile, uploadProfileImage, loading } = useMyPageApi();
+  const { updateUserProfile, uploadProfileImage, loading } = useMyPageApi();
   const banks = ["은행사", "국민은행", "신한은행", "우리은행", "하나은행", "농협은행", "기업은행"];
 
   // 컴포넌트 마운트 시 사용자 데이터 로드
   useEffect(() => {
     setNickname(user.extra?.nickname || user.name || "");
-        setSelectedBank(user.extra?.bank || "은행사");
-        setAccountNumber(user.extra?.bankNumber ? String(user.extra.bankNumber) : "");
-        if (user.image && typeof user.image === "string" && user.image !== "undefined" && user.image.trim() !== "") {
-          setProfileImage(user.image);
-        } else {
-          setProfileImage(null);
-        }
-      }
-    };
-    loadUserData();
-  }, [getUserProfile]);
+    setSelectedBank(user.extra?.bank || "은행사");
+    setAccountNumber(user.extra?.bankNumber ? String(user.extra.bankNumber) : "");
+    setProfileImage(user.image || null);
+  }, [user]);
 
   // 이미지 URL을 메모이제이션하여 불필요한 재생성 방지
   const memoizedImageUrl = useMemo(() => {
