@@ -26,42 +26,58 @@ const InputChat = ({ userId, nickName, sellerId, sellerNickName }: InputChatProp
   const handleSend = () => {
     if (!input.trim() || !roomId) return;
 
-    if (roomId !== GLOBAL_ROOM_ID) {
-      console.warn("글로벌룸 아님");
-      return;
+    const isGlobalRoom = roomId === GLOBAL_ROOM_ID;
+
+    if (isGlobalRoom) {
+      const whisperPayload = {
+        msg: input,
+        user_id: userId,
+        nickName,
+        toUserId: sellerId,
+        toNickName: sellerNickName,
+        productId,
+        buyerId: userId,
+        sellerId,
+        sellerNickName,
+        postId,
+      };
+      console.log("귓속말 전송 데이터:", whisperPayload);
+
+      // 귓속말 전송
+      socket.emit("sendTo", sellerId, whisperPayload);
+
+      const myWhisperMessage: Message = {
+        id: Date.now().toString(),
+        roomId,
+        content: input,
+        type: "text",
+        msgType: "whisper",
+        createdAt: new Date().toISOString(),
+        user_id: String(userId),
+        nickName,
+        toUserId: sellerId,
+        toNickName: sellerNickName,
+      };
+      useChatStore.getState().addMessage(myWhisperMessage);
+    } else {
+      const myMessage: Message = {
+        id: Date.now().toString(),
+        roomId,
+        content: input,
+        type: "text",
+        msgType: "all",
+        createdAt: new Date().toISOString(),
+        user_id: String(userId),
+        nickName,
+      };
+
+      console.log("개인룸 메시지 전송:", myMessage);
+
+      useChatStore.getState().addMessage(myMessage);
+
+      socket.emit("message", input);
     }
-    const whisperPayload = {
-      msg: input,
-      user_id: userId,
-      nickName,
-      toUserId: sellerId,
-      toNickName: sellerNickName,
-      productId,
-      buyerId: userId,
-      sellerId,
-      sellerNickName,
-      postId,
-    };
-    console.log("귓속말 전송 데이터:", whisperPayload);
 
-    // 귓속말 전송
-    socket.emit("sendTo", sellerId, whisperPayload);
-
-    // 내 화면에는 내가 보낸 메시지 바로 표시
-    const myWhisperMessage: Message = {
-      id: Date.now().toString(),
-      roomId,
-      content: input,
-      type: "text",
-      msgType: "whisper",
-      createdAt: new Date().toISOString(),
-      user_id: userId.toString(),
-      nickName,
-      toUserId: sellerId,
-      toNickName: sellerNickName,
-    };
-
-    useChatStore.getState().addMessage(myWhisperMessage);
     setInput("");
   };
 
@@ -79,7 +95,7 @@ const InputChat = ({ userId, nickName, sellerId, sellerNickName }: InputChatProp
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder={`${sellerNickName}에게 귓속말 보내기...`}
+          placeholder={`${sellerNickName}에게 메시지 보내기...`}
           className="flex-1 bg-transparent outline-none mx-4 placeholder-uni-gray-600 text-16 text-uni-black"
         />
         <button
