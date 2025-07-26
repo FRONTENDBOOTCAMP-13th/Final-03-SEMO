@@ -3,15 +3,12 @@
 
 import { useState, useActionState, useEffect } from "react";
 import { createPost, updatePost } from "@/data/actions/post";
+import { useUserStore } from "@/store/userStore";
 import { Post } from "@/types";
 import GroupPurchase from "./GroupPurchase";
 import ProductDesc from "./ProductDesc";
 import Product from "./Product";
 import NewAccount from "./NewAccount";
-
-// interface Props {
-//   boardType: string;
-// }
 
 interface PostFormProps {
   mode: "create" | "edit";
@@ -26,18 +23,11 @@ export default function PostForm({ mode, initialData, marketType, postId }: Post
     (initialData?.type as "sell" | "buy" | "group") || (marketType as "sell" | "buy" | "group") || "sell"
   );
   const [images, setImages] = useState<string[]>(initialData?.image ? [initialData.image] : []); // 이미지 배열(초기값 : 이미지 한장만 가능하게 설정, 추후 변경)
-  const [accessToken, setAccessToken] = useState<string>("");
 
   // 서버 액션 사용
   const [state, formAction] = useActionState(mode === "create" ? createPost : updatePost, null);
-
-  // 로그인 토큰 가져오기
-  useEffect(() => {
-    const token = localStorage.getItem("accessToken");
-    if (token) {
-      setAccessToken(token);
-    }
-  }, []);
+  // store 토큰 전역 관리
+  const { user } = useUserStore();
 
   // 서버 액션 결과 처리
   useEffect(() => {
@@ -67,7 +57,7 @@ export default function PostForm({ mode, initialData, marketType, postId }: Post
 
   return (
     <form action={formAction}>
-      <input type="hidden" name="accessToken" value={accessToken} />
+      <input type="hidden" name="accessToken" value={user?.token?.accessToken ?? ""} />
       <input type="hidden" name="type" value={tradeType} />
       <input type="hidden" name="postId" value={postId} />
       <input type="hidden" name="image" value={images.length > 0 ? images[0] : ""} />
