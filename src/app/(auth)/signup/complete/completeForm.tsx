@@ -30,7 +30,13 @@ export default function SignupCompleteForm() {
 
         <Logo />
 
-        <div className="w-full max-w-sm space-y-2">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSignup({ user, setLoading, router });
+          }}
+          className="w-full max-w-sm space-y-2"
+        >
           {/* 학교 선택 */}
           <div className="relative w-full">
             <select
@@ -53,33 +59,26 @@ export default function SignupCompleteForm() {
             value={user.department ?? ""}
             onChange={(e) => setUser({ ...user, department: e.target.value })}
           />
-
           <Input
             placeholder="소속 학번"
             value={user.studentId ?? ""}
             onChange={(e) => setUser({ ...user, studentId: e.target.value })}
           />
-
           <Input
             placeholder="기숙사 호관"
             value={user.dormitory ?? ""}
             onChange={(e) => setUser({ ...user, dormitory: e.target.value })}
           />
-
           <Input
             placeholder="닉네임"
             value={user.name ?? ""}
             onChange={(e) => setUser({ ...user, name: e.target.value })}
           />
-        </div>
 
-        <Button
-          onClick={() => handleSignup({ user, setLoading, router })}
-          disabled={loading}
-          className="mt-6 w-full max-w-sm"
-        >
-          {loading ? "가입 중..." : "회원가입"}
-        </Button>
+          <Button buttonType="submit" disabled={loading} className="mt-6 w-full">
+            {loading ? "가입 중..." : "회원가입"}
+          </Button>
+        </form>
       </div>
     </main>
   );
