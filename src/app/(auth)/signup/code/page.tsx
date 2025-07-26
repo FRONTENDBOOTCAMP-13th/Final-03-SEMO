@@ -11,7 +11,8 @@ import { sendVerificationCode } from "@/lib/sendVerificationCode";
 
 export default function SignupCodePage() {
   const router = useRouter();
-  const { email } = useUserStore();
+  const { user } = useUserStore();
+  const email = user?.email || "";
   const [code, setCode] = useState("");
   const [serverCode, setServerCode] = useState("");
   const [loading, setLoading] = useState(false);
