@@ -39,6 +39,20 @@ export default function LoginForm() {
     router.push("/school");
   };
 
+  const handleKakaoLogin = () => {
+    const REST_API_KEY = process.env.NEXT_PUBLIC_KAKAO_REST_API_KEY;
+    const REDIRECT_URI = process.env.NEXT_PUBLIC_KAKAO_REDIRECT_URI;
+
+    if (!REST_API_KEY || !REDIRECT_URI) {
+      alert("카카오 설정이 누락되었습니다.");
+      return;
+    }
+
+    const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}`;
+
+    window.location.href = KAKAO_AUTH_URL;
+  };
+
   return (
     <main className="flex justify-center items-center min-h-screen bg-white">
       <div className="min-w-[320px] w-full max-w-[480px] px-6 py-12 flex flex-col items-center">
@@ -50,7 +64,13 @@ export default function LoginForm() {
           <LogoLow />
         </div>
 
-        <div className="w-full max-w-sm space-y-4 gap-2">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleLogin();
+          }}
+          className="w-full max-w-sm space-y-4 gap-2"
+        >
           <Input type="email" placeholder="ID (학교 이메일)" value={email} onChange={(e) => setEmail(e.target.value)} />
           <PasswordInput value={password} onChange={(e) => setPassword(e.target.value)} placeholder="PW" />
 
@@ -61,14 +81,14 @@ export default function LoginForm() {
               color: "var(--color-uni-gray-400)",
             }}
           >
-            <button type="button" onClick={() => router.push("")} className="hover:underline">
+            <button type="submit" onClick={() => router.push("")} className="hover:underline">
               아이디 / 비밀번호 찾기
             </button>
-            <button type="button" onClick={() => router.push("/signup")} className="hover:underline ">
+            <button type="submit" onClick={() => router.push("/signup")} className="hover:underline ">
               회원가입
             </button>
           </div>
-        </div>
+        </form>
 
         <div className="w-full max-w-sm mt-6">
           <Button type="primary" onClick={handleLogin}>
@@ -83,7 +103,7 @@ export default function LoginForm() {
             <div className="flex-grow h-px bg-gray-300" />
           </div>
 
-          <Button type="kakao" onClick={() => alert("카카오 로그인")}>
+          <Button type="kakao" onClick={handleKakaoLogin}>
             <Image src="/assets/kakao.svg" alt="Kakao" width={20} height={20} className="mr-2" />
             카카오 로그인
           </Button>

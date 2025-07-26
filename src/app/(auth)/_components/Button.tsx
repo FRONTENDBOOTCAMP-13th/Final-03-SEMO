@@ -1,5 +1,6 @@
 interface ButtonProps {
   type?: "primary" | "outline" | "kakao" | "google";
+  buttonType?: "button" | "submit" | "reset";
   onClick?: () => void;
   children: React.ReactNode;
   disabled?: boolean;

@@ -24,6 +24,8 @@ export default function PasswordInput({ value, onChange, placeholder = "비밀�
       <button
         type="button"
         onClick={() => setShowPassword((prev) => !prev)}
+        tabIndex={-1}
+        aria-label={showPassword ? "비밀번호 숨기기" : "비밀번호 보기"}
         className="absolute right-3 top-1/2 transform -translate-y-1/2"
       >
         <Image src="/assets/eye.svg" alt="비밀번호 보기" width={20} height={20} />
