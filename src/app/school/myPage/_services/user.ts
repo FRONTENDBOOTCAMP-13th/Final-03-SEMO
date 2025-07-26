@@ -1,4 +1,5 @@
 import { User } from "@/types/user";
+import { UserResponse } from "../_types/apiResponse";
 import apiClient from "./apiClient";
 
 /**
@@ -8,8 +9,8 @@ import apiClient from "./apiClient";
  */
 export async function getUserById(userId: number): Promise<User> {
   try {
-    const data = await apiClient.get<User>(`/users/${userId}`);
-    return data;
+    const data = await apiClient.get<UserResponse>(`/users/${userId}`);
+    return data.item;
   } catch (error) {
     console.error(`Error fetching user ${userId}:`, error);
     throw error;

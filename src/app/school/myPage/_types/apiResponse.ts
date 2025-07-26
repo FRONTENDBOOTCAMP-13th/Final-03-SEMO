@@ -1,4 +1,5 @@
 // 실제 API 응답 구조에 맞는 타입 정의
+import { User } from "@/types/user";
 
 export interface ProductItem {
   _id: number;
@@ -128,4 +129,9 @@ export interface ProductResponse {
     total: number;
     totalPages: number;
   };
+}
+
+export interface UserResponse {
+  ok: 1;
+  item: User;
 }
