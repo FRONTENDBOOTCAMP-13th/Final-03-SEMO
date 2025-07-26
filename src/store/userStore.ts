@@ -1,52 +1,44 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import { User } from "@/types/user";
 
-interface UserInfo {
-  email: string;
-  password: string;
-  university: string;
-  department: string;
-  studentId: string;
-  dormitory: string;
-  nickname: string;
-  setEmail: (email: string) => void;
-  setPassword: (password: string) => void;
-  setUniversity: (university: string) => void;
-  setDepartment: (department: string) => void;
-  setStudentId: (studentId: string) => void;
-  setDormitory: (dormitory: string) => void;
-  setNickname: (nickname: string) => void;
-  reset: () => void;
+interface UserStore {
+  user: Partial<User>;
+  setUser: (user: Partial<User>) => void;
+  resetUser: () => void;
 }
 
-export const useUserStore = create<UserInfo>((set) => ({
-  email: "",
-  password: "",
-  university: "",
-  department: "",
-  studentId: "",
-  dormitory: "",
-  nickname: "",
-  setEmail: (email) => set({ email }),
-  setPassword: (password) => set({ password }),
-  setUniversity: (university) => set({ university }),
-  setDepartment: (department) => set({ department }),
-  setStudentId: (studentId) => set({ studentId }),
-  setDormitory: (dormitory) => set({ dormitory }),
-  setNickname: (nickname) => set({ nickname }),
-  reset: () =>
-    set({
-      email: "",
-      password: "",
-      university: "",
-      department: "",
-      studentId: "",
-      dormitory: "",
-      nickname: "",
+export const useUserStore = create<UserStore>()(
+  persist(
+    (set) => ({
+      user: {},
+      setUser: (user) => {
+        console.log("[Zustand] setUser 호출됨:", user);
+        // user가 없거나 객체가 아닌 경우 저장하지 않음
+        console.log("[Zustand] setUser 호출됨:", user);
+        const isValidUser =
+          user &&
+          typeof user === "object" &&
+          (("_id" in user && user._id !== undefined) || ("providerAccountId" in user && user.providerAccountId));
+
+        if (!isValidUser) {
+          console.warn("[Zustand] user 데이터 이상함, 저장 취소됨:", user);
+          return;
+        }
+
+        set({ user });
+      },
+
+      resetUser: () => {
+        console.log("[Zustand] resetUser 호출됨");
+        set({ user: {} });
+      },
     }),
-}));
 
-if (process.env.NODE_ENV === "development") {
-  useUserStore.subscribe((state) => {
-    console.log("Zustand 상태:", state);
-  });
-}
+    {
+      name: "user-storage",
+      skipHydration: false,
+      partialize: (state) => ({ user: state.user }), // 불필요한 state 저장 방지
+    }
+  )
+);

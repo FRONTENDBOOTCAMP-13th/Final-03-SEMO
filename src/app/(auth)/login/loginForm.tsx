@@ -8,41 +8,49 @@ import Button from "../_components/Button";
 import LogoLow from "../_components/LogoLow";
 import BackButton from "../_components/BackButton";
 import PasswordInput from "../_components/PasswordInput";
+import { useUserStore } from "@/store/userStore";
+import { login } from "@/lib/actions/login";
+// import { useAuthGuard } from "@/lib/useAuthGuard";
 
 export default function LoginForm() {
+  // useAuthGuard(false);
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { setUser } = useUserStore();
 
   const handleLogin = async () => {
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "client-id": process.env.NEXT_PUBLIC_CLIENT_ID ?? "",
-        },
-        body: JSON.stringify({ email, password }),
-      });
+    const result = await login(email, password);
 
-      const result = await response.json();
-      console.log("API 응답:", result);
-
-      if (!response.ok) {
-        throw new Error(result.message || "로그인 실패");
-      }
-
-      alert("로그인 성공!");
-
-      localStorage.setItem("accessToken", result?.accessToken || "");
-      router.push("/school");
-    } catch (error) {
-      if (error instanceof Error) {
-        alert(`로그인 실패: ${error.message || "알 수 없는 오류"}`);
-      } else {
-        alert("로그인 실패: 알 수 없는 오류");
-      }
+    if (!result.ok) {
+      alert(`로그인 실패: ${result.message}`);
+      return;
     }
+
+    if (result.token) {
+      localStorage.setItem("accessToken", result.token);
+    }
+
+    if (result.user) {
+      setUser(result.user);
+    }
+
+    alert("로그인 성공!");
+    router.push("/school");
+  };
+
+  const handleKakaoLogin = () => {
+    const REST_API_KEY = process.env.NEXT_PUBLIC_KAKAO_REST_API_KEY;
+    const REDIRECT_URI = process.env.NEXT_PUBLIC_KAKAO_REDIRECT_URI;
+
+    if (!REST_API_KEY || !REDIRECT_URI) {
+      alert("카카오 설정이 누락되었습니다.");
+      return;
+    }
+
+    const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}`;
+
+    window.location.href = KAKAO_AUTH_URL;
   };
 
   return (
@@ -56,7 +64,13 @@ export default function LoginForm() {
           <LogoLow />
         </div>
 
-        <div className="w-full max-w-sm space-y-4 gap-2">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleLogin();
+          }}
+          className="w-full max-w-sm space-y-4 gap-2"
+        >
           <Input type="email" placeholder="ID (학교 이메일)" value={email} onChange={(e) => setEmail(e.target.value)} />
           <PasswordInput value={password} onChange={(e) => setPassword(e.target.value)} placeholder="PW" />
 
@@ -67,14 +81,14 @@ export default function LoginForm() {
               color: "var(--color-uni-gray-400)",
             }}
           >
-            <button type="button" onClick={() => router.push("")} className="hover:underline">
+            <button type="submit" onClick={() => router.push("")} className="hover:underline">
               아이디 / 비밀번호 찾기
             </button>
-            <button type="button" onClick={() => router.push("/signup")} className="hover:underline ">
+            <button type="submit" onClick={() => router.push("/signup")} className="hover:underline ">
               회원가입
             </button>
           </div>
-        </div>
+        </form>
 
         <div className="w-full max-w-sm mt-6">
           <Button type="primary" onClick={handleLogin}>
@@ -89,7 +103,7 @@ export default function LoginForm() {
             <div className="flex-grow h-px bg-gray-300" />
           </div>
 
-          <Button type="kakao" onClick={() => alert("카카오 로그인")}>
+          <Button type="kakao" onClick={handleKakaoLogin}>
             <Image src="/assets/kakao.svg" alt="Kakao" width={20} height={20} className="mr-2" />
             카카오 로그인
           </Button>

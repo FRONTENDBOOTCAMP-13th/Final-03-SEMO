@@ -1,16 +1,10 @@
-"use client";
-
 import Link from "next/link";
 import { User, Package, Star, Heart, Bell, Info, LogOut } from "lucide-react";
-import ApiTestComponent from "./_test/ApiTestComponent";
 
 // TODO: n건 나오는 부분 link 되어있는 페이지의 데이터 수를 나타내기
 export default function MyPage() {
   return (
     <div className="px-4 py-6 space-y-6">
-      {/* API 테스트 컴포넌트 (개발용) */}
-      <ApiTestComponent />
-
       {/* 사용자 프로필 */}
       <div className="flex flex-col items-center text-center bg-uni-white py-8">
         <div className="w-24 h-24 mb-4 bg-uni-gray-200 rounded-full flex items-center justify-center">
