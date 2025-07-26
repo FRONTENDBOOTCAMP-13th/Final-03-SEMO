@@ -2,6 +2,7 @@ import MarketSearch from "../market/[marketType]/_components/MarketSearch";
 import HeroSection from "./_components/HeroSection";
 import HomeHeader from "./_components/HomeHeader";
 import MarketPreview from "./_components/ItemPreview";
+import FloatingButton from "@/components/common/FloatingButton";
 import { getPosts } from "@/app/api/market/functions/post";
 
 export default async function HomePage() {
@@ -15,6 +16,7 @@ export default async function HomePage() {
       <MarketSearch />
       <HeroSection />
       <MarketPreview buyItems={buyItems} sellItems={sellItems} />
+      <FloatingButton href={`/school/market/buy/new`} />
     </div>
   );
 }
