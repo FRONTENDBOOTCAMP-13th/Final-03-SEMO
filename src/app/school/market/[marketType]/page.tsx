@@ -32,7 +32,7 @@ export default async function MarketPage({ params }: { params: Promise<{ marketT
 
   if (!res.ok) throw new Error("게시글 로드 실패");
   return (
-    <main className="px-5 py-1 bg-uni-white min-h-screen">
+    <main className="relative min-w-[320px] max-w-[480px] px-5 py-1 bg-uni-white min-h-screen">
       <MarketPageHeader />
       <MarketSearch />
       <div className="flex relative justify-around mb-4 border-b border-uni-gray-100 -mx-5">
@@ -49,12 +49,7 @@ export default async function MarketPage({ params }: { params: Promise<{ marketT
               }`}
             >
               {label}
-              {active && (
-                <div
-                  className="absolute bottom-0 left-1/2 -translate-x-1/2 w-screen h-[2px] bg-uni-blue-400"
-                  style={{ width: "50vw" }}
-                />
-              )}
+              {active && <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-uni-blue-400" />}
             </Link>
           );
         })}

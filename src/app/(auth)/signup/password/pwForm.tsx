@@ -45,7 +45,13 @@ export default function SignupPasswordForm() {
 
         <Logo />
 
-        <div className="w-full max-w-sm flex flex-col gap-4">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleNext();
+          }}
+          className="w-full max-w-sm flex flex-col gap-4"
+        >
           {/* 비밀번호 */}
           <div className="relative">
             <PasswordInput
@@ -63,8 +69,9 @@ export default function SignupPasswordForm() {
             onChange={(e) => setConfirmPassword(e.target.value)}
           />
 
-          <Button onClick={handleNext}>비밀번호 입력</Button>
-        </div>
+          {/* 완료 버튼 */}
+          <Button buttonType="submit">비밀번호 입력</Button>
+        </form>
       </div>
     </main>
   );

@@ -17,6 +17,14 @@ interface Props {
 }
 
 export default function ItemSection({ items, market }: Props) {
+  if (!items || items.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center py-15">
+        <p className="text-15 text-gray-400 font-medium">해당 조건의 게시글이 없습니다.</p>
+      </div>
+    );
+  }
+
   return (
     <div className="grid grid-cols-2 gap-4">
       {items.map((item) => (
