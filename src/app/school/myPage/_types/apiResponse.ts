@@ -84,6 +84,9 @@ export interface OrderItem {
       type?: string;
     };
   }>;
+  extra?: {
+    "location:"?: string;
+  };
   state: string;
   user_id: number;
   createdAt: string;
