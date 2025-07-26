@@ -30,7 +30,7 @@ export const useChatSocket = ({ userId, nickName, roomId }: UseChatSocketProps) 
       socket.emit(
         "createRoom",
         {
-          roomId: GLOBAL_ROOM_ID,
+          roomId,
           user_id: userId,
           hostName: nickName,
           roomName: "Global Room",
@@ -60,6 +60,7 @@ export const useChatSocket = ({ userId, nickName, roomId }: UseChatSocketProps) 
       );
     };
 
+    // 채팅멤버 조회
     const handleMembers = (memberListObj: Record<string, any>) => {
       const userList = Object.entries(memberListObj).map(([user_id, value]) => ({
         user_id,
@@ -94,17 +95,14 @@ export const useChatSocket = ({ userId, nickName, roomId }: UseChatSocketProps) 
       console.log("raw.user_id:", raw.user_id);
       console.log("내 userId:", userId);
 
-      // if (isWhisper && data.user_id === String(userId)) return;
       if (isWhisper && raw.toUserId && String(raw.toUserId) !== String(userId)) return;
-
-      // if (isWhisper && String(data.user_id) === String(userId)) return;
 
       const senderId = raw.user_id || userId;
 
       const message: Message = {
         id: Date.now().toString(),
         roomId: GLOBAL_ROOM_ID,
-        content: raw.msg,
+        content: raw.content ?? raw.msg,
         type: "text",
         msgType: isWhisper ? "whisper" : "all",
         createdAt: data.timestamp ?? new Date().toISOString(),
@@ -118,6 +116,7 @@ export const useChatSocket = ({ userId, nickName, roomId }: UseChatSocketProps) 
 
       addMessage(message);
 
+      // 알림을 받았을 때
       if (isWhisper && String(raw.user_id) !== String(userId)) {
         toast.info(`${raw.nickName}님이 개인 메시지를 보냈습니다. 클릭하여 개인방으로 이동하세요.`, {
           autoClose: false,
@@ -184,7 +183,6 @@ export const useChatSocket = ({ userId, nickName, roomId }: UseChatSocketProps) 
       socket.off("members", handleMembers);
       socket.off("message", handleMessage);
       socket.off("sendTo", handleWhisper);
-      // socket.emit("leaveRoom");
       socket.disconnect();
     };
   }, [userId, nickName, roomId, setRoomId, setUserList, addMessage, router]);

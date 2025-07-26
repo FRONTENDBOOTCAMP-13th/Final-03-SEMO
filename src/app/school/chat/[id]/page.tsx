@@ -41,7 +41,7 @@ const ChatPage = () => {
   }, [buyerId, sellerId, joinedRoom]);
 
   const handleJoinRoom = () => {
-    const privateRoomId = [buyerId, sellerId].sort().join("-");
+    const privateRoomId = [sellerId, buyerId].sort().join("-");
 
     socket.emit(
       "createRoom",
@@ -49,7 +49,7 @@ const ChatPage = () => {
         roomId: privateRoomId,
         user_id: buyerId,
         hostName: buyerId,
-        roomName: `${buyerId} <-> ${sellerId}`,
+        roomName: `${sellerId} <-> ${buyerId}`,
         autoClose: false,
       },
       (createRes: any) => {
