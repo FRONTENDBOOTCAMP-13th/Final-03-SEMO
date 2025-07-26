@@ -14,7 +14,7 @@ export default function HomeHeader() {
       </div>
 
       {/* 알람 */}
-      <Bell size={24} text-uni-gray-300 />
+      <Bell size={24} />
     </header>
   );
 }
