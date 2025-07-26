@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useUserStore } from "@/store/userStore";
 
-export default function KakaoLoginCallback() {
+function KakaoLoginCallback() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { setUser } = useUserStore();
@@ -134,4 +134,16 @@ export default function KakaoLoginCallback() {
   }, [router, searchParams, setUser]);
 
   return <p className="text-center mt-20">카카오 로그인 중입니다...</p>;
+}
+
+// useSearchParams()를 사용하는 컴포넌트는 반드시 Suspense로 감싸야 함
+
+import { Suspense } from "react";
+
+export default function KakaoLoginPage() {
+  return (
+    <Suspense fallback={<p className="text-center mt-20">로딩 중...</p>}>
+      <KakaoLoginCallback />
+    </Suspense>
+  );
 }
