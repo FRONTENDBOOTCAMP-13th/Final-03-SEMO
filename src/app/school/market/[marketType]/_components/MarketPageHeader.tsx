@@ -1,7 +1,7 @@
 "use client";
 
 import { useSetPageHeader } from "@/contexts/PageHeaderContext";
-import { useCallback, useMemo, useState, useEffect } from "react";
+import { useCallback, useMemo, useState, useEffect, startTransition } from "react";
 import { useUserStore } from "@/store/userStore";
 import { usePathname, useRouter } from "next/navigation";
 import { useActionState } from "react";
@@ -120,7 +120,9 @@ export default function MarketPageHeader() {
         formData.append("postId", postData._id.toString());
         formData.append("type", postData.type);
 
-        formAction(formData);
+        startTransition(() => {
+          formAction(formData);
+        });
       } catch (error) {
         console.error("삭제 중 오류:", error);
         alert("삭제 중 오류가 발생했습니다.");
