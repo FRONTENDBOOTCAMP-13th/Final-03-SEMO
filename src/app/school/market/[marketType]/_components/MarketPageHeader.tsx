@@ -32,15 +32,16 @@ const HEADER_CONFIGS = {
 };
 
 export default function MarketPageHeader() {
-  const pathname = usePathname();
-  const router = useRouter();
-  const [showMenu, setShowMenu] = useState(false);
-  const [postData, setPostData] = useState<any>(null);
+  const pathname = usePathname(); // 현재 페이지 경로 확인
+  const router = useRouter(); // 페이지 이동
+  const [showMenu, setShowMenu] = useState(false); // 메뉴 토글 여부 확인
+  const [postData, setPostData] = useState<any>(null); // 현재 보고 있는 게시글 데이터 저장
   const [state, formAction, isLoading] = useActionState(deletePost, null);
   // store 토큰 전역 관리
   const { user } = useUserStore();
   console.log(state, isLoading);
 
+  // 삭제 후 성공 처리
   useEffect(() => {
     if (state?.ok === 1) {
       console.log("삭제 성공");
