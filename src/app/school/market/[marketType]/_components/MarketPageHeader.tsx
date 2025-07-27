@@ -58,7 +58,7 @@ export default function MarketPageHeader() {
       const postId = pathSegments[marketIndex + 2];
 
       // 상세 페이지(postId가 있고 "new"가 아닌 경우)에서 게시글 데이터 가져오기
-      if (postId && postId !== "new") {
+      if (postId && postId !== "new" && postId !== "search") {
         try {
           const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/posts/${postId}`, {
             headers: {

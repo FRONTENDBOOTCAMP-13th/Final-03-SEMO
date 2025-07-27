@@ -3,8 +3,9 @@
 import { useEffect, useState } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 
+const MARKET_TAGS = ["전체", "식품", "도서", "의류", "생활용품", "생활가전", "학용품"];
+
 export default function MarketTagNav() {
-  const tags = ["전체", "식품", "도서", "의류", "생활용품", "생활가전", "학용품"];
   const [activeTag, setActiveTag] = useState("전체");
   const router = useRouter();
   const pathname = usePathname();
@@ -16,7 +17,7 @@ export default function MarketTagNav() {
     // searchParams(쿼리파라미터)로 keyword 값 가져오기
     const keyword = searchParams.get("keyword");
 
-    if (keyword && tags.includes(keyword)) {
+    if (keyword && MARKET_TAGS.includes(keyword)) {
       // URL에 키워드가 있고 tags 배열에 포함되어 있으면 해당 tag 활성화
       setActiveTag(keyword);
     } else {
@@ -41,7 +42,7 @@ export default function MarketTagNav() {
   return (
     <div className="w-full min-w-[340px] max-w-[480px] mx-auto pt-1 pb-5">
       <div className="flex gap-2 overflow-x-auto hide-scrollbar">
-        {tags.map((tag) => (
+        {MARKET_TAGS.map((tag) => (
           <button
             key={tag}
             // value={activeTag}
