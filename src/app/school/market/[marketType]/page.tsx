@@ -9,6 +9,7 @@ import { getPosts } from "@/app/api/market/functions/post";
 import MarketSearch from "@/app/school/market/[marketType]/_components/MarketSearch";
 import MarketTagNav from "./_components/MarketTagNav";
 import Link from "next/link";
+import { Pencil } from "lucide-react";
 // import { Post, ApiRes } from "@/types";
 
 /**
@@ -56,7 +57,11 @@ export default async function MarketPage({ params }: { params: Promise<{ marketT
       </div>
       <MarketTagNav />
       <ItemSection items={res.item} market={marketType} />
-      <FloatingButton href={`/school/market/${marketType}/new`} />
+      <FloatingButton
+        href={`/school/market/${marketType}/new`}
+        icon={<Pencil size={25} color="white" />}
+        text={"글쓰기"}
+      />
     </main>
   );
 }

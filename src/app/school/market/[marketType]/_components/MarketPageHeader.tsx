@@ -1,7 +1,7 @@
 "use client";
 
 import { useSetPageHeader } from "@/contexts/PageHeaderContext";
-import { useCallback, useMemo, useState, useEffect } from "react";
+import { useCallback, useMemo, useState, useEffect, startTransition } from "react";
 import { useUserStore } from "@/store/userStore";
 import { usePathname, useRouter } from "next/navigation";
 import { useActionState } from "react";
@@ -32,15 +32,16 @@ const HEADER_CONFIGS = {
 };
 
 export default function MarketPageHeader() {
-  const pathname = usePathname();
-  const router = useRouter();
-  const [showMenu, setShowMenu] = useState(false);
-  const [postData, setPostData] = useState<any>(null);
+  const pathname = usePathname(); // 현재 페이지 경로 확인
+  const router = useRouter(); // 페이지 이동
+  const [showMenu, setShowMenu] = useState(false); // 메뉴 토글 여부 확인
+  const [postData, setPostData] = useState<any>(null); // 현재 보고 있는 게시글 데이터 저장
   const [state, formAction, isLoading] = useActionState(deletePost, null);
   // store 토큰 전역 관리
   const { user } = useUserStore();
   console.log(state, isLoading);
 
+  // 삭제 후 성공 처리
   useEffect(() => {
     if (state?.ok === 1) {
       console.log("삭제 성공");
@@ -58,7 +59,7 @@ export default function MarketPageHeader() {
       const postId = pathSegments[marketIndex + 2];
 
       // 상세 페이지(postId가 있고 "new"가 아닌 경우)에서 게시글 데이터 가져오기
-      if (postId && postId !== "new") {
+      if (postId && postId !== "new" && postId !== "search") {
         try {
           const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/posts/${postId}`, {
             headers: {
@@ -120,7 +121,9 @@ export default function MarketPageHeader() {
         formData.append("postId", postData._id.toString());
         formData.append("type", postData.type);
 
-        formAction(formData);
+        startTransition(() => {
+          formAction(formData);
+        });
       } catch (error) {
         console.error("삭제 중 오류:", error);
         alert("삭제 중 오류가 발생했습니다.");

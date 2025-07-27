@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 // import PostForm from "./_components/PostForm";
-import PostForm from "@/app/school/market/[marketType]/_components/PostForm";
+import PostForm from "@/app/school/market/[marketType]/_components/_PostComponents/PostForm";
 import MarketPageHeader from "@/app/school/market/[marketType]/_components/MarketPageHeader";
 
 export const metadata: Metadata = {

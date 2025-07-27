@@ -1,5 +1,5 @@
 // 게시글 수정
-import PostForm from "@/app/school/market/[marketType]/_components/PostForm";
+import PostForm from "@/app/school/market/[marketType]/_components/_PostComponents/PostForm";
 import { getPost } from "@/app/api/market/functions/post";
 
 interface EditPageProps {

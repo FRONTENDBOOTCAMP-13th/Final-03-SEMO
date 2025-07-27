@@ -134,6 +134,7 @@ export async function updatePost(state: ApiRes<Post> | null, formData: FormData)
     extra: {
       price: formData.get("price") as string,
       location: formData.get("location") as string,
+      crt: "판매중",
     },
   };
 
