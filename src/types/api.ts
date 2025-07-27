@@ -3,7 +3,7 @@
 // 데이터 검증 실패시 개별 에러 메시지
 export interface ServerValidationError {
   type: string;
-  valye: string;
+  value: string;
   msg: string;
   location: string;
 }
