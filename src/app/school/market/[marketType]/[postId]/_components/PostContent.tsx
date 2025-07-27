@@ -73,11 +73,13 @@ export default function PostContent({ post }: PostContentProps) {
       {post?._id && Number.isInteger(post._id) && <CommentList _id={post._id} />}
 
       <div className=" w-full max-w-[480px] bg-white">
-        <ChatStartButton
-          sellerId={post.user._id.toString()}
-          sellerNickName={post.user.name}
-          productId={post._id.toString()}
-        />
+        {post.user?._id && (
+          <ChatStartButton
+            sellerId={post.user._id.toString()}
+            sellerNickName={post.user.name}
+            productId={post._id.toString()}
+          />
+        )}
       </div>
     </div>
   );
