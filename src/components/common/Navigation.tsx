@@ -31,7 +31,7 @@ const navItems = [
     label: "상품",
   },
   {
-    href: "/school/getherings",
+    href: "/school/market/groupPurchase",
     icon: Users,
     label: "공동구매",
   },
@@ -55,8 +55,14 @@ export default function Navigation() {
       <div className="flex h-16">
         {navItems.map((item) => {
           const Icon = item.icon;
-          // 정확히 일치하거나 하위 경로인 경우 활성화
-          const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
+
+          let isActive = false;
+          if (item.href === "/school/market") {
+            isActive = pathname.startsWith("/school/market") && !pathname.startsWith("/school/market/groupPurchase");
+          } else {
+            // 정확히 일치하거나 하위 경로인 경우 활성화
+            isActive = pathname === item.href || pathname.startsWith(item.href + "/");
+          }
 
           return (
             <Link
