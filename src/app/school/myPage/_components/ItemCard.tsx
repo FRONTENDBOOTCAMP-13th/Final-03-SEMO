@@ -1,3 +1,5 @@
+import Image from 'next/image';
+
 /**
  * ItemCard 컴포넌트
  *
@@ -51,8 +53,12 @@ export default function ItemCard({ item }: { item: Item }) {
       className="flex items-center justify-between p-4 bg-uni-white rounded-xl shadow-sm border border-uni-gray-100"
     >
       <div className="flex items-center space-x-4 flex-1 min-w-0">
-        <div className="w-12 h-12 bg-uni-gray-100 rounded-xl flex items-center justify-center text-20 flex-shrink-0">
-          {item.image}
+        <div className="relative w-12 h-12 bg-uni-gray-100 rounded-xl flex items-center justify-center text-20 flex-shrink-0 overflow-hidden">
+          {item.image.startsWith('http') ? (
+            <Image src={item.image} alt={item.title} fill style={{ objectFit: 'cover' }} />
+          ) : (
+            item.image
+          )}
         </div>
         <div className="flex-1 min-w-0">
           <div className="relative overflow-hidden">
@@ -66,3 +72,5 @@ export default function ItemCard({ item }: { item: Item }) {
     </div>
   );
 }
+
+

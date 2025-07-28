@@ -46,16 +46,19 @@ export function bookmarkToWishlistItem(bookmark: BookmarkItem): MyPageItem {
 
   // 이미지 경로 안전 처리
   let imageUrl = "/assets/defaultimg.png";
-  if (post.image) {
-    // mainImages 대신 image 사용
+  if (typeof post.image === 'string' && post.image) {
     imageUrl = `${process.env.NEXT_PUBLIC_API_URL}/${post.image}`;
   }
+
+  // 가격을 숫자형으로 변환하여 toLocaleString() 적용
+  const price = Number(post.extra.price);
+  const formattedPrice = isNaN(price) ? "가격 정보 없음" : `${price.toLocaleString()}원`;
 
   return {
     id: post._id,
     title: post.title, // product.name 대신 post.title 사용
     image: imageUrl,
-    price: `${post.extra.price.toLocaleString()}원`, // product.price 대신 post.extra.price 사용
+    price: formattedPrice, // product.price 대신 post.extra.price 사용
     status: post.extra.crt === "판매완료" ? "판매완료" : "판매중", // product.extra.crt 대신 post.extra.crt 사용
     category: getCategoryFromType(post.type || post.extra.category || "sell"), // product.extra.type || product.extra.marketType 대신 post.type || post.extra.category 사용
   };
@@ -152,3 +155,4 @@ export async function ordersToReviewItems(orders: OrderItem[]): Promise<Review[]
   const reviewPromises = orders.flatMap((order) => orderToReviewItems(order));
   return (await Promise.all(reviewPromises)).flat(); // flatMap으로 중첩 배열 평면화
 }
+
