@@ -1,4 +1,4 @@
-import MarketSearch from "../market/[marketType]/_components/MarketSearch";
+import MarketSearch from "../market/_components/MarketSearch";
 import HeroSection from "./_components/HeroSection";
 import HomeHeader from "./_components/HomeHeader";
 import MarketPreview from "./_components/ItemPreview";

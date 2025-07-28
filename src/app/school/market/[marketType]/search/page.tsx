@@ -1,8 +1,8 @@
 import ItemSection from "../itemSection";
 import { getKeywordPosts } from "@/app/api/market/functions/post";
-import MarketPageHeader from "../_components/MarketPageHeader";
-import MarketSearch from "@/app/school/market/[marketType]/_components/MarketSearch";
-import MarketTagNav from "../_components/MarketTagNav";
+import MarketPageHeader from "../../_components/MarketPageHeader";
+import MarketSearch from "@/app/school/market/_components/MarketSearch";
+import MarketTagNav from "../../_components/MarketTagNav";
 import Link from "next/link";
 
 interface SearchPageProps {

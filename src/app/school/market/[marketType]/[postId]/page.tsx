@@ -1,5 +1,5 @@
 import PostContent from "./_components/PostContent";
-import MarketPageHeader from "@/app/school/market/[marketType]/_components/MarketPageHeader";
+import MarketPageHeader from "@/app/school/market/_components/MarketPageHeader";
 
 interface PageProps {
   params: Promise<{ marketType: string; postId: string }>;
