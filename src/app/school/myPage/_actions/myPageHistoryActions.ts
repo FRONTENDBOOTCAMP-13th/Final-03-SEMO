@@ -1,5 +1,5 @@
-import { BookmarkResponse, BookmarkItem, OrderItem, ProductItem } from "../_types/apiResponse";
-import apiClient from "./apiClient";
+import { BookmarkResponse, BookmarkItem, OrderItem, ProductItem } from "@/app/school/myPage/_types/apiResponse";
+import apiClient from "@/lib/apiClient";
 
 /**
  * 내가 북마크한 게시글 목록을 가져옵니다.
