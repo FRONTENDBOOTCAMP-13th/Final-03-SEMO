@@ -7,6 +7,7 @@ import ItemCard, { Item } from "@/app/school/myPage/_components/ItemCard";
 import EmptyState from "@/components/common/EmptyState";
 import { useMyBookmarks } from "@/app/school/myPage/_hooks/useHistoryApi";
 import { bookmarksToWishlistItems } from "@/app/school/myPage/_utils/postConverter";
+import SectionHeader from "@/components/common/SectionHeader";
 
 export default function MyPageWishlist() {
   const [activeTab, setActiveTab] = useState("전체");
@@ -91,10 +92,16 @@ export default function MyPageWishlist() {
         {/* 팔래요 Section */}
         {(activeTab === "전체" || activeTab === "팔래요") && (
           <section>
-            <h2 className="text-20 font-semibold mb-3 text-uni-black font-pretendard">팔고싶어요</h2>
+            {activeTab === "전체" ? (
+              <SectionHeader title="팔고싶어요" targetTab="팔래요" onTabChange={setActiveTab} />
+            ) : (
+              <h2 className="text-20 font-semibold mb-3 text-uni-black font-pretendard">팔고싶어요</h2>
+            )}
             <div className="space-y-3">
               {sellItems.length > 0 ? (
-                sellItems.map((item) => <ItemCard key={item.id} item={item} />)
+                (activeTab === "전체" ? sellItems.slice(0, 4) : sellItems).map((item) => (
+                  <ItemCard key={item.id} item={item} />
+                ))
               ) : (
                 <EmptyState message="아직 거래한게 없어요" />
               )}
@@ -105,10 +112,16 @@ export default function MyPageWishlist() {
         {/* 살래요 Section */}
         {(activeTab === "전체" || activeTab === "살래요") && (
           <section>
-            <h2 className="text-20 font-semibold mb-3 text-uni-black font-pretendard">사고싶어요</h2>
+            {activeTab === "전체" ? (
+              <SectionHeader title="사고싶어요" targetTab="살래요" onTabChange={setActiveTab} />
+            ) : (
+              <h2 className="text-20 font-semibold mb-3 text-uni-black font-pretendard">사고싶어요</h2>
+            )}
             <div className="space-y-3">
               {buyItems.length > 0 ? (
-                buyItems.map((item) => <ItemCard key={item.id} item={item} />)
+                (activeTab === "전체" ? buyItems.slice(0, 4) : buyItems).map((item) => (
+                  <ItemCard key={item.id} item={item} />
+                ))
               ) : (
                 <EmptyState message="아직 거래한게 없어요" />
               )}
@@ -119,10 +132,16 @@ export default function MyPageWishlist() {
         {/* 모여요 Section */}
         {(activeTab === "전체" || activeTab === "모여요") && (
           <section>
-            <h2 className="text-20 font-semibold mb-3 text-uni-black font-pretendard">모여요</h2>
+            {activeTab === "전체" ? (
+              <SectionHeader title="모여요" targetTab="모여요" onTabChange={setActiveTab} />
+            ) : (
+              <h2 className="text-20 font-semibold mb-3 text-uni-black font-pretendard">모여요</h2>
+            )}
             <div className="space-y-3">
               {gatheringsItems.length > 0 ? (
-                gatheringsItems.map((item) => <ItemCard key={item.id} item={item} />)
+                (activeTab === "전체" ? gatheringsItems.slice(0, 4) : gatheringsItems).map((item) => (
+                  <ItemCard key={item.id} item={item} />
+                ))
               ) : (
                 <EmptyState message="아직 거래한게 없어요" />
               )}
