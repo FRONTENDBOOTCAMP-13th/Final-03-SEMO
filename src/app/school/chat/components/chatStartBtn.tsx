@@ -39,10 +39,8 @@ export default function ChatStartButton({ sellerId, productId }: ChatStartButton
 
       console.log("📦 채팅방 후보 수:", items.length);
 
-      let existing = null;
-
-      // 순차 조회로 서버 부하 방지
-      for (const post of items) {
+      // ✅ 병렬로 상세 조회
+      const detailPromises = items.map(async (post) => {
         try {
           const detailRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/posts/${post._id}`, {
             headers: {
@@ -50,28 +48,23 @@ export default function ChatStartButton({ sellerId, productId }: ChatStartButton
             },
           });
           const detailJson = await detailRes.json();
-          const detail = detailJson.item;
-
-          const isSameProduct = String(detail.productId) === String(productId);
-          const isSameSeller = String(detail.meta?.sellerId) === String(sellerId);
-          const isSameBuyer = String(detail.meta?.buyerId) === String(buyerId);
-
-          console.log("🔍 검사 중:", {
-            postId: detail._id,
-            productId: detail.productId,
-            sellerId: detail.meta?.sellerId,
-            buyerId: detail.meta?.buyerId,
-            match: isSameProduct && isSameSeller && isSameBuyer,
-          });
-
-          if (isSameProduct && isSameSeller && isSameBuyer) {
-            existing = detail;
-            break;
-          }
+          return detailJson.item;
         } catch (err) {
-          console.warn("❗ 상세조회 실패:", post._id, err);
+          console.warn("조회 실패:", post._id, err);
+          return null;
         }
-      }
+      });
+
+      const details = await Promise.all(detailPromises);
+
+      const existing = details.find((detail) => {
+        if (!detail) return false;
+        return (
+          String(detail.productId) === String(productId) &&
+          String(detail.meta?.sellerId) === String(sellerId) &&
+          String(detail.meta?.buyerId) === String(buyerId)
+        );
+      });
 
       if (existing) {
         const postId = existing._id;
