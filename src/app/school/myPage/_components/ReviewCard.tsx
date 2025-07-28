@@ -21,7 +21,7 @@
  */
 
 import Link from "next/link";
-import { Review } from "../_utils/postConverter";
+import { Review } from "@/app/school/myPage/_utils/postConverter";
 
 export default function ReviewCard({ review }: { review: Review }) {
   return (
