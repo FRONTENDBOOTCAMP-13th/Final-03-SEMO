@@ -51,8 +51,13 @@ export default function MarketPageHeader() {
   useEffect(() => {
     if (state?.ok === 1) {
       console.log("삭제 성공");
-      const marketType = postData?.type || "buy";
-      router.push(`/school/market/${marketType}`);
+      const postType = postData?.type;
+
+      if (postType === "group") {
+        router.push("/school/groupPurchase");
+      } else {
+        router.push(`/school/market/${postType || "buy"}`);
+      }
       setShowMenu(false); // 메뉴 닫기
     }
   }, [state, postData?.type, router]);
