@@ -159,6 +159,21 @@ export async function updatePost(state: ApiRes<Post> | null, formData: FormData)
   const postId = formData.get("postId") as string;
   const type = formData.get("type") as string;
 
+  let crtStatus: string;
+  switch (type) {
+    case "sell":
+      crtStatus = "판매중";
+      break;
+    case "buy":
+      crtStatus = "구매중";
+      break;
+    case "groupPurchase":
+      crtStatus = "모집중";
+      break;
+    default:
+      crtStatus = "판매중";
+  }
+
   const postData = {
     type,
     title: formData.get("title") as string,
@@ -168,7 +183,7 @@ export async function updatePost(state: ApiRes<Post> | null, formData: FormData)
     extra: {
       price: formData.get("price") as string,
       location: formData.get("location") as string,
-      crt: "판매중",
+      crt: crtStatus,
     },
   };
 
