@@ -5,15 +5,15 @@ import ItemSection from "../[marketType]/itemSection";
 import { getPosts } from "@/app/api/market/functions/post";
 import { Pencil } from "lucide-react";
 
-export default async function groupPurchase({ params }: { params: Promise<{ marketType: "groupPurchase" }> }) {
-  const { marketType } = await params;
-  const res = await getPosts(marketType);
+export default async function groupPurchase() {
+  const boardType = "groupPurchase";
+  const res = await getPosts(boardType);
   if (!res.ok) throw new Error("게시글 로드 실패");
   return (
     <main className="relative min-w-[320px] max-w-[480px] px-5 py-1 bg-uni-white min-h-screen">
       <MarketPageHeader />
       <MarketSearch />
-      <ItemSection items={res.item} market="groupPurchase" />
+      <ItemSection items={res.ok ? res.item || [] : []} market="groupPurchase" />
       <FloatingButton
         href={`/school/market/groupPurchase/new`}
         icon={<Pencil size={25} color="white" />}
