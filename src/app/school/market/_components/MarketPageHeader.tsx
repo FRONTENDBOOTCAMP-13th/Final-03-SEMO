@@ -9,29 +9,29 @@ import { deletePost } from "@/data/actions/post";
 import { Trash2, PenLine, ExternalLink } from "lucide-react";
 
 const HEADER_CONFIGS = {
-  list: {
+  marketList: {
     title: "상품",
     backLink: "",
     showMeatball: false,
   },
-  new: {
+  marketNew: {
     title: "상품 등록",
     backLink: "",
     showMeatball: false,
   },
-  search: {
+  marketSearch: {
     title: "상품 검색",
     backLink: "",
     showMeatball: false,
   },
-  detail: {
+  marketDetail: {
     title: "상품 상세",
     backLink: "",
     showMeatball: true,
   },
   // 공동구매 세팅
   groupList: {
-    title: 공동구매,
+    title: "공동구매",
     backLink: "",
     showMeatball: false,
   },
@@ -66,8 +66,15 @@ export default function MarketPageHeader() {
   useEffect(() => {
     const fetchPostData = async () => {
       const pathSegments = pathname.split("/").filter(Boolean);
-      const marketIndex = pathSegments.indexOf("market");
-      const postId = pathSegments[marketIndex + 2];
+      let postId = null;
+
+      if (pathname.includes("/market/")) {
+        const marketIndex = pathSegments.indexOf("market");
+        postId = pathSegments[marketIndex + 2];
+      } else if (pathname.includes("/groupPurchase/")) {
+        const groupIndex = pathSegments.indexOf("groupPurchase");
+        postId = pathSegments[groupIndex + 1];
+      }
 
       // 상세 페이지(postId가 있고 "new"가 아닌 경우)에서 게시글 데이터 가져오기
       if (postId && postId !== "new" && postId !== "search") {
@@ -144,21 +151,43 @@ export default function MarketPageHeader() {
 
   const headerConfig = useMemo(() => {
     const pathSegments = pathname.split("/").filter(Boolean);
-    const marketIndex = pathSegments.indexOf("market");
-    const marketType = pathSegments[marketIndex + 1]; // buy or sell
-    const subPage = pathSegments[marketIndex + 2]; // new or postId
+    console.log("=== Debug === 현재 pathname", pathname);
+    console.log("=== Debug === pathSegments", pathSegments);
 
-    let config = HEADER_CONFIGS.list; // 기본값
+    // 경로 타입 판별
+    const MarketPath = pathname.includes("/market/");
+    const GroupPath = pathname.includes("/groupPurchase");
 
-    if (subPage === "new") {
-      config = HEADER_CONFIGS.new;
-    } else if (subPage === "search") {
-      config = HEADER_CONFIGS.search;
-    } else if (subPage) {
-      config = HEADER_CONFIGS.detail;
+    console.log("=== Debug === MarketPath", MarketPath);
+    console.log("=== Debug === GroupPath", GroupPath);
+
+    let config;
+    let backLink = "";
+
+    if (MarketPath && !GroupPath) {
+      // Market 경로 처리
+      const marketIndex = pathSegments.indexOf("market");
+      const marketType = pathSegments[marketIndex + 1]; // buy or sell
+      const subPage = pathSegments[marketIndex + 2]; // new, search, postId
+
+      if (subPage === "new") {
+        config = HEADER_CONFIGS.marketNew;
+      } else if (subPage === "search") {
+        config = HEADER_CONFIGS.marketSearch;
+      } else if (subPage) {
+        config = HEADER_CONFIGS.marketDetail;
+      } else {
+        config = HEADER_CONFIGS.marketList;
+      }
+
+      backLink = subPage ? `/school/market/${marketType}` : "";
+    } else if (GroupPath) {
+      config = HEADER_CONFIGS.groupList; // ← 추가!
+      backLink = "";
+    } else {
+      // 기본값 (혹시 모를 경우)
+      config = HEADER_CONFIGS.marketList;
     }
-
-    const backLink = subPage ? `/school/market/${marketType}` : config.backLink;
 
     return {
       title: config.title,
@@ -167,7 +196,6 @@ export default function MarketPageHeader() {
       ...(config.showMeatball && { onMeatballClick: handleMeatballClick }),
     };
   }, [pathname, handleMeatballClick]);
-
   useSetPageHeader(headerConfig);
 
   // 메뉴 렌더링
