@@ -3,10 +3,10 @@
 import { useState, use, useEffect } from "react";
 import Image from "next/image";
 import { Star } from "lucide-react";
-import SaveFloatingButton from "../../_components/SaveFloatingButton";
-import { usePurchasedItems } from "../../_hooks/useHistoryApi";
-import { orderToReviewItems } from "../../_utils/postConverter";
-import { Review } from "../../_utils/postConverter";
+import SaveFloatingButton from "@/components/ui/SaveFloatingButton";
+import { usePurchasedItems } from "@/app/school/myPage/_hooks/useHistoryApi";
+import { orderToReviewItems } from "@/app/school/myPage/_utils/postConverter";
+import { Review } from "@/app/school/myPage/_utils/postConverter";
 
 interface MyPageWriteReviewProps {
   params: Promise<{

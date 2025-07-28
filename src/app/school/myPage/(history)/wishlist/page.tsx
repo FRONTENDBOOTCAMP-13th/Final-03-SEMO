@@ -2,11 +2,11 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import TabNavigation from "../../_components/TabNavigation";
-import ItemCard, { Item } from "../../_components/ItemCard";
-import EmptyState from "../../_components/EmptyState";
-import { useMyBookmarks } from "../../_hooks/useHistoryApi";
-import { bookmarksToWishlistItems } from "../../_utils/postConverter";
+import TabNavigation from "@/components/ui/TabNavigation";
+import ItemCard, { Item } from "@/app/school/myPage/_components/ItemCard";
+import EmptyState from "@/components/common/EmptyState";
+import { useMyBookmarks } from "@/app/school/myPage/_hooks/useHistoryApi";
+import { bookmarksToWishlistItems } from "@/app/school/myPage/_utils/postConverter";
 
 export default function MyPageWishlist() {
   const [activeTab, setActiveTab] = useState("전체");

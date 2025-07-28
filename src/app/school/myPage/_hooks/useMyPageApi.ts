@@ -4,7 +4,8 @@
  */
 
 import { useState, useCallback } from "react";
-import { UserService, ImageService } from "../_services";
+import ImageService from "@/lib/imageService";
+import UserService from "@/app/school/myPage/_actions/myPageUserActions";
 import type { User, UserProfileFormData } from "@/app/school/myPage/_types/user";
 
 interface UseMyPageApiReturn {

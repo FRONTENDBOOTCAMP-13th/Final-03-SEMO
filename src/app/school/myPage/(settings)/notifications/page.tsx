@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import SaveFloatingButton from "../../_components/SaveFloatingButton";
-import ToggleCard from "../../_components/ToggleCard";
+import SaveFloatingButton from "@/components/ui/SaveFloatingButton";
+import ToggleCard from "@/app/school/myPage/_components/ToggleCard";
 
 export default function NotificationSettings() {
   const [notifications, setNotifications] = useState({

@@ -2,13 +2,13 @@
 
 import { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
-import SaveFloatingButton from "../../_components/SaveFloatingButton";
-import InputField from "../../_components/InputField";
-import { validateNickname, validateAccountNumber, validateBankSelection } from "./utils/validation";
-import { useMyPageApi } from "../../_hooks/useMyPageApi";
+import SaveFloatingButton from "@/components/ui/SaveFloatingButton";
+import InputField from "@/components/ui/InputField";
+import { validateNickname, validateAccountNumber, validateBankSelection } from "@/app/school/myPage/_utils/validation";
+import { useMyPageApi } from "@/app/school/myPage/_hooks/useMyPageApi";
 import { getImageUrl } from "@/data/actions/file";
 import { useUserStore } from "@/store/userStore";
-import { User } from "../../_types/user";
+import { User } from "@/app/school/myPage/_types/user";
 
 export default function AccountForm() {
   const { user, setUser } = useUserStore();

@@ -1,12 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Pagination from "../../_components/Pagination";
-import ReviewCard from "../../_components/ReviewCard";
-import EmptyState from "../../_components/EmptyState";
-import { useResponsivePagination } from "../../_hooks/pagination/useResponsivePagination";
-import { usePurchasedItems } from "../../_hooks/useHistoryApi";
-import { ordersToReviewItems, Review } from "../../_utils/postConverter";
+import Pagination from "@/components/ui/Pagination";
+import ReviewCard from "@/app/school/myPage/_components/ReviewCard";
+import EmptyState from "@/components/common/EmptyState";
+import { useResponsivePagination } from "@/lib/hooks/useResponsivePagination";
+import { usePurchasedItems } from "@/app/school/myPage/_hooks/useHistoryApi";
+import { ordersToReviewItems, Review } from "@/app/school/myPage/_utils/postConverter";
 
 export default function MyPageReviewsToWrite() {
   // API로부터 구매한 상품 목록 가져오기 (리뷰 작성 대상)
