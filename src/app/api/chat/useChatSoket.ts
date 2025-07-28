@@ -109,6 +109,7 @@ export const useChatSocket = ({ userId, nickName, roomId }: UseChatSocketProps) 
 
     const handleMessage = (data: any) => {
       const currentRoomId = useChatStore.getState().currentRoomId;
+      console.log("서버에서 받은 메시지:", data);
 
       const raw =
         typeof data.msg === "object"
@@ -127,17 +128,29 @@ export const useChatSocket = ({ userId, nickName, roomId }: UseChatSocketProps) 
             };
 
       const isWhisper = data.msgType === "whisper";
+      const messageUserId = String(raw.user_id || data.user_id || userId);
+      const currentUserId = String(userId);
 
-      if (currentRoomId !== GLOBAL_ROOM_ID && !isWhisper && raw.user_id === userId) return;
+      // 개인방에서 내가 보낸 메시지인 경우 무시 (중복 방지)
+      if (currentRoomId !== GLOBAL_ROOM_ID && !isWhisper && messageUserId === currentUserId) {
+        console.log("개인방에서 내가 보낸 메시지 서버 응답 - 무시");
+        return;
+      }
+
+      // 글로벌 룸에서 로컬 플래그가 있는 메시지 무시
+      if (data.local && messageUserId === currentUserId) {
+        console.log("로컬 플래그 메시지 - 무시");
+        return;
+      }
 
       const message: Message = {
-        id: Date.now().toString(),
-        roomId: data.roomId || roomId,
+        id: `${Date.now()}-${Math.random()}`, // 더 고유한 ID 생성
+        roomId: data.roomId || currentRoomId,
         content: raw.content ?? raw.msg,
         type: "text",
         msgType: isWhisper ? "whisper" : "all",
         createdAt: data.timestamp ?? new Date().toISOString(),
-        user_id: String(raw.user_id || userId),
+        user_id: messageUserId,
         nickName: raw.nickName || nickName,
         ...(isWhisper && {
           toUserId: raw.toUserId,
@@ -145,34 +158,26 @@ export const useChatSocket = ({ userId, nickName, roomId }: UseChatSocketProps) 
         }),
       };
 
-      addMessage(message);
-      // 개인룸에서 내가 보낸 메시지인 경우 서버 응답 무시 (중복 방지)
-      if (currentRoomId !== GLOBAL_ROOM_ID && !isWhisper) {
-        // 서버에서 받은 메시지가 내가 보낸 것인지 확인
-        // 방법 1: user_id로 확인 (서버에서 user_id를 제대로 보내는 경우)
-        if (raw.user_id && String(raw.user_id) === String(userId)) {
-          console.log("내가 보낸 메시지 서버 응답 - 무시");
-          return;
-        }
+      // 중복 메시지 체크 (추가 안전망)
+      const messages = useChatStore.getState().messages;
+      const isDuplicate = messages.some(
+        (existingMsg) =>
+          existingMsg.content === message.content &&
+          existingMsg.user_id === message.user_id &&
+          existingMsg.roomId === message.roomId &&
+          Math.abs(new Date(existingMsg.createdAt).getTime() - new Date(message.createdAt).getTime()) < 3000 // 3초 이내
+      );
 
-        // 방법 2: 서버에서 user_id가 없는 경우, 최근 메시지와 비교하여 중복 체크
-        const messages = useChatStore.getState().messages;
-        const recentMessage = messages
-          .filter((msg) => msg.roomId === currentRoomId && String(msg.user_id) === String(userId))
-          .slice(-1)[0];
-
-        if (
-          recentMessage &&
-          recentMessage.content === (raw.content ?? raw.msg) &&
-          Date.now() - new Date(recentMessage.createdAt).getTime() < 5000
-        ) {
-          // 5초 이내
-          console.log("최근 메시지와 동일 - 중복으로 판단하여 무시");
-          return;
-        }
+      if (isDuplicate) {
+        console.log("중복 메시지 감지 - 무시");
+        return;
       }
+
+      console.log("메시지 추가:", message);
+      addMessage(message);
+
       // 알림 처리
-      if (isWhisper && String(raw.user_id) !== String(userId)) {
+      if (isWhisper && messageUserId !== currentUserId) {
         toast.info(`${raw.nickName}님이 개인 메시지를 보냈습니다. 클릭하여 개인방으로 이동하세요.`, {
           autoClose: false,
           onClick: () => {
@@ -210,4 +215,6 @@ export const useChatSocket = ({ userId, nickName, roomId }: UseChatSocketProps) 
       socket.disconnect();
     };
   }, [userId, nickName, roomId, setRoomId, setUserList, addMessage]);
+
+  return { enterRoom };
 };
