@@ -4,6 +4,7 @@ import HomeHeader from "./_components/HomeHeader";
 import MarketPreview from "./_components/ItemPreview";
 import FloatingButton from "@/components/common/FloatingButton";
 import { getPosts } from "@/app/api/market/functions/post";
+import { Pencil } from "lucide-react";
 
 export default async function HomePage() {
   const [buyRes, sellRes] = await Promise.all([getPosts("buy"), getPosts("sell")]);
@@ -16,7 +17,7 @@ export default async function HomePage() {
       <MarketSearch />
       <HeroSection />
       <MarketPreview buyItems={buyItems} sellItems={sellItems} />
-      <FloatingButton href={`/school/market/buy/new`} />
+      <FloatingButton href={`/school/market/sell/new`} icon={<Pencil size={25} color="white" />} text={"글쓰기"} />
     </div>
   );
 }
