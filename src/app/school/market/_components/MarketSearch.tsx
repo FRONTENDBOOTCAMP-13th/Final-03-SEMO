@@ -9,8 +9,8 @@ const Search = () => {
   const router = useRouter();
   const pathname = usePathname();
 
-  // 현재 경로에서 marketType 추출 (buy 또는 sell)
-  const marketType = pathname.includes("/buy") ? "buy" : "sell";
+  // // 현재 경로에서 marketType 추출 (buy 또는 sell)
+  // const marketType = pathname.includes("/buy") ? "buy" : "sell";
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,9 +20,15 @@ const Search = () => {
       return;
     }
 
-    // 검색 결과 페이지로 이동
-    // encodeURIComponent : 한글, 특수문자, 공백 등 URL 형식으로 인코딩
-    router.push(`/school/market/${marketType}/search?keyword=${encodeURIComponent(keyword.trim())}`);
+    let searchPath = "";
+
+    if (pathname.includes("/groupPurchase")) {
+      searchPath = `/school/market/groupPurchase/search?keyword=${encodeURIComponent(keyword.trim())}`;
+    } else if (pathname.includes("/market/")) {
+      const marketType = pathname.includes("/buy") ? "buy" : "sell";
+      searchPath = `/school/market/${marketType}/search?keyword=${encodeURIComponent(keyword.trim())}`;
+    }
+    router.push(searchPath);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
