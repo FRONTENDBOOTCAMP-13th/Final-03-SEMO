@@ -1,9 +1,9 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from "react";
+import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from "react";
 import UserService from "@/app/school/myPage/_actions/myPageUserActions";
 import { User } from "@/app/school/myPage/_types/user";
-import AuthService from "@/lib/authService";
+import { useUserStore } from "@/store/userStore"; // useUserStore 임포트
 
 interface UserContextType {
   user: User | null;
@@ -23,7 +23,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     setLoading(true);
     setError(null);
     try {
-      const currentUserId = AuthService.getCurrentUserId();
+      const currentUserId = useUserStore.getState().user?._id; // Zustand 스토어에서 사용자 ID 가져오기
       if (currentUserId) {
         const fetchedUser = await UserService.getUserById(currentUserId);
         setUser(fetchedUser);
@@ -38,7 +38,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     } finally {
       setLoading(false);
     }
-  }, []); // 의존성 배열 비워둠: 컴포넌트 마운트 시 한 번만 생성
+  }, []);
 
   useEffect(() => {
     fetchUser();
