@@ -9,7 +9,7 @@ export default async function NewPage() {
   return (
     <>
       <MarketPageHeader />
-      <PostForm mode="create" marketType="groupPurchase" />;
+      <PostForm mode="create" marketType="groupPurchase" />
     </>
   );
 }

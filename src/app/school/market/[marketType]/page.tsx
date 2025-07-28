@@ -26,7 +26,11 @@ export const metadata: Metadata = {
   description: "Market 페이지입니다.",
 };
 
-export default async function MarketPage({ params }: { params: Promise<{ marketType: "buy" | "sell" }> }) {
+export default async function MarketPage({
+  params,
+}: {
+  params: Promise<{ marketType: "buy" | "sell" | "groupPurchase" }>;
+}) {
   const { marketType } = await params;
 
   const res = await getPosts(marketType);

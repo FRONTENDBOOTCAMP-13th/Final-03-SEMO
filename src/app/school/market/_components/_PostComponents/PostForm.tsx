@@ -13,7 +13,7 @@ import NewAccount from "./NewAccount";
 interface PostFormProps {
   mode: "create" | "edit";
   initialData?: Post; // 수정 모드에서 기존 게시글 데이터
-  marketType: string; // 게시판 타입
+  marketType: "buy" | "sell" | "groupPurchase"; // 게시판 타입
   postId?: string; // 수정 모드에서 게시글 ID
 }
 

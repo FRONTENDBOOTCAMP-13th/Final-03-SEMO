@@ -1,13 +1,19 @@
 import MarketPageHeader from "@/app/school/market/_components/MarketPageHeader";
 import MarketSearch from "@/app/school/market/_components/MarketSearch";
 import FloatingButton from "@/components/common/FloatingButton";
+import ItemSection from "../[marketType]/itemSection";
+import { getPosts } from "@/app/api/market/functions/post";
 import { Pencil } from "lucide-react";
 
-export default function groupPurchase() {
+export default async function groupPurchase({ params }: { params: Promise<{ marketType: "groupPurchase" }> }) {
+  const { marketType } = await params;
+  const res = await getPosts(marketType);
+  if (!res.ok) throw new Error("게시글 로드 실패");
   return (
     <main className="relative min-w-[320px] max-w-[480px] px-5 py-1 bg-uni-white min-h-screen">
       <MarketPageHeader />
       <MarketSearch />
+      <ItemSection items={res.item} market="groupPurchase" />
       <FloatingButton
         href={`/school/market/groupPurchase/new`}
         icon={<Pencil size={25} color="white" />}

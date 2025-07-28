@@ -12,7 +12,7 @@ import { getImageUrl } from "@/data/actions/file";
 // }
 interface Props {
   items: Post[];
-  market: "buy" | "sell";
+  market: "buy" | "sell" | "groupPurchase";
   _id?: number;
 }
 
