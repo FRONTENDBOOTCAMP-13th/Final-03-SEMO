@@ -1,5 +1,5 @@
-import { BookmarkItem, OrderItem, ProductItem } from "../_types/apiResponse";
-import { getUserById } from "../_services/user"; // getUserById import
+import { BookmarkItem, OrderItem, ProductItem } from "@/app/school/myPage/_types/apiResponse";
+import { getUserById } from "@/data/actions/user";
 
 export interface MyPageItem {
   id: number;
