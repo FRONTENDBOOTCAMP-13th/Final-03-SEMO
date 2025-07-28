@@ -1,3 +1,9 @@
+import MarketPageHeader from "@/app/school/market/_components/MarketPageHeader";
+
 export default function groupPurchase() {
-  return <div>안녕하세요</div>;
+  return (
+    <>
+      <MarketPageHeader />
+    </>
+  );
 }
