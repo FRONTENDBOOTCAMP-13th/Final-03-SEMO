@@ -1,9 +1,10 @@
 import { User } from "@/types/user";
 
+export type PostType = "buy" | "sell" | "groupPurchase";
 export interface Post {
   // 게시글 고유 ID
   _id: number;
-  type: string;
+  type: PostType;
   title: string;
   content: string;
   image?: string;

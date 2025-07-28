@@ -35,6 +35,11 @@ const HEADER_CONFIGS = {
     backLink: "",
     showMeatball: false,
   },
+  groupNew: {
+    title: "공동구매 등록",
+    backLink: "",
+    showMeatball: false,
+  },
 };
 
 export default function MarketPageHeader() {
@@ -182,8 +187,15 @@ export default function MarketPageHeader() {
 
       backLink = subPage ? `/school/market/${marketType}` : "";
     } else if (GroupPath) {
-      config = HEADER_CONFIGS.groupList; // ← 추가!
-      backLink = "";
+      // GroupPurchase 경로 처리
+      const groupIndex = pathSegments.indexOf("groupPurchase");
+      const subPage = pathSegments[groupIndex + 1];
+      if (subPage === "new") {
+        config = HEADER_CONFIGS.groupNew;
+      } else {
+        config = HEADER_CONFIGS.groupList;
+      }
+      backLink = subPage ? "/school/groupPurchase" : "";
     } else {
       // 기본값 (혹시 모를 경우)
       config = HEADER_CONFIGS.marketList;
