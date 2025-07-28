@@ -1,7 +1,7 @@
 import { BookmarkItem, OrderItem, ProductItem } from "@/app/school/myPage/_types/apiResponse";
 import { getUserById } from "@/data/actions/user";
 
-const sellerCache: { [key: string]: { name: string } } = {};
+const sellerCache: { [key: string]: { name: string; image?: string } } = {};
 
 export interface MyPageItem {
   id: number;
