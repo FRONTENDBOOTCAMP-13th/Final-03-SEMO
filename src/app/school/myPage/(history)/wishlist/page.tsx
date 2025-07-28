@@ -12,16 +12,13 @@ export default function MyPageWishlist() {
   const [activeTab, setActiveTab] = useState("전체");
 
   // 컴포넌트가 로드되는지 확인
-  console.log("🌟 MyPageWishlist 컴포넌트 시작!");
 
   // API로부터 북마크 목록 가져오기
   const { bookmarks, isLoading, error, refetch } = useMyBookmarks();
 
   // API 데이터를 위시리스트 아이템 형식으로 변환
   const wishlistItems = useMemo(() => {
-    console.log(`🔄 [Wishlist] bookmarks 변환 시작:`, bookmarks);
     const items = bookmarksToWishlistItems(bookmarks);
-    console.log(`🔄 [Wishlist] 변환된 아이템 수:`, items.length);
     return items;
   }, [bookmarks]);
 

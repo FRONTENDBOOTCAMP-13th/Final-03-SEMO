@@ -52,7 +52,7 @@ export default function AccountForm() {
 
   // 이미지 렌더링을 메모이제이션하여 불필요한 요청 방지
   const imageElement = useMemo(() => {
-    console.log("memoizedImageUrl:", memoizedImageUrl);
+    
     if (memoizedImageUrl) {
       return (
         <Image
@@ -136,11 +136,11 @@ export default function AccountForm() {
 
       // 새로 업로드할 파일이 있는 경우
       if (uploadFile) {
-        console.log("새 이미지 업로드 시작:", uploadFile.name);
+        
         const uploadedImageUrl = await uploadProfileImage(uploadFile);
         if (uploadedImageUrl) {
           finalImageUrl = uploadedImageUrl;
-          console.log("이미지 업로드 성공:", uploadedImageUrl);
+          
         } else {
           alert("이미지 업로드에 실패했습니다.");
           return;
@@ -158,8 +158,8 @@ export default function AccountForm() {
         profileImage: finalImageUrl,
       };
 
-      console.log("프로필 업데이트 시작:", profileData);
-      console.log("User ID for update:", user._id);
+      
+      
       if (!user._id) {
         alert("사용자 ID를 찾을 수 없습니다. 다시 로그인해주세요.");
         return;
@@ -194,7 +194,7 @@ export default function AccountForm() {
 
   // 탈퇴 핸들러 (아직 구현되지 않음)
   const handleWithdraw = () => {
-    console.log("탈퇴하기 버튼 클릭");
+    
   };
 
   return (

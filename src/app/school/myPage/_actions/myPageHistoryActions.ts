@@ -45,7 +45,6 @@ export async function getPurchasedItems(): Promise<OrderItem[]> {
 export async function getMyProducts(): Promise<ProductItem[]> {
   try {
     const products: ProductItem[] = await apiClient.get<ProductItem[]>("/seller/products");
-    console.log("🔍 [getMyProducts] API 응답:", products); // 임시 로그 유지
     return products;
   } catch (error) {
     throw new Error(
