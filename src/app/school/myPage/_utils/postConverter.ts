@@ -1,6 +1,8 @@
 import { BookmarkItem, OrderItem, ProductItem } from "@/app/school/myPage/_types/apiResponse";
 import { getUserById } from "@/data/actions/user";
 
+const sellerCache: { [key: string]: { name: string } } = {};
+
 export interface MyPageItem {
   id: number;
   title: string;
@@ -14,7 +16,8 @@ export interface Review {
   id: number;
   title: string;
   author: string;
-  image: string;
+  image: string; // 상품 이미지
+  sellerProfileImage?: string; // 판매자 프로필 이미지 (새로 추가)
   location?: string; // 위치 정보는 선택적
   date: string;
 }
@@ -89,12 +92,21 @@ export async function orderToReviewItems(order: OrderItem): Promise<Review[]> {
 
   const reviewPromises = order.products.map(async (product) => {
     let authorName = "판매자";
+    let sellerProfileImageUrl = "/assets/defaultimg.png"; // 판매자 프로필 이미지
+
     if (product.seller_id) {
-      try {
-        const sellerData = await getUserById(product.seller_id);
-        authorName = sellerData.name || `판매자 ${product.seller_id}`;
-      } catch {
-        // 판매자 정보 로딩 실패 시 에러 로깅 제거
+      if (sellerCache[product.seller_id]) {
+        authorName = sellerCache[product.seller_id].name;
+        sellerProfileImageUrl = sellerCache[product.seller_id].image || "/assets/defaultimg.png";
+      } else {
+        try {
+          const sellerData = await getUserById(product.seller_id);
+          authorName = sellerData.name || `판매자 ${product.seller_id}`;
+          sellerProfileImageUrl = sellerData.image ? `${process.env.NEXT_PUBLIC_API_URL}/${sellerData.image}` : "/assets/defaultimg.png";
+          sellerCache[product.seller_id] = { name: authorName, image: sellerProfileImageUrl };
+        } catch {
+          // 판매자 정보 로딩 실패 시 에러 로깅 제거
+        }
       }
     }
 
@@ -102,7 +114,8 @@ export async function orderToReviewItems(order: OrderItem): Promise<Review[]> {
       id: product._id,
       title: product.name,
       author: authorName,
-      image: product.image ? `${process.env.NEXT_PUBLIC_API_URL}/${product.image["path "]}` : "/assets/defaultimg.png",
+      image: product.image ? `${process.env.NEXT_PUBLIC_API_URL}/${product.image["path "]}` : "/assets/defaultimg.png", // 상품 이미지
+      sellerProfileImage: sellerProfileImageUrl, // 판매자 프로필 이미지
       location: location, // 모든 리뷰 아이템에 동일한 위치 정보 적용
       date: new Date(order.createdAt)
         .toLocaleDateString("ko-KR", {

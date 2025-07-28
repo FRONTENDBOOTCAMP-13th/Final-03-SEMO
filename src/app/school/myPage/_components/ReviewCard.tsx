@@ -21,6 +21,7 @@
  */
 
 import Link from "next/link";
+import Image from "next/image";
 import { Review } from "@/app/school/myPage/_utils/postConverter";
 
 export default function ReviewCard({ review }: { review: Review }) {
@@ -31,7 +32,14 @@ export default function ReviewCard({ review }: { review: Review }) {
     >
       <div className="flex items-center space-x-3 flex-1 min-w-0">
         {/* 왼쪽: 아바타 */}
-        <div className="w-12 h-12 rounded-full bg-amber-200 flex-shrink-0 overflow-hidden">{review.image}</div>
+        <div className="w-12 h-12 rounded-full flex-shrink-0 overflow-hidden relative">
+          <Image
+            src={review.sellerProfileImage || "/assets/defaultimg.png"}
+            alt="판매자 프로필 이미지"
+            fill
+            className="object-cover"
+          />
+        </div>
 
         {/* 중앙: 텍스트 영역 */}
         <div className="flex-1 min-w-0">

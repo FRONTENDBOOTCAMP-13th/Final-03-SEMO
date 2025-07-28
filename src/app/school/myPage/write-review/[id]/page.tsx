@@ -8,10 +8,12 @@ import { usePurchasedItems } from "@/app/school/myPage/_hooks/useHistoryApi";
 import { orderToReviewItems } from "@/app/school/myPage/_utils/postConverter";
 import { Review } from "@/app/school/myPage/_utils/postConverter";
 
+import { useUser } from "@/contexts/UserContext";
+
 interface MyPageWriteReviewProps {
-  params: Promise<{
+  params: {
     id: string;
-  }>;
+  };
 }
 
 export default function MyPageWriteReview({ params }: MyPageWriteReviewProps) {
@@ -20,8 +22,9 @@ export default function MyPageWriteReview({ params }: MyPageWriteReviewProps) {
   const [reviewData, setReviewData] = useState<Review | null>(null);
   const [isReviewDataLoading, setIsReviewDataLoading] = useState(true);
 
-  const { id } = use(params);
-  const { orders, isLoading, error } = usePurchasedItems();
+  const { id } = params;
+  const { orders, isLoading, error: purchasedItemsError } = usePurchasedItems();
+  const { user, loading: userLoading, error: userError } = useUser();
 
   useEffect(() => {
     const fetchReviewData = async () => {
@@ -65,7 +68,7 @@ export default function MyPageWriteReview({ params }: MyPageWriteReviewProps) {
   }
 
   // 에러 상태
-  if (error) {
+  if (purchasedItemsError) {
     return (
       <div className="min-h-screen bg-uni-white flex items-center justify-center">
         <div className="text-uni-gray-400 font-pretendard">상품 정보를 불러올 수 없습니다.</div>
@@ -125,10 +128,12 @@ export default function MyPageWriteReview({ params }: MyPageWriteReviewProps) {
         {/* 판매자/리뷰어 정보 섹션 */}
         <section className="flex items-center space-x-3 py-2">
           <div className="w-10 h-10 bg-uni-gray-100 rounded-full overflow-hidden relative">
-            {currentReviewData.image.startsWith("http") ? (
-              <Image src={currentReviewData.image} alt="프로필" fill className="object-cover" />
+            {currentReviewData.sellerProfileImage ? (
+              <Image src={currentReviewData.sellerProfileImage} alt="프로필" fill className="object-cover" />
             ) : (
-              currentReviewData.image
+              <div className="flex items-center justify-center w-full h-full text-uni-gray-400">
+                {currentReviewData.author.charAt(0)}
+              </div>
             )}
           </div>
           <div>
