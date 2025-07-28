@@ -15,14 +15,14 @@ export default function MyPage() {
       </div>
       {/* 활동 요약 섹션 */}
       <div className="bg-uni-white">
-        <div className="px-4 py-4 border-b border-uni-gray-100">
+        <div className="px-4 py-4 ">
           <h3 className="text-18 font-semibold text-uni-black font-pretendard">활동 요약</h3>
         </div>
 
         <div className="space-y-0">
           <Link
             href="/school/myPage/my-post" //내가 거래한 목록
-            className="flex items-center justify-between py-4 px-4 border-b border-uni-gray-100 hover:bg-uni-gray-100 transition-colors"
+            className="flex items-center justify-between py-4 px-4  hover:bg-uni-gray-100 transition-colors"
           >
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 bg-uni-blue-100 rounded-lg flex items-center justify-center">
@@ -36,7 +36,7 @@ export default function MyPage() {
           </Link>
           <Link
             href="/school/myPage/review-to-write" //남길 수 있는 후기 목록
-            className="flex items-center justify-between py-4 px-4 border-b border-uni-gray-100 hover:bg-uni-gray-100 transition-colors"
+            className="flex items-center justify-between py-4 px-4  hover:bg-uni-gray-100 transition-colors"
           >
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 bg-uni-blue-100 rounded-lg flex items-center justify-center">
@@ -66,14 +66,14 @@ export default function MyPage() {
       </div>
       {/* 상세 정보 및 설정 섹션 */}
       <div className="bg-uni-white">
-        <div className="px-4 py-4 border-b border-uni-gray-100">
+        <div className="px-4 py-4 ">
           <h3 className="text-18 font-semibold text-uni-black font-pretendard">상세 정보 및 설정</h3>
         </div>
 
         <div className="space-y-0">
           <Link
             href="/school/myPage/account" //계정 설정
-            className="flex items-center justify-between py-4 px-4 border-b border-uni-gray-100 hover:bg-uni-gray-100 transition-colors"
+            className="flex items-center justify-between py-4 px-4  hover:bg-uni-gray-100 transition-colors"
           >
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 bg-uni-gray-200 rounded-lg flex items-center justify-center">
@@ -84,7 +84,7 @@ export default function MyPage() {
           </Link>
           <Link
             href="/school/myPage/notifications" //알림 설정
-            className="flex items-center justify-between py-4 px-4 border-b border-uni-gray-100 hover:bg-uni-gray-100 transition-colors"
+            className="flex items-center justify-between py-4 px-4  hover:bg-uni-gray-100 transition-colors"
           >
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 bg-uni-gray-200 rounded-lg flex items-center justify-center">
@@ -95,7 +95,7 @@ export default function MyPage() {
           </Link>
           <Link
             href="/school/myPage/app-info" //앱 정보(임시 페이지 이름)
-            className="flex items-center justify-between py-4 px-4 border-b border-uni-gray-100 hover:bg-uni-gray-100 transition-colors"
+            className="flex items-center justify-between py-4 px-4  hover:bg-uni-gray-100 transition-colors"
           >
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 bg-uni-gray-200 rounded-lg flex items-center justify-center">
@@ -106,7 +106,7 @@ export default function MyPage() {
           </Link>
           <Link
             href="/school/myPage/logout" //로그아웃
-            className="flex items-center justify-between py-4 px-4 border-b border-uni-gray-100 hover:bg-uni-gray-100 transition-colors"
+            className="flex items-center justify-between py-4 px-4 hover:bg-uni-gray-100 transition-colors"
           >
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 bg-uni-gray-200 rounded-lg flex items-center justify-center">

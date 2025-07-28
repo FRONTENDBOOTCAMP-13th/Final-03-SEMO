@@ -27,7 +27,7 @@ export default function InputField({
 }: InputFieldProps) {
   return (
     <div className="mb-6">
-      <label className="block text-14 font-medium text-uni-black mb-2 font-pretendard">
+      <label className="block text-14 font-bold text-uni-black mb-2 font-pretendard">
         {label}
         {required && <span className="text-uni-red-300"> *</span>}
       </label>
