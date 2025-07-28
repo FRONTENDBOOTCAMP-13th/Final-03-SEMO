@@ -27,6 +27,11 @@ export async function createPost(state: ApiRes<Post> | null, formData: FormData)
   const price = formData.get("price") as string;
   const location = formData.get("location") as string;
 
+  // 공동구매 전용 데이터 필드
+  const participants = formData.get("participants") as string;
+  const groupLocation = formData.get("groupLocation") as string;
+  const deadLine = formData.get("deadLine") as string;
+
   let crtStatus: string;
   switch (type) {
     case "sell":
