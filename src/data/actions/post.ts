@@ -141,7 +141,11 @@ export async function createPost(state: ApiRes<Post> | null, formData: FormData)
     console.error("오류 발생:", error);
     return { ok: 0, message: "등록 중 오류가 발생했습니다!!!!!!" };
   }
-  redirect(`/school/market/${type}`);
+  if (type === "groupPurchase") {
+    redirect(`school/market/groupPurchase`);
+  } else {
+    redirect(`/school/market/${type}`);
+  }
 }
 
 /**
