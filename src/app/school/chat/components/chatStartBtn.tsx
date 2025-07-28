@@ -22,8 +22,9 @@ export default function ChatStartButton({ sellerId, productId }: ChatStartButton
     }
 
     try {
-      console.log("🔍 채팅방 검색 시작");
+      console.log("채팅방 검색 시작");
 
+      // 채팅방 목록 요청
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/posts?type=chat&productId=${productId}`, {
         headers: {
           "Client-Id": process.env.NEXT_PUBLIC_CLIENT_ID!,
@@ -39,37 +40,19 @@ export default function ChatStartButton({ sellerId, productId }: ChatStartButton
 
       console.log("📦 채팅방 후보 수:", items.length);
 
-      // ✅ 병렬로 상세 조회
-      const detailPromises = items.map(async (post) => {
-        try {
-          const detailRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/posts/${post._id}`, {
-            headers: {
-              "Client-Id": process.env.NEXT_PUBLIC_CLIENT_ID!,
-            },
-          });
-          const detailJson = await detailRes.json();
-          return detailJson.item;
-        } catch (err) {
-          console.warn("조회 실패:", post._id, err);
-          return null;
-        }
-      });
-
-      const details = await Promise.all(detailPromises);
-
-      const existing = details.find((detail) => {
-        if (!detail) return false;
+      // 상세 요청 없이 meta에서 매칭
+      const existing = items.find((post) => {
         return (
-          String(detail.productId) === String(productId) &&
-          String(detail.meta?.sellerId) === String(sellerId) &&
-          String(detail.meta?.buyerId) === String(buyerId)
+          String(post.productId) === String(productId) &&
+          String(post.meta?.sellerId) === String(sellerId) &&
+          String(post.meta?.buyerId) === String(buyerId)
         );
       });
 
       if (existing) {
         const postId = existing._id;
         const roomId = existing.meta?.roomId || `room-${postId}`;
-        console.log("✅ 기존 채팅방 재사용:", { postId, roomId });
+        console.log("기존 채팅방 재사용:", { postId, roomId });
 
         router.push(
           `/school/chat/${postId}?buyerId=${buyerId}&sellerId=${sellerId}&productId=${productId}&roomId=${roomId}`
@@ -77,7 +60,7 @@ export default function ChatStartButton({ sellerId, productId }: ChatStartButton
         return;
       }
 
-      console.log("❌ 기존 채팅방 없음. 새로 생성합니다.");
+      console.log("채팅방 없음. 새로 생성");
 
       const roomId = nanoid();
 
