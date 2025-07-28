@@ -72,8 +72,8 @@ export function productToMyPageItem(product: ProductItem): MyPageItem {
 
   // 이미지 경로 안전 처리
   let imageUrl = "/assets/defaultimg.png";
-  if (mainImage?.path) {
-    imageUrl = `${process.env.NEXT_PUBLIC_API_URL}/${mainImage.path}`;
+  if (mainImage?.["path "]) {
+    imageUrl = `${process.env.NEXT_PUBLIC_API_URL}/${mainImage["path "]}`;
   }
 
   return {

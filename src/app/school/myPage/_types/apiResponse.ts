@@ -7,7 +7,7 @@ export interface ProductItem {
   price: number;
   quantity: number;
   mainImages?: Array<{
-    path: string;
+    "path ": string;
     name: string;
     originalname: string;
   }>;
