@@ -1,4 +1,3 @@
-// components/ChatStartButton.tsx
 "use client";
 
 import { useUserStore } from "@/store/userStore";
@@ -7,7 +6,6 @@ import { useRouter } from "next/navigation";
 
 interface ChatStartButtonProps {
   sellerId: string;
-  // sellerNickName: string;
   productId: string;
 }
 
@@ -18,24 +16,92 @@ export default function ChatStartButton({ sellerId, productId }: ChatStartButton
   if (String(buyerId) === sellerId) return null;
 
   const handleStartChat = async () => {
-    // 고유 roomId 생성
-    const roomId = nanoid();
     if (!buyerId || !sellerId || !productId) {
       alert("채팅방 생성 정보가 부족합니다.");
       return;
     }
 
-    const payload = {
-      type: "chat",
-      userId: buyerId,
-      title: `${buyerId} -> ${sellerId}`,
-      content: "채팅을 시작합니다",
-      productId,
-      roomId,
-    };
-
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/posts`, {
+      console.log("🔍 채팅방 검색 시작");
+
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/posts?type=chat&productId=${productId}`, {
+        headers: {
+          "Client-Id": process.env.NEXT_PUBLIC_CLIENT_ID!,
+        },
+      });
+
+      const json = await res.json();
+
+      let items: any[] = [];
+      if (Array.isArray(json.item)) items = json.item;
+      else if (Array.isArray(json.items)) items = json.items;
+      else if (json.item) items = [json.item];
+
+      console.log("📦 채팅방 후보 수:", items.length);
+
+      let existing = null;
+
+      // 순차 조회로 서버 부하 방지
+      for (const post of items) {
+        try {
+          const detailRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/posts/${post._id}`, {
+            headers: {
+              "Client-Id": process.env.NEXT_PUBLIC_CLIENT_ID!,
+            },
+          });
+          const detailJson = await detailRes.json();
+          const detail = detailJson.item;
+
+          const isSameProduct = String(detail.productId) === String(productId);
+          const isSameSeller = String(detail.meta?.sellerId) === String(sellerId);
+          const isSameBuyer = String(detail.meta?.buyerId) === String(buyerId);
+
+          console.log("🔍 검사 중:", {
+            postId: detail._id,
+            productId: detail.productId,
+            sellerId: detail.meta?.sellerId,
+            buyerId: detail.meta?.buyerId,
+            match: isSameProduct && isSameSeller && isSameBuyer,
+          });
+
+          if (isSameProduct && isSameSeller && isSameBuyer) {
+            existing = detail;
+            break;
+          }
+        } catch (err) {
+          console.warn("❗ 상세조회 실패:", post._id, err);
+        }
+      }
+
+      if (existing) {
+        const postId = existing._id;
+        const roomId = existing.meta?.roomId || `room-${postId}`;
+        console.log("✅ 기존 채팅방 재사용:", { postId, roomId });
+
+        router.push(
+          `/school/chat/${postId}?buyerId=${buyerId}&sellerId=${sellerId}&productId=${productId}&roomId=${roomId}`
+        );
+        return;
+      }
+
+      console.log("❌ 기존 채팅방 없음. 새로 생성합니다.");
+
+      const roomId = nanoid();
+
+      const payload = {
+        type: "chat",
+        userId: buyerId,
+        title: `${buyerId} -> ${sellerId}`,
+        content: "채팅을 시작합니다",
+        productId,
+        meta: {
+          sellerId,
+          buyerId,
+          roomId,
+        },
+      };
+
+      const createRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/posts`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -44,19 +110,19 @@ export default function ChatStartButton({ sellerId, productId }: ChatStartButton
         body: JSON.stringify(payload),
       });
 
-      const json = await res.json();
+      const createJson = await createRes.json();
 
-      if (json.ok === 1) {
-        const postId = json.item._id;
+      if (createJson.ok === 1) {
+        const postId = createJson.item._id;
         router.push(
           `/school/chat/${postId}?buyerId=${buyerId}&sellerId=${sellerId}&productId=${productId}&roomId=${roomId}`
         );
       } else {
-        alert(`생성 실패: ${json.message}`);
+        alert(`채팅방 생성 실패: ${createJson.message}`);
       }
     } catch (error) {
-      console.error("채팅 생성 에러:", error);
-      alert("채팅방 생성 중 오류가 발생했습니다.");
+      console.error("채팅 시작 에러:", error);
+      alert("채팅방을 시작하는 중 오류가 발생했습니다.");
     }
   };
 

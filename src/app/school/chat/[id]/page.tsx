@@ -97,7 +97,7 @@ const ChatPage = () => {
           className="bg-uni-blue-500 text-uni-white px-4 py-2 rounded hover:bg-uni-blue-600"
           disabled={joinedRoom}
         >
-          {joinedRoom ? "개인 채팅 중..." : "민지와 1:1 채팅 시작하기"}
+          {joinedRoom ? "개인 채팅 중..." : "1:1 채팅 시작하기"}
         </button>
       </div>
       <ChatBubbleList />
