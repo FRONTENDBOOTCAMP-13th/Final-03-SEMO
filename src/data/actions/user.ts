@@ -1,6 +1,6 @@
 import { User } from "@/types/user";
-import { UserResponse } from "../_types/apiResponse";
-import apiClient from "./apiClient";
+import { UserResponse } from "../../app/school/myPage/_types/apiResponse";
+import apiClient from "@/lib/apiClient";
 
 /**
  * 사용자 ID로 사용자 정보를 가져옵니다.
