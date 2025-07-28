@@ -2,21 +2,24 @@
 "use client";
 
 import { useUserStore } from "@/store/userStore";
+import { nanoid } from "nanoid";
 import { useRouter } from "next/navigation";
 
 interface ChatStartButtonProps {
   sellerId: string;
-  sellerNickName: string;
+  // sellerNickName: string;
   productId: string;
 }
 
-export default function ChatStartButton({ sellerId, sellerNickName, productId }: ChatStartButtonProps) {
+export default function ChatStartButton({ sellerId, productId }: ChatStartButtonProps) {
   const router = useRouter();
   const buyerId = useUserStore((state) => state.user._id);
 
   if (String(buyerId) === sellerId) return null;
 
   const handleStartChat = async () => {
+    // 고유 roomId 생성
+    const roomId = nanoid();
     if (!buyerId || !sellerId || !productId) {
       alert("채팅방 생성 정보가 부족합니다.");
       return;
@@ -25,10 +28,10 @@ export default function ChatStartButton({ sellerId, sellerNickName, productId }:
     const payload = {
       type: "chat",
       userId: buyerId,
-      sellerNickName,
       title: `${buyerId} -> ${sellerId}`,
       content: "채팅을 시작합니다",
       productId,
+      roomId,
     };
 
     try {
@@ -46,7 +49,7 @@ export default function ChatStartButton({ sellerId, sellerNickName, productId }:
       if (json.ok === 1) {
         const postId = json.item._id;
         router.push(
-          `/school/chat/${postId}?buyerId=${buyerId}&sellerId=${sellerId}&sellerNickName=${sellerNickName}&productId=${productId}`
+          `/school/chat/${postId}?buyerId=${buyerId}&sellerId=${sellerId}&productId=${productId}&roomId=${roomId}`
         );
       } else {
         alert(`생성 실패: ${json.message}`);

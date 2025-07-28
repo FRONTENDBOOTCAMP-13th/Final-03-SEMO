@@ -22,6 +22,7 @@ const InputChat = ({ userId, nickName, sellerId, sellerNickName }: InputChatProp
 
   const productId = searchParams.get("productId");
   const postId = params?.id;
+  const roomIdFromUrl = searchParams.get("roomId") || "";
 
   const handleSend = () => {
     if (!input.trim() || !roomId) return;
@@ -40,6 +41,7 @@ const InputChat = ({ userId, nickName, sellerId, sellerNickName }: InputChatProp
         sellerId,
         sellerNickName,
         postId,
+        roomId: roomIdFromUrl,
       };
       console.log("귓속말 전송 데이터:", whisperPayload);
 

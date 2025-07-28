@@ -25,7 +25,7 @@ const ChatBubbleList = (/*{ myUserId, myNickName }: ChatBubbleListProps*/) => {
   }, [messages]);
 
   const isMyMessage = (msg: any) => {
-    return String(msg.user_id) === String(user._id) || String(msg.toUserId) === String(user._id);
+    return String(msg.user_id) === String(user._id);
   };
 
   return (
