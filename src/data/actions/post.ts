@@ -27,6 +27,20 @@ export async function createPost(state: ApiRes<Post> | null, formData: FormData)
   const price = formData.get("price") as string;
   const location = formData.get("location") as string;
 
+  let crtStatus: string;
+  switch (type) {
+    case "sell":
+      crtStatus = "판매중";
+      break;
+    case "buy":
+      crtStatus = "구매중";
+      break;
+    case "groupPurchase":
+      crtStatus = "모집중";
+      break;
+    default:
+      crtStatus = "판매중";
+  }
   // 게시글 데이터 구성
   const postData = {
     type,
@@ -37,7 +51,7 @@ export async function createPost(state: ApiRes<Post> | null, formData: FormData)
     extra: {
       price,
       location,
-      crt: "판매중",
+      crt: crtStatus,
     },
   };
   try {
