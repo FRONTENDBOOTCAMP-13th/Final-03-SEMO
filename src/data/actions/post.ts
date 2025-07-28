@@ -28,9 +28,9 @@ export async function createPost(state: ApiRes<Post> | null, formData: FormData)
   const location = formData.get("location") as string;
 
   // 공동구매 전용 데이터 필드
-  const participants = formData.get("participants") as string;
-  const groupLocation = formData.get("groupLocation") as string;
-  const deadLine = formData.get("deadLine") as string;
+  const participants = formData.get("participants") as string; // 인원수
+  const groupLocation = formData.get("groupLocation") as string; // 분배 장소
+  const deadLine = formData.get("deadLine") as string; // 마감시간
 
   let crtStatus: string;
   switch (type) {
@@ -57,6 +57,12 @@ export async function createPost(state: ApiRes<Post> | null, formData: FormData)
       price,
       location,
       crt: crtStatus,
+      // 공동구매 전용 필드
+      ...(type === "groupPurchase" && {
+        participants: participants ? parseInt(participants) : undefined,
+        groupLocation,
+        deadLine,
+      }),
     },
   };
   try {
@@ -103,7 +109,12 @@ export async function createPost(state: ApiRes<Post> | null, formData: FormData)
         tag,
         location,
         marketType: type,
-        crt: "판매중",
+        crt: crtStatus,
+        ...(type === "groupPurchase" && {
+          participants: participants ? parseInt(participants) : undefined,
+          groupLocation,
+          deadLine,
+        }),
       },
     };
 
