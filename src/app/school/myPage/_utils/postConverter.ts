@@ -13,7 +13,8 @@ export interface MyPageItem {
 }
 
 export interface Review {
-  id: number;
+  id: number; // product_id
+  orderId: number; // order_id 추가
   title: string;
   author: string;
   image: string; // 상품 이미지
@@ -103,6 +104,7 @@ export async function orderToReviewItems(order: OrderItem): Promise<Review[]> {
 
     return {
       id: product._id,
+      orderId: order._id, // order_id 추가
       title: product.name,
       author: authorName,
       image: product.image ? `${process.env.NEXT_PUBLIC_API_URL}/${product.image["path "]}` : "/assets/defaultimg.png", // 상품 이미지
