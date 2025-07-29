@@ -7,6 +7,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useActionState } from "react";
 import { deletePost } from "@/data/actions/post";
 import { Trash2, PenLine, ExternalLink } from "lucide-react";
+import { group } from "console";
 
 const HEADER_CONFIGS = {
   marketList: {
@@ -39,6 +40,16 @@ const HEADER_CONFIGS = {
     title: "공동구매 등록",
     backLink: "",
     showMeatball: false,
+  },
+  groupSearch: {
+    title: "공동구매 검색",
+    backLink: "",
+    showMeatball: false,
+  },
+  groupDetail: {
+    title: "공동구매 상세",
+    backLink: "",
+    showMeatball: true,
   },
 };
 
@@ -192,6 +203,10 @@ export default function MarketPageHeader() {
       const subPage = pathSegments[groupIndex + 1];
       if (subPage === "new") {
         config = HEADER_CONFIGS.groupNew;
+      } else if (subPage === "search") {
+        config = HEADER_CONFIGS.groupSearch;
+      } else if (subPage) {
+        config = HEADER_CONFIGS.groupDetail;
       } else {
         config = HEADER_CONFIGS.groupList;
       }
