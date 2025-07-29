@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 
-const MARKET_TAGS = ["전체", "식품", "도서", "의류", "생활용품", "생활가전", "학용품"];
+const MARKET_TAGS = ["전체", "식품", "도서", "의류", "생활용품", "생활가전", "학용품", "기타"];
 
 export default function MarketTagNav() {
   const [activeTag, setActiveTag] = useState("전체");
