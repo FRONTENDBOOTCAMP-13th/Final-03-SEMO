@@ -143,7 +143,17 @@ export default function PostContent({ post, marketType }: PostContentProps) {
       <div className="border border-uni-gray-200 rounded-lg p-3 mb-4">
         <p className="text-14 font-medium text-uni-gray-500 mb-1">기한</p>
         <p className="text-14 text-uni-gray-300">
-          {post?.extra.deadLine ? `${post.extra.deadLine}까지` : "마감시간 없음"}
+          {post?.extra.deadLine
+            ? `${new Date(post.extra.deadLine).toLocaleDateString("ko-KR", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })} ${new Date(post.extra.deadLine).toLocaleTimeString("ko-KR", {
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: false,
+              })}까지`
+            : "마감시간 없음"}
         </p>
       </div>
       {post?._id && Number.isInteger(post._id) && <CommentList _id={post._id} />}
