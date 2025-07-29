@@ -39,13 +39,14 @@ const ChatPage = () => {
   // 글로벌 방 입장
   useChatSocket({ userId: String(buyerId), nickName: buyerNickName, roomId: "global" });
 
-  // 자동 개인방 입장
+  // 자동 개인방 입장(판매자입장, 채팅알림 받는 입장)
   useEffect(() => {
     if (!joinedRoom && buyerId && sellerId && autoJoin && roomIdFromQuery) {
       handleJoinRoom(roomIdFromQuery);
     }
   }, [buyerId, sellerId, joinedRoom, autoJoin, roomIdFromQuery]);
 
+  // 방 버튼눌러서 생성 및 입장(구매자입장, 채팅시작입장에서)
   const handleJoinRoom = (targetRoomId: string) => {
     socket.emit(
       "createRoom",
@@ -91,7 +92,7 @@ const ChatPage = () => {
     }
   }, [productId]);
 
-  // 판매자 정보 fetch
+  // 판매자 정보 fetch 등록된 계좌번호를 위해
   useEffect(() => {
     const token = user?.token?.accessToken;
     if (sellerId && token) {
@@ -108,7 +109,7 @@ const ChatPage = () => {
 
   if (!id) return notFound();
 
-  // 계좌번호: seller → post fallback
+  // 계좌번호 post
   const accountNumber =
     sellerInfo?.extra?.bank && sellerInfo?.extra?.bankNumber
       ? `${sellerInfo.extra.bank} ${sellerInfo.extra.bankNumber}`
