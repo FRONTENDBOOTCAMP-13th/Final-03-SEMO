@@ -14,14 +14,7 @@ export const useUserStore = create<UserStore>()(
       user: {},
       setUser: (user) => {
         console.log("[Zustand] setUser 호출됨:", user);
-        // user가 없거나 객체가 아닌 경우 저장하지 않음
-        console.log("[Zustand] setUser 호출됨:", user);
-        const isValidUser =
-          user &&
-          typeof user === "object" &&
-          (("_id" in user && user._id !== undefined) || ("providerAccountId" in user && user.providerAccountId));
-
-        if (!isValidUser) {
+        if (!user || typeof user !== "object") {
           console.warn("[Zustand] user 데이터 이상함, 저장 취소됨:", user);
           return;
         }
