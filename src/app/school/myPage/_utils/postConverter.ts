@@ -1,4 +1,4 @@
-import { BookmarkItem, OrderItem, ProductItem } from "@/app/school/myPage/_types/apiResponse";
+import { BookmarkItem, OrderItem, ProductItem, PostItem } from "@/app/school/myPage/_types/apiResponse";
 import { getUserById } from "@/data/actions/user";
 
 const sellerCache: { [key: string]: { name: string; image?: string } } = {};
@@ -46,7 +46,7 @@ export function bookmarkToWishlistItem(bookmark: BookmarkItem): MyPageItem {
 
   // 이미지 경로 안전 처리
   let imageUrl = "/assets/defaultimg.png";
-  if (typeof post.image === 'string' && post.image) {
+  if (typeof post.image === "string" && post.image) {
     imageUrl = `${process.env.NEXT_PUBLIC_API_URL}/${post.image}`;
   }
 
@@ -65,24 +65,26 @@ export function bookmarkToWishlistItem(bookmark: BookmarkItem): MyPageItem {
 }
 
 /**
- * ProductItem을 MyPageItem 타입으로 변환합니다.
+ * PostItem을 MyPageItem 타입으로 변환합니다.
  */
-export function productToMyPageItem(product: ProductItem): MyPageItem {
-  const mainImage = product.mainImages?.[0];
-
+export function postToMyPageItem(post: PostItem, sourceType?: "sell" | "buy" | "gather"): MyPageItem {
   // 이미지 경로 안전 처리
   let imageUrl = "/assets/defaultimg.png";
-  if (mainImage?.["path "]) {
-    imageUrl = `${process.env.NEXT_PUBLIC_API_URL}/${mainImage["path "]}`;
+  if (typeof post.image === 'string' && post.image) {
+    imageUrl = `${process.env.NEXT_PUBLIC_API_URL}/${post.image}`;
   }
 
+  // 가격을 숫자형으로 변환하여 toLocaleString() 적용
+  const price = Number(post.extra?.price);
+  const formattedPrice = isNaN(price) ? "가격 정보 없음" : `${price.toLocaleString()}원`;
+
   return {
-    id: product._id,
-    title: product.name,
+    id: post._id,
+    title: post.title,
     image: imageUrl,
-    price: `${product.price.toLocaleString()}원`,
-    status: product.extra.crt === "판매완료" ? "판매완료" : "판매중",
-    category: getCategoryFromType(product.extra.type || product.extra.marketType || "sell"),
+    price: formattedPrice,
+    status: post.extra?.crt === "판매완료" ? "판매완료" : "판매중",
+    category: sourceType ? getCategoryFromType(sourceType) : getCategoryFromType(post.type || post.extra?.category || "sell"), // PostItem에는 type이 직접 있으므로 post.type 사용
   };
 }
 
@@ -105,7 +107,9 @@ export async function orderToReviewItems(order: OrderItem): Promise<Review[]> {
         try {
           const sellerData = await getUserById(product.seller_id);
           authorName = sellerData.name || `판매자 ${product.seller_id}`;
-          sellerProfileImageUrl = sellerData.image ? `${process.env.NEXT_PUBLIC_API_URL}/${sellerData.image}` : "/assets/defaultimg.png";
+          sellerProfileImageUrl = sellerData.image
+            ? `${process.env.NEXT_PUBLIC_API_URL}/${sellerData.image}`
+            : "/assets/defaultimg.png";
           sellerCache[product.seller_id] = { name: authorName, image: sellerProfileImageUrl };
         } catch {
           // 판매자 정보 로딩 실패 시 에러 로깅 제거
@@ -142,10 +146,10 @@ export function bookmarksToWishlistItems(bookmarks: BookmarkItem[]): MyPageItem[
 }
 
 /**
- * ProductItem 배열을 MyPageItem 배열로 변환합니다.
+ * PostItem 배열을 MyPageItem 배열로 변환합니다.
  */
-export function productsToMyPageItems(products: ProductItem[]): MyPageItem[] {
-  return products.map(productToMyPageItem);
+export function postsToMyPageItems(posts: PostItem[], sourceType?: "sell" | "buy" | "gather"): MyPageItem[] {
+  return posts.map((post: PostItem) => postToMyPageItem(post, sourceType));
 }
 
 /**
@@ -155,4 +159,3 @@ export async function ordersToReviewItems(orders: OrderItem[]): Promise<Review[]
   const reviewPromises = orders.flatMap((order) => orderToReviewItems(order));
   return (await Promise.all(reviewPromises)).flat(); // flatMap으로 중첩 배열 평면화
 }
-
