@@ -6,20 +6,22 @@ import ItemCard, { Item } from "@/app/school/myPage/_components/ItemCard";
 import EmptyState from "@/components/common/EmptyState";
 import Pagination from "@/components/ui/Pagination";
 import SectionHeader from "@/components/common/SectionHeader";
-import { useMyProducts } from "@/app/school/myPage/_hooks/useHistoryApi";
-import { productsToMyPageItems } from "@/app/school/myPage/_utils/postConverter";
+import { useMyPosts } from "@/app/school/myPage/_hooks/useHistoryApi";
+import { postsToMyPageItems } from "@/app/school/myPage/_utils/postConverter";
 import { useResponsivePagination } from "@/lib/hooks/useResponsivePagination";
 
 export default function MyPageMyPost() {
   const [activeTab, setActiveTab] = useState("전체");
 
-  // API로부터 내가 판매한 상품 목록 가져오기
-  const { products, isLoading, error, refetch } = useMyProducts();
+  // API로부터 내가 판매/구매한 상품 목록 가져오기
+  const { sellPosts, buyPosts, isLoading, error, refetch } = useMyPosts();
 
   // API 데이터를 마이페이지 아이템 형식으로 변환
   const myPageItems = useMemo(() => {
-    return productsToMyPageItems(products);
-  }, [products]);
+    const sellConverted = postsToMyPageItems(sellPosts, "sell");
+    const buyConverted = postsToMyPageItems(buyPosts, "buy");
+    return [...sellConverted, ...buyConverted];
+  }, [sellPosts, buyPosts]);
 
   // myPageItems에서 카테고리별로 필터링
   const sellItems: Item[] = myPageItems
