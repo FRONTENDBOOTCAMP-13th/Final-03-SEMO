@@ -22,9 +22,6 @@ export default function ChatStartButton({ sellerId, productId }: ChatStartButton
     }
 
     try {
-      console.log("채팅방 검색 시작");
-
-      // 채팅방 목록 요청
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/posts?type=chat&productId=${productId}`, {
         headers: {
           "Client-Id": process.env.NEXT_PUBLIC_CLIENT_ID!,
@@ -38,36 +35,23 @@ export default function ChatStartButton({ sellerId, productId }: ChatStartButton
       else if (Array.isArray(json.items)) items = json.items;
       else if (json.item) items = [json.item];
 
-      console.log("📦 채팅방 후보 수:", items.length);
-
-      // 상세 요청 없이 meta에서 매칭
-      const existing = items.find((post) => {
-        return (
-          String(post.productId) === String(productId) &&
-          String(post.meta?.sellerId) === String(sellerId) &&
-          String(post.meta?.buyerId) === String(buyerId)
-        );
-      });
+      // 기존 채팅방 찾기: title 기준으로 비교
+      const expectedTitle = `${buyerId} -> ${sellerId}`;
+      const existing = items.find((post) => post.title === expectedTitle);
 
       if (existing) {
         const postId = existing._id;
-        const roomId = existing.meta?.roomId || `room-${postId}`;
-        console.log("기존 채팅방 재사용:", { postId, roomId });
-
-        router.push(
-          `/school/chat/${postId}?buyerId=${buyerId}&sellerId=${sellerId}&productId=${productId}&roomId=${roomId}`
-        );
+        router.push(`/school/chat/${postId}?buyerId=${buyerId}&sellerId=${sellerId}&productId=${productId}`);
         return;
       }
 
-      console.log("채팅방 없음. 새로 생성");
-
+      // 채팅방 없으면 새로 생성
       const roomId = nanoid();
 
       const payload = {
         type: "chat",
         userId: buyerId,
-        title: `${buyerId} -> ${sellerId}`,
+        title: expectedTitle,
         content: "채팅을 시작합니다",
         productId,
         meta: {
@@ -90,9 +74,7 @@ export default function ChatStartButton({ sellerId, productId }: ChatStartButton
 
       if (createJson.ok === 1) {
         const postId = createJson.item._id;
-        router.push(
-          `/school/chat/${postId}?buyerId=${buyerId}&sellerId=${sellerId}&productId=${productId}&roomId=${roomId}`
-        );
+        router.push(`/school/chat/${postId}?buyerId=${buyerId}&sellerId=${sellerId}&productId=${productId}`);
       } else {
         alert(`채팅방 생성 실패: ${createJson.message}`);
       }
