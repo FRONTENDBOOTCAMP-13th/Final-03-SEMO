@@ -18,13 +18,55 @@ export const useChatSocket = ({ userId, nickName, roomId }: UseChatSocketProps) 
   const { setRoomId, setUserList, addMessage } = useChatStore();
   const router = useRouter();
 
+  // 개인방 입장/생성 헬퍼
+  const enterRoom = (roomId: string, onSuccess?: () => void) => {
+    socket.emit(
+      "joinRoom",
+      {
+        roomId,
+        user_id: userId,
+        nickName,
+      },
+      (joinRes: any) => {
+        if (joinRes.ok) {
+          console.log("개인방 입장 성공:", roomId);
+          setRoomId(roomId);
+          onSuccess?.();
+        } else {
+          console.warn("입장 실패, 방 생성 후 재시도:", joinRes.message);
+          socket.emit(
+            "createRoom",
+            {
+              roomId,
+              user_id: userId,
+              hostName: nickName,
+              roomName: roomId,
+              autoClose: false,
+            },
+            (createRes: any) => {
+              if (!createRes.ok) console.warn("방 생성 실패:", createRes.message);
+              socket.emit("joinRoom", { roomId, user_id: userId, nickName }, (retryJoinRes: any) => {
+                if (retryJoinRes.ok) {
+                  console.log("생성 후 입장 성공:", roomId);
+                  setRoomId(roomId);
+                  onSuccess?.();
+                } else {
+                  alert("개인방 입장 실패");
+                }
+              });
+            }
+          );
+        }
+      }
+    );
+  };
+
   useEffect(() => {
     if (!userId || !nickName) return;
-
     socket.connect();
 
     const handleConnect = () => {
-      console.log("소켓 연결:", userId, nickName, socket.id);
+      console.log("소켓 연결:", socket.id);
       setRoomId(GLOBAL_ROOM_ID);
 
       socket.emit(
@@ -36,11 +78,7 @@ export const useChatSocket = ({ userId, nickName, roomId }: UseChatSocketProps) 
           roomName: "Global Room",
           autoClose: false,
         },
-        (res: any) => {
-          if (!res.ok) {
-            console.warn("Global 룸 이미 존재:", res.message);
-          }
-
+        () => {
           socket.emit(
             "joinRoom",
             {
@@ -52,7 +90,7 @@ export const useChatSocket = ({ userId, nickName, roomId }: UseChatSocketProps) 
               if (res.ok) {
                 console.log("Global 룸 입장 성공");
               } else {
-                console.warn("방 입장 실패", res.message);
+                console.warn("Global 룸 입장 실패:", res.message);
               }
             }
           );
@@ -60,7 +98,6 @@ export const useChatSocket = ({ userId, nickName, roomId }: UseChatSocketProps) 
       );
     };
 
-    // 채팅멤버 조회
     const handleMembers = (memberListObj: Record<string, any>) => {
       const userList = Object.entries(memberListObj).map(([user_id, value]) => ({
         user_id,
@@ -71,9 +108,8 @@ export const useChatSocket = ({ userId, nickName, roomId }: UseChatSocketProps) 
     };
 
     const handleMessage = (data: any) => {
-      console.log("메시지 수신:", data);
-
       const currentRoomId = useChatStore.getState().currentRoomId;
+      console.log("서버에서 받은 메시지:", data);
 
       const raw =
         typeof data.msg === "object"
@@ -92,149 +128,77 @@ export const useChatSocket = ({ userId, nickName, roomId }: UseChatSocketProps) 
             };
 
       const isWhisper = data.msgType === "whisper";
+      const messageUserId = String(raw.user_id || data.user_id || userId);
+      const currentUserId = String(userId);
 
-      console.log("isWhisper:", isWhisper);
-      console.log("raw.user_id:", raw.user_id);
-      console.log("내 userId:", userId);
-
-      // 개인룸에서 내가 보낸 메시지인 경우 서버 응답 무시 (중복 방지)
-      if (currentRoomId !== GLOBAL_ROOM_ID && !isWhisper) {
-        // 서버에서 받은 메시지가 내가 보낸 것인지 확인
-        // 방법 1: user_id로 확인 (서버에서 user_id를 제대로 보내는 경우)
-        if (raw.user_id && String(raw.user_id) === String(userId)) {
-          console.log("내가 보낸 메시지 서버 응답 - 무시");
-          return;
-        }
-
-        // 방법 2: 서버에서 user_id가 없는 경우, 최근 메시지와 비교하여 중복 체크
-        const messages = useChatStore.getState().messages;
-        const recentMessage = messages
-          .filter((msg) => msg.roomId === currentRoomId && String(msg.user_id) === String(userId))
-          .slice(-1)[0];
-
-        if (
-          recentMessage &&
-          recentMessage.content === (raw.content ?? raw.msg) &&
-          Date.now() - new Date(recentMessage.createdAt).getTime() < 5000
-        ) {
-          // 5초 이내
-          console.log("최근 메시지와 동일 - 중복으로 판단하여 무시");
-          return;
-        }
+      // 개인방에서 내가 보낸 메시지인 경우 무시 (중복 방지)
+      if (currentRoomId !== GLOBAL_ROOM_ID && !isWhisper && messageUserId === currentUserId) {
+        console.log("개인방에서 내가 보낸 메시지 서버 응답 - 무시");
+        return;
       }
 
-      if (isWhisper && raw.toUserId && String(raw.toUserId) !== String(userId)) return;
-
-      // 서버에서 정보가 누락된 경우 현재 사용자 정보로 보완
-      const senderId = raw.user_id || userId;
-      const senderNickName = raw.nickName || nickName;
+      // 글로벌 룸에서 로컬 플래그가 있는 메시지 무시
+      if (data.local && messageUserId === currentUserId) {
+        console.log("로컬 플래그 메시지 - 무시");
+        return;
+      }
 
       const message: Message = {
-        id: Date.now().toString(),
-        roomId: data.roomId || roomId,
+        id: `${Date.now()}-${Math.random()}`, // 더 고유한 ID 생성
+        roomId: data.roomId || currentRoomId,
         content: raw.content ?? raw.msg,
         type: "text",
         msgType: isWhisper ? "whisper" : "all",
         createdAt: data.timestamp ?? new Date().toISOString(),
-        user_id: String(senderId),
-        nickName: senderNickName,
+        user_id: messageUserId,
+        nickName: raw.nickName || nickName,
         ...(isWhisper && {
           toUserId: raw.toUserId,
           toNickName: raw.toNickName,
         }),
       };
 
+      // 중복 메시지 체크 (추가 안전망)
+      const messages = useChatStore.getState().messages;
+      const isDuplicate = messages.some(
+        (existingMsg) =>
+          existingMsg.content === message.content &&
+          existingMsg.user_id === message.user_id &&
+          existingMsg.roomId === message.roomId &&
+          Math.abs(new Date(existingMsg.createdAt).getTime() - new Date(message.createdAt).getTime()) < 3000 // 3초 이내
+      );
+
+      if (isDuplicate) {
+        console.log("중복 메시지 감지 - 무시");
+        return;
+      }
+
+      console.log("메시지 추가:", message);
       addMessage(message);
 
-      // 알림을 받았을 때
-      if (isWhisper && String(raw.user_id) !== String(userId)) {
+      // 알림 처리
+      if (isWhisper && messageUserId !== currentUserId) {
         toast.info(`${raw.nickName}님이 개인 메시지를 보냈습니다. 클릭하여 개인방으로 이동하세요.`, {
           autoClose: false,
           onClick: () => {
-            // 메시지에서 받은 roomId를 우선 사용, 없으면 계산된 roomId 사용
-            const privateRoomId = data.roomId || [raw.buyerId, raw.sellerId].sort().join("-");
+            const { roomId: receivedRoomId, postId, buyerId, sellerId, sellerNickName, productId } = raw;
 
-            console.log("이동할 룸 ID:", privateRoomId);
-            console.log("메시지에서 받은 roomId:", data.roomId);
+            if (!receivedRoomId) {
+              alert("roomId 정보가 없습니다.");
+              return;
+            }
 
-            // 이미 존재하는 룸에 바로 입장 시도
-            socket.emit(
-              "joinRoom",
-              {
-                roomId: privateRoomId,
-                user_id: userId,
-                nickName: nickName,
-              },
-              (joinRes: any) => {
-                if (joinRes.ok) {
-                  console.log("기존 개인방 입장 성공:", privateRoomId);
-                  useChatStore.getState().setRoomId(privateRoomId);
-
-                  const { postId, buyerId, sellerId, sellerNickName, productId } = raw;
-                  if (postId && buyerId && sellerId && sellerNickName && productId) {
-                    router.push(
-                      `/school/chat/${postId}?buyerId=${buyerId}&sellerId=${sellerId}&sellerNickName=${sellerNickName}&productId=${productId}`
-                    );
-                  } else {
-                    alert("채팅 이동 정보가 부족합니다.");
-                  }
-                } else {
-                  // 입장 실패 시에만 룸 생성 시도
-                  console.log("개인방 입장 실패, 룸 생성 시도:", joinRes.message);
-
-                  socket.emit(
-                    "createRoom",
-                    {
-                      roomId: privateRoomId,
-                      user_id: userId,
-                      hostName: nickName,
-                      roomName: `${raw.buyerId} <-> ${raw.sellerId}`,
-                      autoClose: false,
-                    },
-                    (createRes: any) => {
-                      if (!createRes.ok) {
-                        console.warn("개인방 이미 존재:", createRes.message);
-                      }
-
-                      // 룸 생성 후 다시 입장 시도
-                      socket.emit(
-                        "joinRoom",
-                        {
-                          roomId: privateRoomId,
-                          user_id: userId,
-                          nickName: nickName,
-                        },
-                        (retryJoinRes: any) => {
-                          if (retryJoinRes.ok) {
-                            console.log("룸 생성 후 입장 성공:", privateRoomId);
-                            useChatStore.getState().setRoomId(privateRoomId);
-
-                            const { postId, buyerId, sellerId, sellerNickName, productId } = raw;
-                            if (postId && buyerId && sellerId && sellerNickName && productId) {
-                              router.push(
-                                `/school/chat/${postId}?buyerId=${buyerId}&sellerId=${sellerId}&sellerNickName=${sellerNickName}&productId=${productId}`
-                              );
-                            } else {
-                              alert("채팅 이동 정보가 부족합니다.");
-                            }
-                          } else {
-                            console.warn("룸 생성 후 입장도 실패:", retryJoinRes.message);
-                            alert("채팅방 입장에 실패했습니다.");
-                          }
-                        }
-                      );
-                    }
-                  );
-                }
-              }
-            );
+            enterRoom(receivedRoomId, () => {
+              router.push(
+                `/school/chat/${postId}?buyerId=${buyerId}&sellerId=${sellerId}&sellerNickName=${sellerNickName}&productId=${productId}&roomId=${receivedRoomId}&autojoin=true`
+              );
+            });
           },
         });
       }
     };
 
     const handleWhisper = (data: any) => {
-      console.log("귓속말 수신:", data);
       handleMessage({ ...data, msgType: "whisper" });
     };
 
@@ -250,5 +214,7 @@ export const useChatSocket = ({ userId, nickName, roomId }: UseChatSocketProps) 
       socket.off("sendTo", handleWhisper);
       socket.disconnect();
     };
-  }, [userId, nickName, roomId, setRoomId, setUserList, addMessage, router]);
+  }, [userId, nickName, roomId, setRoomId, setUserList, addMessage]);
+
+  return { enterRoom };
 };
