@@ -9,6 +9,9 @@ import { socket, useChatSocket } from "../../../api/chat/useChatSoket";
 import { useChatStore } from "../../../api/chat/useChatStore";
 import { useEffect, useState } from "react";
 import { useUserStore } from "@/store/userStore";
+import TradeCheck from "../components/tradeCheck";
+import TradeComplete from "../components/tradeComplete";
+import TradeInfoBox from "../components/tradeInfoBox";
 
 const ChatPage = () => {
   const params = useParams();
@@ -26,6 +29,9 @@ const ChatPage = () => {
   const buyerNickName = user.name || "";
 
   const [joinedRoom, setJoinedRoom] = useState(false);
+
+  const isSeller = String(user._id) === String(sellerId);
+  const [isTradeDone, setIsTradeDone] = useState(false);
 
   useEffect(() => {
     console.log("채팅방 Id:", id);
@@ -84,7 +90,7 @@ const ChatPage = () => {
 
   return (
     <>
-      <ProductInfo productId={productId} sellerId={sellerId} />
+      <ProductInfo productId={productId} />
       <div className="px-4 my-2">
         <button
           onClick={() => {
@@ -101,6 +107,15 @@ const ChatPage = () => {
         </button>
       </div>
       <ChatBubbleList />
+      <TradeCheck
+        postId={productId}
+        isSeller={isSeller}
+        onComplete={() => {
+          setIsTradeDone(true);
+        }}
+      />
+      <TradeComplete />
+      <TradeInfoBox />
       <InputChat userId={buyerId} nickName={buyerNickName} sellerId={sellerId} sellerNickName={sellerNickName} />
     </>
   );
