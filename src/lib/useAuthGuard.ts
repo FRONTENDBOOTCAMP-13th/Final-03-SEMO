@@ -6,11 +6,13 @@ export const useAuthGuard = (requireLogin = true) => {
   const router = useRouter();
   const { user } = useUserStore();
 
+  const isLoggedIn = !!user && !!user.name && (!!user._id || !!user.providerAccountId);
+
   useEffect(() => {
-    if (requireLogin && !user) {
+    if (requireLogin && !isLoggedIn) {
       router.replace("/login");
-    } else if (!requireLogin && user) {
+    } else if (!requireLogin && isLoggedIn) {
       router.replace("/school");
     }
-  }, [user, requireLogin, router]);
+  }, [isLoggedIn, requireLogin, router]);
 };
