@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Share, Check } from "lucide-react";
 import PopUp from "./popup";
+import { useUserStore } from "@/store/userStore";
 
 interface TradeCheckProps {
   onComplete: () => void;
@@ -14,21 +15,34 @@ const TradeCheck = ({ onComplete, postId, isSeller }: TradeCheckProps) => {
 
   const handleConfirm = async () => {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/market/posts/${postId}/complete`, {
+      const token = useUserStore.getState().user?.token?.accessToken;
+
+      if (!token) {
+        alert("로그인 토큰이 없습니다. 다시 로그인해주세요.");
+        return;
+      }
+
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/posts/${postId}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
           "Client-Id": "febc13-final03-emjf",
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ crt: "done" }),
+        body: JSON.stringify({
+          extra: {
+            crt: "거래완료",
+          },
+        }),
       });
-
       const json = await res.json();
+      console.log("거래 완료 응답:", json);
+
       if (json.ok) {
         setIsTradeCompleted(true);
         onComplete();
       } else {
-        alert("거래 완료 실패");
+        alert(`거래 완료 실패: ${json.message || "서버 오류"}`);
       }
     } catch (err) {
       console.error("거래 완료 에러:", err);

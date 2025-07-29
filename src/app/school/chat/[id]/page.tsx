@@ -10,8 +10,8 @@ import { useChatStore } from "../../../api/chat/useChatStore";
 import { useEffect, useState } from "react";
 import { useUserStore } from "@/store/userStore";
 import TradeCheck from "../components/tradeCheck";
-import TradeComplete from "../components/tradeComplete";
-import TradeInfoBox from "../components/tradeInfoBox";
+// import TradeComplete from "../components/tradeComplete";
+// import TrasdeInfoBox from "../components/tradeInfoBox";
 
 const ChatPage = () => {
   const params = useParams();
@@ -38,6 +38,7 @@ const ChatPage = () => {
     console.log("구매자 Id:", buyerId);
     console.log("판매자 Id:", sellerId);
     console.log("Room ID from query:", roomIdFromQuery);
+    console.log(isTradeDone);
   }, []);
 
   // 글로벌 방 입장
@@ -114,8 +115,8 @@ const ChatPage = () => {
           setIsTradeDone(true);
         }}
       />
-      <TradeComplete />
-      <TradeInfoBox />
+      {/* <TradeComplete />
+      <TradeInfoBox /> */}
       <InputChat userId={buyerId} nickName={buyerNickName} sellerId={sellerId} sellerNickName={sellerNickName} />
     </>
   );

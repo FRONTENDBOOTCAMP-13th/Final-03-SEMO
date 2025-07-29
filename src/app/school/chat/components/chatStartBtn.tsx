@@ -22,6 +22,7 @@ export default function ChatStartButton({ sellerId, productId }: ChatStartButton
     }
 
     try {
+      // 기존 채팅 포스트 조회
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/posts?type=chat&productId=${productId}`, {
         headers: {
           "Client-Id": process.env.NEXT_PUBLIC_CLIENT_ID!,
@@ -35,24 +36,41 @@ export default function ChatStartButton({ sellerId, productId }: ChatStartButton
       else if (Array.isArray(json.items)) items = json.items;
       else if (json.item) items = [json.item];
 
-      // 기존 채팅방 찾기: title 기준으로 비교
+      // content로 비교
       const expectedTitle = `${buyerId} -> ${sellerId}`;
       const existing = items.find((post) => post.title === expectedTitle);
 
       if (existing) {
-        const postId = existing._id;
-        const roomIdFromMeta = existing.meta?.roomId || "";
+        let roomIdFromMeta = existing.meta?.roomId;
 
-        console.log("기존 채팅방 이동:", { postId, roomIdFromMeta });
+        // roomId가 없으면 생성 후 PATCH
+        if (!roomIdFromMeta) {
+          roomIdFromMeta = nanoid();
+          await fetch(`${process.env.NEXT_PUBLIC_API_URL}/posts/${existing._id}`, {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+              "Client-Id": process.env.NEXT_PUBLIC_CLIENT_ID!,
+            },
+            body: JSON.stringify({
+              meta: {
+                ...existing.meta,
+                roomId: roomIdFromMeta,
+              },
+            }),
+          });
+        }
+
+        console.log("기존 채팅방 이동:", { postId: existing._id, roomIdFromMeta });
 
         router.push(
-          `/school/chat/${postId}?buyerId=${buyerId}&sellerId=${sellerId}&productId=${productId}&roomId=${roomIdFromMeta}&autojoin=true`
+          `/school/chat/${existing._id}?buyerId=${buyerId}&sellerId=${sellerId}&productId=${productId}&roomId=${roomIdFromMeta}`
         );
         return;
       }
 
-      // 채팅방 없으면 새로 생성
-      const roomId = nanoid();
+      // 채팅 포스트가 없으면 새로 생성
+      const newRoomId = nanoid();
 
       const payload = {
         type: "chat",
@@ -63,7 +81,7 @@ export default function ChatStartButton({ sellerId, productId }: ChatStartButton
         meta: {
           sellerId,
           buyerId,
-          roomId,
+          roomId: newRoomId,
         },
       };
 
@@ -81,7 +99,7 @@ export default function ChatStartButton({ sellerId, productId }: ChatStartButton
       if (createJson.ok === 1) {
         const postId = createJson.item._id;
         router.push(
-          `/school/chat/${postId}?buyerId=${buyerId}&sellerId=${sellerId}&productId=${productId}&roomId=${roomId}`
+          `/school/chat/${postId}?buyerId=${buyerId}&sellerId=${sellerId}&productId=${productId}&roomId=${newRoomId}&autojoin=true`
         );
       } else {
         alert(`채팅방 생성 실패: ${createJson.message}`);
