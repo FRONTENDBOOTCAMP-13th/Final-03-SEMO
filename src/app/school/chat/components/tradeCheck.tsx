@@ -7,9 +7,10 @@ interface TradeCheckProps {
   onComplete: () => void;
   postId: string;
   isSeller: boolean;
+  productExtra: any;
 }
 
-const TradeCheck = ({ onComplete, postId, isSeller }: TradeCheckProps) => {
+const TradeCheck = ({ onComplete, postId, isSeller, productExtra }: TradeCheckProps) => {
   const [showPopUp, setShowPopUp] = useState(false);
   const [isTradeCompleted, setIsTradeCompleted] = useState(false);
 
@@ -31,6 +32,7 @@ const TradeCheck = ({ onComplete, postId, isSeller }: TradeCheckProps) => {
         },
         body: JSON.stringify({
           extra: {
+            ...(productExtra || {}),
             crt: "거래완료",
           },
         }),
