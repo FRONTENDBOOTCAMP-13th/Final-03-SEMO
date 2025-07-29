@@ -31,7 +31,7 @@ const ChatPage = () => {
 
   const [joinedRoom, setJoinedRoom] = useState(false);
   const [isTradeDone, setIsTradeDone] = useState(false);
-  const [productData, setProductData] = useState<any>(null);
+  const [productData, setProductData] = useState<{ extra?: any } | null>(null);
   const [sellerInfo, setSellerInfo] = useState<any>(null);
 
   const isSeller = String(buyerId) === String(sellerId);
@@ -86,23 +86,42 @@ const ChatPage = () => {
   // 상품 정보 fetch
   useEffect(() => {
     if (productId) {
-      fetch(`${process.env.NEXT_PUBLIC_API_URL}/posts/${productId}`)
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/posts/${productId}`, {
+        headers: {
+          "Client-Id": "febc13-final03-emjf",
+        },
+      })
         .then((res) => res.json())
-        .then((data) => setProductData(data.item));
+        .then((data) => {
+          setProductData(data.item); // 여기서 저장됨
+        })
+        .catch((err) => console.error("상품 데이터 가져오기 실패:", err));
     }
   }, [productId]);
 
+  useEffect(() => {
+    if (productData?.extra?.crt === "거래완료") {
+      setIsTradeDone(true);
+    }
+  }, [productData]);
+
   // 판매자 정보 fetch 등록된 계좌번호를 위해
   useEffect(() => {
-    const token = user?.token?.accessToken;
+    const token = useUserStore.getState().user?.token?.accessToken;
+    console.log("토큰:", token);
+    console.log("sellerId:", sellerId);
+
     if (sellerId && token) {
       fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${sellerId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
+          "Client-Id": "febc13-final03-emjf",
         },
       })
         .then((res) => res.json())
-        .then((data) => setSellerInfo(data.item))
+        .then((data) => {
+          setSellerInfo(data.item);
+        })
         .catch((err) => console.error("판매자 정보 요청 실패:", err));
     }
   }, [sellerId]);
@@ -143,7 +162,14 @@ const ChatPage = () => {
       <ChatBubbleList />
 
       {/* 거래완료버튼: 판매자에게만 뜨도록 */}
-      {!isTradeDone && <TradeCheck postId={productId} isSeller={isSeller} onComplete={() => setIsTradeDone(true)} />}
+      {!isTradeDone && (
+        <TradeCheck
+          postId={productId}
+          isSeller={isSeller}
+          onComplete={() => setIsTradeDone(true)}
+          productExtra={productData?.extra || {}}
+        />
+      )}
 
       {/* 거래완료버튼: 구매자에게 뜨도록(ㅇㅇㅇ님의 참여가 승인되었습니다.)  */}
       {isTradeDone && !isSeller && <TradeComplete buyerName={buyerNickName} />}
