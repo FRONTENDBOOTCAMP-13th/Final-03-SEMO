@@ -68,7 +68,7 @@ export default function PostContent({ post, marketType }: PostContentProps) {
         {/* 설명 */}
         <p className="text-gray-700 mb-2 text-16">{post?.content}</p>
         <p className="text-12 text-uni-gray-300 mb-6">{post?.createdAt}</p>
-        {post?._id && Number.isInteger(post._id) && <CommentList _id={post._id} />}
+        {post?._id && Number.isInteger(post._id) && <CommentList _id={post._id} post={post} />}
 
         <div className=" w-full max-w-[480px] bg-white">
           {post.user?._id && (
@@ -156,7 +156,7 @@ export default function PostContent({ post, marketType }: PostContentProps) {
             : "마감시간 없음"}
         </p>
       </div>
-      {post?._id && Number.isInteger(post._id) && <CommentList _id={post._id} />}
+      {post?._id && Number.isInteger(post._id) && <CommentList _id={post._id} post={post} />}
 
       <div className=" w-full max-w-[480px] bg-white">
         {post.user?._id && (
