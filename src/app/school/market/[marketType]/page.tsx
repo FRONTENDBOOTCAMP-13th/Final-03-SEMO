@@ -2,12 +2,12 @@ import { Metadata } from "next";
 // import ItemSection from "./itemSection";
 import ItemSection from "@/app/school/market/[marketType]/itemSection";
 import FloatingButton from "@/components/common/FloatingButton";
-import MarketPageHeader from "@/app/school/market/[marketType]/_components/MarketPageHeader";
+import MarketPageHeader from "@/app/school/market/_components/MarketPageHeader";
 // import Search from "@/components/common/Search";
 import { getPosts } from "@/app/api/market/functions/post";
 // 마켓검색 테스트
-import MarketSearch from "@/app/school/market/[marketType]/_components/MarketSearch";
-import MarketTagNav from "./_components/MarketTagNav";
+import MarketSearch from "@/app/school/market/_components/MarketSearch";
+import MarketTagNav from "../_components/MarketTagNav";
 import Link from "next/link";
 import { Pencil } from "lucide-react";
 // import { Post, ApiRes } from "@/types";
@@ -26,7 +26,11 @@ export const metadata: Metadata = {
   description: "Market 페이지입니다.",
 };
 
-export default async function MarketPage({ params }: { params: Promise<{ marketType: "buy" | "sell" }> }) {
+export default async function MarketPage({
+  params,
+}: {
+  params: Promise<{ marketType: "buy" | "sell" | "groupPurchase" }>;
+}) {
   const { marketType } = await params;
 
   const res = await getPosts(marketType);

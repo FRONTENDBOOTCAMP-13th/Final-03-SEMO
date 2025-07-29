@@ -11,7 +11,13 @@ export default function MarketTagNav() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const marketType = pathname.includes("buy") ? "buy" : "sell";
+  // const marketType = pathname.includes("buy") ? "buy" : "sell" : "groupPurchase";
+  let marketType = "";
+  if (pathname.includes("groupPurchase")) {
+    marketType = "groupPurchase";
+  } else {
+    marketType = pathname.includes("buy") ? "buy" : "sell";
+  }
 
   useEffect(() => {
     // searchParams(쿼리파라미터)로 keyword 값 가져오기

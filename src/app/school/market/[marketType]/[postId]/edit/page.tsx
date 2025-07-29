@@ -1,6 +1,7 @@
 // 게시글 수정
-import PostForm from "@/app/school/market/[marketType]/_components/_PostComponents/PostForm";
+import PostForm from "@/app/school/market/_components/_PostComponents/PostForm";
 import { getPost } from "@/app/api/market/functions/post";
+import { PostType } from "@/types";
 
 interface EditPageProps {
   params: Promise<{ marketType: string; postId: string }>;
@@ -32,5 +33,5 @@ export default async function EditPage({ params }: EditPageProps) {
 
   const post = response.item;
 
-  return <PostForm mode="edit" initialData={post} marketType={marketType} postId={postId} />;
+  return <PostForm mode="edit" initialData={post} marketType={marketType as PostType} postId={postId} />;
 }
