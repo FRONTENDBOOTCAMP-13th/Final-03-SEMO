@@ -56,7 +56,7 @@ export default function ItemSection({ items, market, layout = "grid" }: Props) {
   }
   // 리스트 레이아웃 (공동구매용)
   return (
-    <div className="space-y-4 min-w-[320px] max-w-[480px]">
+    <div className="space-y-9 min-w-[320px] max-w-[480px]">
       {items.map((item) => (
         <Link key={item._id} href={`/school/market/${market}/${item._id}`} className="block rounded-lg">
           {/* 이미지 */}
@@ -66,16 +66,25 @@ export default function ItemSection({ items, market, layout = "grid" }: Props) {
               alt={item.title}
               width={80}
               height={80}
-              className="rounded-lg object-cover w-[120px] h-[120px]"
+              className="rounded-lg object-cover w-[130px] h-[130px]"
             />
             {/* 공동구매 카드 */}
             <div className="flex-1 max-w-[200px]">
-              <h3 className="text-16 font-medium mb-1 truncate">{item.title}</h3>
+              <span className="text-14 text-uni-gray-400">{item.tag}</span>
+              <h3 className="text-16 font-bold mb-1 mt-2 truncate">{item.title}</h3>
               {/* 공동구매 정보 */}
               <div className="flex items-center gap-2">
-                <span className="text-12 text-uni-blue-400">목표 {item.extra.participants || 0}명</span>
+                <span className="text-14 text-uni-blue-400">모집인원 {item.extra.participants || 0}명</span>
               </div>
-              <p className="text-14 text-uni-gray-400 mb-2">예상금액 {Number(item.extra.price).toLocaleString()}원</p>
+              {/* <p className="text-14 text-uni-gray-400 mb-2">예상금액 {Number(item.extra.price).toLocaleString()}원</p> */}
+              <p className="text-14 bg-uni-gray-200 px-3 py-1 inline-block mt-5 rounded-full text-uni-gray-400">
+                {(() => {
+                  const totalPrice = Number(item.extra.price);
+                  const participants = item.extra.participants || 1;
+                  const pricePerPerson = Math.floor(totalPrice / participants);
+                  return `예상금액 ${pricePerPerson.toLocaleString()}원`;
+                })()}
+              </p>
             </div>
           </div>
         </Link>
