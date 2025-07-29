@@ -21,6 +21,12 @@ export interface User {
     accessToken: string; // 액세스 토큰
     refreshToken: string; // 리프레시 토큰
   };
+  posts?: number; // 사용자가 작성한 게시글 수
+  bookmark?: {
+    products?: number;
+    users?: number;
+    posts?: number;
+  }; // 사용자가 북마크한 정보
   createdAt: string; // 생성일
   updatedAt: string; // 수정일
 }
