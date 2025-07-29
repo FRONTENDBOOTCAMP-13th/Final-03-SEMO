@@ -1,5 +1,6 @@
 import { BookmarkResponse, BookmarkItem, OrderItem, PostItem } from "@/app/school/myPage/_types/apiResponse";
 import apiClient from "@/lib/apiClient";
+import { User } from "@/types/user";
 
 /**
  * 내가 북마크한 게시글 목록을 가져옵니다.
@@ -51,5 +52,17 @@ export async function getMyBuyPosts(): Promise<PostItem[]> {
     return response || [];
   } catch (error) {
     throw new Error(`구매 게시물 목록을 불러올 수 없습니다.`);
+  }
+}
+
+/**
+ * 로그인한 사용자 정보를 가져옵니다.
+ */
+export async function getMyUserInfo(userId: number): Promise<User> {
+  try {
+    const response = await apiClient.get<{ item: User }>(`/users/${userId}`);
+    return response.item;
+  } catch (error) {
+    throw new Error(`사용자 정보를 불러올 수 없습니다: ${error instanceof Error ? error.message : "알 수 없는 오류"}`);
   }
 }
