@@ -20,6 +20,25 @@ export default async function SearchPage({ params, searchParams }: SearchPagePro
     <main className="px-5 py-1 bg-uni-white min-h-screen">
       <MarketPageHeader />
       <MarketSearch />
+      <div className="flex relative justify-around mb-4 border-b border-uni-gray-100 -mx-5 ">
+        {(["buy", "sell"] as const).map((i) => {
+          // 읽기 전용 [buy, sell] 튜플 리터럴
+          const label = i === "buy" ? "사고 싶어요" : "팔고 싶어요";
+          const active = i === marketType;
+          return (
+            <Link
+              key={i}
+              href={`/school/market/${i}`}
+              className={`flex-1 relative text-center py-2 font-bold text-14 ${
+                active ? "text-uni-blue-400" : "text-uni-gray-500"
+              }`}
+            >
+              {label}
+              {active && <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-uni-blue-400" />}
+            </Link>
+          );
+        })}
+      </div>
       <MarketTagNav />
 
       {/* 헤더 */}
