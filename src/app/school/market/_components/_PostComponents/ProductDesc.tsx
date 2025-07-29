@@ -58,7 +58,7 @@ export default function ProductDesc({ initialData }: ProductDescProps) {
           name="price"
           type="text"
           defaultValue={initialData?.extra.price || ""}
-          placeholder="가격을 입력해주세요."
+          placeholder="숫자만 입력 (',' 없이)"
           className="w-full bg-uni-gray-200 rounded-lg p-3 text-16"
         />
       </div>
