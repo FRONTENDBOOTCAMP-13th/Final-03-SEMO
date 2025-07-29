@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Pagination from "@/components/ui/Pagination";
 import ReviewCard from "@/app/school/myPage/_components/ReviewCard";
 import EmptyState from "@/components/common/EmptyState";
@@ -13,8 +13,12 @@ export default function MyPageReviewsToWrite() {
   const { orders, isLoading, error, refetch } = usePurchasedItems();
   const [reviewsData, setReviewsData] = useState<Review[]>([]);
   const [isReviewsLoading, setIsReviewsLoading] = useState(true);
+  const [pendingReviewedIds, setPendingReviewedIds] = useState<Set<number>>(new Set());
 
   useEffect(() => {
+    const storedIds = JSON.parse(localStorage.getItem("pendingReviewedIds") || "[]");
+    setPendingReviewedIds(new Set(storedIds));
+
     const fetchReviews = async () => {
       if (orders.length > 0) {
         setIsReviewsLoading(true);
@@ -22,7 +26,6 @@ export default function MyPageReviewsToWrite() {
           const items = await ordersToReviewItems(orders);
           setReviewsData(items);
         } catch (err) {
-          console.error("리뷰 데이터 변환 중 오류 발생:", err);
           setReviewsData([]);
         } finally {
           setIsReviewsLoading(false);
@@ -34,6 +37,18 @@ export default function MyPageReviewsToWrite() {
     };
 
     fetchReviews();
+  }, [orders]);
+
+  useEffect(() => {
+    if (orders.length > 0) {
+      const storedIds = JSON.parse(localStorage.getItem("pendingReviewedIds") || "[]");
+      const actualReviewedProductIds = new Set(orders.flatMap((order) => order.products.map((p) => p._id)));
+      const newStoredIds = storedIds.filter((id: number) => !actualReviewedProductIds.has(id));
+      if (newStoredIds.length !== storedIds.length) {
+        localStorage.setItem("pendingReviewedIds", JSON.stringify(newStoredIds));
+        setPendingReviewedIds(new Set(newStoredIds));
+      }
+    }
   }, [orders]);
 
   // 반응형 페이지네이션 로직을 hook으로 분리
@@ -95,7 +110,7 @@ export default function MyPageReviewsToWrite() {
           {reviewsData.length > 0 ? (
             <>
               {visibleReviews.map((review) => (
-                <ReviewCard key={review.id} review={review} />
+                <ReviewCard key={review.id} review={review} isReviewed={pendingReviewedIds.has(review.id)} />
               ))}
 
               {/* 페이지네이션 컴포넌트  */}
