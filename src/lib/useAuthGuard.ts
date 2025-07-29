@@ -12,7 +12,7 @@ export const useAuthGuard = (requireLogin = true) => {
     if (requireLogin && !isLoggedIn) {
       router.replace("/login");
     } else if (!requireLogin && isLoggedIn) {
-      router.replace("/school");
+      router.replace("/school/home");
     }
   }, [isLoggedIn, requireLogin, router]);
 };
