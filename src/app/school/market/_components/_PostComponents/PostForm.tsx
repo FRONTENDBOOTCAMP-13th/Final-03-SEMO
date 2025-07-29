@@ -65,6 +65,7 @@ export default function PostForm({ mode, initialData, marketType, postId }: Post
       <input type="hidden" name="image" value={images.length > 0 ? images[0] : ""} />
       <main className="min-w-[320px] max-w-[480px] mx-auto px-4 py-6 min-h-screen bg-uni-white">
         <Product images={images} setImages={setImages} initialTitle={initialData?.title} />
+        <p className="text-15 mb-2 text-uni-gray-600 font-bold">거래 방식</p>
         <section role="group" aria-label="거래 유형" className="mb-5 flex gap-3">
           {/* 팔래요, 살래요, 모여요 버튼 생성 */}
           {(["buy", "sell", "groupPurchase"] as const).map((t) => (

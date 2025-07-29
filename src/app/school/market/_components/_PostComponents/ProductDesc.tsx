@@ -18,6 +18,7 @@ export default function ProductDesc({ initialData }: ProductDescProps) {
           카테고리
         </label>
         {/* 카테고리 셀렉트 */}
+        <p className="text-15 mb-1 text-uni-gray-600 font-bold">카테고리</p>
         <select
           id="tag"
           name="tag"
@@ -37,10 +38,11 @@ export default function ProductDesc({ initialData }: ProductDescProps) {
         <label htmlFor="desc" className="sr-only">
           상품 설명
         </label>
+        <p className="text-15 mb-1 text-uni-gray-600 font-bold">상품 설명</p>
         <textarea
           id="desc"
           name="content"
-          placeholder="상품 설명"
+          placeholder="판매 금지 물품은 게시가 제한될 수 있어요"
           defaultValue={initialData?.content || ""}
           className="w-full h-[150px] bg-uni-gray-200 rounded-lg p-3 text-16"
           maxLength={250}
@@ -50,12 +52,13 @@ export default function ProductDesc({ initialData }: ProductDescProps) {
         <label htmlFor="price" className="sr-only">
           가격
         </label>
+        <p className="text-15 mb-1 text-uni-gray-600 font-bold">가격(원)</p>
         <input
           id="price"
           name="price"
           type="text"
           defaultValue={initialData?.extra.price || ""}
-          placeholder="가격"
+          placeholder="가격을 입력해주세요."
           className="w-full bg-uni-gray-200 rounded-lg p-3 text-16"
         />
       </div>
@@ -63,6 +66,7 @@ export default function ProductDesc({ initialData }: ProductDescProps) {
         <label htmlFor="location" className="sr-only">
           거래장소
         </label>
+        <p className="text-15 mb-1 text-uni-gray-600 font-bold">거래 희망 장소</p>
         <input
           type="text"
           name="location"

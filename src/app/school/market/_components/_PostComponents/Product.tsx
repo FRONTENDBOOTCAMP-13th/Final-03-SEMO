@@ -14,11 +14,12 @@ export default function Product({ images, initialTitle, setImages }: ProductProp
         <label htmlFor="item-name" className="sr-only">
           상품명
         </label>
+        <p className="text-15 mb-1 text-uni-gray-600 font-bold">상품명</p>
         <input
           id="item-name"
           name="title"
           type="text"
-          placeholder="상품명"
+          placeholder="상품명 입력"
           defaultValue={initialTitle || ""}
           className="w-full bg-uni-gray-200 rounded-lg p-3 text-16"
         />
