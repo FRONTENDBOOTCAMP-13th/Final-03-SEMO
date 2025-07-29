@@ -17,10 +17,10 @@ export default async function SearchPage({ params, searchParams }: SearchPagePro
   const res = await getKeywordPosts(marketType, keyword || null);
 
   return (
-    <main className="px-5 py-1 bg-uni-white min-h-screen">
+    <main className="px-5 bg-uni-white min-h-screen">
       <MarketPageHeader />
       <MarketSearch />
-      <div className="flex relative justify-around mb-4 border-b border-uni-gray-100 -mx-5 ">
+      <div className="flex relative justify-around mb-4 border-b border-uni-gray-100 -mx-5">
         {(["buy", "sell"] as const).map((i) => {
           // 읽기 전용 [buy, sell] 튜플 리터럴
           const label = i === "buy" ? "사고 싶어요" : "팔고 싶어요";

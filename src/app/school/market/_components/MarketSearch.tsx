@@ -38,7 +38,7 @@ const Search = () => {
   };
 
   return (
-    <div className="w-full min-w-[340px] max-w-[480px] mx-auto py-3">
+    <div className="w-full min-w-[340px] max-w-[480px] mx-auto pb-3">
       <form onSubmit={handleSubmit}>
         <div className="flex items-center bg-uni-gray-200 rounded-[12px] h-12 w-full">
           <button type="submit" className="text-uni-black cursor-pointer">
