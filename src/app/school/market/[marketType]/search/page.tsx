@@ -6,7 +6,7 @@ import MarketTagNav from "../../_components/MarketTagNav";
 import Link from "next/link";
 
 interface SearchPageProps {
-  params: Promise<{ marketType: "buy" | "sell" }>;
+  params: Promise<{ marketType: "buy" | "sell" | "groupPurchase" }>;
   searchParams: Promise<{ keyword?: string }>;
 }
 

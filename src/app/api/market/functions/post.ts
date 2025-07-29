@@ -75,7 +75,10 @@ export async function getReplies(_id: number, retryCount = 0): ApiResPromise<Pos
  * @param {string | null} keyword - 검색 키워드
  * @returns {Promise<ApiRes<Post[]>>} 게시글 목록 응답 객체
  */
-export async function getKeywordPosts(type: "buy" | "sell", keyword: string | null): ApiResPromise<Post[]> {
+export async function getKeywordPosts(
+  type: "buy" | "sell" | "groupPurchase",
+  keyword: string | null
+): ApiResPromise<Post[]> {
   try {
     // keyword가 null이거나 빈 문자열인 경우 처리
     if (!keyword || !keyword.trim()) {

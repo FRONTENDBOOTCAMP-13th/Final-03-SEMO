@@ -3,6 +3,7 @@ import MarketSearch from "@/app/school/market/_components/MarketSearch";
 import FloatingButton from "@/components/common/FloatingButton";
 import ItemSection from "../[marketType]/itemSection";
 import { getPosts } from "@/app/api/market/functions/post";
+import MarketTagNav from "@/app/school/market/_components/MarketTagNav";
 import { Pencil } from "lucide-react";
 
 export default async function groupPurchase() {
@@ -13,6 +14,7 @@ export default async function groupPurchase() {
     <main className="relative min-w-[320px] max-w-[480px] px-5 py-1 bg-uni-white min-h-screen">
       <MarketPageHeader />
       <MarketSearch />
+      <MarketTagNav />
       <ItemSection items={res.ok ? res.item || [] : []} market="groupPurchase" layout="list" />
       <FloatingButton
         href={`/school/market/groupPurchase/new`}
