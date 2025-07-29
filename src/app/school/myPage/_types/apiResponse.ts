@@ -135,3 +135,23 @@ export interface UserResponse {
   ok: 1;
   item: User;
 }
+
+export interface ReviewItem {
+  _id: number;
+  order_id: number;
+  product_id: number;
+  rating: number;
+  content: string;
+  user_id: number;
+  user: {
+    _id: number;
+    name: string;
+    image: string;
+  };
+  createdAt: string;
+}
+
+export interface SubmitReviewResponse {
+  ok: 1;
+  item: ReviewItem;
+}
