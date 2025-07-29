@@ -7,7 +7,6 @@ import { usePathname, useRouter } from "next/navigation";
 import { useActionState } from "react";
 import { deletePost } from "@/data/actions/post";
 import { Trash2, PenLine, ExternalLink } from "lucide-react";
-import { group } from "console";
 
 const HEADER_CONFIGS = {
   marketList: {
