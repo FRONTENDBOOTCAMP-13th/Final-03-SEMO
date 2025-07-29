@@ -24,7 +24,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Review } from "@/app/school/myPage/_utils/postConverter";
 
-export default function ReviewCard({ review }: { review: Review }) {
+export default function ReviewCard({ review, isReviewed }: { review: Review; isReviewed: boolean }) {
   return (
     <div
       key={review.id}
@@ -53,9 +53,11 @@ export default function ReviewCard({ review }: { review: Review }) {
       {/* 오른쪽: 버튼 */}
       <Link
         href={`/school/myPage/write-review/${review.id}`}
-        className="px-4 py-2 text-14 bg-uni-blue-400 text-uni-white rounded-lg font-medium font-pretendard ml-4 hover:bg-uni-blue-500 transition-colors"
+        className={`px-4 py-2 text-14 rounded-lg font-medium font-pretendard ml-4 ${isReviewed ? "bg-uni-gray-300 text-uni-gray-500 cursor-not-allowed" : "bg-uni-blue-400 text-uni-white hover:bg-uni-blue-500 transition-colors"}`}
+        aria-disabled={isReviewed}
+        tabIndex={isReviewed ? -1 : undefined}
       >
-        후기 작성
+        {isReviewed ? "작성 완료" : "후기 작성"}
       </Link>
     </div>
   );
