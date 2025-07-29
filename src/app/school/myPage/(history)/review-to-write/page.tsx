@@ -17,6 +17,7 @@ export default function MyPageReviewsToWrite() {
 
   useEffect(() => {
     const storedIds = JSON.parse(localStorage.getItem("pendingReviewedIds") || "[]");
+    console.log("초기 로드: localStorage에서 읽은 pendingReviewedIds:", storedIds);
     setPendingReviewedIds(new Set(storedIds));
 
     const fetchReviews = async () => {
@@ -25,7 +26,9 @@ export default function MyPageReviewsToWrite() {
         try {
           const items = await ordersToReviewItems(orders);
           setReviewsData(items);
+          console.log("리뷰 데이터 변환 완료:", items);
         } catch (err) {
+          console.error("리뷰 데이터 변환 중 오류 발생:", err);
           setReviewsData([]);
         } finally {
           setIsReviewsLoading(false);
@@ -40,16 +43,20 @@ export default function MyPageReviewsToWrite() {
   }, [orders]);
 
   useEffect(() => {
-    if (orders.length > 0) {
+    // reviewsData가 업데이트될 때 localStorage 정리
+    if (reviewsData.length > 0) {
       const storedIds = JSON.parse(localStorage.getItem("pendingReviewedIds") || "[]");
-      const actualReviewedProductIds = new Set(orders.flatMap((order) => order.products.map((p) => p._id)));
-      const newStoredIds = storedIds.filter((id: number) => !actualReviewedProductIds.has(id));
+      const actualPendingReviewIds = new Set(reviewsData.map(review => review.id));
+      console.log("localStorage 정리: 현재 localStorage의 pendingReviewedIds:", storedIds);
+      console.log("localStorage 정리: 실제 리뷰 작성 대상 product IDs:", Array.from(actualPendingReviewIds));
+      const newStoredIds = storedIds.filter((id: number) => actualPendingReviewIds.has(id)); // reviewsData에 있는 ID만 남김
       if (newStoredIds.length !== storedIds.length) {
         localStorage.setItem("pendingReviewedIds", JSON.stringify(newStoredIds));
         setPendingReviewedIds(new Set(newStoredIds));
+        console.log("localStorage 정리: 업데이트된 pendingReviewedIds:", newStoredIds);
       }
     }
-  }, [orders]);
+  }, [reviewsData]);
 
   // 반응형 페이지네이션 로직을 hook으로 분리
   const {
