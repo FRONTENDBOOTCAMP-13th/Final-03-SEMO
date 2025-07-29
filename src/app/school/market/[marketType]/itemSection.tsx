@@ -14,9 +14,10 @@ interface Props {
   items: Post[];
   market: "buy" | "sell" | "groupPurchase";
   _id?: number;
+  layout?: "grid" | "list"; // 레이아웃 타입 설정
 }
 
-export default function ItemSection({ items, market }: Props) {
+export default function ItemSection({ items, market, layout = "grid" }: Props) {
   if (!items || items.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-15">
@@ -41,11 +42,6 @@ export default function ItemSection({ items, market }: Props) {
             <p className="text-14 text-uni-gray-300 font-light truncate">
               {Number(item.extra.price).toLocaleString()}원
             </p>
-            {/* 좋아요
-            <div className="flex items-center mr-4">
-              <Heart size={15} color="red" strokeWidth={2} />
-              <span className="ml-1">0</span>
-            </div> */}
 
             {/* 댓글 */}
             <div className="flex items-center">
