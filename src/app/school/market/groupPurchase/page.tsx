@@ -13,7 +13,7 @@ export default async function groupPurchase() {
     <main className="relative min-w-[320px] max-w-[480px] px-5 py-1 bg-uni-white min-h-screen">
       <MarketPageHeader />
       <MarketSearch />
-      <ItemSection items={res.ok ? res.item || [] : []} market="groupPurchase" />
+      <ItemSection items={res.ok ? res.item || [] : []} market="groupPurchase" layout="list" />
       <FloatingButton
         href={`/school/market/groupPurchase/new`}
         icon={<Pencil size={25} color="white" />}
