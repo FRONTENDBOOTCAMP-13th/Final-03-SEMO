@@ -81,7 +81,7 @@ export default function PostForm({ mode, initialData, marketType, postId }: Post
                 onChange={() => mode === "create" && setTradeType(t)} // 버튼 클릭시 tradeType 상태 업데이트
                 className="hidden"
               />
-              {t === "buy" ? "살래요" : t === "sell" ? "팔래요" : "모여요"}
+              {t === "buy" ? "살래요" : t === "sell" ? "팔래요" : "공동구매"}
             </label>
           ))}
         </section>
