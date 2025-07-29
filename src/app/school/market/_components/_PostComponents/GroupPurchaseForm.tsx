@@ -36,8 +36,8 @@ export default function GroupPurchase() {
         </label>
         <div className="relaltive">
           <input
-            id="deadline"
-            name="deadline"
+            id="deadLine"
+            name="deadLine"
             type="datetime-local"
             className="w-full bg-uni-gray-200 rounded-lg p-3 text-16"
           />
