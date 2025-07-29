@@ -7,7 +7,14 @@ interface ButtonProps {
   className?: string;
 }
 
-export default function Button({ type = "primary", onClick, children, className, ...props }: ButtonProps) {
+export default function Button({
+  type = "primary",
+  buttonType = "button",
+  onClick,
+  children,
+  className,
+  ...props
+}: ButtonProps) {
   const base = "w-full py-3 rounded-md font-semibold text-sm flex justify-center items-center";
 
   const styleMap = {
@@ -18,7 +25,7 @@ export default function Button({ type = "primary", onClick, children, className,
   };
 
   return (
-    <button onClick={onClick} className={`${styleMap[type]} ${className ?? ""}`} {...props}>
+    <button type={buttonType} onClick={onClick} className={`${styleMap[type]} ${className ?? ""}`} {...props}>
       {children}
     </button>
   );
