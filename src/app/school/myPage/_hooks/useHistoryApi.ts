@@ -1,6 +1,11 @@
 import { useState, useEffect, useCallback } from "react";
-import { getMyBookmarks, getPurchasedItems, getMyProducts } from "@/app/school/myPage/_actions/myPageHistoryActions";
-import { BookmarkItem, OrderItem, ProductItem } from "@/app/school/myPage/_types/apiResponse";
+import {
+  getMyBookmarks,
+  getPurchasedItems,
+  getMySellPosts,
+  getMyBuyPosts,
+} from "@/app/school/myPage/_actions/myPageHistoryActions";
+import { BookmarkItem, OrderItem, PostItem } from "@/app/school/myPage/_types/apiResponse";
 
 /**
  * 북마크 목록을 가져오는 훅
@@ -73,36 +78,44 @@ export function usePurchasedItems() {
 }
 
 /**
- * 내가 판매한 상품 목록을 가져오는 훅
+ * 내가 판매하는 게시물 목록을 가져오는 훅
  */
-export function useMyProducts() {
-  const [products, setProducts] = useState<ProductItem[]>([]);
+export function useMyPosts() {
+  const [sellPosts, setSellPosts] = useState<PostItem[]>([]);
+  const [buyPosts, setBuyPosts] = useState<PostItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchProducts = useCallback(async () => {
+  const fetchMyPosts = useCallback(async () => {
     try {
       setIsLoading(true);
       setError(null);
 
-      const response = await getMyProducts();
-      setProducts(response);
+      const [sellResponse, buyResponse] = await Promise.all([
+        getMySellPosts(), // type=sell
+        getMyBuyPosts(), // type=buy
+      ]);
+
+      setSellPosts(sellResponse);
+      setBuyPosts(buyResponse);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "판매 상품을 불러올 수 없습니다.");
-      setProducts([]);
+      setError(err instanceof Error ? err.message : "게시물 목록을 불러올 수 없습니다.");
+      setSellPosts([]);
+      setBuyPosts([]);
     } finally {
       setIsLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    fetchProducts();
-  }, [fetchProducts]);
+    fetchMyPosts();
+  }, [fetchMyPosts]);
 
   return {
-    products,
+    sellPosts,
+    buyPosts,
     isLoading,
     error,
-    refetch: fetchProducts,
+    refetch: fetchMyPosts,
   };
 }
