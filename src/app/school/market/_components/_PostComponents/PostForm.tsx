@@ -4,8 +4,8 @@
 import { useState, useActionState, useEffect } from "react";
 import { createPost, updatePost } from "@/data/actions/post";
 import { useUserStore } from "@/store/userStore";
-import { Post } from "@/types";
-import GroupPurchase from "./GroupPurchase";
+import { Post, PostType } from "@/types";
+import GroupPurchase from "./GroupPurchaseForm";
 import ProductDesc from "./ProductDesc";
 import Product from "./Product";
 import NewAccount from "./NewAccount";
@@ -13,14 +13,16 @@ import NewAccount from "./NewAccount";
 interface PostFormProps {
   mode: "create" | "edit";
   initialData?: Post; // 수정 모드에서 기존 게시글 데이터
-  marketType: string; // 게시판 타입
+  marketType: PostType; // 게시판 타입
   postId?: string; // 수정 모드에서 게시글 ID
 }
 
 export default function PostForm({ mode, initialData, marketType, postId }: PostFormProps) {
   const [selected, setSelected] = useState<"registered" | "new">("registered"); // 계좌 유형 선택 상태 관리
-  const [tradeType, setTradeType] = useState<"sell" | "buy" | "group">( // 거래 유형 상태 관리
-    (initialData?.type as "sell" | "buy" | "group") || (marketType as "sell" | "buy" | "group") || "sell"
+  const [tradeType, setTradeType] = useState<"sell" | "buy" | "groupPurchase">( // 거래 유형 상태 관리
+    (initialData?.type as "sell" | "buy" | "groupPurchase") ||
+      (marketType as "sell" | "buy" | "groupPurchase") ||
+      "sell"
   );
   const [images, setImages] = useState<string[]>(initialData?.image ? [initialData.image] : []); // 이미지 배열(초기값 : 이미지 한장만 가능하게 설정, 추후 변경)
 
@@ -48,7 +50,7 @@ export default function PostForm({ mode, initialData, marketType, postId }: Post
         return "bg-yellow-100 text-uni-black";
       case "buy":
         return "bg-uni-red-200 text-uni-black";
-      case "group":
+      case "groupPurchase":
         return "bg-uni-blue-200 text-uni-black";
       default:
         return "border-2 border-uni-gray-200 text-uni-gray-400";
@@ -65,7 +67,7 @@ export default function PostForm({ mode, initialData, marketType, postId }: Post
         <Product images={images} setImages={setImages} initialTitle={initialData?.title} />
         <section role="group" aria-label="거래 유형" className="mb-5 flex gap-3">
           {/* 팔래요, 살래요, 모여요 버튼 생성 */}
-          {(["buy", "sell", "group"] as const).map((t) => (
+          {(["buy", "sell", "groupPurchase"] as const).map((t) => (
             <label
               key={t}
               className={`flex items-center justify-center px-5 py-2 rounded-xl font-medium text-14 cursor-pointer ${getButtonStyle(t, tradeType)} }`}
@@ -85,7 +87,7 @@ export default function PostForm({ mode, initialData, marketType, postId }: Post
         </section>
 
         <ProductDesc initialData={initialData} />
-        {tradeType === "group" && <GroupPurchase />}
+        {tradeType === "groupPurchase" && <GroupPurchase />}
         <section className="mb-8">
           <fieldset className="flex flex-col gap-3">
             <label
