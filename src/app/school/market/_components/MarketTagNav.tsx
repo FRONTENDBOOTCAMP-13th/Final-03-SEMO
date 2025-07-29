@@ -53,7 +53,7 @@ export default function MarketTagNav() {
             key={tag}
             // value={activeTag}
             onClick={() => handleTagClick(tag)}
-            className={`flex-shrink-0 px-4 py-1.5 rounded-full text-14 font-medium
+            className={`flex-shrink-0 px-5 py-2 rounded-full text-16 font-medium
               ${activeTag === tag ? "bg-uni-blue-400 text-uni-white" : "bg-uni-gray-200 text-uni-gray-300"}`}
           >
             {tag}
