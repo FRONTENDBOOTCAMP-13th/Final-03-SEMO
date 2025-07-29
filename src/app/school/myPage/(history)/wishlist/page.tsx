@@ -2,6 +2,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { useRouter } from "next/navigation"; // useRouter 임포트
 import TabNavigation from "@/components/ui/TabNavigation";
 import ItemCard, { Item } from "@/app/school/myPage/_components/ItemCard";
 import EmptyState from "@/components/common/EmptyState";
@@ -11,6 +12,12 @@ import SectionHeader from "@/components/common/SectionHeader";
 
 export default function MyPageWishlist() {
   const [activeTab, setActiveTab] = useState("전체");
+  const router = useRouter(); // useRouter 훅 사용
+
+  const handleItemClick = (item: Item) => {
+    // 동적 라우팅 경로 생성
+    router.push(`/school/market/${item.marketType}/${item.id}`);
+  };
 
   // 컴포넌트가 로드되는지 확인
 
@@ -23,36 +30,12 @@ export default function MyPageWishlist() {
     return items;
   }, [bookmarks]);
 
-  // 카테고리별로 필터링
-  const sellItems: Item[] = wishlistItems
-    .filter((item) => item.category === "팔래요")
-    .map((item) => ({
-      id: item.id,
-      title: item.title,
-      price: item.price,
-      image: item.image,
-      status: item.status,
-    }));
+  // myPageItems에서 카테고리별로 필터링
+  const sellItems: Item[] = wishlistItems.filter((item) => item.marketType === "sell");
 
-  const buyItems: Item[] = wishlistItems
-    .filter((item) => item.category === "살래요")
-    .map((item) => ({
-      id: item.id,
-      title: item.title,
-      price: item.price,
-      image: item.image,
-      status: item.status,
-    }));
+  const buyItems: Item[] = wishlistItems.filter((item) => item.marketType === "buy");
 
-  const gatheringsItems: Item[] = wishlistItems
-    .filter((item) => item.category === "모여요")
-    .map((item) => ({
-      id: item.id,
-      title: item.title,
-      price: item.price,
-      image: item.image,
-      status: item.status,
-    }));
+  const gatheringsItems: Item[] = wishlistItems.filter((item) => item.marketType === "gather");
 
   const tabs = ["전체", "팔래요", "살래요", "모여요"];
 
@@ -100,7 +83,7 @@ export default function MyPageWishlist() {
             <div className="space-y-3">
               {sellItems.length > 0 ? (
                 (activeTab === "전체" ? sellItems.slice(0, 4) : sellItems).map((item) => (
-                  <ItemCard key={item.id} item={item} />
+                  <ItemCard key={item.id} item={item} onClick={handleItemClick} />
                 ))
               ) : (
                 <EmptyState message="아직 거래한게 없어요" />
@@ -120,7 +103,7 @@ export default function MyPageWishlist() {
             <div className="space-y-3">
               {buyItems.length > 0 ? (
                 (activeTab === "전체" ? buyItems.slice(0, 4) : buyItems).map((item) => (
-                  <ItemCard key={item.id} item={item} />
+                  <ItemCard key={item.id} item={item} onClick={handleItemClick} />
                 ))
               ) : (
                 <EmptyState message="아직 거래한게 없어요" />
@@ -140,7 +123,7 @@ export default function MyPageWishlist() {
             <div className="space-y-3">
               {gatheringsItems.length > 0 ? (
                 (activeTab === "전체" ? gatheringsItems.slice(0, 4) : gatheringsItems).map((item) => (
-                  <ItemCard key={item.id} item={item} />
+                  <ItemCard key={item.id} item={item} onClick={handleItemClick} />
                 ))
               ) : (
                 <EmptyState message="아직 거래한게 없어요" />

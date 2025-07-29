@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { useRouter } from "next/navigation"; // useRouter 임포트
 import TabNavigation from "@/components/ui/TabNavigation";
 import ItemCard, { Item } from "@/app/school/myPage/_components/ItemCard";
 import EmptyState from "@/components/common/EmptyState";
@@ -12,6 +13,12 @@ import { useResponsivePagination } from "@/lib/hooks/useResponsivePagination";
 
 export default function MyPageMyPost() {
   const [activeTab, setActiveTab] = useState("전체");
+  const router = useRouter(); // useRouter 훅 사용
+
+  const handleItemClick = (item: Item) => {
+    // 동적 라우팅 경로 생성
+    router.push(`/school/market/${item.marketType}/${item.id}`);
+  };
 
   // API로부터 내가 판매/구매한 상품 목록 가져오기
   const { sellPosts, buyPosts, isLoading, error, refetch } = useMyPosts();
@@ -25,34 +32,13 @@ export default function MyPageMyPost() {
 
   // myPageItems에서 카테고리별로 필터링
   const sellItems: Item[] = myPageItems
-    .filter((item) => item.category === "팔래요")
-    .map((item) => ({
-      id: item.id,
-      title: item.title,
-      price: item.price,
-      image: item.image,
-      status: item.status,
-    }));
+    .filter((item) => item.marketType === "sell");
 
   const buyItems: Item[] = myPageItems
-    .filter((item) => item.category === "살래요")
-    .map((item) => ({
-      id: item.id,
-      title: item.title,
-      price: item.price,
-      image: item.image,
-      status: item.status,
-    }));
+    .filter((item) => item.marketType === "buy");
 
   const gatheringsItems: Item[] = myPageItems
-    .filter((item) => item.category === "모여요")
-    .map((item) => ({
-      id: item.id,
-      title: item.title,
-      price: item.price,
-      image: item.image,
-      status: item.status,
-    }));
+    .filter((item) => item.marketType === "gather");
 
   // 팔래요 페이지네이션
   const sellPagination = useResponsivePagination({
@@ -129,9 +115,13 @@ export default function MyPageMyPost() {
                 <>
                   {activeTab === "팔래요"
                     ? // 팔래요 탭일 때만 페이지네이션 적용
-                      sellPagination.paginatedData.map((item) => <ItemCard key={item.id} item={item} />)
+                      sellPagination.paginatedData.map((item) => (
+                        <ItemCard key={item.id} item={item} onClick={handleItemClick} />
+                      ))
                     : // 전체 탭일 때는 4개만 표시
-                      sellItems.slice(0, 4).map((item) => <ItemCard key={item.id} item={item} />)}
+                      sellItems
+                        .slice(0, 4)
+                        .map((item) => <ItemCard key={item.id} item={item} onClick={handleItemClick} />)}
                   {activeTab === "팔래요" && sellPagination.totalPages > 1 && (
                     <Pagination
                       pageCount={sellPagination.totalPages}
@@ -160,9 +150,13 @@ export default function MyPageMyPost() {
                 <>
                   {activeTab === "살래요"
                     ? // 살래요 탭일 때만 페이지네이션 적용
-                      buyPagination.paginatedData.map((item) => <ItemCard key={item.id} item={item} />)
+                      buyPagination.paginatedData.map((item) => (
+                        <ItemCard key={item.id} item={item} onClick={handleItemClick} />
+                      ))
                     : // 전체 탭일 때는 4개만 표시
-                      buyItems.slice(0, 4).map((item) => <ItemCard key={item.id} item={item} />)}
+                      buyItems
+                        .slice(0, 4)
+                        .map((item) => <ItemCard key={item.id} item={item} onClick={handleItemClick} />)}
                   {activeTab === "살래요" && buyPagination.totalPages > 1 && (
                     <Pagination
                       pageCount={buyPagination.totalPages}
@@ -191,9 +185,13 @@ export default function MyPageMyPost() {
                 <>
                   {activeTab === "모여요"
                     ? // 모여요 탭일 때만 페이지네이션 적용
-                      gatheringsPagination.paginatedData.map((item) => <ItemCard key={item.id} item={item} />)
+                      gatheringsPagination.paginatedData.map((item) => (
+                        <ItemCard key={item.id} item={item} onClick={handleItemClick} />
+                      ))
                     : // 전체 탭일 때는 4개만 표시
-                      gatheringsItems.slice(0, 4).map((item) => <ItemCard key={item.id} item={item} />)}
+                      gatheringsItems
+                        .slice(0, 4)
+                        .map((item) => <ItemCard key={item.id} item={item} onClick={handleItemClick} />)}
                   {activeTab === "모여요" && gatheringsPagination.totalPages > 1 && (
                     <Pagination
                       pageCount={gatheringsPagination.totalPages}
