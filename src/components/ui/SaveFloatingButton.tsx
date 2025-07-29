@@ -1,7 +1,7 @@
 /**
  * SaveFloatingButton 컴포넌트
  *
- * 화면 하단에 고정되어 노출되는 저장/등록 버튼 컴포넌트입니다.
+ * 화면 하단에 고정되어 노출되는 기능(데이터 저장, 폼 제출 등)을 실행 버튼 컴포넌트입니다.
  *
  * @example
  * <SaveFloatingButton onClick={handleSave}>
@@ -27,7 +27,7 @@ export default function SaveFloatingButton({ children, onClick, className = "" }
   return (
     <button
       onClick={onClick}
-      className={`fixed bottom-24 left-1/2 transform -translate-x-1/2 w-[calc(100%-2rem)] max-w-[448px] py-4 text-16 bg-uni-blue-400 text-uni-white font-medium font-pretendard rounded-lg shadow-lg hover:bg-uni-blue-500 transition-all duration-100 hover:shadow-xl active:scale-98 ${className}`}
+      className={`fixed bottom-24 left-1/2 transform -translate-x-1/2 w-[calc(100%-2rem)] max-w-[448px] py-4 text-16 bg-uni-blue-400 text-uni-white font-bold font-pretendard rounded-lg  duration-100  active:scale-98 `}
     >
       {children}
     </button>

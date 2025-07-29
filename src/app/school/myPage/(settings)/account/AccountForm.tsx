@@ -2,13 +2,13 @@
 
 import { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
-import SaveFloatingButton from "../../_components/SaveFloatingButton";
-import InputField from "../../_components/InputField";
-import { validateNickname, validateAccountNumber, validateBankSelection } from "./utils/validation";
-import { useMyPageApi } from "../../_hooks/useMyPageApi";
+import SaveFloatingButton from "@/components/ui/SaveFloatingButton";
+import InputField from "@/components/ui/InputField";
+import { validateNickname, validateAccountNumber, validateBankSelection } from "@/app/school/myPage/_utils/validation";
+import { useMyPageApi } from "@/app/school/myPage/_hooks/useMyPageApi";
 import { getImageUrl } from "@/data/actions/file";
 import { useUserStore } from "@/store/userStore";
-import { User } from "../../_types/user";
+import { User } from "@/app/school/myPage/_types/user";
 
 export default function AccountForm() {
   const { user, setUser } = useUserStore();
@@ -52,7 +52,6 @@ export default function AccountForm() {
 
   // 이미지 렌더링을 메모이제이션하여 불필요한 요청 방지
   const imageElement = useMemo(() => {
-    console.log("memoizedImageUrl:", memoizedImageUrl);
     if (memoizedImageUrl) {
       return (
         <Image
@@ -136,11 +135,9 @@ export default function AccountForm() {
 
       // 새로 업로드할 파일이 있는 경우
       if (uploadFile) {
-        console.log("새 이미지 업로드 시작:", uploadFile.name);
         const uploadedImageUrl = await uploadProfileImage(uploadFile);
         if (uploadedImageUrl) {
           finalImageUrl = uploadedImageUrl;
-          console.log("이미지 업로드 성공:", uploadedImageUrl);
         } else {
           alert("이미지 업로드에 실패했습니다.");
           return;
@@ -158,8 +155,6 @@ export default function AccountForm() {
         profileImage: finalImageUrl,
       };
 
-      console.log("프로필 업데이트 시작:", profileData);
-      console.log("User ID for update:", user._id);
       if (!user._id) {
         alert("사용자 ID를 찾을 수 없습니다. 다시 로그인해주세요.");
         return;
@@ -193,9 +188,7 @@ export default function AccountForm() {
   };
 
   // 탈퇴 핸들러 (아직 구현되지 않음)
-  const handleWithdraw = () => {
-    console.log("탈퇴하기 버튼 클릭");
-  };
+  const handleWithdraw = () => {};
 
   return (
     <div className="min-h-screen bg-uni-white">
@@ -203,7 +196,7 @@ export default function AccountForm() {
         {/* 프로필 이미지 */}
         <div className="flex flex-col items-center mb-6">
           <div className="relative group">
-            <div className="w-28 h-28 bg-gradient-to-br from-uni-gray-200 to-uni-gray-300 rounded-full flex items-center justify-center overflow-hidden relative border-4 border-uni-white shadow-lg">
+            <div className="w-28 h-28  bg-uni-gray-300 rounded-full flex items-center justify-center overflow-hidden relative  ">
               {imageElement}
 
               {/* 호버 오버레이 */}
@@ -256,7 +249,7 @@ export default function AccountForm() {
         </div>
 
         {/* 아이디 섹션 (읽기 전용)(inputField 컴포넌트 사용) */}
-        <div className="mb-6">
+        <div className="mb-6 ">
           <InputField label="아이디" value={user.email || ""} readOnly />
         </div>
 
@@ -264,7 +257,7 @@ export default function AccountForm() {
         1-1. 입력 중 실시간 검사*/}
         <div className="mb-6">
           <InputField
-            label="닉네임"
+            label="이름"
             value={name}
             onChange={handleNameChange}
             placeholder="닉네임을 입력해주세요"
@@ -276,7 +269,7 @@ export default function AccountForm() {
 
         {/* 계좌번호 섹션 */}
         <div className="mb-8">
-          <label className="block text-14 font-medium text-uni-black mb-2 font-pretendard">
+          <label className="block text-14 font-bold text-uni-black mb-2 font-pretendard">
             계좌번호 <span className="text-uni-red-300">*</span>
           </label>
           <div className="space-y-3">
@@ -315,10 +308,10 @@ export default function AccountForm() {
 
         {/* 탈퇴 섹션 */}
         <div className="mb-12">
-          <label className="block text-14 font-medium text-uni-black mb-2 font-pretendard">탈퇴</label>
+          <label className="block text-14 font-bold text-uni-black mb-2 font-pretendard">탈퇴</label>
           <button
             onClick={handleWithdraw}
-            className="w-full px-4 py-3 bg-uni-gray-200 rounded-lg text-left text-uni-black hover:bg-uni-gray-300 transition-colors flex items-center justify-between font-pretendard text-16"
+            className="w-full px-4 py-3 bg-uni-gray-200 rounded-lg text-left text-uni-black  flex items-center justify-between font-pretendard text-16"
           >
             <span>탈퇴하기</span>
             <svg className="w-5 h-5 text-uni-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">

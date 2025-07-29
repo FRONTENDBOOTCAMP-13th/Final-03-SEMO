@@ -1,38 +1,43 @@
 "use client";
 
-import { useState, use, useEffect } from "react";
+import React, { useState, use, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Star } from "lucide-react";
-import SaveFloatingButton from "../../_components/SaveFloatingButton";
-import { usePurchasedItems } from "../../_hooks/useHistoryApi";
-import { orderToReviewItems } from "../../_utils/postConverter";
-import { Review } from "../../_utils/postConverter";
+import SaveFloatingButton from "@/components/ui/SaveFloatingButton";
+import { usePurchasedItems } from "@/app/school/myPage/_hooks/useHistoryApi";
+import { orderToReviewItems } from "@/app/school/myPage/_utils/postConverter";
+import { Review } from "@/app/school/myPage/_utils/postConverter";
+import { submitReview } from "@/app/school/myPage/_actions/review";
+
+import { useUser } from "@/contexts/UserContext";
 
 interface MyPageWriteReviewProps {
-  params: Promise<{
+  params: {
     id: string;
-  }>;
+  };
 }
 
 export default function MyPageWriteReview({ params }: MyPageWriteReviewProps) {
   const [rating, setRating] = useState(3);
-  const [review, setReview] = useState("");
   const [reviewData, setReviewData] = useState<Review | null>(null);
   const [isReviewDataLoading, setIsReviewDataLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const reviewTextareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const { id } = use(params);
-  const { orders, isLoading, error } = usePurchasedItems();
+  const { id } = params;
+  const router = useRouter();
+  const { orders, isLoading, error: purchasedItemsError } = usePurchasedItems();
+  const { user, loading: userLoading, error: userError } = useUser();
 
   useEffect(() => {
     const fetchReviewData = async () => {
       if (orders.length > 0) {
         setIsReviewDataLoading(true);
         try {
-          // 모든 주문을 리뷰 아이템으로 변환합니다.
           const allReviews = await Promise.all(orders.map((order) => orderToReviewItems(order)));
           const flatReviews = allReviews.flat();
 
-          // URL의 id와 일치하는 리뷰 아이템을 찾습니다.
           const foundReview = flatReviews.find((item) => item.id === parseInt(id));
 
           if (foundReview) {
@@ -41,7 +46,6 @@ export default function MyPageWriteReview({ params }: MyPageWriteReviewProps) {
             setReviewData(null);
           }
         } catch (err) {
-          console.error("리뷰 데이터 로딩 실패:", err);
           setReviewData(null);
         } finally {
           setIsReviewDataLoading(false);
@@ -55,7 +59,6 @@ export default function MyPageWriteReview({ params }: MyPageWriteReviewProps) {
     fetchReviewData();
   }, [orders, id]);
 
-  // 로딩 상태
   if (isLoading || isReviewDataLoading) {
     return (
       <div className="min-h-screen bg-uni-white flex items-center justify-center">
@@ -64,8 +67,7 @@ export default function MyPageWriteReview({ params }: MyPageWriteReviewProps) {
     );
   }
 
-  // 에러 상태
-  if (error) {
+  if (purchasedItemsError) {
     return (
       <div className="min-h-screen bg-uni-white flex items-center justify-center">
         <div className="text-uni-gray-400 font-pretendard">상품 정보를 불러올 수 없습니다.</div>
@@ -73,9 +75,9 @@ export default function MyPageWriteReview({ params }: MyPageWriteReviewProps) {
     );
   }
 
-  // 리뷰 데이터가 없는 경우 기본값
   const defaultReviewData: Review = {
     id: parseInt(id),
+    orderId: 0,
     title: "상품 정보",
     author: "판매자",
     image: "/assets/defaultimg.png",
@@ -89,13 +91,35 @@ export default function MyPageWriteReview({ params }: MyPageWriteReviewProps) {
     setRating(starIndex + 1);
   };
 
-  const handleSubmit = () => {
-    console.log({
-      reviewId: id,
-      productTitle: currentReviewData.title,
-      rating,
-      review,
-    });
+  const handleSubmit = async () => {
+    if (!reviewData || isSubmitting) return;
+
+    setIsSubmitting(true);
+    try {
+      const payload = {
+        order_id: reviewData.orderId,
+        product_id: reviewData.id,
+        rating,
+        content: reviewTextareaRef.current?.value || "",
+      };
+      await submitReview(payload);
+      alert("리뷰가 성공적으로 등록되었습니다!");
+      updateReviewedProductIdsInLocalStorage(reviewData.id); // 헬퍼 함수 호출
+      router.back();
+    } catch (error) {
+      alert("리뷰 등록에 실패했습니다.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // 사용자가 리뷰를 성공적으로 제출했을 때, 해당 상품의 product_id를 localStorage에 추가합니다
+  const updateReviewedProductIdsInLocalStorage = (productId: number) => {
+    const reviewedProductIds = JSON.parse(localStorage.getItem("pendingReviewedIds") || "[]");
+    if (!reviewedProductIds.includes(productId)) {
+      reviewedProductIds.push(productId);
+      localStorage.setItem("pendingReviewedIds", JSON.stringify(reviewedProductIds));
+    }
   };
 
   return (
@@ -125,10 +149,12 @@ export default function MyPageWriteReview({ params }: MyPageWriteReviewProps) {
         {/* 판매자/리뷰어 정보 섹션 */}
         <section className="flex items-center space-x-3 py-2">
           <div className="w-10 h-10 bg-uni-gray-100 rounded-full overflow-hidden relative">
-            {currentReviewData.image.startsWith("http") ? (
-              <Image src={currentReviewData.image} alt="프로필" fill className="object-cover" />
+            {currentReviewData.sellerProfileImage ? (
+              <Image src={currentReviewData.sellerProfileImage} alt="프로필" fill className="object-cover" />
             ) : (
-              currentReviewData.image
+              <div className="flex items-center justify-center w-full h-full text-uni-gray-400">
+                {currentReviewData.author.charAt(0)}
+              </div>
             )}
           </div>
           <div>
@@ -155,8 +181,7 @@ export default function MyPageWriteReview({ params }: MyPageWriteReviewProps) {
         {/* 리뷰 작성 textarea */}
         <section className="mt-6">
           <textarea
-            value={review}
-            onChange={(e) => setReview(e.target.value)}
+            ref={reviewTextareaRef}
             className="w-full h-40 p-4 border border-uni-gray-200 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-uni-blue-400 focus:border-transparent text-14 font-pretendard"
             rows={8}
             placeholder=""

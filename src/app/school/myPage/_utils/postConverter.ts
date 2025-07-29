@@ -1,5 +1,7 @@
-import { BookmarkItem, OrderItem, ProductItem } from "../_types/apiResponse";
-import { getUserById } from "../_services/user"; // getUserById import
+import { BookmarkItem, OrderItem, ProductItem, PostItem } from "@/app/school/myPage/_types/apiResponse";
+import { getUserById } from "@/data/actions/user";
+
+const sellerCache: { [key: string]: { name: string; image?: string } } = {};
 
 export interface MyPageItem {
   id: number;
@@ -7,32 +9,18 @@ export interface MyPageItem {
   image: string;
   price: string;
   status: "판매중" | "판매완료";
-  category: "팔래요" | "살래요" | "모여요";
+  marketType: "sell" | "buy" | "gather"; // marketType 필드 추가
 }
 
 export interface Review {
-  id: number;
+  id: number; // product_id
+  orderId: number; // order_id 추가
   title: string;
   author: string;
-  image: string;
+  image: string; // 상품 이미지
+  sellerProfileImage?: string; // 판매자 프로필 이미지 (새로 추가)
   location?: string; // 위치 정보는 선택적
   date: string;
-}
-
-/**
- * API의 type 필드를 마이페이지 카테고리로 변환합니다.
- */
-function getCategoryFromType(type: string): "팔래요" | "살래요" | "모여요" {
-  switch (type) {
-    case "sell":
-      return "팔래요";
-    case "buy":
-      return "살래요";
-    case "gather":
-      return "모여요";
-    default:
-      return "팔래요"; // 기본값
-  }
 }
 
 /**
@@ -43,40 +31,45 @@ export function bookmarkToWishlistItem(bookmark: BookmarkItem): MyPageItem {
 
   // 이미지 경로 안전 처리
   let imageUrl = "/assets/defaultimg.png";
-  if (post.image) {
-    // mainImages 대신 image 사용
+  if (typeof post.image === "string" && post.image) {
     imageUrl = `${process.env.NEXT_PUBLIC_API_URL}/${post.image}`;
   }
 
+  // 가격을 숫자형으로 변환하여 toLocaleString() 적용
+  const price = Number(post.extra.price);
+  const formattedPrice = isNaN(price) ? "가격 정보 없음" : `${price.toLocaleString()}원`;
+
   return {
     id: post._id,
-    title: post.title, // product.name 대신 post.title 사용
+    title: post.title,
     image: imageUrl,
-    price: `${post.extra.price.toLocaleString()}원`, // product.price 대신 post.extra.price 사용
-    status: post.extra.crt === "판매완료" ? "판매완료" : "판매중", // product.extra.crt 대신 post.extra.crt 사용
-    category: getCategoryFromType(post.type || post.extra.category || "sell"), // product.extra.type || product.extra.marketType 대신 post.type || post.extra.category 사용
+    price: formattedPrice,
+    status: post.extra.crt === "판매완료" ? "판매완료" : "판매중",
+    marketType: ["sell", "buy", "gather"].includes(post.type) ? (post.type as "sell" | "buy" | "gather") : "sell",
   };
 }
 
 /**
- * ProductItem을 MyPageItem 타입으로 변환합니다.
+ * PostItem을 MyPageItem 타입으로 변환합니다.
  */
-export function productToMyPageItem(product: ProductItem): MyPageItem {
-  const mainImage = product.mainImages?.[0];
-
+export function postToMyPageItem(post: PostItem, sourceType?: "sell" | "buy" | "gather"): MyPageItem {
   // 이미지 경로 안전 처리
   let imageUrl = "/assets/defaultimg.png";
-  if (mainImage?.path) {
-    imageUrl = `${process.env.NEXT_PUBLIC_API_URL}/${mainImage.path}`;
+  if (typeof post.image === "string" && post.image) {
+    imageUrl = `${process.env.NEXT_PUBLIC_API_URL}/${post.image}`;
   }
 
+  // 가격을 숫자형으로 변환하여 toLocaleString() 적용
+  const price = Number(post.extra?.price);
+  const formattedPrice = isNaN(price) ? "가격 정보 없음" : `${price.toLocaleString()}원`;
+
   return {
-    id: product._id,
-    title: product.name,
+    id: post._id,
+    title: post.title,
     image: imageUrl,
-    price: `${product.price.toLocaleString()}원`,
-    status: product.extra.crt === "판매완료" ? "판매완료" : "판매중",
-    category: getCategoryFromType(product.extra.type || product.extra.marketType || "sell"),
+    price: formattedPrice,
+    status: post.extra?.crt === "판매완료" ? "판매완료" : "판매중",
+    marketType: ["sell", "buy", "gather"].includes(post.type) ? (post.type as "sell" | "buy" | "gather") : "sell",
   };
 }
 
@@ -89,20 +82,33 @@ export async function orderToReviewItems(order: OrderItem): Promise<Review[]> {
 
   const reviewPromises = order.products.map(async (product) => {
     let authorName = "판매자";
+    let sellerProfileImageUrl = "/assets/defaultimg.png"; // 판매자 프로필 이미지
+
     if (product.seller_id) {
-      try {
-        const sellerData = await getUserById(product.seller_id);
-        authorName = sellerData.name || `판매자 ${product.seller_id}`;
-      } catch {
-        // 판매자 정보 로딩 실패 시 에러 로깅 제거
+      if (sellerCache[product.seller_id]) {
+        authorName = sellerCache[product.seller_id].name;
+        sellerProfileImageUrl = sellerCache[product.seller_id].image || "/assets/defaultimg.png";
+      } else {
+        try {
+          const sellerData = await getUserById(product.seller_id);
+          authorName = sellerData.name || `판매자 ${product.seller_id}`;
+          sellerProfileImageUrl = sellerData.image
+            ? `${process.env.NEXT_PUBLIC_API_URL}/${sellerData.image}`
+            : "/assets/defaultimg.png";
+          sellerCache[product.seller_id] = { name: authorName, image: sellerProfileImageUrl };
+        } catch {
+          // 판매자 정보 로딩 실패 시 에러 로깅 제거
+        }
       }
     }
 
     return {
       id: product._id,
+      orderId: order._id, // order_id 추가
       title: product.name,
       author: authorName,
-      image: product.image ? `${process.env.NEXT_PUBLIC_API_URL}/${product.image["path "]}` : "/assets/defaultimg.png",
+      image: product.image ? `${process.env.NEXT_PUBLIC_API_URL}/${product.image["path "]}` : "/assets/defaultimg.png", // 상품 이미지
+      sellerProfileImage: sellerProfileImageUrl, // 판매자 프로필 이미지
       location: location, // 모든 리뷰 아이템에 동일한 위치 정보 적용
       date: new Date(order.createdAt)
         .toLocaleDateString("ko-KR", {
@@ -126,10 +132,10 @@ export function bookmarksToWishlistItems(bookmarks: BookmarkItem[]): MyPageItem[
 }
 
 /**
- * ProductItem 배열을 MyPageItem 배열로 변환합니다.
+ * PostItem 배열을 MyPageItem 배열로 변환합니다.
  */
-export function productsToMyPageItems(products: ProductItem[]): MyPageItem[] {
-  return products.map(productToMyPageItem);
+export function postsToMyPageItems(posts: PostItem[], sourceType?: "sell" | "buy" | "gather"): MyPageItem[] {
+  return posts.map((post: PostItem) => postToMyPageItem(post, sourceType));
 }
 
 /**

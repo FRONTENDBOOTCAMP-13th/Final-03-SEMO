@@ -4,7 +4,8 @@
  */
 
 import { useState, useCallback } from "react";
-import { UserService, ImageService } from "../_services";
+import ImageService from "@/lib/imageService";
+import UserService from "@/app/school/myPage/_actions/myPageUserActions";
 import type { User, UserProfileFormData } from "@/app/school/myPage/_types/user";
 
 interface UseMyPageApiReturn {
@@ -61,7 +62,6 @@ export const useMyPageApi = (): UseMyPageApiReturn => {
           extraData.bankNumber = parseInt(profileData.accountNumber, 10);
         }
         await UserService.updateUserExtra(userId, extraData);
-        console.log("extra 정보 업데이트 완료:", extraData);
       }
 
       // 이미지 처리
@@ -99,7 +99,6 @@ export const useMyPageApi = (): UseMyPageApiReturn => {
     setError(null);
     try {
       const imageUrl = await ImageService.uploadFile(file);
-      console.log("훅에서 받은 이미지 URL:", imageUrl);
       return imageUrl;
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "이미지 업로드에 실패했습니다.";
