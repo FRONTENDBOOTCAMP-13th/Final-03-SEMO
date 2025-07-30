@@ -28,18 +28,21 @@ export default function MarketTagNav() {
       // URL에 키워드가 있고 tags 배열에 포함되어 있으면 해당 tag 활성화
       setActiveTag(keyword);
 
-      // 🐶 세션 스토리지에 태그 저장
+      // 세션 스토리지에 태그 저장
       sessionStorage.setItem(STORAGE_KEY, keyword);
     } else {
       const savedTag = sessionStorage.getItem(STORAGE_KEY);
       if (savedTag && MARKET_TAGS.includes(savedTag)) {
         setActiveTag(savedTag);
+        if (savedTag !== "전체") {
+          router.replace(`/school/market/${marketType}/search?keyword=${encodeURIComponent(savedTag)}`);
+        }
       } else {
         // 일반 market이면 "전체" 활성화
         setActiveTag("전체");
       }
     }
-  }, [searchParams]);
+  }, [searchParams, marketType, router]);
   // 의존성 배열에 추가하여 경로가 바뀔때마다 실행
 
   const handleTagClick = (tag: string) => {

@@ -4,8 +4,10 @@ import { useState, useEffect } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { SearchIcon } from "lucide-react";
 
+const MARKET_TAGS = ["전체", "식품", "도서", "의류", "생활용품", "생활가전", "학용품", "기타"];
+
 const Search = () => {
-  const [keyword, setKeyword] = useState("");
+  const [keyword, setkeyword] = useState("");
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -15,10 +17,10 @@ const Search = () => {
 
   useEffect(() => {
     const urlKeyword = searchParams.get("keyword");
-    if (urlKeyword) {
-      setKeyword(urlKeyword);
+    if (urlKeyword && !MARKET_TAGS.includes(urlKeyword)) {
+      setkeyword(urlKeyword);
     } else {
-      setKeyword("");
+      setkeyword("");
     }
   }, [searchParams]);
 
@@ -58,7 +60,7 @@ const Search = () => {
             type="text"
             placeholder="검색"
             value={keyword}
-            onChange={(e) => setKeyword(e.target.value)}
+            onChange={(e) => setkeyword(e.target.value)}
             onKeyPress={handleKeyPress}
             className="w-full ml-2 my-3 bg-transparent outline-none placeholder-[#5E738C] text-16 text-uni-black"
           />
