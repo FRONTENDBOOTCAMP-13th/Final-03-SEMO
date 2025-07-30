@@ -42,7 +42,7 @@ export default function ProductDesc({ initialData }: ProductDescProps) {
         <textarea
           id="desc"
           name="content"
-          placeholder="판매 금지 물품은 게시가 제한될 수 있어요"
+          placeholder={`판매 금지 물품은 게시가 제한될 수 있어요\n(10글자 이상 입력)`}
           defaultValue={initialData?.content || ""}
           className="w-full h-[150px] bg-uni-gray-200 rounded-lg p-3 text-16"
           maxLength={250}
