@@ -2,6 +2,7 @@
 import { Post } from "@/types";
 interface ProductDescProps {
   initialData?: Post;
+  contentError: string;
 }
 
 /*
@@ -10,7 +11,7 @@ interface ProductDescProps {
  * 만약 초기값이 없다면 옵셔널로 세팅해서 문제 없이 동작
  */
 
-export default function ProductDesc({ initialData }: ProductDescProps) {
+export default function ProductDesc({ initialData, contentError }: ProductDescProps) {
   return (
     <section className="mb-5">
       <div className="mb-5">
@@ -44,9 +45,13 @@ export default function ProductDesc({ initialData }: ProductDescProps) {
           name="content"
           placeholder={`판매 금지 물품은 게시가 제한될 수 있어요\n(10글자 이상 입력)`}
           defaultValue={initialData?.content || ""}
-          className="w-full h-[150px] bg-uni-gray-200 rounded-lg p-3 text-16"
+          className={`w-full h-[150px] bg-uni-gray-200 rounded-lg p-3 text-16 ${
+            contentError ? "border-2 border-uni-red-500" : ""
+          }`}
           maxLength={250}
         />
+        {/* 에러 메시지 표시 */}
+        {contentError && <p className=" text-14 text-uni-red-500 font-medium">{contentError}</p>}
       </div>
       <div className="mb-5">
         <label htmlFor="price" className="sr-only">

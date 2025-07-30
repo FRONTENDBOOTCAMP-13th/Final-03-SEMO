@@ -19,7 +19,7 @@ export default function Product({ images, initialTitle, setImages }: ProductProp
           id="item-name"
           name="title"
           type="text"
-          placeholder="상품명 입력(2글자 이상)"
+          placeholder="상품명 입력(2글자 이상)ㄴ"
           defaultValue={initialTitle || ""}
           className="w-full bg-uni-gray-200 rounded-lg p-3 text-16"
         />

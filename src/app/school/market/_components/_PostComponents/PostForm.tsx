@@ -25,6 +25,7 @@ export default function PostForm({ mode, initialData, marketType, postId }: Post
       "sell"
   );
   const [images, setImages] = useState<string[]>(initialData?.image ? [initialData.image] : []); // 이미지 배열(초기값 : 이미지 한장만 가능하게 설정, 추후 변경)
+  const [contentError, setContentError] = useState<string>(""); // 상품 설명 에러 메시지
 
   // 서버 액션 사용
   const [state, formAction] = useActionState(mode === "create" ? createPost : updatePost, null);
@@ -37,6 +38,22 @@ export default function PostForm({ mode, initialData, marketType, postId }: Post
       alert(`오류: ${state.message}`);
     }
   }, [state]);
+
+  // 폼 제출 전 검증
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const formData = new FormData(e.currentTarget);
+    const content = formData.get("content") as string;
+
+    // 상품 설명 10글자 이상 검증
+    if (!content || content.trim().length < 10) {
+      e.preventDefault(); // 폼 제출 중단
+      setContentError("상품 설명은 10글자 이상 입력해주세요.");
+      return;
+    }
+
+    // 검증 통과시 에러 메시지 초기화
+    setContentError("");
+  };
 
   const getButtonStyle = (buttonType: string, currentType: string) => {
     // 선택 안된 버튼은 모두 회색
@@ -58,7 +75,7 @@ export default function PostForm({ mode, initialData, marketType, postId }: Post
   };
 
   return (
-    <form action={formAction}>
+    <form action={formAction} onSubmit={handleSubmit}>
       <input type="hidden" name="accessToken" value={user?.token?.accessToken ?? ""} />
       <input type="hidden" name="type" value={tradeType} />
       <input type="hidden" name="postId" value={postId} />
@@ -87,7 +104,7 @@ export default function PostForm({ mode, initialData, marketType, postId }: Post
           ))}
         </section>
 
-        <ProductDesc initialData={initialData} />
+        <ProductDesc initialData={initialData} contentError={contentError} />
         {tradeType === "groupPurchase" && <GroupPurchase />}
         <section className="mb-8">
           <fieldset className="flex flex-col gap-3">
