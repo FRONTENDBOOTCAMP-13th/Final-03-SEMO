@@ -136,6 +136,25 @@ export async function createPost(state: ApiRes<Post> | null, formData: FormData)
       console.warn("상품 등록 실패:", productResult.message);
     } else {
       console.log("상품 등록 성공");
+
+      const productId = productResult.item._id;
+      const postId = postResult.item._id;
+
+      const updatedExtra = {
+        ...postData.extra,
+        productId,
+      };
+      await fetch(`${API_URL}/posts/${postId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          "Client-Id": CLIENT_ID,
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({
+          extra: updatedExtra,
+        }),
+      });
     }
   } catch (error) {
     console.error("오류 발생:", error);
