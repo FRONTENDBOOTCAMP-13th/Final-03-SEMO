@@ -1,0 +1,19 @@
+meta {
+  name: 내 게시물 목록 조회
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{url}}/posts/users/?type=buy
+  body: none
+  auth: inherit
+}
+
+params:query {
+  type: buy
+}
+
+vars:pre-request {
+  _id: 5
+}
