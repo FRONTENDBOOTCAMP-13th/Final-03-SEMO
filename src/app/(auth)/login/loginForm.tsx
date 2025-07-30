@@ -10,10 +10,10 @@ import BackButton from "../_components/BackButton";
 import PasswordInput from "../_components/PasswordInput";
 import { useUserStore } from "@/store/userStore";
 import { login } from "@/lib/actions/login";
-// import { useAuthGuard } from "@/lib/useAuthGuard";
+import { useAuthGuard } from "@/lib/useAuthGuard";
 
 export default function LoginForm() {
-  // useAuthGuard(false);
+  useAuthGuard(false);
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -81,20 +81,19 @@ export default function LoginForm() {
               color: "var(--color-uni-gray-400)",
             }}
           >
-            <button type="submit" onClick={() => router.push("")} className="hover:underline">
+            <button type="button" onClick={() => router.push("")} className="hover:underline">
               아이디 / 비밀번호 찾기
             </button>
-            <button type="submit" onClick={() => router.push("/signup")} className="hover:underline ">
+            <button type="button" onClick={() => router.push("/signup")} className="hover:underline ">
               회원가입
             </button>
           </div>
+          <div className="w-full max-w-sm mt-6">
+            <Button buttonType="submit" type="primary" onClick={handleLogin}>
+              로그인
+            </Button>
+          </div>
         </form>
-
-        <div className="w-full max-w-sm mt-6">
-          <Button type="primary" onClick={handleLogin}>
-            로그인
-          </Button>
-        </div>
 
         <div className="w-full max-w-sm mt-10 space-y-3">
           <div className="flex items-center w-full max-w-sm gap-4 my-6">
