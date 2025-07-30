@@ -3,6 +3,7 @@ import { io } from "socket.io-client";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { Message, useChatStore } from "./useChatStore";
+import { useUserStore } from "@/store/userStore";
 
 export const socket = io("https://fesp-api.koyeb.app/ws/sample", { autoConnect: false });
 
@@ -107,7 +108,7 @@ export const useChatSocket = ({ userId, nickName, roomId }: UseChatSocketProps) 
       setUserList(userList);
     };
 
-    const handleMessage = (data: any) => {
+    const handleMessage = async (data: any) => {
       const currentRoomId = useChatStore.getState().currentRoomId;
       console.log("서버에서 받은 메시지:", data);
 
@@ -136,6 +137,32 @@ export const useChatSocket = ({ userId, nickName, roomId }: UseChatSocketProps) 
       // 거래 완료 메시지 처리
 
       if (isTradeDone) {
+        const buyerId = raw.buyerId;
+        const productId = raw.productId;
+        if (String(userId) === String(buyerId)) {
+          try {
+            await fetch(`${process.env.NEXT_PUBLIC_API_URL}/orders`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${useUserStore.getState().user?.token?.accessToken}`,
+                "Client-Id": "febc13-final03-emjf",
+              },
+              body: JSON.stringify({
+                products: [
+                  {
+                    _id: Number(productId),
+                    quantity: 1,
+                  },
+                ],
+              }),
+            });
+
+            console.log("[구매자] 주문 등록 성공");
+          } catch (err) {
+            console.error("[구매자] 주문 등록 실패:", err);
+          }
+        }
         useChatStore.getState().addMessage({
           id: `${Date.now()}-${Math.random()}`,
           roomId: data.roomId || currentRoomId,

@@ -4,6 +4,7 @@ import PopUp from "./popup";
 import { useUserStore } from "@/store/userStore";
 import { socket } from "@/app/api/chat/useChatSoket";
 import { useChatStore } from "@/app/api/chat/useChatStore";
+import { useRouter } from "next/router";
 
 interface TradeCheckProps {
   onComplete: () => void;
@@ -16,6 +17,10 @@ interface TradeCheckProps {
 const TradeCheck = ({ onComplete, postId, isSeller, productExtra, productId }: TradeCheckProps) => {
   const [showPopUp, setShowPopUp] = useState(false);
   const [isTradeCompleted, setIsTradeCompleted] = useState(false);
+
+  // 구매자 id를 가져오기 위한
+  const router = useRouter();
+  const buyerIdFromQuery = router.query.buyerId as string;
 
   // 거래완료 메시지 우회를 위한
   const roomId = useChatStore.getState().currentRoomId;
@@ -87,12 +92,16 @@ const TradeCheck = ({ onComplete, postId, isSeller, productExtra, productId }: T
       setShowPopUp(false);
     }
 
+    const buyerId = buyerIdFromQuery ?? productExtra?.buyerId ?? useUserStore.getState().user?._id;
+
     socket.emit("message", {
       msgType: "all",
       type: "tradeDone",
       msg: "거래가 완료되었습니다. 새로고침을 눌러서 거래정보를 확인하세요",
       postId,
       roomId,
+      buyerId,
+      productId: productId ?? productExtra?.productId,
       timestamp: new Date().toISOString(),
       user_id: sellerId, // 보내는 사람
       nickName: sellerNickName,
