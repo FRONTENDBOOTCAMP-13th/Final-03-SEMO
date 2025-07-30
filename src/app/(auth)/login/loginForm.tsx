@@ -36,7 +36,7 @@ export default function LoginForm() {
     }
 
     alert("로그인 성공!");
-    router.push("/school");
+    router.push("/school/home");
   };
 
   const handleKakaoLogin = () => {
@@ -89,7 +89,7 @@ export default function LoginForm() {
             </button>
           </div>
           <div className="w-full max-w-sm mt-6">
-            <Button buttonType="submit" type="primary" onClick={handleLogin}>
+            <Button buttonType="submit" type="primary">
               로그인
             </Button>
           </div>

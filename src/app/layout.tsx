@@ -54,7 +54,7 @@ function LayoutContent({ children }: MyPageLayoutProps) {
       localStorage.removeItem("accessToken");
       localStorage.removeItem("user-expires-at");
     }
-  }, []);
+  }, [resetUser]);
 
   if (isAuthPage) {
     return (
