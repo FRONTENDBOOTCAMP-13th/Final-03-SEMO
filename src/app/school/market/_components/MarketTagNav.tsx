@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 
 const MARKET_TAGS = ["전체", "식품", "도서", "의류", "생활용품", "생활가전", "학용품", "기타"];
+const STORAGE_KEY = "market_selected_tag";
 
 export default function MarketTagNav() {
   const [activeTag, setActiveTag] = useState("전체");
@@ -26,11 +27,19 @@ export default function MarketTagNav() {
     if (keyword && MARKET_TAGS.includes(keyword)) {
       // URL에 키워드가 있고 tags 배열에 포함되어 있으면 해당 tag 활성화
       setActiveTag(keyword);
+
+      // 🐶 세션 스토리지에 태그 저장
+      sessionStorage.setItem(STORAGE_KEY, keyword);
     } else {
-      // 일반 market이면 "전체" 활성화
-      setActiveTag("전체");
+      const savedTag = sessionStorage.getItem(STORAGE_KEY);
+      if (savedTag && MARKET_TAGS.includes(savedTag)) {
+        setActiveTag(savedTag);
+      } else {
+        // 일반 market이면 "전체" 활성화
+        setActiveTag("전체");
+      }
     }
-  }, [pathname, searchParams]);
+  }, [searchParams]);
   // 의존성 배열에 추가하여 경로가 바뀔때마다 실행
 
   const handleTagClick = (tag: string) => {
@@ -40,6 +49,7 @@ export default function MarketTagNav() {
     if (tag !== "전체") {
       router.push(`/school/market/${marketType}/search?keyword=${encodeURIComponent(tag.trim())}`);
     } else {
+      sessionStorage.removeItem(STORAGE_KEY);
       // [전체]인 경우 메인 markey 페이지로 이동
       router.push(`/school/market/${marketType}`);
     }
