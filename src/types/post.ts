@@ -1,6 +1,6 @@
 import { User } from "@/types/user";
 
-export type PostType = "buy" | "sell" | "groupPurchase";
+export type PostType = "buy" | "sell" | "groupPurchase" | "end";
 export interface Post {
   // 게시글 고유 ID
   _id: number;
