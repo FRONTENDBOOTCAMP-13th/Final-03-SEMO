@@ -128,8 +128,27 @@ export const useChatSocket = ({ userId, nickName, roomId }: UseChatSocketProps) 
             };
 
       const isWhisper = data.msgType === "whisper";
+      const isTradeDone = data.type === "tradeDone"; // 거래완료 메시지를 위해
+
       const messageUserId = String(raw.user_id || data.user_id || userId);
       const currentUserId = String(userId);
+
+      // 거래 완료 메시지 처리
+
+      if (isTradeDone) {
+        useChatStore.getState().addMessage({
+          id: `${Date.now()}-${Math.random()}`,
+          roomId: data.roomId || currentRoomId,
+          content: raw.msg,
+          type: "tradeDone",
+          msgType: "all",
+          createdAt: data.timestamp ?? new Date().toISOString(),
+          user_id: messageUserId,
+          nickName: raw.nickName || nickName,
+        });
+
+        return;
+      }
 
       // 개인방에서 내가 보낸 메시지인 경우 무시 (중복 방지)
       if (currentRoomId !== GLOBAL_ROOM_ID && !isWhisper && messageUserId === currentUserId) {
