@@ -1,16 +1,26 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter, usePathname } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { SearchIcon } from "lucide-react";
 
 const Search = () => {
   const [keyword, setKeyword] = useState("");
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   // // 현재 경로에서 marketType 추출 (buy 또는 sell)
   // const marketType = pathname.includes("/buy") ? "buy" : "sell";
+
+  useEffect(() => {
+    const urlKeyword = searchParams.get("keyword");
+    if (urlKeyword) {
+      setKeyword(urlKeyword);
+    } else {
+      setKeyword("");
+    }
+  }, [searchParams]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
