@@ -26,6 +26,7 @@ export default function PostForm({ mode, initialData, marketType, postId }: Post
   );
   const [images, setImages] = useState<string[]>(initialData?.image ? [initialData.image] : []); // 이미지 배열(초기값 : 이미지 한장만 가능하게 설정, 추후 변경)
   const [contentError, setContentError] = useState<string>(""); // 상품 설명 에러 메시지
+  const [titleError, setTitleError] = useState<string>(""); // 제목 에러 메시지
 
   // 서버 액션 사용
   const [state, formAction] = useActionState(mode === "create" ? createPost : updatePost, null);
@@ -43,16 +44,28 @@ export default function PostForm({ mode, initialData, marketType, postId }: Post
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     const formData = new FormData(e.currentTarget);
     const content = formData.get("content") as string;
+    const title = formData.get("title") as string;
 
-    // 상품 설명 10글자 이상 검증
-    if (!content || content.trim().length < 10) {
-      e.preventDefault(); // 폼 제출 중단
-      setContentError("상품 설명은 10글자 이상 입력해주세요.");
-      return;
+    let getError = false;
+    // 제목 검증
+    if (!title || title.trim().length < 2) {
+      setTitleError("상품명은 2글자 이상 입력해주세요.");
+      getError = true;
+    } else {
+      setTitleError(""); // 에러 초기화
     }
 
-    // 검증 통과시 에러 메시지 초기화
-    setContentError("");
+    // 상품 설명 검증
+    if (!content || content.trim().length < 10) {
+      setContentError("상품 설명은 10글자 이상 입력해주세요.");
+      getError = true;
+    } else {
+      setContentError(""); // 에러 초기화
+    }
+
+    if (getError) {
+      e.preventDefault();
+    }
   };
 
   const getButtonStyle = (buttonType: string, currentType: string) => {
@@ -81,7 +94,7 @@ export default function PostForm({ mode, initialData, marketType, postId }: Post
       <input type="hidden" name="postId" value={postId} />
       <input type="hidden" name="image" value={images.length > 0 ? images[0] : ""} />
       <main className="min-w-[320px] max-w-[480px] mx-auto px-4 py-6 min-h-screen bg-uni-white">
-        <Product images={images} setImages={setImages} initialTitle={initialData?.title} />
+        <Product images={images} setImages={setImages} initialTitle={initialData?.title} titleError={titleError} />
         <p className="text-15 mb-2 text-uni-gray-600 font-bold">거래 방식</p>
         <section role="group" aria-label="거래 유형" className="mb-5 flex gap-3">
           {/* 팔래요, 살래요, 모여요 버튼 생성 */}
