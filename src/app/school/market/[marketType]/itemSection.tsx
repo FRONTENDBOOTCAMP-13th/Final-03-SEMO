@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Post } from "@/types";
 import { MessageCircleMore } from "lucide-react";
 import { getImageUrl } from "@/data/actions/file";
+import { useState } from "react";
 
 // interface Item {
 //   _id: number;
@@ -18,6 +19,7 @@ interface Props {
 }
 
 export default function ItemSection({ items, market }: Props) {
+  const [showCount, setShowCount] = useState(10);
   if (!items || items.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-15">
@@ -25,10 +27,14 @@ export default function ItemSection({ items, market }: Props) {
       </div>
     );
   }
+
+  const showItems = items.slice(0, showCount); // 보여줄 아이템들
+  const more = showCount < items.length; // 더 있는지
+
   if (market === "groupPurchase") {
     return (
       <div className="space-y-9 min-w-[320px] max-w-[480px]">
-        {items.map((item) => (
+        {showItems.map((item) => (
           <Link key={item._id} href={`/school/market/${market}/${item._id}`} className="block rounded-lg">
             {/* 이미지 */}
             <div className="flex gap-4">
@@ -59,14 +65,23 @@ export default function ItemSection({ items, market }: Props) {
               </div>
             </div>
           </Link>
-        ))}{" "}
+        ))}
+        {/* </div> */}
+        {more && (
+          <button
+            onClick={() => setShowCount((perv) => perv + 10)}
+            className="w-full mt-8 py-3 border-2 border-uni-gray-300 rounded-full text-16 font-medium mb-20"
+          >
+            더 보기
+          </button>
+        )}
       </div>
     );
   }
   // 리스트 레이아웃 (공동구매용)
   return (
     <div className="grid grid-cols-2 gap-4">
-      {items.map((item) => (
+      {showItems.map((item) => (
         <Link key={item._id} href={`/school/market/${market}/${item._id}`} className="block rounded-lg">
           <Image
             src={getImageUrl(item.image)}
@@ -89,6 +104,14 @@ export default function ItemSection({ items, market }: Props) {
           </div>
         </Link>
       ))}
+      {more && (
+        <button
+          onClick={() => setShowCount((perv) => perv + 10)}
+          className="w-full mt-8 py-3 border-2 border-uni-gray-300 rounded-full text-16 font-medium mb-20"
+        >
+          더 보기
+        </button>
+      )}
     </div>
   );
 }
