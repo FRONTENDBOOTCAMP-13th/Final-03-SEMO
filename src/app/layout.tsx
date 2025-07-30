@@ -20,6 +20,8 @@
 "use client";
 
 import { ReactNode } from "react";
+import { useEffect } from "react";
+import { useUserStore } from "@/store/userStore";
 import { usePathname } from "next/navigation";
 import Header from "../../src/components/common/Header";
 import Navigation from "../../src/components/common/Navigation";
@@ -40,6 +42,19 @@ function LayoutContent({ children }: MyPageLayoutProps) {
   const pathname = usePathname();
   const isAuthPage = AUTH_PATHS.some((path) => pathname.startsWith(path));
   const { headerConfig } = usePageHeader();
+
+  // 로그인 만료 시간 체크
+  const { resetUser } = useUserStore();
+
+  useEffect(() => {
+    const expiresAt = localStorage.getItem("user-expires-at");
+    if (expiresAt && Date.now() > parseInt(expiresAt, 10)) {
+      console.log("로그인 만료됨 - 자동 로그아웃");
+      resetUser();
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("user-expires-at");
+    }
+  }, []);
 
   if (isAuthPage) {
     return (

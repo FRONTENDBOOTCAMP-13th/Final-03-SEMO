@@ -8,10 +8,10 @@ import Button from "../../_components/Button";
 import PasswordInput from "../../_components/PasswordInput";
 import Input from "../../_components/Input";
 import { useUserStore } from "@/store/userStore";
-// import { useAuthGuard } from "@/lib/useAuthGuard";
+import { useAuthGuard } from "@/lib/useAuthGuard";
 
 export default function SignupPasswordForm() {
-  // useAuthGuard(false);
+  useAuthGuard(false);
   const router = useRouter();
   const { user, setUser } = useUserStore();
   const [confirmPassword, setConfirmPassword] = useState("");

@@ -9,10 +9,10 @@ import Button from "../../_components/Button";
 import Input from "../../_components/Input";
 import { useUserStore } from "@/store/userStore";
 import { handleSignup } from "@/lib/actions/signup";
-// import { useAuthGuard } from "@/lib/useAuthGuard";
+import { useAuthGuard } from "@/lib/useAuthGuard";
 
 export default function SignupCompleteForm() {
-  // useAuthGuard(false);
+  useAuthGuard(false);
   const router = useRouter();
   const { user, setUser } = useUserStore();
   const [loading, setLoading] = useState(false);
