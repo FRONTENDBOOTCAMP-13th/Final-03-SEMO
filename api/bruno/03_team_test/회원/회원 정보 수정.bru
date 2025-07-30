@@ -1,0 +1,28 @@
+meta {
+  name: 회원 정보 수정
+  type: http
+  seq: 8
+}
+
+patch {
+  url: {{url}}/users/{{_id}}
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "image": "files/febc13-final03-emjf/0xkuO2osB.jpg" ,
+    "name":"팔아보까밥슌",
+    "type": "seller",
+    "phone": "01020032003",
+      "extra":{
+      "bank":"국민은행",
+      "bankNumber":123456789123
+    }
+  }
+}
+
+vars:pre-request {
+  _id: 18
+}

@@ -1,0 +1,16 @@
+meta {
+  name: 다운로드
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{url}}/files/download/{{client-id}}/{{fileName}}
+  body: none
+  auth: inherit
+}
+
+vars:pre-request {
+  client-id: febc13-final03-emjf
+  fileName: chRVm8yqY.jpg
+}

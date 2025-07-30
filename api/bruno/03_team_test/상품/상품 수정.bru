@@ -1,0 +1,23 @@
+meta {
+  name: 상품 수정
+  type: http
+  seq: 4
+}
+
+patch {
+  url: {{url}}/seller/products/{{_id}}
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "extra":{
+      "crt": "판매완료"
+    }
+  }
+}
+
+vars:pre-request {
+  _id: 2
+}

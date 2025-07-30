@@ -1,0 +1,27 @@
+meta {
+  name: 게시글 등록
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{url}}/posts/
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "type": "sell",
+    "title": "파워퍼프걸 공식 굿즈 팔아요",
+    "content": "진짜 공굿입니다 ㄹㅇ",
+    "image": "files/febc13-final03-emjf/dqruV0FM0.avif",
+    "extra": {
+      "category": "굿즈",
+      "price": 30000,
+      "location": "숭실대학교 형남공학과 앞",
+      "crt": "구매중",
+      "newAccount": ""
+    }
+  }
+}
