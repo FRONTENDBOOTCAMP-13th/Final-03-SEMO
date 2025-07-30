@@ -1,0 +1,27 @@
+meta {
+  name: 파일 업로드
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{url}}/files/
+  body: multipartForm
+  auth: inherit
+}
+
+params:query {
+  : 
+}
+
+body:form-urlencoded {
+  : 
+}
+
+body:multipart-form {
+  attach: @file(C:\Users\parks\바탕 화면\velog\미미밈\https___kr.hypebeast.com_files_2023_07_warner-brothers-quit-power-puff-girls-series-ft.avif) @contentType(multipart/form-data)
+}
+
+body:file {
+  file: @file(C:\Users\parks\NEXT_Project\Final-03-SEMO\api\dbinit\team\uploadFiles\sample-babshun.jpg) @contentType(multipart/form-data)
+}

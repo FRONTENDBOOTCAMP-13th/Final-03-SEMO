@@ -1,0 +1,33 @@
+meta {
+  name: 상품 등록
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{url}}/seller/products
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "price": 500000,
+    "quantity": 1,
+    "name": "집 팔아요ㅠ",
+    "mainImages": [
+      {
+        "path": "files/febc13-final03-emjf/OaCaxjHtN.jpg",
+        "name": "mudo.jpg",
+        "originalname": "무한도전.png"
+      }
+    ],
+    "content": "아까 그 20인치 맥북 팔던 사람 아입니다",
+    "extra": {
+      "category": "전자기기",
+      "location": "숭실대학교 백마상 앞",
+      "crt": "판매중",
+      "marketType": "sell"
+    }
+  }
+}
