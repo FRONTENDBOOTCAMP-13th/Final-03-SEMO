@@ -1,0 +1,20 @@
+meta {
+  name: 구매 후기 등록
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{url}}/replies/
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "order_id": 1,
+    "product_id": 1,
+    "rating": 3,
+    "content": "더 일찍 살걸... 고민은 구매를 늦출 뿐."
+  }
+}

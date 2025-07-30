@@ -1,0 +1,16 @@
+meta {
+  name: 이미지 링크
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{url}}/files/{{client-id}}/{{fileName}}
+  body: none
+  auth: inherit
+}
+
+vars:pre-request {
+  client-id: febc13-final03-emjf
+  fileName: chRVm8yqY.jpg
+}

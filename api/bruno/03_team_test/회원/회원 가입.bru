@@ -1,0 +1,22 @@
+meta {
+  name: 회원 가입
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{url}}/users
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "email": "parksw004@soongsil.ac.kr",
+    "password": "030101",
+    "name": "큰손밥슌",
+    "address": "강원도 원주시",
+    "type": "seller",
+    "image":  ""
+  }
+}

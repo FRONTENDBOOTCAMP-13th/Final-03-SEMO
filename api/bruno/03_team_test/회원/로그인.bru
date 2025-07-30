@@ -1,0 +1,18 @@
+meta {
+  name: 로그인
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{url}}/users/login
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "email": "parksw004@soongsil.ac.kr",
+    "password": "030101"
+  }
+}
