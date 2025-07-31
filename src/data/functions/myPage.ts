@@ -183,6 +183,22 @@ export async function getMyBookmarks(accessToken: string): ApiResPromise<Bookmar
  * @param {string} accessToken - 인증 토큰
  * @returns {Promise<ApiRes<OrderItem[]>>} - 구매 목록 응답 객체
  */
+export async function getPurchasedItems(accessToken: string): ApiResPromise<OrderItem[]> {
+  try {
+    const res = await fetch(`${API_URL}/orders`, {
+      headers: {
+        "Client-Id": CLIENT_ID,
+        Authorization: `Bearer ${accessToken}`,
+      },
+      cache: "no-store", // 주문 내역은 실시간 데이터
+    });
+    return res.json();
+  } catch (error) {
+    console.error(error);
+    return { ok: 0, message: "일시적인 네트워크 문제로 구매 목록을 불러올 수 없습니다." };
+  }
+}
+
 /**
  * 내가 판매한 게시물 목록을 가져옵니다.
  * @param {string} accessToken - 인증 토큰
