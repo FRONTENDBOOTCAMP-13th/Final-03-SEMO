@@ -135,20 +135,14 @@ export const useChatSocket = ({ userId, nickName, roomId }: UseChatSocketProps) 
       const currentUserId = String(user?._id);
       const token = user?.token?.accessToken;
 
-      // 거래 완료 메시지 처리
-      // 거래 완료 메시지 처리
+      // 거래 완료 시 isTradeDone타입의 메시지가 오는데 이 타입의 메시지가 오면 구매자 orders에 POST하게 됨.
       if (isTradeDone) {
-        console.log("📥 [구매자] tradeDone 메시지 수신");
-        console.log("🧾 buyerId:", raw.buyerId);
-        console.log("🧾 userId:", user?._id);
-        console.log("🧾 token:", token);
-
         if (String(currentUserId) !== String(raw.buyerId)) {
-          console.warn("⛔ 나는 구매자가 아님");
+          console.warn("나는 구매자가 아님");
         } else if (!token) {
-          console.warn("⛔ 토큰 없음");
+          console.warn("토큰 없음");
         } else {
-          console.log("✅ 구매자 조건 통과, orders API 호출 시작");
+          console.log("구매자 조건 통과, orders API 호출 시작");
 
           try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/orders`, {
@@ -164,9 +158,9 @@ export const useChatSocket = ({ userId, nickName, roomId }: UseChatSocketProps) 
             });
 
             const result = await response.json();
-            console.log("✅ [구매자] 주문 등록 결과:", result);
+            console.log("주문 등록 결과:", result);
           } catch (err) {
-            console.error("❌ [구매자] 주문 등록 실패:", err);
+            console.error("주문 등록 실패:", err);
           }
         }
 

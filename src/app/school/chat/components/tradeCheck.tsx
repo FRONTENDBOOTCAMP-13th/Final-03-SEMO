@@ -97,8 +97,6 @@ const TradeCheck = ({ onComplete, postId, isSeller, productExtra, productId }: T
         user_id: sellerId, // 보내는 사람
         nickName: sellerNickName,
       });
-      console.log("[판매자] socket.emit 완료됨");
-
       // 완료 처리
       setIsTradeCompleted(true);
       onComplete();
