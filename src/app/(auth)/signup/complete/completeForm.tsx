@@ -60,7 +60,7 @@ export default function SignupCompleteForm() {
             onChange={(e) => setUser({ ...user, department: e.target.value })}
           />
           <Input
-            placeholder="소속 학번"
+            placeholder="소속 학번(전체)"
             value={user.studentId ?? ""}
             onChange={(e) => setUser({ ...user, studentId: e.target.value })}
           />
