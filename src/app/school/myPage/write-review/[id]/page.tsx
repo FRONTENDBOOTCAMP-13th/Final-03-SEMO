@@ -5,17 +5,15 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Star } from "lucide-react";
 import SaveFloatingButton from "@/components/ui/SaveFloatingButton";
-import { usePurchasedItems } from "@/app/school/myPage/_hooks/useHistoryApi";
-import { orderToReviewItems } from "@/app/school/myPage/_utils/postConverter";
-import { Review } from "@/app/school/myPage/_utils/postConverter";
-import { submitReview } from "@/app/school/myPage/_actions/review";
-
-import { useUser } from "@/contexts/UserContext";
+import { usePurchasedItems } from "@/lib/hooks/usePurchasedItems";
+import { orderToReviewItems, Review } from "@/lib/utils/postConverter";
+import { submitReview } from "@/data/actions/myPage";
+import { useUserStore } from "@/store/userStore";
 
 interface MyPageWriteReviewProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export default function MyPageWriteReview({ params }: MyPageWriteReviewProps) {
@@ -25,10 +23,10 @@ export default function MyPageWriteReview({ params }: MyPageWriteReviewProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const reviewTextareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const { id } = params;
+  const { id } = use(params);
   const router = useRouter();
   const { orders, isLoading, error: purchasedItemsError } = usePurchasedItems();
-  const { user, loading: userLoading, error: userError } = useUser();
+  const user = useUserStore((state) => state.user);
 
   useEffect(() => {
     const fetchReviewData = async () => {
@@ -38,7 +36,7 @@ export default function MyPageWriteReview({ params }: MyPageWriteReviewProps) {
           const allReviews = await Promise.all(orders.map((order) => orderToReviewItems(order)));
           const flatReviews = allReviews.flat();
 
-          const foundReview = flatReviews.find((item) => item.id === parseInt(id));
+          const foundReview = flatReviews.find((item: Review) => item.id === parseInt(id));
 
           if (foundReview) {
             setReviewData(foundReview);
@@ -92,21 +90,28 @@ export default function MyPageWriteReview({ params }: MyPageWriteReviewProps) {
   };
 
   const handleSubmit = async () => {
-    if (!reviewData || isSubmitting) return;
+    if (!reviewData || isSubmitting || !user?.token?.accessToken) return;
 
     setIsSubmitting(true);
     try {
-      const payload = {
-        order_id: reviewData.orderId,
-        product_id: reviewData.id,
-        rating,
-        content: reviewTextareaRef.current?.value || "",
-      };
-      await submitReview(payload);
-      alert("리뷰가 성공적으로 등록되었습니다!");
-      updateReviewedProductIdsInLocalStorage(reviewData.id); // 헬퍼 함수 호출
-      router.back();
+      const formData = new FormData();
+      formData.append("accessToken", user.token.accessToken);
+      formData.append("order_id", reviewData.orderId.toString());
+      formData.append("product_id", reviewData.id.toString());
+      formData.append("rating", rating.toString());
+      formData.append("content", reviewTextareaRef.current?.value || "");
+
+      const result = await submitReview(null, formData);
+      
+      if (result.ok) {
+        alert("리뷰가 성공적으로 등록되었습니다!");
+        updateReviewedProductIdsInLocalStorage(reviewData.id);
+        router.back();
+      } else {
+        alert(`리뷰 등록에 실패했습니다: ${result.message}`);
+      }
     } catch (error) {
+      console.error("리뷰 등록 오류:", error);
       alert("리뷰 등록에 실패했습니다.");
     } finally {
       setIsSubmitting(false);

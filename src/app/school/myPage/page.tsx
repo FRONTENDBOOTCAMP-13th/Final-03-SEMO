@@ -3,14 +3,13 @@
 import Link from "next/link";
 import Image from "next/image";
 import { User, Package, Star, Heart, Bell, Info, LogOut } from "lucide-react";
-import { useMyPageData } from "@/app/school/myPage/_hooks/useHistoryApi";
+import { useMyPageData } from "@/lib/hooks/useMyPageData";
+import ImageService from "@/lib/imageService";
 
 export default function MyPage() {
-  const { userData, postsCount, reviewsCount, bookmarksCount } = useMyPageData();
+  const { userData, postsCount, reviewsCount, bookmarksCount, isLoading } = useMyPageData();
 
-  const userProfileImage = userData?.image
-    ? `${process.env.NEXT_PUBLIC_API_URL}/${userData.image}`
-    : "/assets/defaultimg.png";
+  const userProfileImage = ImageService.getSafeImageUrl(userData?.image, "/assets/defaultimg.png");
 
   return (
     <div className="px-4 py-6 space-y-6">

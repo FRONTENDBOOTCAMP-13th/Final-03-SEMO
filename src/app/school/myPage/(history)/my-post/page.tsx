@@ -7,21 +7,21 @@ import ItemCard, { Item } from "@/app/school/myPage/_components/ItemCard";
 import EmptyState from "@/components/common/EmptyState";
 import Pagination from "@/components/ui/Pagination";
 import SectionHeader from "@/components/common/SectionHeader";
-import { useMyPosts } from "@/app/school/myPage/_hooks/useHistoryApi";
-import { postsToMyPageItems } from "@/app/school/myPage/_utils/postConverter";
-import { useResponsivePagination } from "@/lib/hooks/useResponsivePagination";
+import { useMyPosts } from "@/lib/hooks/useMyPosts";
+import { postsToMyPageItems } from "@/lib/utils/postConverter";
+import { useResponsivePagination } from "@/lib/hooks/pagination/useResponsivePagination";
 
 export default function MyPageMyPost() {
   const [activeTab, setActiveTab] = useState("전체");
   const router = useRouter(); // useRouter 훅 사용
 
+  // API로부터 내가 판매/구매한 상품 목록 가져오기
+  const { sellPosts, buyPosts, isLoading, error, refetch } = useMyPosts();
+
   const handleItemClick = (item: Item) => {
     // 동적 라우팅 경로 생성
     router.push(`/school/market/${item.marketType}/${item.id}`);
   };
-
-  // API로부터 내가 판매/구매한 상품 목록 가져오기
-  const { sellPosts, buyPosts, isLoading, error, refetch } = useMyPosts();
 
   // API 데이터를 마이페이지 아이템 형식으로 변환
   const myPageItems = useMemo(() => {
@@ -31,14 +31,11 @@ export default function MyPageMyPost() {
   }, [sellPosts, buyPosts]);
 
   // myPageItems에서 카테고리별로 필터링
-  const sellItems: Item[] = myPageItems
-    .filter((item) => item.marketType === "sell");
+  const sellItems: Item[] = myPageItems.filter((item) => item.marketType === "sell");
 
-  const buyItems: Item[] = myPageItems
-    .filter((item) => item.marketType === "buy");
+  const buyItems: Item[] = myPageItems.filter((item) => item.marketType === "buy");
 
-  const gatheringsItems: Item[] = myPageItems
-    .filter((item) => item.marketType === "gather");
+  const gatheringsItems: Item[] = myPageItems.filter((item) => item.marketType === "gather");
 
   // 팔래요 페이지네이션
   const sellPagination = useResponsivePagination({
