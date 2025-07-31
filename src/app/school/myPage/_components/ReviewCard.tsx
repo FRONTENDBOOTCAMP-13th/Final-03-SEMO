@@ -22,7 +22,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Review } from "@/app/school/myPage/_utils/postConverter";
+import { Review } from "@/lib/utils/postConverter";
 
 export default function ReviewCard({ review, isReviewed }: { review: Review; isReviewed: boolean }) {
   return (

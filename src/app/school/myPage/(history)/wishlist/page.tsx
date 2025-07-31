@@ -6,23 +6,21 @@ import { useRouter } from "next/navigation"; // useRouter 임포트
 import TabNavigation from "@/components/ui/TabNavigation";
 import ItemCard, { Item } from "@/app/school/myPage/_components/ItemCard";
 import EmptyState from "@/components/common/EmptyState";
-import { useMyBookmarks } from "@/app/school/myPage/_hooks/useHistoryApi";
-import { bookmarksToWishlistItems } from "@/app/school/myPage/_utils/postConverter";
+import { useMyBookmarks } from "@/lib/hooks/useMyBookmarks";
+import { bookmarksToWishlistItems } from "@/lib/utils/postConverter";
 import SectionHeader from "@/components/common/SectionHeader";
 
 export default function MyPageWishlist() {
   const [activeTab, setActiveTab] = useState("전체");
   const router = useRouter(); // useRouter 훅 사용
 
+  // API로부터 북마크 목록 가져오기
+  const { bookmarks, isLoading, error, refetch } = useMyBookmarks();
+
   const handleItemClick = (item: Item) => {
     // 동적 라우팅 경로 생성
     router.push(`/school/market/${item.marketType}/${item.id}`);
   };
-
-  // 컴포넌트가 로드되는지 확인
-
-  // API로부터 북마크 목록 가져오기
-  const { bookmarks, isLoading, error, refetch } = useMyBookmarks();
 
   // API 데이터를 위시리스트 아이템 형식으로 변환
   const wishlistItems = useMemo(() => {

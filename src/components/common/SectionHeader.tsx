@@ -31,12 +31,9 @@ export default function SectionHeader({ title, targetTab, onTabChange }: Section
   };
 
   return (
-    <button
-      onClick={handleClick}
-      className="flex items-center justify-between w-full mb-3 group  rounded-lg transition-colors"
-    >
-      <h2 className="text-20 font-semibold text-uni-black font-pretendard  transition-colors">{title}</h2>
-      <ChevronRight className="w-5 h-5 text-uni-gray-400  transition-colors mr-2" />
+    <button onClick={handleClick} className="flex items-center justify-between w-full mb-3 group  rounded-lg ">
+      <h2 className="text-20 font-semibold text-uni-black font-pretendard ">{title}</h2>
+      <ChevronRight className="w-6 h-6 text-uni-black  mr-2" />
     </button>
   );
 }
