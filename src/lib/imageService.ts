@@ -13,34 +13,7 @@ import apiClient, { API_CONFIG } from "./apiClient";
 
 class ImageService {
   /**
-   * 이미지 압축 및 Data URL 변환
-   */
-  private static compressImage(file: File, maxWidth = 800, quality = 0.8): Promise<string> {
-    return new Promise((resolve, reject) => {
-      const canvas = document.createElement("canvas");
-      const ctx = canvas.getContext("2d");
-      const img = new Image();
-
-      img.onload = () => {
-        const ratio = Math.min(maxWidth / img.width, maxWidth / img.height);
-        canvas.width = img.width * ratio;
-        canvas.height = img.height * ratio;
-        ctx?.drawImage(img, 0, 0, canvas.width, canvas.height);
-
-        // Data URL로 변환 (압축)
-        const dataUrl = canvas.toDataURL("image/jpeg", quality);
-        resolve(dataUrl);
-      };
-
-      img.onerror = () => reject(new Error("이미지 로드 실패"));
-
-      // 파일을 이미지 객체로 로드
-      img.src = URL.createObjectURL(file);
-    });
-  }
-
-  /**
-   * 파일 업로드 (압축된 이미지)
+   * 인증된 파일 업로드 - 프로필 이미지용
    */
   static async uploadFile(file: File): Promise<string> {
     // 이미지 압축
