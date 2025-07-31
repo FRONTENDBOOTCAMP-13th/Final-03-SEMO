@@ -39,6 +39,8 @@ const Search = () => {
     } else if (pathname.includes("/market/")) {
       const marketType = pathname.includes("/buy") ? "buy" : "sell";
       searchPath = `/school/market/${marketType}/search?keyword=${encodeURIComponent(keyword.trim())}`;
+    } else if (pathname.includes("/home")) {
+      searchPath = `/school/market/buy/search?keyword=${encodeURIComponent(keyword.trim())}`;
     }
     router.push(searchPath);
   };
