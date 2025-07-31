@@ -16,14 +16,6 @@ class ImageService {
    * 인증된 파일 업로드 - 프로필 이미지용
    */
   static async uploadFile(file: File): Promise<string> {
-    // 이미지 압축
-    const compressedDataUrl = await this.compressImage(file);
-
-    // Data URL을 Blob으로 변환
-    const response = await fetch(compressedDataUrl);
-    const blob = await response.blob();
-
-    // FormData 생성
     const formData = new FormData();
     formData.append("attach", blob, file.name);
 
