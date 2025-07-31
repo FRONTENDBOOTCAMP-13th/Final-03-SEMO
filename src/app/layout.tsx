@@ -35,7 +35,7 @@ interface MyPageLayoutProps {
   // modal?: ReactNode;
 }
 
-const AUTH_PATHS = ["/login", "/signup", "/onBoarding"];
+const AUTH_PATHS = ["/", "/login", "/signup", "/onBoarding"];
 
 function LayoutContent({ children }: MyPageLayoutProps) {
   //usePathname 기반 레이아웃 분기 로직 구현
@@ -60,7 +60,7 @@ function LayoutContent({ children }: MyPageLayoutProps) {
     return (
       //  로그인/회원가입/온보딩 페이지는 헤더·네비 제거
 
-      <div className="min-h-screen bg-uni-white min-w-[320px] w-full max-w-[480px] mx-auto flex flex-col justify-center">
+      <div className="min-h-screen bg-uni-white min-w-[320px] w-full max-w-[480px] mx-auto">
         {children}
       </div>
     );
