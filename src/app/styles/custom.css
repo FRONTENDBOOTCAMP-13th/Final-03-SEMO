@@ -39,6 +39,8 @@
   --color-uni-gray-500: #667382; /* 판매완료, 모집완료 */
   --color-uni-gray-600: #5e738c; /* 자동 전달 메시지 */
 
+  /* yellow */
+  --color-uni-yellow: #fee500; /* 카카오톡 버튼 */
   /* black */
   --color-uni-black: #121417;
 
