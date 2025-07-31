@@ -1,8 +1,8 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import Input from "../../_components/Input";
-import Button from "../../_components/Button";
+import Input from "@/components/ui/Input";
+import Button from "@/components/ui/Button";
 import BackButton from "../../_components/BackButton";
 import { useFindStore } from "@/store/findStore";
 import { findId } from "@/lib/actions/findId";

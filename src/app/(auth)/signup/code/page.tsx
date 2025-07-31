@@ -3,8 +3,8 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useUserStore } from "@/store/userStore";
-import Input from "../../_components/Input";
-import Button from "../../_components/Button";
+import Input from "@/components/ui/Input";
+import Button from "@/components/ui/Button";
 import BackButton from "../../_components/BackButton";
 import Logo from "../../_components/LogoLow";
 import { sendVerificationCode } from "@/lib/sendVerificationCode";

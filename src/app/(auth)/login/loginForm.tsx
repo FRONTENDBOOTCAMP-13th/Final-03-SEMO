@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import Input from "../_components/Input";
-import Button from "../_components/Button";
+import Input from "@/components/ui/Input";
+import Button from "@/components/ui/Button";
 import LogoLow from "../_components/LogoLow";
 import BackButton from "../_components/BackButton";
 import PasswordInput from "../_components/PasswordInput";

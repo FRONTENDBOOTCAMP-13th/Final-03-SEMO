@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { findPw } from "@/lib/actions/findPw";
-import Input from "../../_components/Input";
-import Button from "../../_components/Button";
+import Input from "@/components/ui/Input";
+import Button from "@/components/ui/Button";
 import BackButton from "../../_components/BackButton";
 
 export default function FindPwPage() {
