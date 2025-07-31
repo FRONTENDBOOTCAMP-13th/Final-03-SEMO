@@ -93,58 +93,6 @@ export async function getCachedUser(userId: number): Promise<User | null> {
 }
 
 /**
- * 여러 사용자 정보를 캐시 우선으로 가져옵니다
- * @param {number[]} userIds - 사용자 ID 배열
- * @returns {Promise<Map<number, User>>} - 사용자 ID를 키로 하는 Map
- */
-// export async function getCachedUsers(userIds: number[]): Promise<Map<number, User>> {
-//   const result = new Map<number, User>();
-//   const uncachedIds: number[] = [];
-//   const now = Date.now();
-
-//   // 1단계: 캐시에서 가져올 수 있는 것들 확인
-//   for (const userId of userIds) {
-//     const cached = userProfileCache.get(userId);
-//     if (cached && now - cached.timestamp < CACHE_DURATION) {
-//       result.set(userId, cached.user);
-//     } else {
-//       uncachedIds.push(userId);
-//     }
-//   }
-
-//   // 2단계: 캐시되지 않은 사용자들을 한번에 조회
-//   if (uncachedIds.length > 0) {
-//     try {
-//       const response = await getUsers(uncachedIds);
-//       if (response.ok && response.item) {
-//         for (const user of response.item) {
-//           if (user._id) {
-//             // 캐시에 저장
-//             userProfileCache.set(user._id, {
-//               user,
-//               timestamp: now,
-//             });
-//             result.set(user._id, user);
-//           }
-//         }
-//       }
-//     } catch (error) {
-//       console.error("Failed to fetch users:", error);
-
-//       // 벌크 조회 실패시 개별 조회 fallback
-//       for (const userId of uncachedIds) {
-//         const user = await getCachedUser(userId);
-//         if (user && user._id) {
-//           result.set(user._id, user);
-//         }
-//       }
-//     }
-//   }
-
-//   return result;
-// }
-
-/**
  * 내가 북마크한 게시글 목록을 가져옵니다.
  * @param {string} accessToken - 인증 토큰
  * @returns {Promise<ApiRes<BookmarkItem[]>>} - 북마크 목록 응답 객체
@@ -204,9 +152,39 @@ export async function getPurchasedItems(accessToken: string): ApiResPromise<Orde
  * @param {string} accessToken - 인증 토큰
  * @returns {Promise<ApiRes<PostItem[]>>} - 판매 게시물 목록 응답 객체
  */
+export async function getMySellPosts(accessToken: string): ApiResPromise<PostItem[]> {
+  try {
+    const res = await fetch(`${API_URL}/posts/users/?type=sell`, {
+      headers: {
+        "Client-Id": CLIENT_ID,
+        Authorization: `Bearer ${accessToken}`,
+      },
+      cache: "no-store", // 사용자 게시물은 실시간 데이터
+    });
+    return res.json();
+  } catch (error) {
+    console.error(error);
+    return { ok: 0, message: "일시적인 네트워크 문제로 판매 게시물 목록을 불러올 수 없습니다." };
+  }
+}
 
 /**
  * 내가 구매한 게시물 목록을 가져옵니다.
  * @param {string} accessToken - 인증 토큰
  * @returns {Promise<ApiRes<PostItem[]>>} - 구매 게시물 목록 응답 객체
  */
+export async function getMyBuyPosts(accessToken: string): ApiResPromise<PostItem[]> {
+  try {
+    const res = await fetch(`${API_URL}/posts/users/?type=buy`, {
+      headers: {
+        "Client-Id": CLIENT_ID,
+        Authorization: `Bearer ${accessToken}`,
+      },
+      cache: "no-store", // 사용자 게시물은 실시간 데이터
+    });
+    return res.json();
+  } catch (error) {
+    console.error(error);
+    return { ok: 0, message: "일시적인 네트워크 문제로 구매 게시물 목록을 불러올 수 없습니다." };
+  }
+}
