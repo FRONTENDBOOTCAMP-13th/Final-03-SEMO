@@ -59,7 +59,7 @@ const Search = () => {
             <SearchIcon size={24} className="ml-4 text-uni-gray-600" />
           </button>
           <input
-            type="text"
+            type="search"
             placeholder="검색"
             value={keyword}
             onChange={(e) => setkeyword(e.target.value)}
