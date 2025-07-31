@@ -51,7 +51,7 @@ export default function CommentNew({ _id }: CommentNewProps) {
             <button
               type="submit"
               disabled={isLoading}
-              className="bg-uni-blue-400 text-uni-white h-13 px-4 py-2 rounded-lg text-14 hover:bg-uni-blue-500 disabled:bg-uni-gray-400 transition-colors"
+              className="bg-uni-blue-400 text-uni-white h-13 px-4 py-2 rounded-lg text-14"
             >
               <MessageCircle size={22} />
             </button>
