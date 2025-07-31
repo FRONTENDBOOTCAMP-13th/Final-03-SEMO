@@ -136,6 +136,7 @@ export const useChatSocket = ({ userId, nickName, roomId }: UseChatSocketProps) 
       const token = user?.token?.accessToken;
 
       // 거래 완료 메시지 처리
+      // 거래 완료 메시지 처리
       if (isTradeDone) {
         console.log("📥 [구매자] tradeDone 메시지 수신");
         console.log("🧾 buyerId:", raw.buyerId);
@@ -148,7 +149,7 @@ export const useChatSocket = ({ userId, nickName, roomId }: UseChatSocketProps) 
           console.warn("⛔ 토큰 없음");
         } else {
           console.log("✅ 구매자 조건 통과, orders API 호출 시작");
-          console.log("✅ 조건 만족 → fetch(/orders) 실행 직전");
+
           try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/orders`, {
               method: "POST",
@@ -182,6 +183,7 @@ export const useChatSocket = ({ userId, nickName, roomId }: UseChatSocketProps) 
 
         return;
       }
+
       // 개인방에서 내가 보낸 메시지인 경우 무시 (중복 방지)
       if (currentRoomId !== GLOBAL_ROOM_ID && !isWhisper && messageUserId === currentUserId) {
         console.log("개인방에서 내가 보낸 메시지 서버 응답 - 무시");
@@ -229,6 +231,7 @@ export const useChatSocket = ({ userId, nickName, roomId }: UseChatSocketProps) 
 
       // 알림 처리
       if (isWhisper && messageUserId !== currentUserId) {
+        // if (isWhisper && String(raw.toUserId) === String(currentUserId)) {
         toast.info(`${raw.nickName}님이 개인 메시지를 보냈습니다. 클릭하여 개인방으로 이동하세요.`, {
           autoClose: false,
           onClick: () => {

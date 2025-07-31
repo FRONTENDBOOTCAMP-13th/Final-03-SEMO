@@ -43,7 +43,7 @@ const TradeCheck = ({ onComplete, postId, isSeller, productExtra, productId }: T
         Authorization: `Bearer ${token}`,
       };
 
-      // 1. posts/:postId 거래 완료 처리
+      // posts/:postId 거래 완료 처리
       const postRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/posts/${postId}`, {
         method: "PATCH",
         headers,
@@ -83,6 +83,22 @@ const TradeCheck = ({ onComplete, postId, isSeller, productExtra, productId }: T
         }
       }
 
+      const buyerId = buyerIdFromQuery ?? productExtra?.buyerId ?? useUserStore.getState().user?._id;
+
+      socket.emit("message", {
+        msgType: "all",
+        type: "tradeDone",
+        msg: "거래가 완료되었습니다. 새로고침을 눌러서 거래정보를 확인하세요",
+        postId,
+        roomId,
+        buyerId,
+        productId: productId ?? productExtra?.productId,
+        timestamp: new Date().toISOString(),
+        user_id: sellerId, // 보내는 사람
+        nickName: sellerNickName,
+      });
+      console.log("[판매자] socket.emit 완료됨");
+
       // 완료 처리
       setIsTradeCompleted(true);
       onComplete();
@@ -92,25 +108,6 @@ const TradeCheck = ({ onComplete, postId, isSeller, productExtra, productId }: T
     } finally {
       setShowPopUp(false);
     }
-    console.log("[판매자] emit 전 buyerIdFromQuery:", buyerIdFromQuery);
-    console.log("[판매자] emit 전 productExtra.buyerId:", productExtra?.buyerId);
-
-    const buyerId = buyerIdFromQuery ?? productExtra?.buyerId ?? useUserStore.getState().user?._id;
-    console.log("🔍 [handleConfirm] 최종 buyerId:", buyerId);
-
-    socket.emit("message", {
-      msgType: "all",
-      type: "tradeDone",
-      msg: "거래가 완료되었습니다. 새로고침을 눌러서 거래정보를 확인하세요",
-      postId,
-      roomId,
-      buyerId,
-      productId: productId ?? productExtra?.productId,
-      timestamp: new Date().toISOString(),
-      user_id: sellerId, // 보내는 사람
-      nickName: sellerNickName,
-    });
-    console.log("[판매자] socket.emit 완료됨");
   };
 
   if (!isSeller) return null;
