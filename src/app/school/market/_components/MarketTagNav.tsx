@@ -48,13 +48,12 @@ export default function MarketTagNav() {
   const handleTagClick = (tag: string) => {
     setActiveTag(tag);
 
-    // [전체]가 아닌 경우에만 검색 페이지로 이동
     if (tag !== "전체") {
-      router.push(`/school/market/${marketType}/search?keyword=${encodeURIComponent(tag.trim())}`);
+      // 무조건 window.location.href로 이동 (새로고침 효과)
+      window.location.href = `/school/market/${marketType}/search?keyword=${encodeURIComponent(tag.trim())}`;
     } else {
       sessionStorage.removeItem(STORAGE_KEY);
-      // [전체]인 경우 메인 markey 페이지로 이동
-      router.push(`/school/market/${marketType}`);
+      window.location.href = `/school/market/${marketType}`;
     }
   };
 
