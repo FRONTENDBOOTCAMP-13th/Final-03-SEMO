@@ -17,7 +17,7 @@ class ImageService {
    */
   static async uploadFile(file: File): Promise<string> {
     const formData = new FormData();
-    formData.append("attach", blob, file.name);
+    formData.append("attach", file);
 
     const result = await apiClient.upload<{ path: string }[]>("/files/", formData);
     if (!result || result.length === 0 || !result[0].path) {
