@@ -4,7 +4,7 @@ export interface Message {
   id: string;
   roomId: string;
   content: string;
-  type?: "text";
+  type?: "text" | "tradeDone";
   msgType: "all" | "whisper";
   createdAt: string;
   user_id: string;

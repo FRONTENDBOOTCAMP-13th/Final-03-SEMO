@@ -1,17 +1,32 @@
+"use client";
 import { useState } from "react";
 import { Share, Check } from "lucide-react";
 import PopUp from "./popup";
 import { useUserStore } from "@/store/userStore";
+import { socket } from "@/app/api/chat/useChatSoket";
+import { useChatStore } from "@/app/api/chat/useChatStore";
+import { useSearchParams } from "next/navigation";
 
 interface TradeCheckProps {
   onComplete: () => void;
   postId: string;
   isSeller: boolean;
+  productExtra: any;
+  productId?: string | number;
 }
 
-const TradeCheck = ({ onComplete, postId, isSeller }: TradeCheckProps) => {
+const TradeCheck = ({ onComplete, postId, isSeller, productExtra, productId }: TradeCheckProps) => {
   const [showPopUp, setShowPopUp] = useState(false);
   const [isTradeCompleted, setIsTradeCompleted] = useState(false);
+
+  // 구매자 id를 가져오기 위한
+  const searchParams = useSearchParams();
+  const buyerIdFromQuery = searchParams.get("buyerId") ?? undefined;
+
+  // 거래완료 메시지 우회를 위한
+  const roomId = useChatStore.getState().currentRoomId;
+  const sellerId = useUserStore.getState().user?._id;
+  const sellerNickName = useUserStore.getState().user?.name;
 
   const handleConfirm = async () => {
     try {
@@ -22,30 +37,72 @@ const TradeCheck = ({ onComplete, postId, isSeller }: TradeCheckProps) => {
         return;
       }
 
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/posts/${postId}`, {
+      const headers = {
+        "Content-Type": "application/json",
+        "Client-Id": "febc13-final03-emjf",
+        Authorization: `Bearer ${token}`,
+      };
+
+      // posts/:postId 거래 완료 처리
+      const postRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/posts/${postId}`, {
         method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          "Client-Id": "febc13-final03-emjf",
-          Authorization: `Bearer ${token}`,
-        },
+        headers,
         body: JSON.stringify({
+          type: "end",
           extra: {
+            ...(productExtra || {}),
             crt: "거래완료",
           },
         }),
       });
-      const json = await res.json();
-      console.log("거래 완료 응답:", json);
 
-      if (json.ok) {
-        setIsTradeCompleted(true);
-        onComplete();
-      } else {
-        alert(`거래 완료 실패: ${json.message || "서버 오류"}`);
+      const postJson = await postRes.json();
+      if (postJson.ok !== 1) {
+        alert(`posts 거래완료 실패: ${postJson.message || "서버 오류"}`);
+        return;
       }
+
+      // market/products/:productId 거래 완료 처리
+      const productIdToPatch = productId ?? productExtra?.productId;
+      if (productIdToPatch) {
+        const productRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/seller/products/${productIdToPatch}`, {
+          method: "PATCH",
+          headers,
+          body: JSON.stringify({
+            extra: {
+              ...(productExtra || {}),
+              crt: "거래완료",
+            },
+          }),
+        });
+
+        const productJson = await productRes.json();
+        if (productJson.ok !== 1) {
+          alert(`상품 거래완료 실패: ${productJson.message || "서버 오류"}`);
+          return;
+        }
+      }
+
+      const buyerId = buyerIdFromQuery ?? productExtra?.buyerId ?? useUserStore.getState().user?._id;
+
+      socket.emit("message", {
+        msgType: "all",
+        type: "tradeDone",
+        msg: "거래가 완료되었습니다. 새로고침을 눌러서 거래정보를 확인하세요",
+        postId,
+        roomId,
+        buyerId,
+        productId: productId ?? productExtra?.productId,
+        timestamp: new Date().toISOString(),
+        user_id: sellerId, // 보내는 사람
+        nickName: sellerNickName,
+      });
+      // 완료 처리
+      setIsTradeCompleted(true);
+      onComplete();
     } catch (err) {
       console.error("거래 완료 에러:", err);
+      alert("거래 완료 처리 중 오류가 발생했습니다.");
     } finally {
       setShowPopUp(false);
     }

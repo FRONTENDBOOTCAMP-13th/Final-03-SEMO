@@ -74,7 +74,7 @@ export default function PostContent({ post, marketType }: PostContentProps) {
           {post.user?._id && (
             <ChatStartButton
               sellerId={post.user._id.toString()}
-              sellerNickName={post.user.name}
+              // sellerNickName={post.user.name}
               productId={post._id.toString()}
             />
           )}
@@ -162,7 +162,7 @@ export default function PostContent({ post, marketType }: PostContentProps) {
         {post.user?._id && (
           <ChatStartButton
             sellerId={post.user._id.toString()}
-            sellerNickName={post.user.name}
+            // sellerNickName={post.user.name}
             productId={post._id.toString()}
           />
         )}
