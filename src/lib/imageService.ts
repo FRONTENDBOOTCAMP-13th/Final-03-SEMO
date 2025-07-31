@@ -28,11 +28,11 @@ class ImageService {
   }
 
   /**
-   * 이미지 URL 생성 및 유효성 검사
+   * 안전한 이미지 URL 반환 (기본 이미지 포함)
    */
-  static getImageUrl(imagePath: string | null | undefined): string | null {
-    if (!imagePath || typeof imagePath !== "string" || imagePath === "undefined" || imagePath.trim() === "") {
-      return null;
+  static getSafeImageUrl(imagePath: string | null | undefined, defaultPath = "/assets/defaultimg.png"): string {
+    if (!imagePath || typeof imagePath !== "string" || imagePath.trim() === "" || imagePath === "undefined") {
+      return defaultPath;
     }
 
     // 이미 완전한 URL인 경우
@@ -40,55 +40,13 @@ class ImageService {
       return imagePath;
     }
 
-    // path가 "files/client-id/filename" 형태라면 API_BASE_URL만 앞에 붙임
+    // path가 "files/client-id/filename" 형태인 경우
     if (imagePath.startsWith("files/")) {
       return `${API_CONFIG.BASE_URL}/${imagePath}`;
     }
-    // 기존 방식 (파일명만 있는 경우)
+
+    // 파일명만 있는 경우
     return `${API_CONFIG.BASE_URL}/files/${API_CONFIG.CLIENT_ID}/${imagePath}`;
-  }
-
-  /**
-   * 안전한 이미지 URL 반환 (기본 이미지 포함)
-   */
-  static getSafeImageUrl(imagePath: string | null | undefined, defaultPath = "/assets/defaultimg.png"): string {
-    const url = this.getImageUrl(imagePath);
-    return url || defaultPath;
-  }
-
-  /**
-   * 이미지 URL에서 상대 경로 추출
-   */
-  static extractImagePath(imageUrl: string | null | undefined): string | null {
-    if (!imageUrl || typeof imageUrl !== "string") {
-      return null;
-    }
-
-    // 이미 상대 경로인 경우
-    if (!imageUrl.startsWith("http")) {
-      return imageUrl;
-    }
-
-    // 전체 URL에서 path 부분만 추출
-    const apiBaseUrl = API_CONFIG.BASE_URL || "";
-    const baseUrlPattern = apiBaseUrl.replace(/[.*+?^${}()|[\\]/g, "\\$&");
-    const pathMatch = imageUrl.match(new RegExp(`${baseUrlPattern}/(.+)$`));
-    return pathMatch ? pathMatch[1] : null;
-  }
-
-  /**
-   * 이미지 유효성 검사
-   */
-  static isValidImageUrl(imagePath: string | null | undefined): boolean {
-    if (!imagePath || typeof imagePath !== "string" || imagePath === "undefined" || imagePath.trim() === "") {
-      return false;
-    }
-    return (
-      imagePath.startsWith("http") ||
-      imagePath.startsWith("data:") ||
-      imagePath.startsWith("files/") ||
-      imagePath.includes(".")
-    );
   }
 }
 
