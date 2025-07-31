@@ -108,8 +108,6 @@ const ChatPage = () => {
   // 판매자 정보 fetch 등록된 계좌번호를 위해
   useEffect(() => {
     const token = useUserStore.getState().user?.token?.accessToken;
-    console.log("토큰:", token);
-    console.log("sellerId:", sellerId);
 
     if (sellerId && token) {
       fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${sellerId}`, {
