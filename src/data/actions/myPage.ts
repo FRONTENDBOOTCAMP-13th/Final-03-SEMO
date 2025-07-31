@@ -100,3 +100,47 @@ export async function updateUser(state: ApiRes<User> | null, formData: FormData)
  * @description
  * 리뷰를 제출하고, 성공 시 관련 페이지를 재검증합니다.
  */
+export async function submitReview(
+  state: ApiRes<SubmitReviewResponse> | null,
+  formData: FormData
+): ApiResPromise<SubmitReviewResponse> {
+  let res: Response;
+  let data: ApiRes<SubmitReviewResponse>;
+
+  try {
+    const accessToken = formData.get("accessToken") as string;
+
+    const body: SubmitReviewPayload = {
+      order_id: parseInt(formData.get("order_id") as string),
+      product_id: parseInt(formData.get("product_id") as string),
+      rating: parseInt(formData.get("rating") as string),
+      content: formData.get("content") as string,
+    };
+
+    console.log(`submitReview body`, body);
+
+    // 리뷰 제출 API 호출
+    res = await fetch(`${API_URL}/replies/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Client-Id": CLIENT_ID,
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify(body),
+    });
+
+    data = await res.json();
+
+    if (data.ok) {
+      revalidatePath("/school/myPage/(history)");
+      revalidatePath("/school/myPage/write-review");
+    }
+  } catch (error) {
+    // 네트워크 오류 처리
+    console.error(error);
+    return { ok: 0, message: "일시적인 네트워크 문제로 리뷰 제출에 실패했습니다." };
+  }
+
+  return data;
+}
