@@ -122,8 +122,8 @@ export default function PostForm({ mode, initialData, marketType, postId }: Post
         <section className="mb-8">
           <fieldset className="flex flex-col gap-3">
             <label
-              className={`flex justify-between items-center px-4 py-3 rounded-lg cursor-pointer
-        ${selected === "registered" ? "border-1 border-uni-blue-400" : "border border-uni-gray-200"}`}
+              className={`flex justify-between items-center p-4 rounded-lg cursor-pointer
+        ${selected === "registered" ? "border-2 border-uni-blue-400" : "border-2 border-uni-gray-200"}`}
             >
               <span className="text-base text-14">등록된 계좌 번호</span>
               <input
@@ -137,8 +137,8 @@ export default function PostForm({ mode, initialData, marketType, postId }: Post
             </label>
 
             <label
-              className={`flex justify-between items-center mb-5 px-4 py-3 rounded-lg cursor-pointer
-        ${selected === "new" ? "border-1 border-uni-blue-400" : "border border-uni-gray-200"}`}
+              className={`flex justify-between items-center mb-5 p-4 rounded-lg cursor-pointer
+        ${selected === "new" ? "border-2 border-uni-blue-400" : "border-2 border-uni-gray-200"}`}
             >
               <span className="text-base text-14">새로운 계좌 번호</span>
               <input
