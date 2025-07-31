@@ -1,10 +1,11 @@
+"use client";
 import { useState } from "react";
 import { Share, Check } from "lucide-react";
 import PopUp from "./popup";
 import { useUserStore } from "@/store/userStore";
 import { socket } from "@/app/api/chat/useChatSoket";
 import { useChatStore } from "@/app/api/chat/useChatStore";
-import { useRouter } from "next/router";
+import { useSearchParams } from "next/navigation";
 
 interface TradeCheckProps {
   onComplete: () => void;
@@ -19,8 +20,8 @@ const TradeCheck = ({ onComplete, postId, isSeller, productExtra, productId }: T
   const [isTradeCompleted, setIsTradeCompleted] = useState(false);
 
   // 구매자 id를 가져오기 위한
-  const router = useRouter();
-  const buyerIdFromQuery = router.query.buyerId as string;
+  const searchParams = useSearchParams();
+  const buyerIdFromQuery = searchParams.get("buyerId") ?? undefined;
 
   // 거래완료 메시지 우회를 위한
   const roomId = useChatStore.getState().currentRoomId;
@@ -91,8 +92,11 @@ const TradeCheck = ({ onComplete, postId, isSeller, productExtra, productId }: T
     } finally {
       setShowPopUp(false);
     }
+    console.log("[판매자] emit 전 buyerIdFromQuery:", buyerIdFromQuery);
+    console.log("[판매자] emit 전 productExtra.buyerId:", productExtra?.buyerId);
 
     const buyerId = buyerIdFromQuery ?? productExtra?.buyerId ?? useUserStore.getState().user?._id;
+    console.log("🔍 [handleConfirm] 최종 buyerId:", buyerId);
 
     socket.emit("message", {
       msgType: "all",
@@ -106,6 +110,7 @@ const TradeCheck = ({ onComplete, postId, isSeller, productExtra, productId }: T
       user_id: sellerId, // 보내는 사람
       nickName: sellerNickName,
     });
+    console.log("[판매자] socket.emit 완료됨");
   };
 
   if (!isSeller) return null;
