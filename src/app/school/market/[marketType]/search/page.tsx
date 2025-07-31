@@ -14,7 +14,7 @@ export default async function SearchPage({ params, searchParams }: SearchPagePro
   const { marketType } = await params;
   const { keyword } = await searchParams;
 
-  const res = await getKeywordPosts(marketType, keyword || null);
+  const res = await getKeywordPosts(marketType, keyword || null, 1, 8);
 
   return (
     <main className="px-5 bg-uni-white min-h-screen">
@@ -45,7 +45,11 @@ export default async function SearchPage({ params, searchParams }: SearchPagePro
       <div className="flex items-center mb-4">
         <Link href={`/school/market/${marketType}`} className="mr-4"></Link>
       </div>
-      <ItemSection items={res.ok ? res.item : []} market={marketType} />
+      <ItemSection
+        initialItems={res.ok ? res.item : []}
+        market={marketType}
+        initialHasMore={res.ok ? res.item.length >= 8 : false}
+      />
     </main>
   );
 }

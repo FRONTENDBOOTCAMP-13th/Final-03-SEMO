@@ -33,7 +33,7 @@ export default async function MarketPage({
 }) {
   const { marketType } = await params;
 
-  const res = await getPosts(marketType);
+  const res = await getPosts(marketType, 1, 8);
 
   if (!res.ok) throw new Error("게시글 로드 실패");
   return (
@@ -60,7 +60,7 @@ export default async function MarketPage({
         })}
       </div>
       <MarketTagNav />
-      <ItemSection items={res.item} market={marketType} />
+      <ItemSection initialItems={res.item} market={marketType} initialHasMore={res.item.length === 8} />
       <FloatingButton
         href={`/school/market/${marketType}/new`}
         icon={<Pencil size={25} color="white" />}

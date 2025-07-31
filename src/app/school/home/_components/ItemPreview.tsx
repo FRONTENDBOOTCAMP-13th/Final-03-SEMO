@@ -19,7 +19,7 @@ export default function MarketPreview({ buyItems, sellItems }: MarketPreviewProp
           <ChevronRight size={30} className="text-uni-black" />
         </Link>
 
-        <ItemSection items={buyItems.slice(0, 4)} market="buy" />
+        <ItemSection initialItems={buyItems.slice(0, 4)} market="buy" initialHasMore={false} />
       </section>
       <section className="mb-15">
         <Link href="/school/market/sell" className="flex items-center justify-between mb-4 group">
@@ -27,7 +27,7 @@ export default function MarketPreview({ buyItems, sellItems }: MarketPreviewProp
           <ChevronRight size={30} className="text-uni-black" />
         </Link>
 
-        <ItemSection items={sellItems.slice(0, 4)} market="sell" />
+        <ItemSection initialItems={sellItems.slice(0, 4)} market="sell" initialHasMore={false} />
       </section>
     </div>
   );
