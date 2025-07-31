@@ -1,5 +1,6 @@
 // 상품 설명 입력 컴포넌트
 import { Post } from "@/types";
+import { ChevronsUpDown } from "lucide-react";
 interface ProductDescProps {
   initialData?: Post;
   contentError: string;
@@ -20,20 +21,25 @@ export default function ProductDesc({ initialData, contentError }: ProductDescPr
         </label>
         {/* 카테고리 셀렉트 */}
         <p className="text-15 mb-1 text-uni-gray-600 font-bold">카테고리</p>
-        <select
-          id="tag"
-          name="tag"
-          defaultValue={initialData?.tag || ""}
-          className="w-full bg-uni-gray-200 rounded-lg p-3 text-16 text-uni-gray-300"
-        >
-          <option value="">카테고리</option>
-          <option value="식품">식품</option>
-          <option value="도서">도서</option>
-          <option value="의류">의류</option>
-          <option value="생활용품">생활용품</option>
-          <option value="생활가전">생활가전</option>
-          <option value="학용품">학용품</option>
-        </select>
+        <div className="relative">
+          <select
+            id="tag"
+            name="tag"
+            defaultValue={initialData?.tag || ""}
+            className="w-full h-14 bg-uni-gray-200 rounded-lg p-3 text-16 text-uni-gray-300 appearance-none"
+          >
+            <option value="">카테고리</option>
+            <option value="식품">식품</option>
+            <option value="도서">도서</option>
+            <option value="의류">의류</option>
+            <option value="생활용품">생활용품</option>
+            <option value="생활가전">생활가전</option>
+            <option value="학용품">학용품</option>
+          </select>
+          <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+            <ChevronsUpDown size={25} className="text-uni-gray-600" />
+          </div>
+        </div>
       </div>
       <div className="mb-5">
         <label htmlFor="desc" className="sr-only">

@@ -11,7 +11,7 @@ import { Trash2, PenLine, ExternalLink } from "lucide-react";
 const HEADER_CONFIGS = {
   marketList: {
     title: "상품",
-    backLink: "",
+    backLink: "/school/home",
     showMeatball: false,
   },
   marketNew: {
@@ -32,7 +32,7 @@ const HEADER_CONFIGS = {
   // 공동구매 세팅
   groupList: {
     title: "공동구매",
-    backLink: "",
+    backLink: "/school/home",
     showMeatball: false,
   },
   groupNew: {
@@ -193,6 +193,7 @@ export default function MarketPageHeader() {
         config = HEADER_CONFIGS.marketDetail;
       } else {
         config = HEADER_CONFIGS.marketList;
+        backLink = "/school/home";
       }
 
       backLink = subPage ? `/school/market/${marketType}` : "";
