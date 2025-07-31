@@ -3,6 +3,7 @@ import { io } from "socket.io-client";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { Message, useChatStore } from "./useChatStore";
+import { useUserStore } from "@/store/userStore";
 
 export const socket = io("https://fesp-api.koyeb.app/ws/sample", { autoConnect: false });
 
@@ -17,6 +18,7 @@ export const GLOBAL_ROOM_ID = "global";
 export const useChatSocket = ({ userId, nickName, roomId }: UseChatSocketProps) => {
   const { setRoomId, setUserList, addMessage } = useChatStore();
   const router = useRouter();
+  const user = useUserStore((state) => state.user);
 
   // 개인방 입장/생성 헬퍼
   const enterRoom = (roomId: string, onSuccess?: () => void) => {
@@ -107,9 +109,8 @@ export const useChatSocket = ({ userId, nickName, roomId }: UseChatSocketProps) 
       setUserList(userList);
     };
 
-    const handleMessage = (data: any) => {
+    const handleMessage = async (data: any) => {
       const currentRoomId = useChatStore.getState().currentRoomId;
-      console.log("서버에서 받은 메시지:", data);
 
       const raw =
         typeof data.msg === "object"
@@ -128,8 +129,54 @@ export const useChatSocket = ({ userId, nickName, roomId }: UseChatSocketProps) 
             };
 
       const isWhisper = data.msgType === "whisper";
+      const isTradeDone = data.type === "tradeDone" || data.msg?.type === "tradeDone"; // 거래완료 메시지를 위해
+
       const messageUserId = String(raw.user_id || data.user_id || userId);
-      const currentUserId = String(userId);
+      const currentUserId = String(user?._id);
+      const token = user?.token?.accessToken;
+
+      // 거래 완료 시 isTradeDone타입의 메시지가 오는데 이 타입의 메시지가 오면 구매자 orders에 POST하게 됨.
+      if (isTradeDone) {
+        if (String(currentUserId) !== String(raw.buyerId)) {
+          console.warn("나는 구매자가 아님");
+        } else if (!token) {
+          console.warn("토큰 없음");
+        } else {
+          console.log("구매자 조건 통과, orders API 호출 시작");
+
+          try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/orders`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+                "Client-Id": "febc13-final03-emjf",
+              },
+              body: JSON.stringify({
+                products: [{ _id: Number(raw.productId), quantity: 1 }],
+              }),
+            });
+
+            const result = await response.json();
+            console.log("주문 등록 결과:", result);
+          } catch (err) {
+            console.error("주문 등록 실패:", err);
+          }
+        }
+
+        addMessage({
+          id: `${Date.now()}-${Math.random()}`,
+          roomId: data.roomId || currentRoomId,
+          content: raw.msg,
+          type: "tradeDone",
+          msgType: "all",
+          createdAt: data.timestamp ?? new Date().toISOString(),
+          user_id: messageUserId,
+          nickName: raw.nickName || nickName,
+        });
+
+        return;
+      }
 
       // 개인방에서 내가 보낸 메시지인 경우 무시 (중복 방지)
       if (currentRoomId !== GLOBAL_ROOM_ID && !isWhisper && messageUserId === currentUserId) {
@@ -178,6 +225,7 @@ export const useChatSocket = ({ userId, nickName, roomId }: UseChatSocketProps) 
 
       // 알림 처리
       if (isWhisper && messageUserId !== currentUserId) {
+        // if (isWhisper && String(raw.toUserId) === String(currentUserId)) {
         toast.info(`${raw.nickName}님이 개인 메시지를 보냈습니다. 클릭하여 개인방으로 이동하세요.`, {
           autoClose: false,
           onClick: () => {
