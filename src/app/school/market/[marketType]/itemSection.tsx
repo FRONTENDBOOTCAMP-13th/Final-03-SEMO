@@ -23,8 +23,8 @@ export default function ItemSection({ initialItems, market, initialHasMore }: Pr
 
   if (!items || items.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-15">
-        <p className="text-15 text-gray-400 font-medium">해당 조건의 게시글이 없습니다.</p>
+      <div className="flex flex-col items-center justify-center mt-20">
+        <p className="text-16 text-gray-400 font-medium">해당 조건의 게시글이 없습니다.</p>
       </div>
     );
   }
