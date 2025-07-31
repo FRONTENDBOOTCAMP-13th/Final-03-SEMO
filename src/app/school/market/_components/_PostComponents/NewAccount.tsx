@@ -9,7 +9,7 @@ export default function NewAccount() {
         <option value="농협">농협</option>
         <option value="기업은행">기업은행</option>
       </select>
-      <input type="text" placeholder="계좌번호" className="w-full bg-uni-gray-200 rounded-md p-3 mb-8 text-16" />
+      <input type="text" placeholder="계좌번호" className="w-full bg-uni-gray-100 rounded-lg p-4 text-16" />
     </div>
   );
 }

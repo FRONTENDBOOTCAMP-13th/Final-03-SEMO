@@ -22,7 +22,7 @@ export default function Product({ images, initialTitle, setImages, titleError }:
           type="text"
           placeholder="상품명 입력(2글자 이상)"
           defaultValue={initialTitle || ""}
-          className={`w-full bg-uni-gray-200 rounded-lg p-3 text-16 ${titleError ? "border-2 border-uni-red-500" : ""}`}
+          className={`w-full bg-uni-gray-100 rounded-lg p-4 text-16 placeholder-uni-gray-300${titleError ? "border-2 border-uni-red-500" : ""}`}
         />
         {/* 에러 메시지 표시 */}
         {titleError && <p className=" text-14 text-uni-red-500 font-medium">{titleError}</p>}

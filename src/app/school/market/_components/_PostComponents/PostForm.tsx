@@ -156,7 +156,10 @@ export default function PostForm({ mode, initialData, marketType, postId }: Post
         </section>
 
         <div className="flex justify-end">
-          <button type="submit" className="w-full bg-uni-blue-400 text-uni-white px-4 py-2 rounded-lg cursor-pointer">
+          <button
+            type="submit"
+            className="w-full bg-uni-blue-400 text-uni-white py-3 font-semibold rounded-lg cursor-pointer"
+          >
             {mode === "create" ? "등록하기" : "수정하기"}
           </button>
         </div>

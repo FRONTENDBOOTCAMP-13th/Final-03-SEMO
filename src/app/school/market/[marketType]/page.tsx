@@ -49,7 +49,7 @@ export default async function MarketPage({
             <Link
               key={i}
               href={`/school/market/${i}`}
-              className={`flex-1 relative text-center py-2 font-bold text-14 ${
+              className={`flex-1 relative text-center py-3 font-bold text-14 ${
                 active ? "text-uni-blue-400" : "text-uni-gray-500"
               }`}
             >

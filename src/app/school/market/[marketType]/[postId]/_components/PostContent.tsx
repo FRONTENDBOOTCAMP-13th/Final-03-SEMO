@@ -60,7 +60,7 @@ export default function PostContent({ post, marketType }: PostContentProps) {
 
         {/* 상태 */}
         <div className="my-3">
-          <span className="inline-block bg-uni-green-400 text-uni-white text-14 font-bold rounded-[12px] p-10 px-4.5 py-1.5">
+          <span className="inline-block bg-uni-green-300 text-uni-white text-14 font-bold rounded-xl px-4 py-1.5">
             {post?.extra.crt}
           </span>
         </div>

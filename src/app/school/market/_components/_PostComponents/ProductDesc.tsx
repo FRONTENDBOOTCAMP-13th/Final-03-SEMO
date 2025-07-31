@@ -24,7 +24,7 @@ export default function ProductDesc({ initialData, contentError }: ProductDescPr
           id="tag"
           name="tag"
           defaultValue={initialData?.tag || ""}
-          className="w-full bg-uni-gray-200 rounded-lg p-3 text-16 text-uni-gray-600"
+          className="w-full bg-uni-gray-200 rounded-lg p-3 text-16 text-uni-gray-300"
         >
           <option value="">카테고리</option>
           <option value="식품">식품</option>
@@ -45,7 +45,7 @@ export default function ProductDesc({ initialData, contentError }: ProductDescPr
           name="content"
           placeholder={`판매 금지 물품은 게시가 제한될 수 있어요\n(10글자 이상 입력)`}
           defaultValue={initialData?.content || ""}
-          className={`w-full h-[150px] bg-uni-gray-200 rounded-lg p-3 text-16 ${
+          className={`w-full h-[150px] bg-uni-gray-200 rounded-lg p-3 text-16 placeholder-uni-gray-300${
             contentError ? "border-2 border-uni-red-500" : ""
           }`}
           maxLength={250}
@@ -64,7 +64,7 @@ export default function ProductDesc({ initialData, contentError }: ProductDescPr
           type="text"
           defaultValue={initialData?.extra.price || ""}
           placeholder="숫자만 입력 (',' 없이)"
-          className="w-full bg-uni-gray-200 rounded-lg p-3 text-16"
+          className="w-full bg-uni-gray-100 rounded-lg p-4 text-16 placeholder-uni-gray-300"
         />
       </div>
       <div className="mb-5">
@@ -77,7 +77,7 @@ export default function ProductDesc({ initialData, contentError }: ProductDescPr
           name="location"
           placeholder="거래 장소"
           defaultValue={initialData?.extra.location || ""}
-          className="w-full bg-uni-gray-200 rounded-lg p-3 text-16"
+          className="w-full bg-uni-gray-100 rounded-lg p-4 text-16 placeholder-uni-gray-300"
         />
       </div>
     </section>
