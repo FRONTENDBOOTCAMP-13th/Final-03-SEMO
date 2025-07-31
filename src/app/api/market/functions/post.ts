@@ -14,7 +14,8 @@ export async function getPosts(boardType: string, page: number = 1, limit: numbe
       headers: {
         "Client-Id": CLIENT_ID,
       },
-      cache: "no-store",
+      cache: "force-cache",
+      next: { revalidate: 30 },
     });
     return res.json();
   } catch (error) {
@@ -36,6 +37,7 @@ export async function getPostsCount(boardType: string): Promise<number> {
         "Client-Id": CLIENT_ID,
       },
       cache: "no-store",
+      next: { revalidate: 180 },
     });
 
     const data = await res.json();
@@ -85,6 +87,7 @@ export async function getReplies(_id: number, retryCount = 0): ApiResPromise<Pos
       headers: {
         "Client-Id": CLIENT_ID,
       },
+      cache: "no-store",
     });
     if (!res.ok && retryCount < MAX_RETRIES) {
       console.warn(`댓글 목록 가져오기 실패, 재시도 ${retryCount + 1}/${MAX_RETRIES}`);
