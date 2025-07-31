@@ -10,6 +10,23 @@ const CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID || "";
  * @param {number} userId - 사용자 ID
  * @returns {Promise<ApiRes<User>>} - 사용자 정보 응답 객체
  */
+export async function getUser(userId: number): ApiResPromise<User> {
+  try {
+    const res = await fetch(`${API_URL}/users/${userId}`, {
+      headers: {
+        "Client-Id": CLIENT_ID,
+      },
+      cache: "force-cache",
+      next: {
+        tags: [`users/${userId}`],
+      },
+    });
+    return res.json();
+  } catch (error) {
+    console.error(error);
+    return { ok: 0, message: "일시적인 네트워크 문제로 사용자 정보를 불러올 수 없습니다." };
+  }
+}
 
 /**
  * 여러 사용자 정보를 한번에 가져옵니다 (캐시 최적화)
