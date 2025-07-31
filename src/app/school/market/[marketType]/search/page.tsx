@@ -42,7 +42,7 @@ export default async function SearchPage({ params, searchParams }: SearchPagePro
       <MarketTagNav />
 
       {/* 헤더 */}
-      <div className="flex items-center mb-4">
+      <div className="flex items-center">
         <Link href={`/school/market/${marketType}`} className="mr-4"></Link>
       </div>
       <ItemSection
