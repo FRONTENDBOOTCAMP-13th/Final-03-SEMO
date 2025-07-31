@@ -1,5 +1,5 @@
-import { BookmarkItem, OrderItem, ProductItem, PostItem } from "@/app/school/myPage/_types/apiResponse";
-import { getUserById } from "@/data/actions/user";
+import { BookmarkItem, OrderItem, ProductItem, PostItem } from "@/types/myPageApi";
+import { getCachedUser } from "@/data/functions/myPage";
 
 const sellerCache: { [key: string]: { name: string; image?: string } } = {};
 
@@ -90,12 +90,14 @@ export async function orderToReviewItems(order: OrderItem): Promise<Review[]> {
         sellerProfileImageUrl = sellerCache[product.seller_id].image || "/assets/defaultimg.png";
       } else {
         try {
-          const sellerData = await getUserById(product.seller_id);
-          authorName = sellerData.name || `판매자 ${product.seller_id}`;
-          sellerProfileImageUrl = sellerData.image
-            ? `${process.env.NEXT_PUBLIC_API_URL}/${sellerData.image}`
-            : "/assets/defaultimg.png";
-          sellerCache[product.seller_id] = { name: authorName, image: sellerProfileImageUrl };
+          const sellerData = await getCachedUser(product.seller_id);
+          if (sellerData) {
+            authorName = sellerData.name || `판매자 ${product.seller_id}`;
+            sellerProfileImageUrl = sellerData.image
+              ? `${process.env.NEXT_PUBLIC_API_URL}/${sellerData.image}`
+              : "/assets/defaultimg.png";
+            sellerCache[product.seller_id] = { name: authorName, image: sellerProfileImageUrl };
+          }
         } catch {
           // 판매자 정보 로딩 실패 시 에러 로깅 제거
         }

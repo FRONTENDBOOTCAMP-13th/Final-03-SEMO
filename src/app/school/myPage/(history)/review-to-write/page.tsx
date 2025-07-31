@@ -4,9 +4,9 @@ import { useState, useEffect, useMemo } from "react";
 import Pagination from "@/components/ui/Pagination";
 import ReviewCard from "@/app/school/myPage/_components/ReviewCard";
 import EmptyState from "@/components/common/EmptyState";
-import { useResponsivePagination } from "@/lib/hooks/useResponsivePagination";
-import { usePurchasedItems } from "@/app/school/myPage/_hooks/useHistoryApi";
-import { ordersToReviewItems, Review } from "@/app/school/myPage/_utils/postConverter";
+import { useResponsivePagination } from "@/lib/hooks/pagination/useResponsivePagination";
+import { usePurchasedItems } from "@/lib/hooks/usePurchasedItems";
+import { ordersToReviewItems, Review } from "@/lib/utils/postConverter";
 
 export default function MyPageReviewsToWrite() {
   // API로부터 구매한 상품 목록 가져오기 (리뷰 작성 대상)
@@ -46,7 +46,7 @@ export default function MyPageReviewsToWrite() {
     // reviewsData가 업데이트될 때 localStorage 정리
     if (reviewsData.length > 0) {
       const storedIds = JSON.parse(localStorage.getItem("pendingReviewedIds") || "[]");
-      const actualPendingReviewIds = new Set(reviewsData.map(review => review.id));
+      const actualPendingReviewIds = new Set(reviewsData.map((review) => review.id));
       console.log("localStorage 정리: 현재 localStorage의 pendingReviewedIds:", storedIds);
       console.log("localStorage 정리: 실제 리뷰 작성 대상 product IDs:", Array.from(actualPendingReviewIds));
       const newStoredIds = storedIds.filter((id: number) => actualPendingReviewIds.has(id)); // reviewsData에 있는 ID만 남김
