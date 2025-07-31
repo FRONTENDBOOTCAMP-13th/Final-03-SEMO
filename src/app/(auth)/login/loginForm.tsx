@@ -81,8 +81,8 @@ export default function LoginForm() {
               color: "var(--color-uni-gray-400)",
             }}
           >
-            <button type="button" onClick={() => router.push("")} className="hover:underline">
-              아이디 / 비밀번호 찾기
+            <button type="button" onClick={() => router.push("/find/id")} className="hover:underline">
+              아이디 찾기
             </button>
             <button type="button" onClick={() => router.push("/signup")} className="hover:underline ">
               회원가입
