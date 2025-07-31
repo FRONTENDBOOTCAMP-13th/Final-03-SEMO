@@ -177,6 +177,9 @@ export async function updatePost(state: ApiRes<Post> | null, formData: FormData)
   const accessToken = formData.get("accessToken") as string;
   const postId = formData.get("postId") as string;
   const type = formData.get("type") as string;
+  const participants = formData.get("participants") as string;
+  const groupLocation = formData.get("groupLocation") as string;
+  const deadLine = formData.get("deadLine") as string;
 
   let crtStatus: string;
   switch (type) {
@@ -203,6 +206,11 @@ export async function updatePost(state: ApiRes<Post> | null, formData: FormData)
       price: formData.get("price") as string,
       location: formData.get("location") as string,
       crt: crtStatus,
+      ...(type === "groupPurchase" && {
+        participants: participants ? parseInt(participants) : undefined,
+        groupLocation,
+        deadLine,
+      }),
     },
   };
 

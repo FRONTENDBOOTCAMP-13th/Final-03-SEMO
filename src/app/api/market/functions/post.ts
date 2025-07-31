@@ -15,7 +15,7 @@ export async function getPosts(boardType: string, page: number = 1, limit: numbe
         "Client-Id": CLIENT_ID,
       },
       cache: "force-cache",
-      next: { revalidate: 100 },
+      next: { revalidate: 30 },
     });
     return res.json();
   } catch (error) {
