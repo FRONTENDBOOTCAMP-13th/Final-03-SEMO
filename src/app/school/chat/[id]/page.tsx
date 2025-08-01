@@ -13,6 +13,7 @@ import TradeInfoBox from "../components/tradeInfoBox";
 import { socket, useChatSocket } from "../../../api/chat/useChatSoket";
 import { useChatStore } from "../../../api/chat/useChatStore";
 import { useUserStore } from "@/store/userStore";
+import Header from "@/components/common/Header";
 
 const ChatPage = () => {
   const params = useParams();
@@ -136,6 +137,8 @@ const ChatPage = () => {
 
   return (
     <>
+      <Header title="채팅" />
+
       {/* 상품정보: 판매자, 상품이름, 상품사진 */}
       <ProductInfo productId={productId} />
 
