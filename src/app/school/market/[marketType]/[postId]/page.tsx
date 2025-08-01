@@ -26,7 +26,8 @@ export default async function MarketDetailPage({ params }: PageProps) {
   return (
     <>
       <MarketPageHeader />
-      <PostContent post={json.item} marketType={json.item.type} />
+      {/* <PostContent post={json.item} marketType={json.item.type} /> */}
+      <PostContent post={json.item} marketType={json.item?.type || "buy"} />
     </>
   );
 }

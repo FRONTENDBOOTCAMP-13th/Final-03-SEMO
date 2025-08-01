@@ -13,8 +13,8 @@ interface PostContentProps {
 }
 
 export default function PostContent({ post, marketType }: PostContentProps) {
-  const totalPrice = Number(post.extra.price);
-  const participants = post.extra.participants || 1;
+  const totalPrice = Number(post?.extra?.price || "0");
+  const participants = post?.extra?.participants || 1;
   const pricePerPerson = Math.floor(totalPrice / participants);
   if (marketType === "buy" || marketType === "sell") {
     return (
