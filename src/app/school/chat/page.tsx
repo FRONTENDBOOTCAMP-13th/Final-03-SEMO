@@ -15,25 +15,23 @@ const ChatPage = () => {
   useEffect(() => {
     const fetchRooms = async () => {
       if (!user || !user._id) {
-        console.warn("⛔️ user 정보 없음");
+        setRooms([]);
         setLoading(false);
         return;
       }
 
       const myId = String(user._id);
-      console.log("🎯 내 ID:", myId);
 
       try {
         const res = await getPosts("chat");
         if (!res.ok || !res.item) {
-          console.warn("⚠️ 게시글 응답 없음 또는 실패");
+          console.warn("게시글 응답 없음 또는 실패");
           setRooms([]);
           setLoading(false);
           return;
         }
 
         const items = Array.isArray(res.item) ? res.item : [res.item];
-        console.log(`🗃 총 posts 개수: ${items.length}`);
 
         const myRooms = items
           .filter((post) => {
@@ -46,11 +44,9 @@ const ChatPage = () => {
             const bTime = new Date(b.updatedAt || "").getTime();
             return bTime - aTime;
           });
-
-        console.log("✅ 내 채팅방 (title 기준):", myRooms);
         setRooms(myRooms);
       } catch (err) {
-        console.error("🚨 채팅 목록 로딩 에러:", err);
+        console.error("채팅 목록 로딩 에러:", err);
         setRooms([]);
       } finally {
         setLoading(false);
@@ -91,7 +87,7 @@ const ChatPage = () => {
                 name={`상대방 ${otherId}`}
                 message={post.content || ""}
                 date={post.updatedAt || ""}
-                avatar="/default-avatar.png"
+                userId={otherId}
               />
             );
           })
