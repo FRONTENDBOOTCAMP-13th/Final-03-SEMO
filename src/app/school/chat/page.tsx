@@ -1,57 +1,104 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { getPosts } from "@/app/api/market/functions/post";
+import ChatRoomItem from "./components/chatRoomItem";
+import Header from "@/components/common/Header";
+import { useUserStore } from "@/store/userStore";
+import type { Post } from "@/types/post";
 
-const ChatLogin = () => {
-  const router = useRouter();
-  const [userId, setUserId] = useState("");
-  const [nickName, setNickName] = useState("");
+const ChatPage = () => {
+  const user = useUserStore((state) => state.user);
+  const [rooms, setRooms] = useState<Post[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const handleEnterChat = (e: React.FormEvent) => {
-    e.preventDefault();
+  useEffect(() => {
+    const fetchRooms = async () => {
+      if (!user || !user._id) {
+        console.warn("⛔️ user 정보 없음");
+        setLoading(false);
+        return;
+      }
 
-    if (!userId.trim() || !nickName.trim()) {
-      alert("userId와 nickName을 모두 입력해주세요!");
-      return;
-    }
+      const myId = String(user._id);
+      console.log("🎯 내 ID:", myId);
 
-    router.push(`/school/chat/chatRoomTest?userId=${userId}&nickName=${nickName}`);
-  };
+      try {
+        const res = await getPosts("chat");
+        if (!res.ok || !res.item) {
+          console.warn("⚠️ 게시글 응답 없음 또는 실패");
+          setRooms([]);
+          setLoading(false);
+          return;
+        }
+
+        const items = Array.isArray(res.item) ? res.item : [res.item];
+        console.log(`🗃 총 posts 개수: ${items.length}`);
+
+        const myRooms = items
+          .filter((post) => {
+            const title = post.title || "";
+            const isMine = title.startsWith(`${myId} ->`) || title.endsWith(`-> ${myId}`);
+            return isMine;
+          })
+          .sort((a, b) => {
+            const aTime = new Date(a.updatedAt || "").getTime();
+            const bTime = new Date(b.updatedAt || "").getTime();
+            return bTime - aTime;
+          });
+
+        console.log("✅ 내 채팅방 (title 기준):", myRooms);
+        setRooms(myRooms);
+      } catch (err) {
+        console.error("🚨 채팅 목록 로딩 에러:", err);
+        setRooms([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRooms();
+  }, [user]);
+
+  if (loading) {
+    return (
+      <>
+        <Header title="채팅" />
+        <div className="max-w-[480px] mx-auto px-4 py-4">
+          <div className="text-center text-gray-400 py-10">로딩 중...</div>
+        </div>
+      </>
+    );
+  }
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen gap-6 px-4">
-      <h1 className="text-3xl font-bold text-uni-black">Global Chat 로그인</h1>
-      <p className="text-12 text-uni-black">채팅 테스트용입니다.</p>
-      <p className="text-12 text-uni-black">3000, 3001로 접속해서 두개의 User ID, 닉네임적고 테스트해보세요</p>
-      <form onSubmit={handleEnterChat} className="rounded-lg p-6 w-full max-w-sm flex flex-col gap-4">
-        <div>
-          <label className="block text-gray-700 text-sm font-semibold mb-1">User ID</label>
-          <input
-            value={userId}
-            onChange={(e) => setUserId(e.target.value)}
-            className="w-full px-3 py-2 border rounded-md focus:outline-none"
-            placeholder="예: 1"
-          />
-        </div>
-        <div>
-          <label className="block text-gray-700 text-sm font-semibold mb-1">닉네임</label>
-          <input
-            value={nickName}
-            onChange={(e) => setNickName(e.target.value)}
-            className="w-full px-3 py-2 border rounded-md focus:outline-none"
-            placeholder="예: 한솔"
-          />
-        </div>
-        <button
-          type="submit"
-          className="bg-uni-blue-400 text-white font-semibold py-2 rounded-md hover:bg-uni-blue-600"
-        >
-          채팅 입장
-        </button>
-      </form>
-    </div>
+    <>
+      <Header title="채팅" />
+      <div className="max-w-[480px] mx-auto px-4 py-4">
+        {rooms.length === 0 ? (
+          <div className="text-center text-gray-400 py-10">채팅방이 없습니다</div>
+        ) : (
+          rooms.map((post) => {
+            const title = post.title || "";
+            const myId = String(user._id);
+            const parts = title.split("->").map((s) => s.trim());
+            const otherId = parts[0] === myId ? parts[1] : parts[0];
+
+            return (
+              <ChatRoomItem
+                key={post._id.toString()}
+                postId={post._id.toString()}
+                name={`상대방 ${otherId}`}
+                message={post.content || ""}
+                date={post.updatedAt || ""}
+                avatar="/default-avatar.png"
+              />
+            );
+          })
+        )}
+      </div>
+    </>
   );
 };
 
-export default ChatLogin;
+export default ChatPage;
