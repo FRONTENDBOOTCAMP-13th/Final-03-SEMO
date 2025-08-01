@@ -11,7 +11,7 @@ export default function GroupPurchase() {
             type="participants"
             name="participants"
             placeholder="인원"
-            className="w-full bg-uni-gray-200 rounded-lg p-3 text-16"
+            className="w-full bg-uni-gray-100 rounded-lg p-4 text-16"
             min="1"
           />
           <p className="text-14 text-uni-gray-600 mt-2">총금액을 나눠서 결제할 인원수를 입력해주세요</p>
@@ -26,7 +26,7 @@ export default function GroupPurchase() {
           id="groupLocation"
           name="groupLocation"
           placeholder="분배 장소"
-          className="w-full bg-uni-gray-200 rounded-lg p-3 text-16"
+          className="w-full h-12 bg-uni-gray-100 rounded-lg p-4 text-16"
         />
         <p className="text-14 text-uni-gray-600 mt-2">분배할 장소를 입력해주세요</p>
       </div>
@@ -34,12 +34,13 @@ export default function GroupPurchase() {
         <label htmlFor="deadline" className="sr-only">
           마감시간
         </label>
-        <div className="relaltive">
+        <div className="relative">
           <input
             id="deadLine"
             name="deadLine"
             type="datetime-local"
-            className="w-full bg-uni-gray-200 rounded-lg p-3 text-16"
+            data-placeholder="마감시간"
+            className="w-1/2 h-12 bg-uni-gray-200 rounded-lg p-3 text-16"
           />
           <p className="text-14 text-uni-gray-600 mt-2">마감시간을 설정해주세요</p>
         </div>

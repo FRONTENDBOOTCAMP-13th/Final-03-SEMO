@@ -26,18 +26,14 @@ export const metadata: Metadata = {
   description: "Market 페이지입니다.",
 };
 
-export default async function MarketPage({
-  params,
-}: {
-  params: Promise<{ marketType: "buy" | "sell" | "groupPurchase" }>;
-}) {
+export default async function MarketPage({ params }: { params: { marketType: "buy" | "sell" | "groupPurchase" } }) {
   const { marketType } = await params;
 
-  const res = await getPosts(marketType);
+  const res = await getPosts(marketType, 1, 8);
 
   if (!res.ok) throw new Error("게시글 로드 실패");
   return (
-    <main className="relative min-w-[320px] max-w-[480px] px-5 py-1 bg-uni-white min-h-screen">
+    <main className="relative min-w-[320px] max-w-[480px] px-5 bg-uni-white min-h-screen">
       <MarketPageHeader />
       <MarketSearch />
       <div className="flex relative justify-around mb-4 border-b border-uni-gray-100 -mx-5">
@@ -49,7 +45,7 @@ export default async function MarketPage({
             <Link
               key={i}
               href={`/school/market/${i}`}
-              className={`flex-1 relative text-center py-2 font-bold text-14 ${
+              className={`flex-1 relative text-center py-3 font-bold text-14 ${
                 active ? "text-uni-blue-400" : "text-uni-gray-500"
               }`}
             >
@@ -60,7 +56,7 @@ export default async function MarketPage({
         })}
       </div>
       <MarketTagNav />
-      <ItemSection items={res.item} market={marketType} />
+      <ItemSection initialItems={res.item} market={marketType} initialHasMore={res.item.length === 8} />
       <FloatingButton
         href={`/school/market/${marketType}/new`}
         icon={<Pencil size={25} color="white" />}

@@ -1,6 +1,6 @@
 "use client";
 import React, { useRef } from "react";
-import { Plus, X } from "lucide-react";
+import { X, Camera } from "lucide-react";
 import { uploadFile } from "@/data/actions/file";
 import { getImageUrl } from "@/data/actions/file";
 
@@ -45,10 +45,10 @@ export default function PhotoUpload({ images, setImages }: PhotoUploadProps) {
       {images.length === 0 ? (
         <div
           onClick={() => fileInputRef.current?.click()}
-          className="w-full bg-uni-gray-200 rounded-lg p-3 flex items-center cursor-pointer"
+          className="w-full bg-uni-gray-100 rounded-lg p-4 flex items-center cursor-pointer"
         >
-          <Plus className="w-5 h-5 text-uni-gray-500 mr-2" />
-          <span className="text-uni-gray-600 text-16">사진 추가</span>
+          <Camera className="w-5 h-5 text-uni-gray-500 mr-2" />
+          <span className="text-uni-gray-300 text-16">사진 추가</span>
         </div>
       ) : (
         <div className="relative w-full h-48 bg-uni-gray-100 rounded-md overflow-hidden">

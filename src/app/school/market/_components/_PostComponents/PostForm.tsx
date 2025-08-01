@@ -25,6 +25,8 @@ export default function PostForm({ mode, initialData, marketType, postId }: Post
       "sell"
   );
   const [images, setImages] = useState<string[]>(initialData?.image ? [initialData.image] : []); // 이미지 배열(초기값 : 이미지 한장만 가능하게 설정, 추후 변경)
+  const [contentError, setContentError] = useState<string>(""); // 상품 설명 에러 메시지
+  const [titleError, setTitleError] = useState<string>(""); // 제목 에러 메시지
 
   // 서버 액션 사용
   const [state, formAction] = useActionState(mode === "create" ? createPost : updatePost, null);
@@ -37,6 +39,34 @@ export default function PostForm({ mode, initialData, marketType, postId }: Post
       alert(`오류: ${state.message}`);
     }
   }, [state]);
+
+  // 폼 제출 전 검증
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const formData = new FormData(e.currentTarget);
+    const content = formData.get("content") as string;
+    const title = formData.get("title") as string;
+
+    let getError = false;
+    // 제목 검증
+    if (!title || title.trim().length < 2) {
+      setTitleError("상품명은 2글자 이상 입력해주세요.");
+      getError = true;
+    } else {
+      setTitleError(""); // 에러 초기화
+    }
+
+    // 상품 설명 검증
+    if (!content || content.trim().length < 10) {
+      setContentError("상품 설명은 10글자 이상 입력해주세요.");
+      getError = true;
+    } else {
+      setContentError(""); // 에러 초기화
+    }
+
+    if (getError) {
+      e.preventDefault();
+    }
+  };
 
   const getButtonStyle = (buttonType: string, currentType: string) => {
     // 선택 안된 버튼은 모두 회색
@@ -58,13 +88,14 @@ export default function PostForm({ mode, initialData, marketType, postId }: Post
   };
 
   return (
-    <form action={formAction}>
+    <form action={formAction} onSubmit={handleSubmit}>
       <input type="hidden" name="accessToken" value={user?.token?.accessToken ?? ""} />
       <input type="hidden" name="type" value={tradeType} />
       <input type="hidden" name="postId" value={postId} />
       <input type="hidden" name="image" value={images.length > 0 ? images[0] : ""} />
       <main className="min-w-[320px] max-w-[480px] mx-auto px-4 py-6 min-h-screen bg-uni-white">
-        <Product images={images} setImages={setImages} initialTitle={initialData?.title} />
+        <Product images={images} setImages={setImages} initialTitle={initialData?.title} titleError={titleError} />
+        <p className="text-15 mb-2 text-uni-gray-600 font-bold">거래 방식</p>
         <section role="group" aria-label="거래 유형" className="mb-5 flex gap-3">
           {/* 팔래요, 살래요, 모여요 버튼 생성 */}
           {(["buy", "sell", "groupPurchase"] as const).map((t) => (
@@ -81,18 +112,18 @@ export default function PostForm({ mode, initialData, marketType, postId }: Post
                 onChange={() => mode === "create" && setTradeType(t)} // 버튼 클릭시 tradeType 상태 업데이트
                 className="hidden"
               />
-              {t === "buy" ? "살래요" : t === "sell" ? "팔래요" : "모여요"}
+              {t === "buy" ? "살래요" : t === "sell" ? "팔래요" : "공동구매"}
             </label>
           ))}
         </section>
 
-        <ProductDesc initialData={initialData} />
+        <ProductDesc initialData={initialData} contentError={contentError} />
         {tradeType === "groupPurchase" && <GroupPurchase />}
         <section className="mb-8">
           <fieldset className="flex flex-col gap-3">
             <label
-              className={`flex justify-between items-center px-4 py-3 rounded-lg cursor-pointer
-        ${selected === "registered" ? "border-1 border-uni-blue-400" : "border border-uni-gray-200"}`}
+              className={`flex justify-between items-center p-4 rounded-lg cursor-pointer
+        ${selected === "registered" ? "border-2 border-uni-blue-400" : "border-2 border-uni-gray-200"}`}
             >
               <span className="text-base text-14">등록된 계좌 번호</span>
               <input
@@ -106,8 +137,8 @@ export default function PostForm({ mode, initialData, marketType, postId }: Post
             </label>
 
             <label
-              className={`flex justify-between items-center mb-5 px-4 py-3 rounded-lg cursor-pointer
-        ${selected === "new" ? "border-1 border-uni-blue-400" : "border border-uni-gray-200"}`}
+              className={`flex justify-between items-center mb-5 p-4 rounded-lg cursor-pointer
+        ${selected === "new" ? "border-2 border-uni-blue-400" : "border-2 border-uni-gray-200"}`}
             >
               <span className="text-base text-14">새로운 계좌 번호</span>
               <input
@@ -125,7 +156,10 @@ export default function PostForm({ mode, initialData, marketType, postId }: Post
         </section>
 
         <div className="flex justify-end">
-          <button type="submit" className="w-full bg-uni-blue-400 text-uni-white px-4 py-2 rounded-lg cursor-pointer">
+          <button
+            type="submit"
+            className="w-full bg-uni-blue-400 text-uni-white py-3 font-semibold rounded-lg cursor-pointer"
+          >
             {mode === "create" ? "등록하기" : "수정하기"}
           </button>
         </div>
