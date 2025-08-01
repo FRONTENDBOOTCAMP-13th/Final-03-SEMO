@@ -11,9 +11,20 @@ import PasswordInput from "../_components/PasswordInput";
 import { useUserStore } from "@/store/userStore";
 import { login } from "@/lib/actions/login";
 import { useAuthGuard } from "@/lib/useAuthGuard";
+import { useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 
 export default function LoginForm() {
   useAuthGuard(false);
+  const searchParams = useSearchParams();
+  const resetUser = useUserStore((s) => s.resetUser);
+
+  useEffect(() => {
+    if (searchParams.get("from") === "signup") {
+      // 회원가입 직후라면 이전에 임시로 들고 있던 회원가입용 정보 초기화
+      resetUser();
+    }
+  }, [searchParams, resetUser]);
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
