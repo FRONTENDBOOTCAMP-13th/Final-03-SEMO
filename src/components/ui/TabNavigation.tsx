@@ -32,10 +32,8 @@ export default function TabNavigation({ tabs, activeTab, setActiveTab }: TabNavi
         <button
           key={tab}
           onClick={() => setActiveTab(tab)}
-          className={`flex-1 py-4 px-4 text-14 font-bold font-pretendard border-b-2 transition-colors ${
-            activeTab === tab
-              ? "text-uni-blue-400 border-uni-blue-400"
-              : "text-uni-gray-300 border-transparent hover:text-uni-gray-400"
+          className={`flex-1 py-3 px-4 text-14 font-bold font-pretendard border-b-2 transition-colors ${
+            activeTab === tab ? "text-uni-blue-400 border-uni-blue-400 " : "text-uni-gray-300 border-transparent "
           }`}
         >
           {tab}

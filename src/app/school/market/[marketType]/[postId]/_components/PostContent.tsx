@@ -5,7 +5,7 @@ import { Post, PostType } from "@/types";
 // import { Heart } from "lucide-react";
 import { getImageUrl } from "@/data/actions/file";
 import PostLikeButton from "./PostLikeButton";
-
+import Countdown from "@/app/school/market/_components/_PostComponents/Countdown";
 import ChatStartButton from "@/app/school/chat/components/chatStartBtn";
 interface PostContentProps {
   post: Post;
@@ -13,8 +13,8 @@ interface PostContentProps {
 }
 
 export default function PostContent({ post, marketType }: PostContentProps) {
-  const totalPrice = Number(post.extra.price);
-  const participants = post.extra.participants || 1;
+  const totalPrice = Number(post?.extra?.price || "0");
+  const participants = post?.extra?.participants || 1;
   const pricePerPerson = Math.floor(totalPrice / participants);
   if (marketType === "buy" || marketType === "sell") {
     return (
@@ -60,7 +60,7 @@ export default function PostContent({ post, marketType }: PostContentProps) {
 
         {/* 상태 */}
         <div className="my-3">
-          <span className="inline-block bg-uni-green-400 text-uni-white text-14 font-bold rounded-[12px] p-10 px-4.5 py-1.5">
+          <span className="inline-block bg-uni-green-300 text-uni-white text-14 font-bold rounded-xl px-4 py-1.5">
             {post?.extra.crt}
           </span>
         </div>
@@ -68,7 +68,7 @@ export default function PostContent({ post, marketType }: PostContentProps) {
         {/* 설명 */}
         <p className="text-gray-700 mb-2 text-16">{post?.content}</p>
         <p className="text-12 text-uni-gray-300 mb-6">{post?.createdAt}</p>
-        {post?._id && Number.isInteger(post._id) && <CommentList _id={post._id} />}
+        {post?._id && Number.isInteger(post._id) && <CommentList _id={post._id} post={post} />}
 
         <div className=" w-full max-w-[480px] bg-white">
           {post.user?._id && (
@@ -139,8 +139,14 @@ export default function PostContent({ post, marketType }: PostContentProps) {
       {/* 설명 */}
       <p className="text-gray-700 mb-2 text-16">{post?.content}</p>
       <p className="text-12 text-uni-gray-300 mb-6">{post?.createdAt}</p>
+
+      {/* 분배 장소 */}
+      <div className="border-2 border-uni-gray-200 rounded-lg p-3 mb-2 mt-10">
+        <p className="text-14 font-medium text-uni-gray-500 mb-1">분배 장소</p>
+        <p className="text-14 text-uni-blue-400 font-bold">{post?.extra.groupLocation}</p>
+      </div>
       {/* 마감기한 */}
-      <div className="border border-uni-gray-200 rounded-lg p-3 mb-4">
+      <div className="border-2 border-uni-gray-200 rounded-lg p-3 mb-10">
         <p className="text-14 font-medium text-uni-gray-500 mb-1">기한</p>
         <p className="text-14 text-uni-gray-300">
           {post?.extra.deadLine
@@ -155,8 +161,10 @@ export default function PostContent({ post, marketType }: PostContentProps) {
               })}까지`
             : "마감시간 없음"}
         </p>
+        {post?.extra.deadLine && <Countdown deadLine={post.extra.deadLine} />}
       </div>
-      {post?._id && Number.isInteger(post._id) && <CommentList _id={post._id} />}
+
+      {post?._id && Number.isInteger(post._id) && <CommentList _id={post._id} post={post} />}
 
       <div className=" w-full max-w-[480px] bg-white">
         {post.user?._id && (

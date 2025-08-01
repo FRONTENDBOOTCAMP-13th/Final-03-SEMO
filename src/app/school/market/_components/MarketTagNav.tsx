@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 
-const MARKET_TAGS = ["전체", "식품", "도서", "의류", "생활용품", "생활가전", "학용품"];
+const MARKET_TAGS = ["전체", "식품", "도서", "의류", "생활용품", "생활가전", "학용품", "기타"];
+const STORAGE_KEY = "market_selected_tag";
 
 export default function MarketTagNav() {
   const [activeTag, setActiveTag] = useState("전체");
@@ -26,22 +27,33 @@ export default function MarketTagNav() {
     if (keyword && MARKET_TAGS.includes(keyword)) {
       // URL에 키워드가 있고 tags 배열에 포함되어 있으면 해당 tag 활성화
       setActiveTag(keyword);
+
+      // 세션 스토리지에 태그 저장
+      sessionStorage.setItem(STORAGE_KEY, keyword);
     } else {
-      // 일반 market이면 "전체" 활성화
-      setActiveTag("전체");
+      const savedTag = sessionStorage.getItem(STORAGE_KEY);
+      if (savedTag && MARKET_TAGS.includes(savedTag)) {
+        setActiveTag(savedTag);
+        if (savedTag !== "전체") {
+          router.replace(`/school/market/${marketType}/search?keyword=${encodeURIComponent(savedTag)}`);
+        }
+      } else {
+        // 일반 market이면 "전체" 활성화
+        setActiveTag("전체");
+      }
     }
-  }, [pathname, searchParams]);
+  }, [searchParams, marketType, router]);
   // 의존성 배열에 추가하여 경로가 바뀔때마다 실행
 
   const handleTagClick = (tag: string) => {
     setActiveTag(tag);
 
-    // [전체]가 아닌 경우에만 검색 페이지로 이동
     if (tag !== "전체") {
-      router.push(`/school/market/${marketType}/search?keyword=${encodeURIComponent(tag.trim())}`);
+      // 무조건 window.location.href로 이동 (새로고침 효과)
+      window.location.href = `/school/market/${marketType}/search?keyword=${encodeURIComponent(tag.trim())}`;
     } else {
-      // [전체]인 경우 메인 markey 페이지로 이동
-      router.push(`/school/market/${marketType}`);
+      sessionStorage.removeItem(STORAGE_KEY);
+      window.location.href = `/school/market/${marketType}`;
     }
   };
 
@@ -53,7 +65,7 @@ export default function MarketTagNav() {
             key={tag}
             // value={activeTag}
             onClick={() => handleTagClick(tag)}
-            className={`flex-shrink-0 px-4 py-1.5 rounded-full text-14 font-medium
+            className={`flex-shrink-0 px-5 py-2 rounded-full text-16 font-medium
               ${activeTag === tag ? "bg-uni-blue-400 text-uni-white" : "bg-uni-gray-200 text-uni-gray-300"}`}
           >
             {tag}

@@ -62,11 +62,11 @@ export default function CommentDeleteForm({ reply }: { reply: PostReply }) {
   if (!user || !isMyReply) return null;
 
   return (
-    <form action={formAction} onSubmit={handleDeleteSubmit} className="inline ml-2">
+    <form action={formAction} onSubmit={handleDeleteSubmit} className="inline ml-2 -top-2">
       <input type="hidden" name="accessToken" value={user?.token?.accessToken ?? ""} />
       <input type="hidden" name="_id" value={postId} />
       <input type="hidden" name="replyId" value={reply._id} />
-      <button type="submit" className="px-3 text-13 text-uni-gray-300 !cursor-pointer">
+      <button type="submit" className="px-3 -top-21 text-13 text-uni-gray-300 !cursor-pointer">
         삭제
       </button>
     </form>

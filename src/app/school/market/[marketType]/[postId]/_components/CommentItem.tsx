@@ -1,16 +1,23 @@
-import { PostReply } from "@/types";
+"use client";
+
+import { PostReply, Post } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
 import CommentDeleteForm from "@/app/school/market/[marketType]/[postId]/_components/CommentDeleteForm";
+// import { useUserStore } from "@/store/userStore";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID || "";
 
 interface CommentItemProps {
   reply: PostReply;
+  post: Post; // 게시글 정보 필요!
 }
 
-export default function CommentItem({ reply }: CommentItemProps) {
+export default function CommentItem({ reply, post }: CommentItemProps) {
+  // const { user } = useUserStore();
+  const isPostAuthor = reply.user._id === post.user._id; // 게시글 작성자가 쓴 댓글
+
   return (
     <div>
       {/* 댓글 리스트 */}
@@ -28,6 +35,8 @@ export default function CommentItem({ reply }: CommentItemProps) {
               {/* 동적 사용자 이름 */}
               <Link href="" className="text-uni-blue-400">
                 {reply.user.name}
+                {/* 게시글 작성자인 경우 */}
+                {isPostAuthor && <span className="text-14 text-uni-blue-400 font-bold ml-0.5">(글쓴이)</span>}
               </Link>
               {/* 동적 작성 날짜 */}
               <span className="text-14 text-uni-gray-300 font-medium ml-2">
