@@ -9,7 +9,7 @@ export interface MyPageItem {
   image: string;
   price: string;
   status: "판매중" | "판매완료";
-  marketType: "sell" | "buy" | "gather"; // marketType 필드 추가
+  marketType: "sell" | "buy" | "groupPurchase"; // marketType 필드 추가
 }
 
 export interface Review {
@@ -45,14 +45,16 @@ export function bookmarkToWishlistItem(bookmark: BookmarkItem): MyPageItem {
     image: imageUrl,
     price: formattedPrice,
     status: post.extra.crt === "판매완료" ? "판매완료" : "판매중",
-    marketType: ["sell", "buy", "gather"].includes(post.type) ? (post.type as "sell" | "buy" | "gather") : "sell",
+    marketType: ["sell", "buy", "groupPurchase"].includes(post.type)
+      ? (post.type as "sell" | "buy" | "groupPurchase")
+      : "sell",
   };
 }
 
 /**
  * PostItem을 MyPageItem 타입으로 변환합니다.
  */
-export function postToMyPageItem(post: PostItem, sourceType?: "sell" | "buy" | "gather"): MyPageItem {
+export function postToMyPageItem(post: PostItem, sourceType?: "sell" | "buy" | "groupPurchase"): MyPageItem {
   // 이미지 경로 안전 처리
   let imageUrl = "/assets/defaultimg.png";
   if (typeof post.image === "string" && post.image) {
@@ -69,7 +71,9 @@ export function postToMyPageItem(post: PostItem, sourceType?: "sell" | "buy" | "
     image: imageUrl,
     price: formattedPrice,
     status: post.extra?.crt === "판매완료" ? "판매완료" : "판매중",
-    marketType: ["sell", "buy", "gather"].includes(post.type) ? (post.type as "sell" | "buy" | "gather") : "sell",
+    marketType: ["sell", "buy", "groupPurchase"].includes(post.type)
+      ? (post.type as "sell" | "buy" | "groupPurchase")
+      : "sell",
   };
 }
 
@@ -136,7 +140,7 @@ export function bookmarksToWishlistItems(bookmarks: BookmarkItem[]): MyPageItem[
 /**
  * PostItem 배열을 MyPageItem 배열로 변환합니다.
  */
-export function postsToMyPageItems(posts: PostItem[], sourceType?: "sell" | "buy" | "gather"): MyPageItem[] {
+export function postsToMyPageItems(posts: PostItem[], sourceType?: "sell" | "buy" | "groupPurchase"): MyPageItem[] {
   return posts.map((post: PostItem) => postToMyPageItem(post, sourceType));
 }
 
