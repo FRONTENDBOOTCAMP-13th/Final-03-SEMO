@@ -1,6 +1,7 @@
 "use client";
 import React, { useRef } from "react";
 import { X, Camera } from "lucide-react";
+import Image from "next/image";
 import { uploadFile } from "@/data/actions/file";
 import { getImageUrl } from "@/data/actions/file";
 
@@ -55,7 +56,15 @@ export default function PhotoUpload({ images, setImages }: PhotoUploadProps) {
           {/* 
           왜 img 태그를 사용했는가? -> 
           이 코드에서는 Data URL을 사용하여 이미 이미지를 압축시켰기 때문에 Next.js의 Image를 사용할 필요가 없다고 판단함  */}
-          <img src={getImageUrl(images[0])} alt="사진" className="w-full h-full object-cover" />
+          {/* <img src={getImageUrl(images[0])} alt="사진" className="w-full h-full object-cover" /> */}
+          <Image
+            src={getImageUrl(images[0])}
+            alt="업로드된 사진"
+            className="w-full h-full object-cover"
+            width={500}
+            height={192}
+            unoptimized={true}
+          />
 
           {/* 삭제 버튼 */}
           <button
