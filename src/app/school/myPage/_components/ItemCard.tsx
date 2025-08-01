@@ -28,7 +28,7 @@ export interface Item {
   price: string;
   image: string;
   status: "판매중" | "판매완료";
-  marketType: "sell" | "buy" | "gather"; // marketType 속성 추가
+  marketType: "sell" | "buy" | "groupPurchase"; // marketType 속성 추가
 }
 
 export default function ItemCard({ item, onClick }: { item: Item; onClick?: (item: Item) => void }) {
