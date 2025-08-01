@@ -84,7 +84,6 @@ const ChatPage = () => {
               <ChatRoomItem
                 key={post._id.toString()}
                 postId={post._id.toString()}
-                name={`상대방 ${otherId}`}
                 message={post.content || ""}
                 date={post.updatedAt || ""}
                 userId={otherId}

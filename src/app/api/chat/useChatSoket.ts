@@ -225,22 +225,39 @@ export const useChatSocket = ({ userId, nickName, roomId }: UseChatSocketProps) 
 
       // 알림 처리
       if (isWhisper && messageUserId !== currentUserId) {
-        // if (isWhisper && String(raw.toUserId) === String(currentUserId)) {
         toast.info(`${raw.nickName}님이 개인 메시지를 보냈습니다. 클릭하여 개인방으로 이동하세요.`, {
           autoClose: false,
-          onClick: () => {
-            const { roomId: receivedRoomId, postId, buyerId, sellerId, sellerNickName, productId } = raw;
+          onClick: async () => {
+            const { roomId: receivedRoomId, postId } = raw;
 
-            if (!receivedRoomId) {
-              alert("roomId 정보가 없습니다.");
+            if (receivedRoomId) {
+              enterRoom(receivedRoomId, () => {
+                router.push(`/school/chat/${postId}`);
+              });
               return;
             }
 
-            enterRoom(receivedRoomId, () => {
-              router.push(
-                `/school/chat/${postId}?buyerId=${buyerId}&sellerId=${sellerId}&sellerNickName=${sellerNickName}&productId=${productId}&roomId=${receivedRoomId}&autojoin=true`
-              );
-            });
+            // postId로 방 정보 다시 불러오기
+            try {
+              const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/posts/${postId}`, {
+                headers: { "Client-Id": process.env.NEXT_PUBLIC_CLIENT_ID || "" },
+              });
+
+              const json = await res.json();
+              const fallbackRoomId = json?.item?.meta?.roomId;
+
+              if (!fallbackRoomId) {
+                alert("roomId 정보를 가져오지 못했습니다.");
+                return;
+              }
+
+              enterRoom(fallbackRoomId, () => {
+                router.push(`/school/chat/${postId}`);
+              });
+            } catch (err) {
+              console.error("roomId를 가져오는 중 오류:", err);
+              alert("roomId를 가져오는 중 오류가 발생했습니다.");
+            }
           },
         });
       }
