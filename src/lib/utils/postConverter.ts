@@ -34,7 +34,7 @@ export function bookmarkToWishlistItem(bookmark: BookmarkItem): MyPageItem {
   const imageUrl = getImageUrl(post.image);
 
   // 가격을 숫자형으로 변환하여 toLocaleString() 적용
-  const price = Number(post.extra.price);
+  const price = Number(post.extra?.price);
   const formattedPrice = isNaN(price) ? "가격 정보 없음" : `${price.toLocaleString()}원`;
 
   return {
@@ -42,7 +42,7 @@ export function bookmarkToWishlistItem(bookmark: BookmarkItem): MyPageItem {
     title: post.title,
     image: imageUrl,
     price: formattedPrice,
-    status: post.extra.crt === "판매완료" ? "판매완료" : "판매중",
+    status: post.extra?.crt === "판매완료" ? "판매완료" : "판매중",
     marketType: ["sell", "buy", "groupPurchase"].includes(post.type)
       ? (post.type as "sell" | "buy" | "groupPurchase")
       : "sell",
