@@ -35,7 +35,7 @@ export default function MyPageMyPost() {
 
   const buyItems: Item[] = myPageItems.filter((item) => item.marketType === "buy");
 
-  const gatheringsItems: Item[] = myPageItems.filter((item) => item.marketType === "gather");
+  const groupPurchaseItems: Item[] = myPageItems.filter((item) => item.marketType === "groupPurchase");
 
   // 팔래요 페이지네이션
   const sellPagination = useResponsivePagination({
@@ -56,8 +56,8 @@ export default function MyPageMyPost() {
   });
 
   // 모여요 페이지네이션
-  const gatheringsPagination = useResponsivePagination({
-    data: gatheringsItems,
+  const groupPurchasePagination = useResponsivePagination({
+    data: groupPurchaseItems,
     estimatedItemHeight: 88,
     minItemsPerPage: 3,
     maxItemsPerPage: 10,
@@ -178,22 +178,22 @@ export default function MyPageMyPost() {
               <h2 className="text-20 font-semibold mb-3 text-uni-black font-pretendard">모여요</h2>
             )}
             <div className="space-y-3">
-              {gatheringsItems.length > 0 ? (
+              {groupPurchaseItems.length > 0 ? (
                 <>
                   {activeTab === "모여요"
                     ? // 모여요 탭일 때만 페이지네이션 적용
-                      gatheringsPagination.paginatedData.map((item) => (
+                      groupPurchasePagination.paginatedData.map((item) => (
                         <ItemCard key={item.id} item={item} onClick={handleItemClick} />
                       ))
                     : // 전체 탭일 때는 4개만 표시
-                      gatheringsItems
+                      groupPurchaseItems
                         .slice(0, 4)
                         .map((item) => <ItemCard key={item.id} item={item} onClick={handleItemClick} />)}
-                  {activeTab === "모여요" && gatheringsPagination.totalPages > 1 && (
+                  {activeTab === "모여요" && groupPurchasePagination.totalPages > 1 && (
                     <Pagination
-                      pageCount={gatheringsPagination.totalPages}
-                      onPageChange={gatheringsPagination.handlePageChange}
-                      forcePage={gatheringsPagination.currentPage - 1}
+                      pageCount={groupPurchasePagination.totalPages}
+                      onPageChange={groupPurchasePagination.handlePageChange}
+                      forcePage={groupPurchasePagination.currentPage - 1}
                     />
                   )}
                 </>
