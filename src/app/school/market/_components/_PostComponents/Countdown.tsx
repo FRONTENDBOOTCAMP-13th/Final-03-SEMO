@@ -46,7 +46,7 @@ export default function Countdown({ deadLine }: CountdownProps) {
   }, [deadLine]);
 
   if (time.Expired) {
-    return <div className="text-uni-blue-400 font-bold">마감되었습니다</div>;
+    return <div className="text-uni-blue-400 text-14 font-bold mt-3">마감되었습니다</div>;
   }
   return (
     <div className="flex pt-2 gap-1 text-14 font-medium">

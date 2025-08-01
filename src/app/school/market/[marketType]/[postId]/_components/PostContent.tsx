@@ -139,8 +139,14 @@ export default function PostContent({ post, marketType }: PostContentProps) {
       {/* 설명 */}
       <p className="text-gray-700 mb-2 text-16">{post?.content}</p>
       <p className="text-12 text-uni-gray-300 mb-6">{post?.createdAt}</p>
+
+      {/* 분배 장소 */}
+      <div className="border-2 border-uni-gray-200 rounded-lg p-3 mb-2 mt-10">
+        <p className="text-14 font-medium text-uni-gray-500 mb-1">분배 장소</p>
+        <p className="text-14 text-uni-blue-400 font-bold">{post?.extra.groupLocation}</p>
+      </div>
       {/* 마감기한 */}
-      <div className="border-2 border-uni-gray-200 rounded-lg p-3 mb-4">
+      <div className="border-2 border-uni-gray-200 rounded-lg p-3 mb-10">
         <p className="text-14 font-medium text-uni-gray-500 mb-1">기한</p>
         <p className="text-14 text-uni-gray-300">
           {post?.extra.deadLine
