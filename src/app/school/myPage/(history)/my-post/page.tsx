@@ -16,7 +16,7 @@ export default function MyPageMyPost() {
   const router = useRouter(); // useRouter 훅 사용
 
   // API로부터 내가 판매/구매한 상품 목록 가져오기
-  const { sellPosts, buyPosts, isLoading, error, refetch } = useMyPosts();
+  const { sellPosts, buyPosts, groupPurchasePosts, isLoading, error, refetch } = useMyPosts();
 
   const handleItemClick = (item: Item) => {
     // 동적 라우팅 경로 생성
@@ -27,8 +27,9 @@ export default function MyPageMyPost() {
   const myPageItems = useMemo(() => {
     const sellConverted = postsToMyPageItems(sellPosts, "sell");
     const buyConverted = postsToMyPageItems(buyPosts, "buy");
-    return [...sellConverted, ...buyConverted];
-  }, [sellPosts, buyPosts]);
+    const groupPurchaseConverted = postsToMyPageItems(groupPurchasePosts, "groupPurchase");
+    return [...sellConverted, ...buyConverted, ...groupPurchaseConverted];
+  }, [sellPosts, buyPosts, groupPurchasePosts]);
 
   // myPageItems에서 카테고리별로 필터링
   const sellItems: Item[] = myPageItems.filter((item) => item.marketType === "sell");
