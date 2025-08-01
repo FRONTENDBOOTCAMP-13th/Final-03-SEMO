@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { X, Camera } from "lucide-react";
 import Image from "next/image";
 import { uploadFile } from "@/data/actions/file";
@@ -12,12 +12,17 @@ interface PhotoUploadProps {
 
 export default function PhotoUpload({ images, setImages }: PhotoUploadProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   async function handleUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const files = e.target.files;
     if (!files || files.length === 0) return;
 
     const file = files[0];
+
+    const localUrl = URL.createObjectURL(file);
+    setPreviewUrl(localUrl);
+
     try {
       const formData = new FormData();
       formData.append("attach", file);
@@ -25,8 +30,12 @@ export default function PhotoUpload({ images, setImages }: PhotoUploadProps) {
 
       if (result.ok) {
         setImages([result.item[0].path]);
+        URL.revokeObjectURL(localUrl);
+        setPreviewUrl(null);
       } else {
         console.error("파일 업로드 실패");
+        URL.revokeObjectURL(localUrl);
+        setPreviewUrl(null);
       }
     } catch (err) {
       console.error("업로드 실패", err);
@@ -36,14 +45,19 @@ export default function PhotoUpload({ images, setImages }: PhotoUploadProps) {
   // 이미지 삭제 함수
   const removeImage = () => {
     setImages([]);
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
+      setPreviewUrl(null);
+    }
   };
+  const displayUrl = previewUrl || (images.length > 0 ? getImageUrl(images[0]) : null);
 
   return (
     <div className="mb-5">
       <label htmlFor="item-image" className="sr-only">
         사진 추가
       </label>
-      {images.length === 0 ? (
+      {!displayUrl ? (
         <div
           onClick={() => fileInputRef.current?.click()}
           className="w-full bg-uni-gray-100 rounded-lg p-4 flex items-center cursor-pointer"
@@ -53,12 +67,8 @@ export default function PhotoUpload({ images, setImages }: PhotoUploadProps) {
         </div>
       ) : (
         <div className="relative w-full h-48 bg-uni-gray-100 rounded-md overflow-hidden">
-          {/* 
-          왜 img 태그를 사용했는가? -> 
-          이 코드에서는 Data URL을 사용하여 이미 이미지를 압축시켰기 때문에 Next.js의 Image를 사용할 필요가 없다고 판단함  */}
-          {/* <img src={getImageUrl(images[0])} alt="사진" className="w-full h-full object-cover" /> */}
           <Image
-            src={getImageUrl(images[0])}
+            src={displayUrl}
             alt="업로드된 사진"
             className="w-full h-full object-cover"
             width={500}
