@@ -33,7 +33,7 @@ export default function MyPageWishlist() {
 
   const buyItems: Item[] = wishlistItems.filter((item) => item.marketType === "buy");
 
-  const gatheringsItems: Item[] = wishlistItems.filter((item) => item.marketType === "gather");
+  const groupPurchaseItems: Item[] = wishlistItems.filter((item) => item.marketType === "groupPurchase");
 
   const tabs = ["전체", "팔래요", "살래요", "모여요"];
 
@@ -119,8 +119,8 @@ export default function MyPageWishlist() {
               <h2 className="text-20 font-semibold mb-3 text-uni-black font-pretendard">모여요</h2>
             )}
             <div className="space-y-3">
-              {gatheringsItems.length > 0 ? (
-                (activeTab === "전체" ? gatheringsItems.slice(0, 4) : gatheringsItems).map((item) => (
+              {groupPurchaseItems.length > 0 ? (
+                (activeTab === "전체" ? groupPurchaseItems.slice(0, 4) : groupPurchaseItems).map((item) => (
                   <ItemCard key={item.id} item={item} onClick={handleItemClick} />
                 ))
               ) : (
