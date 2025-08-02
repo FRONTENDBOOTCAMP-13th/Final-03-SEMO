@@ -52,7 +52,7 @@ export default function PostContent({ post, marketType }: PostContentProps) {
 
         {/* 작성자 */}
         <div className="flex items-center gap-3 my-2">
-          <Image src="/img/profile.png" alt="" width={56} height={56} className="rounded-full" />
+          <Image src={getImageUrl(post.user.image)} alt="" width={56} height={56} className="rounded-full" />
           <div>
             <p className="text-16">{post?.user.name}</p>
             <p className="text-14 text-uni-gray-300">{post?.extra.location}</p>
