@@ -34,10 +34,14 @@
   /* Gray */
   --color-uni-gray-100: #f2f2f5;
   --color-uni-gray-200: #f0f2f5; /* 검색창, 카테고리 버튼, 채팅창*/
-  --color-uni-gray-300: #9ca3af; /* 비활성화 버튼*/
-  --color-uni-gray-400: #697382; /* 행복기숙사 */
-  --color-uni-gray-500: #667382; /* 판매완료, 모집완료 */
-  --color-uni-gray-600: #5e738c; /* 자동 전달 메시지 */
+  --color-uni-gray-300: #c6cbd2;
+  --color-uni-gray-400: #9ca3af; /* 비활성화 버튼*/
+  --color-uni-gray-500: #697382; /* 행복기숙사 */
+  --color-uni-gray-600: #667382; /* 판매완료, 모집완료 */
+  --color-uni-gray-700: #5e738c; /* 자동 전달 메시지 */
+
+  /* yellow */
+  --color-uni-yellow: #fee500; /* 카카오톡 버튼 */
 
   /* black */
   --color-uni-black: #121417;

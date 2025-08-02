@@ -10,6 +10,7 @@ export const logout = async () => {
     });
 
     useUserStore.getState().resetUser();
+    localStorage.removeItem("accessToken");
   } catch (err) {
     console.error("Logout failed", err);
     throw err;
