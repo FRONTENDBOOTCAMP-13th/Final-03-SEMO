@@ -25,7 +25,7 @@ const ChatRoomItem = ({ postId, message, date, userId }: ChatRoomItemProps) => {
       if (user) {
         setName(user.name || `상대방 ${userId}`);
         if (user.image) {
-          setAvatar(`${process.env.NEXT_PUBLIC_API_URL}/${user.image}`);
+          setAvatar(user.image);
         }
       }
     };
@@ -36,16 +36,18 @@ const ChatRoomItem = ({ postId, message, date, userId }: ChatRoomItemProps) => {
   return (
     <div
       onClick={() => router.push(`/school/market/posts/${postId}`)}
-      className="flex items-center justify-between py-3 border-b cursor-pointer"
+      className="flex items-center justify-between py-3 cursor-pointer h-[91px]"
     >
       <div className="flex items-center">
-        <Image src={avatar} alt="avatar" width={40} height={40} className="rounded-full object-cover" />
+        <div className="w-[70px] h-[70px] rounded-full overflow-hidden">
+          <Image src={avatar} alt="avatar" width={70} height={70} className="w-full h-full object-cover" />
+        </div>
         <div className="ml-3">
-          <div className="font-semibold text-sm">{name}</div>
-          <div className="text-xs text-gray-500 truncate max-w-[200px]">{message}</div>
+          <div className="text-uni-black font-semibold text-16 mb-3">{name}</div>
+          <div className="text-14 text-gray-500 truncate max-w-[200px]">{message}</div>
         </div>
       </div>
-      <div className="text-xs text-gray-400">{new Date(date).toLocaleDateString()}</div>
+      <div className="text-14 text-gray-400">{new Date(date).toLocaleDateString()}</div>
     </div>
   );
 };
