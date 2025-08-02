@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import Button from "../_components/Button";
+import Button from "@/components/ui/Button";
 import Logo from "../_components/Logo";
 import { useAuthGuard } from "@/lib/useAuthGuard";
 

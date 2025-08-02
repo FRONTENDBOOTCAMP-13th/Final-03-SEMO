@@ -34,10 +34,14 @@
   /* Gray */
   --color-uni-gray-100: #f2f2f5;
   --color-uni-gray-200: #f0f2f5; /* 검색창, 카테고리 버튼, 채팅창*/
-  --color-uni-gray-300: #9ca3af; /* 비활성화 버튼*/
-  --color-uni-gray-400: #697382; /* 행복기숙사 */
-  --color-uni-gray-500: #667382; /* 판매완료, 모집완료 */
-  --color-uni-gray-600: #5e738c; /* 자동 전달 메시지 */
+  --color-uni-gray-300: #c6cbd2;
+  --color-uni-gray-400: #9ca3af; /* 비활성화 버튼*/
+  --color-uni-gray-500: #697382; /* 행복기숙사 */
+  --color-uni-gray-600: #667382; /* 판매완료, 모집완료 */
+  --color-uni-gray-700: #5e738c; /* 자동 전달 메시지 */
+
+  /* yellow */
+  --color-uni-yellow: #fee500; /* 카카오톡 버튼 */
 
   /* black */
   --color-uni-black: #121417;
@@ -117,4 +121,101 @@
   --space-18: 1.125rem; /* 18px */
   --space-20: 1.25rem; /* 20px */
   --space-24: 1.5rem; /* 24px */
+}
+
+/* 초기화면 전용 애니메이션 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* 애니메이션 클래스 */
+.animate-fade-in {
+  animation: fadeIn 0.8s ease-out both;
+}
+
+.animate-fade-in-delay-1 {
+  animation: fadeIn 0.8s 0.2s ease-out both;
+}
+
+.animate-fade-in-delay-2 {
+  animation: fadeIn 0.8s 0.3s ease-out both;
+}
+
+.animate-fade-in-delay-3 {
+  animation: fadeIn 0.8s 0.4s ease-out both;
+}
+
+.animate-fade-in-delay-4 {
+  animation: fadeIn 0.8s 0.5s ease-out both;
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.glass-effect {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+/*Liquid Glass 효과 */
+.liquid-glass {
+  position: relative;
+  display: flex;
+  font-weight: 600;
+  overflow: hidden;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow:
+    0 6px 20px rgba(0, 0, 0, 0.15),
+    inset 2px 2px 1px 0 rgba(255, 255, 255, 0.5),
+    inset -1px -1px 1px 1px rgba(255, 255, 255, 0.3);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 2.2);
+  backdrop-filter: blur(10px) saturate(150%);
+}
+
+.liquid-glass::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  transition: left 0.5s ease-in-out;
+}
+
+.liquid-glass::after {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  z-index: 1;
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(255, 255, 255, 0.4) 0%,
+    rgba(255, 255, 255, 0.1) 40%,
+    transparent 70%
+  );
+  border-radius: inherit;
+  pointer-events: none;
 }

@@ -28,7 +28,7 @@ export interface Item {
   price: string;
   image: string;
   status: "판매중" | "판매완료";
-  marketType: "sell" | "buy" | "gather"; // marketType 속성 추가
+  marketType: "sell" | "buy" | "groupPurchase"; // marketType 속성 추가
 }
 
 export default function ItemCard({ item, onClick }: { item: Item; onClick?: (item: Item) => void }) {
@@ -56,11 +56,7 @@ export default function ItemCard({ item, onClick }: { item: Item; onClick?: (ite
     >
       <div className="flex items-center space-x-3 flex-1 min-w-0">
         <div className="relative w-12 h-12 bg-uni-gray-100 rounded-xl flex items-center justify-center text-20 flex-shrink-0 overflow-hidden">
-          {item.image.startsWith("http") ? (
-            <Image src={item.image} alt={item.title} fill style={{ objectFit: "cover" }} />
-          ) : (
-            item.image
-          )}
+          <Image src={item.image} alt={item.title} fill style={{ objectFit: "cover" }} />
         </div>
         <div className="flex-1 min-w-0">
           <div className="relative overflow-hidden">

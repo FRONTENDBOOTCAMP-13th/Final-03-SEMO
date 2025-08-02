@@ -102,7 +102,7 @@ export default function MyPageWriteReview({ params }: MyPageWriteReviewProps) {
       formData.append("content", reviewTextareaRef.current?.value || "");
 
       const result = await submitReview(null, formData);
-      
+
       if (result.ok) {
         alert("리뷰가 성공적으로 등록되었습니다!");
         updateReviewedProductIdsInLocalStorage(reviewData.id);
@@ -140,12 +140,7 @@ export default function MyPageWriteReview({ params }: MyPageWriteReviewProps) {
             </div>
             <div className="ml-4">
               <div className="w-30 h-20 bg-uni-gray-100 rounded-lg overflow-hidden relative">
-                <Image
-                  src={currentReviewData.image.startsWith("http") ? currentReviewData.image : "/api/placeholder/80/80"}
-                  alt="상품 이미지"
-                  fill
-                  className="object-cover"
-                />
+                <Image src={currentReviewData.image} alt="상품 이미지" fill className="object-cover" />
               </div>
             </div>
           </div>
