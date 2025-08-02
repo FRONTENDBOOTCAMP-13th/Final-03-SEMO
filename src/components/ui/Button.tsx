@@ -15,13 +15,14 @@ export default function Button({
   className,
   ...props
 }: ButtonProps) {
-  const base = "w-full py-3 rounded-md font-semibold text-sm flex justify-center items-center";
+  const base =
+    "w-full py-3 rounded-lg font-semibold text-16 cursor-pointer flex justify-center items-center focus:outline-uni-blue-400 focus:border-uni-blue-400";
 
   const styleMap = {
-    primary: `${base} bg-uni-blue-400 text-white`,
-    outline: `${base} border border-[#0070f3] text-[#0070f3]`,
-    kakao: `${base} bg-[#FEE500] text-black`,
-    google: `${base} border border-gray-300 text-black`,
+    primary: `${base} bg-uni-blue-400 text-uni-white`,
+    outline: `${base} border border-uni-blue-400 text-uni-blue-400`,
+    kakao: `${base} bg-uni-yellow text-black`,
+    google: `${base} border border-uni-gray-300 text-black`,
   };
 
   return (

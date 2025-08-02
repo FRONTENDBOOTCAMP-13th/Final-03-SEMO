@@ -24,7 +24,7 @@ class ImageService {
       throw new Error("파일 업로드에 실패했습니다.");
     }
 
-    return `${API_CONFIG.BASE_URL}/${result[0].path}`;
+    return result[0].path;
   }
 
   /**
@@ -35,18 +35,17 @@ class ImageService {
       return defaultPath;
     }
 
-    // 이미 완전한 URL인 경우
-    if (imagePath.startsWith("http") || imagePath.startsWith("data:")) {
+    // 이미 완전한 URL인 경우 (Cloudinary, HTTP 등)
+    if (imagePath.startsWith("http") || imagePath.startsWith("https") || imagePath.startsWith("data:")) {
       return imagePath;
     }
 
-    // path가 "files/client-id/filename" 형태인 경우
-    if (imagePath.startsWith("files/")) {
-      return `${API_CONFIG.BASE_URL}/${imagePath}`;
+    // 로컬 파일 경로인 경우 슬래시 추가
+    if (!imagePath.startsWith("/")) {
+      return `/${imagePath}`;
     }
 
-    // 파일명만 있는 경우
-    return `${API_CONFIG.BASE_URL}/files/${API_CONFIG.CLIENT_ID}/${imagePath}`;
+    return imagePath;
   }
 }
 

@@ -1,5 +1,6 @@
 import { BookmarkItem, OrderItem, ProductItem, PostItem } from "@/types/myPageApi";
 import { getCachedUser } from "@/data/functions/myPage";
+import { getImageUrl } from "@/data/actions/file";
 
 const sellerCache: { [key: string]: { name: string; image?: string } } = {};
 
@@ -9,7 +10,7 @@ export interface MyPageItem {
   image: string;
   price: string;
   status: "판매중" | "판매완료";
-  marketType: "sell" | "buy" | "gather"; // marketType 필드 추가
+  marketType: "sell" | "buy" | "groupPurchase"; // marketType 필드 추가
 }
 
 export interface Review {
@@ -30,34 +31,7 @@ export function bookmarkToWishlistItem(bookmark: BookmarkItem): MyPageItem {
   const post = bookmark.post; // product 대신 post 사용
 
   // 이미지 경로 안전 처리
-  let imageUrl = "/assets/defaultimg.png";
-  if (typeof post.image === "string" && post.image) {
-    imageUrl = `${process.env.NEXT_PUBLIC_API_URL}/${post.image}`;
-  }
-
-  // 가격을 숫자형으로 변환하여 toLocaleString() 적용
-  const price = Number(post.extra.price);
-  const formattedPrice = isNaN(price) ? "가격 정보 없음" : `${price.toLocaleString()}원`;
-
-  return {
-    id: post._id,
-    title: post.title,
-    image: imageUrl,
-    price: formattedPrice,
-    status: post.extra.crt === "판매완료" ? "판매완료" : "판매중",
-    marketType: ["sell", "buy", "gather"].includes(post.type) ? (post.type as "sell" | "buy" | "gather") : "sell",
-  };
-}
-
-/**
- * PostItem을 MyPageItem 타입으로 변환합니다.
- */
-export function postToMyPageItem(post: PostItem, sourceType?: "sell" | "buy" | "gather"): MyPageItem {
-  // 이미지 경로 안전 처리
-  let imageUrl = "/assets/defaultimg.png";
-  if (typeof post.image === "string" && post.image) {
-    imageUrl = `${process.env.NEXT_PUBLIC_API_URL}/${post.image}`;
-  }
+  const imageUrl = getImageUrl(post.image);
 
   // 가격을 숫자형으로 변환하여 toLocaleString() 적용
   const price = Number(post.extra?.price);
@@ -69,7 +43,32 @@ export function postToMyPageItem(post: PostItem, sourceType?: "sell" | "buy" | "
     image: imageUrl,
     price: formattedPrice,
     status: post.extra?.crt === "판매완료" ? "판매완료" : "판매중",
-    marketType: ["sell", "buy", "gather"].includes(post.type) ? (post.type as "sell" | "buy" | "gather") : "sell",
+    marketType: ["sell", "buy", "groupPurchase"].includes(post.type)
+      ? (post.type as "sell" | "buy" | "groupPurchase")
+      : "sell",
+  };
+}
+
+/**
+ * PostItem을 MyPageItem 타입으로 변환합니다.
+ */
+export function postToMyPageItem(post: PostItem, sourceType?: "sell" | "buy" | "groupPurchase"): MyPageItem {
+  // 이미지 경로 안전 처리
+  const imageUrl = getImageUrl(post.image);
+
+  // 가격을 숫자형으로 변환하여 toLocaleString() 적용
+  const price = Number(post.extra?.price);
+  const formattedPrice = isNaN(price) ? "가격 정보 없음" : `${price.toLocaleString()}원`;
+
+  return {
+    id: post._id,
+    title: post.title,
+    image: imageUrl,
+    price: formattedPrice,
+    status: post.extra?.crt === "판매완료" ? "판매완료" : "판매중",
+    marketType: ["sell", "buy", "groupPurchase"].includes(post.type)
+      ? (post.type as "sell" | "buy" | "groupPurchase")
+      : "sell",
   };
 }
 
@@ -93,9 +92,7 @@ export async function orderToReviewItems(order: OrderItem): Promise<Review[]> {
           const sellerData = await getCachedUser(product.seller_id);
           if (sellerData) {
             authorName = sellerData.name || `판매자 ${product.seller_id}`;
-            sellerProfileImageUrl = sellerData.image
-              ? `${process.env.NEXT_PUBLIC_API_URL}/${sellerData.image}`
-              : "/assets/defaultimg.png";
+            sellerProfileImageUrl = getImageUrl(sellerData.image);
             sellerCache[product.seller_id] = { name: authorName, image: sellerProfileImageUrl };
           }
         } catch {
@@ -109,7 +106,7 @@ export async function orderToReviewItems(order: OrderItem): Promise<Review[]> {
       orderId: order._id, // order_id 추가
       title: product.name,
       author: authorName,
-      image: product.image ? `${process.env.NEXT_PUBLIC_API_URL}/${product.image["path "]}` : "/assets/defaultimg.png", // 상품 이미지
+      image: getImageUrl(product.image?.["path "]), // 상품 이미지
       sellerProfileImage: sellerProfileImageUrl, // 판매자 프로필 이미지
       location: location, // 모든 리뷰 아이템에 동일한 위치 정보 적용
       date: new Date(order.createdAt)
@@ -136,7 +133,7 @@ export function bookmarksToWishlistItems(bookmarks: BookmarkItem[]): MyPageItem[
 /**
  * PostItem 배열을 MyPageItem 배열로 변환합니다.
  */
-export function postsToMyPageItems(posts: PostItem[], sourceType?: "sell" | "buy" | "gather"): MyPageItem[] {
+export function postsToMyPageItems(posts: PostItem[], sourceType?: "sell" | "buy" | "groupPurchase"): MyPageItem[] {
   return posts.map((post: PostItem) => postToMyPageItem(post, sourceType));
 }
 
