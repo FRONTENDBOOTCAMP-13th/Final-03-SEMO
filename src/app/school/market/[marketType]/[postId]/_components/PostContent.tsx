@@ -7,6 +7,7 @@ import { getImageUrl } from "@/data/actions/file";
 import PostLikeButton from "./PostLikeButton";
 import Countdown from "@/app/school/market/_components/_PostComponents/Countdown";
 import ChatStartButton from "@/app/school/chat/components/chatStartBtn";
+
 interface PostContentProps {
   post: Post;
   marketType: PostType;
