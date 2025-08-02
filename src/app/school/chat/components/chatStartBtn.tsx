@@ -63,7 +63,9 @@ export default function ChatStartButton({ sellerId, productId }: ChatStartButton
 
         console.log("기존 채팅방 이동:", { postId: existing._id, roomIdFromMeta });
 
-        router.push(`/school/chat/${existing._id}`);
+        router.push(
+          `/school/chat/${existing._id}?buyerId=${buyerId}&sellerId=${sellerId}&productId=${productId}&roomId=${roomIdFromMeta}`
+        );
         return;
       }
 
@@ -96,7 +98,9 @@ export default function ChatStartButton({ sellerId, productId }: ChatStartButton
 
       if (createJson.ok === 1) {
         const postId = createJson.item._id;
-        router.push(`/school/chat/${postId}?autojoin=true`);
+        router.push(
+          `/school/chat/${postId}?buyerId=${buyerId}&sellerId=${sellerId}&productId=${productId}&roomId=${newRoomId}&autojoin=true`
+        );
       } else {
         alert(`채팅방 생성 실패: ${createJson.message}`);
       }
