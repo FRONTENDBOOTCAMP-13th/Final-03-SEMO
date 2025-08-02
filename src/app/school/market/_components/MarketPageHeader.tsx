@@ -19,6 +19,11 @@ const HEADER_CONFIGS = {
     backLink: "",
     showMeatball: false,
   },
+  marketEdit: {
+    title: "상품 수정",
+    backLink: "",
+    showMeatball: false,
+  },
   marketSearch: {
     title: "상품 검색",
     backLink: "",
@@ -37,6 +42,11 @@ const HEADER_CONFIGS = {
   },
   groupNew: {
     title: "공동구매 등록",
+    backLink: "",
+    showMeatball: false,
+  },
+  groupEdit: {
+    title: "공동구매 수정",
     backLink: "",
     showMeatball: false,
   },
@@ -172,6 +182,7 @@ export default function MarketPageHeader() {
     // 경로 타입 판별
     const MarketPath = pathname.includes("/market/");
     const GroupPath = pathname.includes("/groupPurchase");
+    const EditPath = pathname.includes("/edit");
 
     console.log("=== Debug === MarketPath", MarketPath);
     console.log("=== Debug === GroupPath", GroupPath);
@@ -184,11 +195,15 @@ export default function MarketPageHeader() {
       const marketIndex = pathSegments.indexOf("market");
       const marketType = pathSegments[marketIndex + 1]; // buy or sell
       const subPage = pathSegments[marketIndex + 2]; // new, search, postId
+      const subsubPage = pathSegments[marketIndex + 3]; // edit
 
       if (subPage === "new") {
         config = HEADER_CONFIGS.marketNew;
       } else if (subPage === "search") {
         config = HEADER_CONFIGS.marketSearch;
+      } else if (EditPath || subsubPage === "edit") {
+        config = HEADER_CONFIGS.marketEdit;
+        backLink = `/school/market/${marketType}/${subPage}`;
       } else if (subPage) {
         config = HEADER_CONFIGS.marketDetail;
       } else {
@@ -201,10 +216,14 @@ export default function MarketPageHeader() {
       // GroupPurchase 경로 처리
       const groupIndex = pathSegments.indexOf("groupPurchase");
       const subPage = pathSegments[groupIndex + 1];
+      const subsubPage = pathSegments[groupIndex + 2]; // edit
       if (subPage === "new") {
         config = HEADER_CONFIGS.groupNew;
       } else if (subPage === "search") {
         config = HEADER_CONFIGS.groupSearch;
+      } else if (EditPath || subsubPage === "edit") {
+        config = HEADER_CONFIGS.marketEdit;
+        backLink = `/school/market/groupPurchase/${subPage}`;
       } else if (subPage) {
         config = HEADER_CONFIGS.groupDetail;
       } else {
