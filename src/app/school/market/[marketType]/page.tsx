@@ -36,7 +36,7 @@ export default async function MarketPage({ params }: { params: { marketType: "bu
     <main className="relative min-w-[320px] max-w-[480px] px-5 bg-uni-white min-h-screen">
       <MarketPageHeader />
       <MarketSearch />
-      <div className="flex relative justify-around mb-4 border-b border-uni-gray-100 -mx-5">
+      <div className="flex relative justify-around mb-4 -mx-5">
         {(["buy", "sell"] as const).map((i) => {
           // 읽기 전용 [buy, sell] 튜플 리터럴
           const label = i === "buy" ? "사고 싶어요" : "팔고 싶어요";
@@ -50,7 +50,12 @@ export default async function MarketPage({ params }: { params: { marketType: "bu
               }`}
             >
               {label}
-              {active && <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-uni-blue-400" />}
+              {/* {active && <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-uni-blue-400" />} */}
+              <div
+                className={`absolute bottom-0 left-0 right-0 ${
+                  active ? "h-[2px] bg-uni-blue-400" : "h-[0.5px] bg-uni-gray-200"
+                }`}
+              />
             </Link>
           );
         })}
