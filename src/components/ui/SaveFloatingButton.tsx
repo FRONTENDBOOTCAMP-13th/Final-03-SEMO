@@ -23,7 +23,7 @@ interface FloatingButtonProps {
   className?: string;
 }
 
-export default function SaveFloatingButton({ children, onClick, className = "" }: FloatingButtonProps) {
+export default function SaveFloatingButton({ children, onClick /*className = ""*/ }: FloatingButtonProps) {
   return (
     <button
       onClick={onClick}

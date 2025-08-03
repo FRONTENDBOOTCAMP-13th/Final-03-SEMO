@@ -7,7 +7,7 @@ import { useMyPageData } from "@/lib/hooks/useMyPageData";
 import ImageService from "@/lib/imageService";
 
 export default function MyPage() {
-  const { userData, postsCount, reviewsCount, bookmarksCount, isLoading } = useMyPageData();
+  const { userData, postsCount, reviewsCount, bookmarksCount } = useMyPageData();
 
   const userProfileImage = ImageService.getSafeImageUrl(userData?.image, "/assets/defaultimg.png");
 
