@@ -20,8 +20,8 @@ export default function HomeHeader() {
           />
         ) : (
           <div className="w-full h-full bg-uni-gray-300 rounded-full flex items-center justify-center"></div>
-        )} */}
-        <div className="w-full h-full bg-uni-gray-300 rounded-full flex items-center justify-center"></div>
+        )}
+        {/* <div className="w-full h-full bg-uni-gray-300 rounded-full flex items-center justify-center"></div> */}
       </div>
 
       {/* 로고 */}

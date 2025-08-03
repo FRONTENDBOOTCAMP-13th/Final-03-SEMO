@@ -118,7 +118,7 @@ export default function PostForm({ mode, initialData, marketType, postId }: Post
         </section>
 
         <ProductDesc initialData={initialData} contentError={contentError} />
-        {tradeType === "groupPurchase" && <GroupPurchase />}
+        {tradeType === "groupPurchase" && <GroupPurchase initialData={initialData} />}
         <section className="mb-8">
           <fieldset className="flex flex-col gap-3">
             <label
