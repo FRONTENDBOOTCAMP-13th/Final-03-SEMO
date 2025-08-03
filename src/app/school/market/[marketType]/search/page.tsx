@@ -20,7 +20,7 @@ export default async function SearchPage({ params, searchParams }: SearchPagePro
     <main className="px-5 bg-uni-white min-h-screen">
       <MarketPageHeader />
       <MarketSearch />
-      <div className="flex relative justify-around mb-4 border-b border-uni-gray-100 -mx-5">
+      <div className="flex relative justify-around -mx-5">
         {marketType !== "groupPurchase" &&
           (["buy", "sell"] as const).map((i) => {
             // 읽기 전용 [buy, sell] 튜플 리터럴

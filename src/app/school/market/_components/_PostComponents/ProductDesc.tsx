@@ -35,6 +35,7 @@ export default function ProductDesc({ initialData, contentError }: ProductDescPr
             <option value="생활용품">생활용품</option>
             <option value="생활가전">생활가전</option>
             <option value="학용품">학용품</option>
+            <option value="기타">기타</option>
           </select>
           <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
             <ChevronsUpDown size={25} className="text-uni-gray-600" />
