@@ -14,6 +14,7 @@ import { socket, useChatSocket } from "../../../api/chat/useChatSoket";
 import { useChatStore } from "../../../api/chat/useChatStore";
 import { useUserStore } from "@/store/userStore";
 import Header from "@/components/common/Header";
+import PopUp from "@/components/common/PopUp";
 
 const ChatPage = () => {
   const params = useParams();
@@ -33,8 +34,9 @@ const ChatPage = () => {
   const [joinedRoom, setJoinedRoom] = useState(false);
   const [isTradeDone, setIsTradeDone] = useState(false);
   const [productData, setProductData] = useState<any>(null);
-  const [postType, setPostType] = useState<string>(""); // ✅ postType 상태 추가
+  const [postType, setPostType] = useState<string>(""); //
   const [sellerInfo, setSellerInfo] = useState<any>(null);
+  const [showModal, setShowModal] = useState(true);
 
   const isSeller = String(buyerId) === String(sellerId);
 
@@ -133,6 +135,8 @@ const ChatPage = () => {
   return (
     <>
       <Header title="채팅" />
+      {showModal && <PopUp onClose={() => setShowModal(false)} />}
+
       <ProductInfo productId={productId} />
 
       <div className="px-4 my-2">
