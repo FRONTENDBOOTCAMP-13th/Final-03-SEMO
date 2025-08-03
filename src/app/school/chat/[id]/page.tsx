@@ -13,6 +13,8 @@ import TradeInfoBox from "../components/tradeInfoBox";
 import { socket, useChatSocket } from "../../../api/chat/useChatSoket";
 import { useChatStore } from "../../../api/chat/useChatStore";
 import { useUserStore } from "@/store/userStore";
+import Header from "@/components/common/Header";
+import PopUp from "@/components/common/PopUp";
 
 const ChatPage = () => {
   const params = useParams();
@@ -31,22 +33,23 @@ const ChatPage = () => {
 
   const [joinedRoom, setJoinedRoom] = useState(false);
   const [isTradeDone, setIsTradeDone] = useState(false);
-  const [productData, setProductData] = useState<{ extra?: any } | null>(null);
+  const [productData, setProductData] = useState<any>(null);
+  const [postType, setPostType] = useState<string>(""); //
   const [sellerInfo, setSellerInfo] = useState<any>(null);
+  const [showModal, setShowModal] = useState(true);
 
   const isSeller = String(buyerId) === String(sellerId);
 
   // 글로벌 방 입장
   useChatSocket({ userId: String(buyerId), nickName: buyerNickName, roomId: "global" });
 
-  // 자동 개인방 입장(판매자입장, 채팅알림 받는 입장)
+  // 자동 개인방 입장
   useEffect(() => {
     if (!joinedRoom && buyerId && sellerId && autoJoin && roomIdFromQuery) {
       handleJoinRoom(roomIdFromQuery);
     }
   }, [buyerId, sellerId, joinedRoom, autoJoin, roomIdFromQuery]);
 
-  // 방 버튼눌러서 생성 및 입장(구매자입장, 채팅시작입장에서)
   const handleJoinRoom = (targetRoomId: string) => {
     socket.emit(
       "createRoom",
@@ -58,10 +61,7 @@ const ChatPage = () => {
         autoClose: false,
       },
       (createRes: any) => {
-        if (!createRes.ok) {
-          console.warn("개인방 이미 존재:", createRes.message);
-        }
-
+        if (!createRes.ok) console.warn("개인방 이미 존재:", createRes.message);
         socket.emit(
           "joinRoom",
           {
@@ -83,7 +83,7 @@ const ChatPage = () => {
     );
   };
 
-  // 상품 정보 fetch
+  // 상품 정보 fetch (posts/:productId)
   useEffect(() => {
     if (productId) {
       fetch(`${process.env.NEXT_PUBLIC_API_URL}/posts/${productId}`, {
@@ -93,7 +93,8 @@ const ChatPage = () => {
       })
         .then((res) => res.json())
         .then((data) => {
-          setProductData(data.item); // 여기서 저장됨
+          setProductData(data.item);
+          setPostType(data.item?.type || "");
         })
         .catch((err) => console.error("상품 데이터 가져오기 실패:", err));
     }
@@ -105,10 +106,8 @@ const ChatPage = () => {
     }
   }, [productData]);
 
-  // 판매자 정보 fetch 등록된 계좌번호를 위해
   useEffect(() => {
     const token = useUserStore.getState().user?.token?.accessToken;
-
     if (sellerId && token) {
       fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${sellerId}`, {
         headers: {
@@ -117,16 +116,13 @@ const ChatPage = () => {
         },
       })
         .then((res) => res.json())
-        .then((data) => {
-          setSellerInfo(data.item);
-        })
+        .then((data) => setSellerInfo(data.item))
         .catch((err) => console.error("판매자 정보 요청 실패:", err));
     }
   }, [sellerId]);
 
   if (!id) return notFound();
 
-  // 계좌번호 post
   const accountNumber =
     sellerInfo?.extra?.bank && sellerInfo?.extra?.bankNumber
       ? `${sellerInfo.extra.bank} ${sellerInfo.extra.bankNumber}`
@@ -136,10 +132,11 @@ const ChatPage = () => {
 
   return (
     <>
-      {/* 상품정보: 판매자, 상품이름, 상품사진 */}
+      <Header title="채팅" />
+      {showModal && <PopUp onClose={() => setShowModal(false)} />}
+
       <ProductInfo productId={productId} />
 
-      {/* 개인채팅 시작 버튼 */}
       <div className="px-4 my-2">
         <button
           onClick={() => {
@@ -156,26 +153,22 @@ const ChatPage = () => {
         </button>
       </div>
 
-      {/* 채팅내역 */}
       <ChatBubbleList />
 
-      {/* 거래완료버튼: 판매자에게만 뜨도록 */}
       {!isTradeDone && (
         <TradeCheck
           postId={productId}
+          productId={productData?.extra?.productId}
+          productExtra={productData?.extra || {}}
+          postType={postType}
           isSeller={isSeller}
           onComplete={() => setIsTradeDone(true)}
-          productExtra={productData?.extra || {}}
         />
       )}
 
-      {/* 거래완료버튼: 구매자에게 뜨도록(ㅇㅇㅇ님의 참여가 승인되었습니다.)  */}
       {isTradeDone && !isSeller && <TradeComplete buyerName={buyerNickName} />}
-
-      {/* 거래완료되면 계좌번호, 거래장소 */}
       {isTradeDone && <TradeInfoBox location={location} accountNumber={accountNumber} />}
 
-      {/* 채팅 인풋창*/}
       <InputChat userId={buyerId} nickName={buyerNickName} sellerId={sellerId} sellerNickName={sellerNickName} />
     </>
   );

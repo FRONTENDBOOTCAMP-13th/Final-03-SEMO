@@ -12,18 +12,16 @@ interface TradeCheckProps {
   postId: string;
   isSeller: boolean;
   productExtra: any;
+  postType?: string;
   productId?: string | number;
 }
 
-const TradeCheck = ({ onComplete, postId, isSeller, productExtra, productId }: TradeCheckProps) => {
+const TradeCheck = ({ onComplete, postId, isSeller, productExtra, productId, postType }: TradeCheckProps) => {
   const [showPopUp, setShowPopUp] = useState(false);
   const [isTradeCompleted, setIsTradeCompleted] = useState(false);
 
-  // 구매자 id를 가져오기 위한
   const searchParams = useSearchParams();
   const buyerIdFromQuery = searchParams.get("buyerId") ?? undefined;
-
-  // 거래완료 메시지 우회를 위한
   const roomId = useChatStore.getState().currentRoomId;
   const sellerId = useUserStore.getState().user?._id;
   const sellerNickName = useUserStore.getState().user?.name;
@@ -31,11 +29,25 @@ const TradeCheck = ({ onComplete, postId, isSeller, productExtra, productId }: T
   const handleConfirm = async () => {
     try {
       const token = useUserStore.getState().user?.token?.accessToken;
+      if (!token) return alert("로그인이 필요합니다.");
 
-      if (!token) {
-        alert("로그인 토큰이 없습니다. 다시 로그인해주세요.");
-        return;
+      const buyerId = buyerIdFromQuery ?? productExtra?.buyerId;
+      const currentParticipants = Number(productExtra?.participants ?? 1);
+      const approvedUserIds = productExtra?.approvedUserIds ?? [];
+
+      if (approvedUserIds.includes(buyerId)) {
+        return alert("이미 승인된 사용자입니다.");
       }
+
+      const updatedParticipants = currentParticipants - 1;
+      const shouldComplete = postType === "groupPurchase" ? updatedParticipants <= 1 : true;
+
+      const updatedExtra = {
+        ...productExtra,
+        participants: postType === "groupPurchase" ? updatedParticipants : productExtra?.participants,
+        approvedUserIds: [...approvedUserIds, buyerId],
+        ...(shouldComplete ? { crt: "거래완료" } : {}),
+      };
 
       const headers = {
         "Content-Type": "application/json",
@@ -43,66 +55,65 @@ const TradeCheck = ({ onComplete, postId, isSeller, productExtra, productId }: T
         Authorization: `Bearer ${token}`,
       };
 
-      // posts/:postId 거래 완료 처리
+      // posts/:postId PATCH
       const postRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/posts/${postId}`, {
         method: "PATCH",
         headers,
         body: JSON.stringify({
-          type: "end",
-          extra: {
-            ...(productExtra || {}),
-            crt: "거래완료",
-          },
+          ...(shouldComplete ? { type: "end" } : {}),
+          extra: updatedExtra,
         }),
       });
 
       const postJson = await postRes.json();
-      if (postJson.ok !== 1) {
-        alert(`posts 거래완료 실패: ${postJson.message || "서버 오류"}`);
-        return;
-      }
+      if (postJson.ok !== 1) throw new Error("Post 업데이트 실패");
 
-      // market/products/:productId 거래 완료 처리
+      // products/:productId PATCH
       const productIdToPatch = productId ?? productExtra?.productId;
       if (productIdToPatch) {
         const productRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/seller/products/${productIdToPatch}`, {
           method: "PATCH",
           headers,
-          body: JSON.stringify({
-            extra: {
-              ...(productExtra || {}),
-              crt: "거래완료",
-            },
-          }),
+          body: JSON.stringify({ extra: updatedExtra }),
         });
-
         const productJson = await productRes.json();
-        if (productJson.ok !== 1) {
-          alert(`상품 거래완료 실패: ${productJson.message || "서버 오류"}`);
-          return;
-        }
+        if (productJson.ok !== 1) throw new Error("상품 업데이트 실패");
       }
 
-      const buyerId = buyerIdFromQuery ?? productExtra?.buyerId ?? useUserStore.getState().user?._id;
-
+      // 승인 메시지 먼저 발송
       socket.emit("message", {
-        msgType: "all",
-        type: "tradeDone",
-        msg: "거래가 완료되었습니다. 새로고침을 눌러서 거래정보를 확인하세요",
+        type: "approval",
+        msgType: "individual",
+        buyerId,
+        msg: "공동구매에 승인되었습니다!",
         postId,
         roomId,
-        buyerId,
-        productId: productId ?? productExtra?.productId,
         timestamp: new Date().toISOString(),
-        user_id: sellerId, // 보내는 사람
+        user_id: sellerId,
         nickName: sellerNickName,
       });
-      // 완료 처리
+
+      // 거래 완료 메시지 발송
+      if (shouldComplete) {
+        socket.emit("message", {
+          type: "tradeDone",
+          msgType: "all",
+          buyerId,
+          msg: "거래가 완료되었습니다. 새로고침을 눌러서 거래정보를 확인하세요",
+          postId,
+          productId: productIdToPatch,
+          roomId,
+          timestamp: new Date().toISOString(),
+          user_id: sellerId,
+          nickName: sellerNickName,
+        });
+      }
+
       setIsTradeCompleted(true);
       onComplete();
     } catch (err) {
-      console.error("거래 완료 에러:", err);
-      alert("거래 완료 처리 중 오류가 발생했습니다.");
+      console.error("거래 승인 오류:", err);
+      alert("승인 처리 중 오류가 발생했습니다.");
     } finally {
       setShowPopUp(false);
     }
@@ -113,14 +124,12 @@ const TradeCheck = ({ onComplete, postId, isSeller, productExtra, productId }: T
   return (
     <>
       {showPopUp && <PopUp onClose={() => setShowPopUp(false)} onConfirm={handleConfirm} />}
-
       <div className="items-center w-full min-w-[360px] max-w-[480px] bg-uni-white px-4 py-3 gap-2">
         <div className="flex">
           <button className="w-[80px] flex flex-col items-center text-uni-black text-14">
             <Share size={20} className="mb-2" />
             공유하기
           </button>
-
           <button
             className="w-[80px] flex flex-col items-center text-uni-black text-14"
             onClick={() => setShowPopUp(true)}
@@ -128,11 +137,9 @@ const TradeCheck = ({ onComplete, postId, isSeller, productExtra, productId }: T
           >
             <Check
               size={20}
-              className={`mb-2 rounded-full ${
-                isTradeCompleted ? "bg-uni-blue-500 text-white" : "bg-uni-gray-200 text-uni-gray-400"
-              } p-1`}
+              className={`mb-2 rounded-full ${isTradeCompleted ? "bg-uni-blue-500 text-white" : "bg-uni-gray-200 text-uni-gray-400"} p-1`}
             />
-            {isTradeCompleted ? "완료됨" : "거래 완료"}
+            {isTradeCompleted ? "완료됨" : "승인하기"}
           </button>
         </div>
       </div>
