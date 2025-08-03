@@ -6,7 +6,7 @@ import { uploadFile } from "@/data/actions/file";
 import { getImageUrl } from "@/data/actions/file";
 
 interface PhotoUploadProps {
-  images: string[];
+  images: string[]; // 업로드된 이미지 URL 배열
   setImages: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
@@ -18,20 +18,28 @@ export default function PhotoUpload({ images, setImages }: PhotoUploadProps) {
     const files = e.target.files;
     if (!files || files.length === 0) return;
 
+    // 사진 파일 선택 객체
     const file = files[0];
 
-    const localUrl = URL.createObjectURL(file);
+    // 미리보기 만들기(서버 업로드 X)
+    const localUrl = URL.createObjectURL(file); // 브라우저 미리보기용 임시 URL
     setPreviewUrl(localUrl);
 
+    /**
+     * 1. local에서 이미지 미리보기 preview
+     * 2. 서버 업로드
+     * 3. 응답받은 URL로 대체하기
+     * 4. preview 제거(서버 이미지로 대체됨)
+     */
     try {
       const formData = new FormData();
-      formData.append("attach", file);
-      const result = await uploadFile(formData);
+      formData.append("attach", file); // 서버 전송
+      const result = await uploadFile(formData); // 비동기 서버 요청
 
       if (result.ok) {
-        setImages([result.item[0].path]);
-        URL.revokeObjectURL(localUrl);
-        setPreviewUrl(null);
+        setImages([result.item[0].path]); // 서버에서 받은 이미지 경로
+        URL.revokeObjectURL(localUrl); // 브라우저 메모리 해제함
+        setPreviewUrl(null); // 기존 미리보기 preview 제거
       } else {
         console.error("파일 업로드 실패");
         URL.revokeObjectURL(localUrl);
@@ -44,9 +52,9 @@ export default function PhotoUpload({ images, setImages }: PhotoUploadProps) {
 
   // 이미지 삭제 함수
   const removeImage = () => {
-    setImages([]);
+    setImages([]); // 이미지 리스트 비움
     if (previewUrl) {
-      URL.revokeObjectURL(previewUrl);
+      URL.revokeObjectURL(previewUrl); // 메모리 정리
       setPreviewUrl(null);
     }
   };

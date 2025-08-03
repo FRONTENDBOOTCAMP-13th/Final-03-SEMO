@@ -33,12 +33,15 @@ export async function uploadFile(formData: FormData): ApiResPromise<FileUpload[]
  * @param imagePath - 이미지 파일 경로
  */
 export function getImageUrl(imagePath: string | undefined): string {
+  // 이미지가 없는 경우 기본 이미지 보여줌
   if (!imagePath || typeof imagePath !== "string") {
     return "/assets/defaultimg.png";
   }
+  // 서버에 저장된 사잔인 경우, 서버 주소를 앞에 붙여줌
   if (imagePath?.startsWith("files/")) {
     return `${API_URL}/${imagePath}`;
   }
+  // 서버 주소가 있는경우 그대로 통과
   if (!imagePath.startsWith("http") && !imagePath.startsWith("/")) {
     return `/${imagePath}`;
   }

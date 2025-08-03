@@ -42,12 +42,14 @@ const Search = () => {
     } else if (pathname.includes("/home")) {
       searchPath = `/school/market/buy/search?keyword=${encodeURIComponent(keyword.trim())}`;
     }
-    router.push(searchPath);
+    // router.push(searchPath);
+    window.location.href = searchPath;
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
       handleSubmit(e as any);
+      router.refresh();
     }
   };
 
