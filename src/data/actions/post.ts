@@ -27,6 +27,25 @@ export async function createPost(state: ApiRes<Post> | null, formData: FormData)
   const price = formData.get("price") as string;
   const location = formData.get("location") as string;
 
+  // 공동구매 전용 데이터 필드
+  const participants = formData.get("participants") as string; // 인원수
+  const groupLocation = formData.get("groupLocation") as string; // 분배 장소
+  const deadLine = formData.get("deadLine") as string; // 마감시간
+
+  let crtStatus: string;
+  switch (type) {
+    case "sell":
+      crtStatus = "판매중";
+      break;
+    case "buy":
+      crtStatus = "구매중";
+      break;
+    case "groupPurchase":
+      crtStatus = "모집중";
+      break;
+    default:
+      crtStatus = "판매중";
+  }
   // 게시글 데이터 구성
   const postData = {
     type,
@@ -37,7 +56,13 @@ export async function createPost(state: ApiRes<Post> | null, formData: FormData)
     extra: {
       price,
       location,
-      crt: "판매중",
+      crt: crtStatus,
+      // 공동구매 전용 필드
+      ...(type === "groupPurchase" && {
+        participants: participants ? parseInt(participants) : undefined,
+        groupLocation,
+        deadLine,
+      }),
     },
   };
   try {
@@ -84,7 +109,12 @@ export async function createPost(state: ApiRes<Post> | null, formData: FormData)
         tag,
         location,
         marketType: type,
-        crt: "판매중",
+        crt: crtStatus,
+        ...(type === "groupPurchase" && {
+          participants: participants ? parseInt(participants) : undefined,
+          groupLocation,
+          deadLine,
+        }),
       },
     };
 
@@ -106,12 +136,35 @@ export async function createPost(state: ApiRes<Post> | null, formData: FormData)
       console.warn("상품 등록 실패:", productResult.message);
     } else {
       console.log("상품 등록 성공");
+
+      const productId = productResult.item._id;
+      const postId = postResult.item._id;
+
+      const updatedExtra = {
+        ...postData.extra,
+        productId,
+      };
+      await fetch(`${API_URL}/posts/${postId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          "Client-Id": CLIENT_ID,
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({
+          extra: updatedExtra,
+        }),
+      });
     }
   } catch (error) {
     console.error("오류 발생:", error);
     return { ok: 0, message: "등록 중 오류가 발생했습니다!!!!!!" };
   }
   redirect(`/school/market/${type}`);
+  // if (type === "groupPurchase") {
+  //   redirect(`school/market/groupPurchase`);
+  // } else {
+  // }
 }
 
 /**
@@ -124,6 +177,24 @@ export async function updatePost(state: ApiRes<Post> | null, formData: FormData)
   const accessToken = formData.get("accessToken") as string;
   const postId = formData.get("postId") as string;
   const type = formData.get("type") as string;
+  const participants = formData.get("participants") as string;
+  const groupLocation = formData.get("groupLocation") as string;
+  const deadLine = formData.get("deadLine") as string;
+
+  let crtStatus: string;
+  switch (type) {
+    case "sell":
+      crtStatus = "판매중";
+      break;
+    case "buy":
+      crtStatus = "구매중";
+      break;
+    case "groupPurchase":
+      crtStatus = "모집중";
+      break;
+    default:
+      crtStatus = "판매중";
+  }
 
   const postData = {
     type,
@@ -134,6 +205,12 @@ export async function updatePost(state: ApiRes<Post> | null, formData: FormData)
     extra: {
       price: formData.get("price") as string,
       location: formData.get("location") as string,
+      crt: crtStatus,
+      ...(type === "groupPurchase" && {
+        participants: participants ? parseInt(participants) : undefined,
+        groupLocation,
+        deadLine,
+      }),
     },
   };
 

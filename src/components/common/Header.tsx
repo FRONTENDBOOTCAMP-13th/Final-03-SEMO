@@ -26,7 +26,7 @@ interface HeaderProps {
 
 export default function Header({ title, backLink = "/", type = "default", onMeatballClick }: HeaderProps) {
   return (
-    <header className="bg-uni-white border-b border-uni-gray-200 px-3 py-2 sticky top-0 z-10">
+    <header className="bg-uni-white  px-3 py-2 sticky top-0 z-10">
       <div className="flex items-center justify-between h-11">
         {/* 왼쪽 화살표 */}
         <Link href={backLink} className="p-2 -ml-2 flex items-center justify-center">

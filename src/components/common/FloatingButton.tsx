@@ -1,19 +1,22 @@
 "use client";
 
 import Link from "next/link";
-import { Plus } from "lucide-react";
+import { ReactNode } from "react";
 
 interface FloatProps {
   href: string;
+  icon: ReactNode;
+  text: string;
 }
 
-export default function FloatingButton({ href }: FloatProps) {
+export default function FloatingButton({ href, icon, text }: FloatProps) {
   return (
     <Link
       href={href}
-      className="fixed bottom-24 right-3 w-[55px] h-[55px] rounded-full bg-uni-blue-400 text-white text-30 shadow-lg flex items-center justify-center z-1000"
+      className="fixed bottom-24 right-5 px-4 py-3 rounded-full bg-uni-blue-400 text-uni-white shadow-lg flex items-center gap-2 z-1000"
     >
-      <Plus size={30} color="white" strokeWidth={2} />
+      {icon}
+      <span className="text-20 font-medium whitespace-nowrap">{text}</span>
     </Link>
   );
 }

@@ -3,24 +3,53 @@ import { ApiResPromise, Post, PostReply } from "@/types";
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID || "";
 
-/**
- * 게시판 타입에 해당하는 게시글 목록을 가져옵니다.
- * @param {string} boardType - 게시판 타입(예: notice, free 등)
- * @returns {Promise<ApiRes<Post[]>>} - 게시글 목록 응답 객체
- */
-export async function getPosts(boardType: string): ApiResPromise<Post[]> {
+// /**
+//  * 게시판 타입에 해당하는 게시글 목록을 가져옵니다.
+//  * @param {string} boardType - 게시판 타입(예: notice, free 등)
+//  * @returns {Promise<ApiRes<Post[]>>} - 게시글 목록 응답 객체
+//  */
+export async function getPosts(boardType: string, page: number = 1, limit: number = 8): ApiResPromise<Post[]> {
   try {
-    const res = await fetch(`${API_URL}/posts?type=${boardType}`, {
+    const res = await fetch(`${API_URL}/posts?type=${boardType}&page=${page}&limit=${limit}`, {
       headers: {
         "Client-Id": CLIENT_ID,
       },
-      cache: "no-store",
+      cache: "force-cache",
+      next: { revalidate: 30 },
     });
     return res.json();
   } catch (error) {
     // 네트워크 오류 처리
     console.error(error);
     return { ok: 0, message: "일시적인 네트워크 문제로 등록에 실패했습니다." };
+  }
+}
+
+/**
+ * @Params {stirng} borderType - 게시판 타입
+ * @returns {Promise<number>} - 전체 게시글 수
+ */
+export async function getPostsCount(boardType: string): Promise<number> {
+  try {
+    // 첫 페이지를 가져와서 총 개수 확인 (API가 총 개수를 제공한다면)
+    const res = await fetch(`${API_URL}/posts?type=${boardType}&page=1&limit=1`, {
+      headers: {
+        "Client-Id": CLIENT_ID,
+      },
+      cache: "no-store",
+      next: { revalidate: 180 },
+    });
+
+    const data = await res.json();
+    if (data.totalCount) {
+      return data.totalCount;
+    }
+
+    // 아니면 추정치 계산 (임시)
+    return data.item ? data.item.length * 100 : 0; // 임시로 추정
+  } catch (error) {
+    console.error(error);
+    return 0;
   }
 }
 
@@ -58,6 +87,7 @@ export async function getReplies(_id: number, retryCount = 0): ApiResPromise<Pos
       headers: {
         "Client-Id": CLIENT_ID,
       },
+      cache: "no-store",
     });
     if (!res.ok && retryCount < MAX_RETRIES) {
       console.warn(`댓글 목록 가져오기 실패, 재시도 ${retryCount + 1}/${MAX_RETRIES}`);
@@ -76,7 +106,12 @@ export async function getReplies(_id: number, retryCount = 0): ApiResPromise<Pos
  * @param {string | null} keyword - 검색 키워드
  * @returns {Promise<ApiRes<Post[]>>} 게시글 목록 응답 객체
  */
-export async function getKeywordPosts(type: "buy" | "sell", keyword: string | null): ApiResPromise<Post[]> {
+export async function getKeywordPosts(
+  type: "buy" | "sell" | "groupPurchase",
+  keyword: string | null,
+  page: number = 1,
+  limit: number = 10
+): ApiResPromise<Post[]> {
   try {
     // keyword가 null이거나 빈 문자열인 경우 처리
     if (!keyword || !keyword.trim()) {
@@ -85,8 +120,13 @@ export async function getKeywordPosts(type: "buy" | "sell", keyword: string | nu
 
     const urlParams = new URLSearchParams({
       type: type,
-      keyword: keyword.trim(),
+      page: page.toString(),
+      limit: limit.toString(),
     });
+
+    if (keyword) {
+      urlParams.append("keyword", keyword.trim());
+    }
 
     console.log("검색 URL: ", `${API_URL}/posts?${urlParams.toString()}`);
 

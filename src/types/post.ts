@@ -1,9 +1,10 @@
 import { User } from "@/types/user";
 
+export type PostType = "buy" | "sell" | "groupPurchase" | "end";
 export interface Post {
   // 게시글 고유 ID
   _id: number;
-  type: string;
+  type: PostType;
   title: string;
   content: string;
   image?: string;
@@ -20,6 +21,10 @@ export interface Post {
     location: string;
     crt: string;
     newAccount: string;
+    // 공동구매 타입 세팅
+    participants?: number; // 목표 인원수
+    groupLocation?: string; // 분배 장소
+    deadLine?: string; // 마감시간
   };
 }
 

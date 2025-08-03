@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 /**
  * ItemCard 컴포넌트
  *
@@ -26,15 +28,16 @@ export interface Item {
   price: string;
   image: string;
   status: "판매중" | "판매완료";
+  marketType: "sell" | "buy" | "groupPurchase"; // marketType 속성 추가
 }
 
-export default function ItemCard({ item }: { item: Item }) {
+export default function ItemCard({ item, onClick }: { item: Item; onClick?: (item: Item) => void }) {
   const getStatusButton = (status: Item["status"]) => {
     if (status === "판매중") {
       return (
-        <button className="px-4 py-2 text-14 bg-uni-green-300 text-uni-white rounded-lg font-medium font-pretendard ml-4">
+        <span className="inline-block bg-uni-green-300 text-uni-white text-14 font-bold rounded-xl px-4 py-1.5">
           판매중
-        </button>
+        </span>
       );
     } else {
       return (
@@ -48,11 +51,12 @@ export default function ItemCard({ item }: { item: Item }) {
   return (
     <div
       key={item.id}
-      className="flex items-center justify-between p-4 bg-uni-white rounded-xl shadow-sm border border-uni-gray-100"
+      className="flex items-center justify-between p-4 bg-uni-white rounded-xl shadow-sm border border-uni-gray-100 cursor-pointer" // cursor-pointer 추가
+      onClick={() => onClick && onClick(item)} // onClick 핸들러 추가
     >
-      <div className="flex items-center space-x-4 flex-1 min-w-0">
-        <div className="w-12 h-12 bg-uni-gray-100 rounded-xl flex items-center justify-center text-20 flex-shrink-0">
-          {item.image}
+      <div className="flex items-center space-x-3 flex-1 min-w-0">
+        <div className="relative w-12 h-12 bg-uni-gray-100 rounded-xl flex items-center justify-center text-20 flex-shrink-0 overflow-hidden">
+          <Image src={item.image} alt={item.title} fill style={{ objectFit: "cover" }} />
         </div>
         <div className="flex-1 min-w-0">
           <div className="relative overflow-hidden">

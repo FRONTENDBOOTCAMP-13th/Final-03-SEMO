@@ -21,9 +21,10 @@
  */
 
 import Link from "next/link";
-import { Review } from "../_utils/postConverter";
+import Image from "next/image";
+import { Review } from "@/lib/utils/postConverter";
 
-export default function ReviewCard({ review }: { review: Review }) {
+export default function ReviewCard({ review, isReviewed }: { review: Review; isReviewed: boolean }) {
   return (
     <div
       key={review.id}
@@ -31,7 +32,14 @@ export default function ReviewCard({ review }: { review: Review }) {
     >
       <div className="flex items-center space-x-3 flex-1 min-w-0">
         {/* 왼쪽: 아바타 */}
-        <div className="w-12 h-12 rounded-full bg-amber-200 flex-shrink-0 overflow-hidden">{review.image}</div>
+        <div className="w-12 h-12 rounded-full flex-shrink-0 overflow-hidden relative">
+          <Image
+            src={review.sellerProfileImage || "/assets/defaultimg.png"}
+            alt="판매자 프로필 이미지"
+            fill
+            className="object-cover"
+          />
+        </div>
 
         {/* 중앙: 텍스트 영역 */}
         <div className="flex-1 min-w-0">
@@ -45,9 +53,11 @@ export default function ReviewCard({ review }: { review: Review }) {
       {/* 오른쪽: 버튼 */}
       <Link
         href={`/school/myPage/write-review/${review.id}`}
-        className="px-4 py-2 text-14 bg-uni-blue-400 text-uni-white rounded-lg font-medium font-pretendard ml-4 hover:bg-uni-blue-500 transition-colors"
+        className={`px-4 py-2 text-14 rounded-lg font-medium font-pretendard ml-4 ${isReviewed ? "bg-uni-gray-300 text-uni-gray-500 cursor-not-allowed" : "bg-uni-blue-400 text-uni-white "}`}
+        aria-disabled={isReviewed}
+        tabIndex={isReviewed ? -1 : undefined}
       >
-        후기 작성
+        {isReviewed ? "작성 완료" : "후기 작성"}
       </Link>
     </div>
   );

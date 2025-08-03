@@ -2,14 +2,14 @@
 
 import { useRouter } from "next/navigation";
 import { useUserStore } from "@/store/userStore";
-import Input from "../_components/Input";
-import Button from "../_components/Button";
+import Input from "@/components/ui/Input";
+import Button from "@/components/ui/Button";
 import BackButton from "../_components/BackButton";
 import { checkEmailDuplicate } from "@/lib/actions/checkDuplicate";
-// import { useAuthGuard } from "@/lib/useAuthGuard";
+import { useAuthGuard } from "@/lib/useAuthGuard";
 
 export default function SignupForm() {
-  // useAuthGuard(false);
+  useAuthGuard(false);
   const router = useRouter();
   const { user, setUser } = useUserStore();
   const email = user.email ?? "";
@@ -51,12 +51,19 @@ export default function SignupForm() {
         </div>
 
         {/* 이메일 입력 영역 */}
-        <div className="w-full max-w-sm space-y-16">
+        <form
+          className="w-full max-w-sm space-y-16"
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleEmailSubmit();
+          }}
+        >
           <Input type="email" placeholder="학교 이메일" value={email} onChange={handleEmailChange} />
-          <Button type="primary" onClick={handleEmailSubmit}>
+
+          <Button buttonType="submit" type="primary">
             이메일 입력
           </Button>
-        </div>
+        </form>
       </div>
     </main>
   );

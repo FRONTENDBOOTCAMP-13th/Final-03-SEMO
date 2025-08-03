@@ -2,13 +2,17 @@
 
 import { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
-import SaveFloatingButton from "../../_components/SaveFloatingButton";
-import InputField from "../../_components/InputField";
-import { validateNickname, validateAccountNumber, validateBankSelection } from "./utils/validation";
-import { useMyPageApi } from "../../_hooks/useMyPageApi";
-import { getImageUrl } from "@/data/actions/file";
+import SaveFloatingButton from "@/components/ui/SaveFloatingButton";
+import InputField from "@/components/ui/InputField";
+import {
+  validateNickname,
+  validateAccountNumber,
+  validateBankSelection,
+} from "@/app/school/myPage/(settings)/account/validation";
+import { updateUser } from "@/data/actions/myPage";
+import ImageService from "@/lib/imageService";
 import { useUserStore } from "@/store/userStore";
-import { User } from "../../_types/user";
+import { User } from "@/types/myPageUser";
 
 export default function AccountForm() {
   const { user, setUser } = useUserStore();
@@ -23,40 +27,42 @@ export default function AccountForm() {
   );
   const [accountError, setAccountError] = useState("");
   const [nameError, setNameError] = useState("");
-  const [profileImage, setProfileImage] = useState<string | null>(getImageUrl(userWithExtra.image) || null);
-  const [uploadFile, setUploadFile] = useState<File | null>(null);
+  const [profileImage, setProfileImage] = useState<string | null>(null);
+  const [uploadFileState, setUploadFileState] = useState<File | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  const { updateUserProfile, uploadProfileImage, loading } = useMyPageApi();
   const banks = ["은행사", "국민은행", "신한은행", "우리은행", "하나은행", "농협은행", "기업은행"];
 
   // 컴포넌트 마운트 시 사용자 데이터 로드
   useEffect(() => {
     const userWithExtra = user as User;
+    console.log("User data loaded:", userWithExtra);
     setName(userWithExtra.name || "");
     setSelectedBank(userWithExtra?.extra?.bank || "은행사");
     setAccountNumber(userWithExtra?.extra?.bankNumber ? String(userWithExtra.extra.bankNumber) : "");
+
+    // 프로필 이미지 설정 (ImageService가 모든 처리를 담당)
     setProfileImage(userWithExtra.image || null);
+    console.log("Profile image set:", userWithExtra.image);
   }, [user]);
 
-  // 이미지 URL을 메모이제이션하여 불필요한 재생성 방지
-  const memoizedImageUrl = useMemo(() => {
-    if (
-      profileImage &&
-      typeof profileImage === "string" &&
-      (profileImage.startsWith("http") || profileImage.startsWith("data:"))
-    ) {
-      return profileImage;
-    }
-    return null;
-  }, [profileImage]);
+  // // 이미지 URL을 메모이제이션하여 불필요한 재생성 방지
+  // const memoizedImageUrl = useMemo(() => {
+  //   console.log("Memoizing image URL, profileImage:", profileImage);
+
+  //   // ImageService의 getSafeImageUrl 사용 (null 안전성 포함)
+  //   return ImageService.getSafeImageUrl(profileImage);
+  // }, [profileImage]);
 
   // 이미지 렌더링을 메모이제이션하여 불필요한 요청 방지
   const imageElement = useMemo(() => {
-    console.log("memoizedImageUrl:", memoizedImageUrl);
-    if (memoizedImageUrl) {
+    // ImageService를 사용하여 안전한 이미지 URL 가져오기
+    const safeImageUrl = ImageService.getSafeImageUrl(profileImage);
+
+    if (safeImageUrl && safeImageUrl !== "/assets/defaultimg.png") {
       return (
         <Image
-          src={memoizedImageUrl}
+          src={safeImageUrl}
           alt="프로필 이미지"
           fill
           className="object-cover"
@@ -68,12 +74,14 @@ export default function AccountForm() {
         />
       );
     }
+
+    // 기본 아이콘 표시
     return (
       <svg className="w-14 h-14 text-uni-gray-400" fill="currentColor" viewBox="0 0 24 24">
         <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
       </svg>
     );
-  }, [memoizedImageUrl]);
+  }, [profileImage]);
 
   {
     /*(닉네임/계쫘번호/이미지) 입력 핸들러*/
@@ -105,7 +113,7 @@ export default function AccountForm() {
       }
 
       // 파일을 상태에 저장 (실제 업로드는 저장 시)
-      setUploadFile(file);
+      setUploadFileState(file);
 
       // 미리보기를 위해 base64 변환
       const reader = new FileReader();
@@ -118,7 +126,7 @@ export default function AccountForm() {
 
   const handleImageRemove = () => {
     setProfileImage(null);
-    setUploadFile(null); // 업로드할 파일도 제거
+    setUploadFileState(null); // 업로드할 파일도 제거
   };
 
   // 저장 핸들러
@@ -131,71 +139,80 @@ export default function AccountForm() {
       return;
     }
 
+    setLoading(true);
     try {
-      let finalImageUrl = profileImage;
-
-      // 새로 업로드할 파일이 있는 경우
-      if (uploadFile) {
-        console.log("새 이미지 업로드 시작:", uploadFile.name);
-        const uploadedImageUrl = await uploadProfileImage(uploadFile);
-        if (uploadedImageUrl) {
-          finalImageUrl = uploadedImageUrl;
-          console.log("이미지 업로드 성공:", uploadedImageUrl);
-        } else {
-          alert("이미지 업로드에 실패했습니다.");
-          return;
-        }
-      } else if (profileImage && profileImage.startsWith("data:")) {
-        // base64 이미지인 경우 서버에 보내지 않음
-        finalImageUrl = null;
-      }
-
-      // 프로필 업데이트
-      const profileData = {
-        name: name.trim(), // 'name' is required by UserProfileFormData
-        bank: selectedBank,
-        accountNumber,
-        profileImage: finalImageUrl,
-      };
-
-      console.log("프로필 업데이트 시작:", profileData);
-      console.log("User ID for update:", user._id);
       if (!user._id) {
         alert("사용자 ID를 찾을 수 없습니다. 다시 로그인해주세요.");
         return;
       }
-      const success = await updateUserProfile(user._id, profileData);
 
-      if (success) {
+      let uploadedImageUrl = profileImage;
+
+      // 새로운 이미지 파일이 있으면 ImageService로 업로드
+      if (uploadFileState) {
+        try {
+          uploadedImageUrl = await ImageService.uploadFile(uploadFileState);
+          console.log("Image uploaded:", uploadedImageUrl);
+        } catch (error) {
+          console.error("Image upload failed:", error);
+          alert("이미지 업로드에 실패했습니다.");
+          return;
+        }
+      }
+
+      const formData = new FormData();
+      formData.append("userId", user._id.toString());
+      formData.append("name", name.trim());
+      formData.append("bank", selectedBank);
+      formData.append("bankNumber", accountNumber);
+      formData.append("accessToken", user.token?.accessToken || "");
+
+      if (uploadedImageUrl && !uploadedImageUrl.startsWith("data:")) {
+        formData.append("imageUrl", uploadedImageUrl);
+      }
+
+      if (!profileImage) {
+        formData.append("removeImage", "true");
+      }
+
+      const result = await updateUser(null, formData);
+
+      console.log("Update result:", result);
+
+      if (result.ok) {
         alert("프로필이 성공적으로 저장되었습니다.");
-        setUploadFile(null); // 업로드 완료 후 파일 상태 초기화
+        setUploadFileState(null);
 
         // Zustand 스토어 업데이트
-        const userWithExtra = user as User;
         const updatedUser = {
           ...user,
-          name: profileData.name,
-          image: profileData.profileImage || undefined,
+          name: name.trim(),
+          image: uploadedImageUrl || user.image,
           extra: {
             ...userWithExtra?.extra,
-            bank: profileData.bank,
-            bankNumber: profileData.accountNumber,
+            bank: selectedBank,
+            bankNumber: accountNumber ? parseInt(accountNumber) : undefined,
           },
-        };
-        setUser(updatedUser as any); // 공용 타입과의 호환성을 위해 필요
+        } as User;
+        setUser(updatedUser);
+
+        // 새로운 이미지로 프로필 이미지 상태 업데이트
+        if (uploadedImageUrl) {
+          setProfileImage(uploadedImageUrl);
+        }
       } else {
-        alert("프로필 저장에 실패했습니다.");
+        alert(`프로필 저장에 실패했습니다: ${result.message || "알 수 없는 오류"}`);
       }
     } catch (error) {
       console.error("저장 중 오류:", error);
       alert("저장 중 오류가 발생했습니다.");
+    } finally {
+      setLoading(false);
     }
   };
 
   // 탈퇴 핸들러 (아직 구현되지 않음)
-  const handleWithdraw = () => {
-    console.log("탈퇴하기 버튼 클릭");
-  };
+  const handleWithdraw = () => {};
 
   return (
     <div className="min-h-screen bg-uni-white">
@@ -203,7 +220,7 @@ export default function AccountForm() {
         {/* 프로필 이미지 */}
         <div className="flex flex-col items-center mb-6">
           <div className="relative group">
-            <div className="w-28 h-28 bg-gradient-to-br from-uni-gray-200 to-uni-gray-300 rounded-full flex items-center justify-center overflow-hidden relative border-4 border-uni-white shadow-lg">
+            <div className="w-28 h-28  bg-uni-gray-300 rounded-full flex items-center justify-center overflow-hidden relative  ">
               {imageElement}
 
               {/* 호버 오버레이 */}
@@ -256,7 +273,7 @@ export default function AccountForm() {
         </div>
 
         {/* 아이디 섹션 (읽기 전용)(inputField 컴포넌트 사용) */}
-        <div className="mb-6">
+        <div className="mb-6 ">
           <InputField label="아이디" value={user.email || ""} readOnly />
         </div>
 
@@ -264,7 +281,7 @@ export default function AccountForm() {
         1-1. 입력 중 실시간 검사*/}
         <div className="mb-6">
           <InputField
-            label="닉네임"
+            label="이름"
             value={name}
             onChange={handleNameChange}
             placeholder="닉네임을 입력해주세요"
@@ -276,7 +293,7 @@ export default function AccountForm() {
 
         {/* 계좌번호 섹션 */}
         <div className="mb-8">
-          <label className="block text-14 font-medium text-uni-black mb-2 font-pretendard">
+          <label className="block text-14 font-bold text-uni-black mb-2 font-pretendard">
             계좌번호 <span className="text-uni-red-300">*</span>
           </label>
           <div className="space-y-3">
@@ -285,7 +302,7 @@ export default function AccountForm() {
               <select
                 value={selectedBank}
                 onChange={(e) => setSelectedBank(e.target.value)}
-                className="w-full px-4 py-3 bg-uni-gray-200 rounded-lg border-0 text-uni-black focus:outline-none focus:ring-2 focus:ring-uni-blue-400 appearance-none cursor-pointer font-pretendard text-16"
+                className="w-full p-4  bg-uni-gray-200 rounded-lg border-0 text-uni-black focus:outline-none focus:ring-2 focus:ring-uni-blue-400 appearance-none cursor-pointer font-pretendard text-16"
               >
                 {banks.map((bank) => (
                   <option key={bank} value={bank}>
@@ -315,13 +332,13 @@ export default function AccountForm() {
 
         {/* 탈퇴 섹션 */}
         <div className="mb-12">
-          <label className="block text-14 font-medium text-uni-black mb-2 font-pretendard">탈퇴</label>
+          <label className="block text-14 font-bold text-uni-black mb-2 font-pretendard">탈퇴</label>
           <button
             onClick={handleWithdraw}
-            className="w-full px-4 py-3 bg-uni-gray-200 rounded-lg text-left text-uni-black hover:bg-uni-gray-300 transition-colors flex items-center justify-between font-pretendard text-16"
+            className="w-full p-4  bg-uni-gray-200 rounded-lg text-left text-uni-black  flex items-center justify-between font-pretendard text-16"
           >
             <span>탈퇴하기</span>
-            <svg className="w-5 h-5 text-uni-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5  text-uni-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
           </button>

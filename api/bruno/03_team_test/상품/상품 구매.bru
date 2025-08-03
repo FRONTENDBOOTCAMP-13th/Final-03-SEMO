@@ -1,0 +1,25 @@
+meta {
+  name: 상품 구매
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{url}}/orders/
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "products": [
+      {
+        "_id": 2,
+        "quantity": 1
+      }
+    ],
+    "extra":{
+      "location:":"숭실대학교 레지던스홀 앞"
+    }
+  }
+}

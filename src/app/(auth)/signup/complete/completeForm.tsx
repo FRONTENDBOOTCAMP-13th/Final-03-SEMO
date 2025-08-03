@@ -5,17 +5,16 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import BackButton from "../../_components/BackButton";
 import Logo from "../../_components/LogoLow";
-import Button from "../../_components/Button";
-import Input from "../../_components/Input";
+import Button from "@/components/ui/Button";
+import Input from "@/components/ui/Input";
 import { useUserStore } from "@/store/userStore";
-import { handleSignup } from "@/lib/actions/signup";
-// import { useAuthGuard } from "@/lib/useAuthGuard";
+import { useAuthGuard } from "@/lib/useAuthGuard";
 
 export default function SignupCompleteForm() {
-  // useAuthGuard(false);
+  useAuthGuard(false);
   const router = useRouter();
   const { user, setUser } = useUserStore();
-  const [loading, setLoading] = useState(false);
+  const [loading] = useState(false);
 
   const handleChange = (field: keyof typeof user, value: string) => {
     setUser({ ...user, [field]: value });
@@ -33,7 +32,7 @@ export default function SignupCompleteForm() {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            handleSignup({ user, setLoading, router });
+            router.push("/signup/code");
           }}
           className="w-full max-w-sm space-y-2"
         >
@@ -42,12 +41,16 @@ export default function SignupCompleteForm() {
             <select
               value={user.university ?? ""}
               onChange={(e) => handleChange("university", e.target.value)}
-              className="appearance-none w-full px-4 py-3 pr-10 rounded border border-[var(--color-uni-gray-200)] bg-[var(--color-uni-gray-100)] text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-uni-blue-400)] focus:bg-white"
+              className="appearance-none w-full pr-10 border border-uni-gray-200 rounded-lg p-4 text-16 focus:outline-uni-blue-400 focus:border-uni-blue-400 bg-uni-gray-100"
             >
               <option value="">대학교 선택</option>
               <option value="서울대학교">서울대학교</option>
               <option value="연세대학교">연세대학교</option>
               <option value="고려대학교">고려대학교</option>
+              <option value="숭실대학교">숭실대학교</option>
+              <option value="동국대학교">동국대학교</option>
+              <option value="수원대학교">수원대학교</option>
+              <option value="인하대학교">인하대학교</option>
             </select>
             <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2">
               <Image src="/assets/select.svg" alt="드롭다운 화살표" width={10} height={10} />
@@ -60,7 +63,7 @@ export default function SignupCompleteForm() {
             onChange={(e) => setUser({ ...user, department: e.target.value })}
           />
           <Input
-            placeholder="소속 학번"
+            placeholder="소속 학번(전체)"
             value={user.studentId ?? ""}
             onChange={(e) => setUser({ ...user, studentId: e.target.value })}
           />

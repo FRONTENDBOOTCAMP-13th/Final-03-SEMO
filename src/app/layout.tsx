@@ -20,6 +20,8 @@
 "use client";
 
 import { ReactNode } from "react";
+import { useEffect } from "react";
+import { useUserStore } from "@/store/userStore";
 import { usePathname } from "next/navigation";
 import Header from "../../src/components/common/Header";
 import Navigation from "../../src/components/common/Navigation";
@@ -38,16 +40,27 @@ const AUTH_PATHS = ["/login", "/signup", "/onBoarding"];
 function LayoutContent({ children }: MyPageLayoutProps) {
   //usePathname 기반 레이아웃 분기 로직 구현
   const pathname = usePathname();
-  const isAuthPage = AUTH_PATHS.some((path) => pathname.startsWith(path));
+  const isAuthPage = pathname === "/" || AUTH_PATHS.some((path) => pathname.startsWith(path));
   const { headerConfig } = usePageHeader();
+
+  // 로그인 만료 시간 체크
+  const { resetUser } = useUserStore();
+
+  useEffect(() => {
+    const expiresAt = localStorage.getItem("user-expires-at");
+    if (expiresAt && Date.now() > parseInt(expiresAt, 10)) {
+      console.log("로그인 만료됨 - 자동 로그아웃");
+      resetUser();
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("user-expires-at");
+    }
+  }, [resetUser]);
 
   if (isAuthPage) {
     return (
       //  로그인/회원가입/온보딩 페이지는 헤더·네비 제거
 
-      <div className="min-h-screen bg-uni-white min-w-[320px] w-full max-w-[480px] mx-auto flex flex-col justify-center">
-        {children}
-      </div>
+      <div className="min-h-screen bg-uni-white min-w-[320px] w-full max-w-[480px] mx-auto">{children}</div>
     );
   }
   //  나머지 일반 페이지는 공통 UI 포함

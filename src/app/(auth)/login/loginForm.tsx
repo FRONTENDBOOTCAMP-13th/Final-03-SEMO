@@ -1,19 +1,31 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import Input from "../_components/Input";
-import Button from "../_components/Button";
+import Input from "@/components/ui/Input";
+import Button from "@/components/ui/Button";
 import LogoLow from "../_components/LogoLow";
 import BackButton from "../_components/BackButton";
 import PasswordInput from "../_components/PasswordInput";
 import { useUserStore } from "@/store/userStore";
 import { login } from "@/lib/actions/login";
-// import { useAuthGuard } from "@/lib/useAuthGuard";
+import { useAuthGuard } from "@/lib/useAuthGuard";
+import { useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 
-export default function LoginForm() {
-  // useAuthGuard(false);
+// export default function LoginForm() {
+function LoginFormContent() {
+  useAuthGuard(false);
+  const searchParams = useSearchParams();
+  const resetUser = useUserStore((s) => s.resetUser);
+
+  useEffect(() => {
+    if (searchParams.get("from") === "signup") {
+      // 회원가입 직후라면 이전에 임시로 들고 있던 회원가입용 정보 초기화
+      resetUser();
+    }
+  }, [searchParams, resetUser]);
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -36,7 +48,7 @@ export default function LoginForm() {
     }
 
     alert("로그인 성공!");
-    router.push("/school");
+    router.push("/school/home");
   };
 
   const handleKakaoLogin = () => {
@@ -81,20 +93,19 @@ export default function LoginForm() {
               color: "var(--color-uni-gray-400)",
             }}
           >
-            <button type="submit" onClick={() => router.push("")} className="hover:underline">
-              아이디 / 비밀번호 찾기
+            <button type="button" onClick={() => router.push("/find/id")} className="hover:underline">
+              아이디 찾기
             </button>
-            <button type="submit" onClick={() => router.push("/signup")} className="hover:underline ">
+            <button type="button" onClick={() => router.push("/signup")} className="hover:underline ">
               회원가입
             </button>
           </div>
+          <div className="w-full max-w-sm mt-6">
+            <Button buttonType="submit" type="primary">
+              로그인
+            </Button>
+          </div>
         </form>
-
-        <div className="w-full max-w-sm mt-6">
-          <Button type="primary" onClick={handleLogin}>
-            로그인
-          </Button>
-        </div>
 
         <div className="w-full max-w-sm mt-10 space-y-3">
           <div className="flex items-center w-full max-w-sm gap-4 my-6">
@@ -115,5 +126,13 @@ export default function LoginForm() {
         </div>
       </div>
     </main>
+  );
+}
+
+export default function LoginForm() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <LoginFormContent />
+    </Suspense>
   );
 }

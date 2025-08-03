@@ -6,39 +6,45 @@ interface UserStore {
   user: Partial<User>;
   setUser: (user: Partial<User>) => void;
   resetUser: () => void;
+
+  verificationCode: string;
+  setVerificationCode: (code: string) => void;
 }
 
 export const useUserStore = create<UserStore>()(
   persist(
     (set) => ({
       user: {},
+      verificationCode: "",
+      setVerificationCode: (code) => set({ verificationCode: code }),
+
       setUser: (user) => {
         console.log("[Zustand] setUser 호출됨:", user);
-        // user가 없거나 객체가 아닌 경우 저장하지 않음
-        console.log("[Zustand] setUser 호출됨:", user);
-        const isValidUser =
-          user &&
-          typeof user === "object" &&
-          (("_id" in user && user._id !== undefined) || ("providerAccountId" in user && user.providerAccountId));
-
-        if (!isValidUser) {
+        if (!user || typeof user !== "object") {
           console.warn("[Zustand] user 데이터 이상함, 저장 취소됨:", user);
           return;
         }
 
+        // 1시간 뒤 로그인 만료 시간 설정
+        const expiresAt = Date.now() + 1000 * 60 * 60;
+
+        localStorage.setItem("user-expires-at", expiresAt.toString());
         set({ user });
       },
 
       resetUser: () => {
         console.log("[Zustand] resetUser 호출됨");
-        set({ user: {} });
+        set({ user: {}, verificationCode: "" });
       },
     }),
 
     {
       name: "user-storage",
       skipHydration: false,
-      partialize: (state) => ({ user: state.user }), // 불필요한 state 저장 방지
+      partialize: (state) => ({
+        user: state.user,
+        verificationCode: state.verificationCode,
+      }), // 불필요한 state 저장 방지
     }
   )
 );

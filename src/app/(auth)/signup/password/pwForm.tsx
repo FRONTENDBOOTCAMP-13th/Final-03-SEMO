@@ -4,14 +4,14 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import BackButton from "../../_components/BackButton";
 import Logo from "../../_components/LogoLow";
-import Button from "../../_components/Button";
+import Button from "@/components/ui/Button";
 import PasswordInput from "../../_components/PasswordInput";
-import Input from "../../_components/Input";
+import Input from "@/components/ui/Input";
 import { useUserStore } from "@/store/userStore";
-// import { useAuthGuard } from "@/lib/useAuthGuard";
+import { useAuthGuard } from "@/lib/useAuthGuard";
 
 export default function SignupPasswordForm() {
-  // useAuthGuard(false);
+  useAuthGuard(false);
   const router = useRouter();
   const { user, setUser } = useUserStore();
   const [confirmPassword, setConfirmPassword] = useState("");

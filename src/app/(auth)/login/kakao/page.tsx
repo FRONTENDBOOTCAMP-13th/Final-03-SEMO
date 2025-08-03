@@ -80,7 +80,7 @@ function KakaoLoginCallback() {
           }
 
           setUser(loginData.item);
-          router.replace("/school");
+          router.replace("/school/home");
           return;
         }
 

@@ -19,7 +19,7 @@ export default function PasswordInput({ value, onChange, placeholder = "비밀�
         placeholder={placeholder}
         value={value}
         onChange={onChange}
-        className="w-full border border-uni-gray-200 rounded-md px-4 py-3 text-sm focus:outline-uni-blue-400 focus:border-uni-blue-400 bg-uni-gray-100"
+        className="w-full border border-uni-gray-200 rounded-md p-4 text-16 focus:outline-uni-blue-400 focus:border-uni-blue-400 bg-uni-gray-100"
       />
       <button
         type="button"

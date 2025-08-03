@@ -22,11 +22,13 @@ const InputChat = ({ userId, nickName, sellerId, sellerNickName }: InputChatProp
 
   const productId = searchParams.get("productId");
   const postId = params?.id;
+  const roomIdFromUrl = searchParams.get("roomId") || "";
 
   const handleSend = () => {
     if (!input.trim() || !roomId) return;
 
     const isGlobalRoom = roomId === GLOBAL_ROOM_ID;
+    const messageId = `${Date.now()}-${Math.random()}`; // 고유한 ID 생성
 
     if (isGlobalRoom) {
       const whisperPayload = {
@@ -40,6 +42,7 @@ const InputChat = ({ userId, nickName, sellerId, sellerNickName }: InputChatProp
         sellerId,
         sellerNickName,
         postId,
+        roomId: roomIdFromUrl,
       };
       console.log("귓속말 전송 데이터:", whisperPayload);
 
@@ -47,7 +50,7 @@ const InputChat = ({ userId, nickName, sellerId, sellerNickName }: InputChatProp
       socket.emit("sendTo", sellerId, whisperPayload);
 
       const myWhisperMessage: Message = {
-        id: Date.now().toString(),
+        id: messageId,
         roomId,
         content: input,
         type: "text",
@@ -60,8 +63,9 @@ const InputChat = ({ userId, nickName, sellerId, sellerNickName }: InputChatProp
       };
       useChatStore.getState().addMessage(myWhisperMessage);
     } else {
+      // 개인방에서는 로컬에 먼저 추가
       const myMessage: Message = {
-        id: Date.now().toString(),
+        id: messageId,
         roomId,
         content: input,
         type: "text",
@@ -73,9 +77,17 @@ const InputChat = ({ userId, nickName, sellerId, sellerNickName }: InputChatProp
 
       console.log("개인룸 메시지 전송:", myMessage);
 
+      // 로컬에 즉시 표시
       useChatStore.getState().addMessage(myMessage);
 
-      socket.emit("message", input);
+      // 서버에 전송 (서버 응답은 무시됨)
+      socket.emit("message", {
+        msg: input,
+        user_id: userId,
+        nickName,
+        roomId,
+        timestamp: new Date().toISOString(),
+      });
     }
 
     setInput("");
@@ -89,14 +101,14 @@ const InputChat = ({ userId, nickName, sellerId, sellerNickName }: InputChatProp
 
   return (
     <div className="w-full min-w-[360px] max-w-[480px] px-4 py-3">
-      <div className="flex items-center bg-uni-gray-200 rounded-[12px] h-12 flex-1">
+      <div className="flex items-center bg-uni-gray-100 rounded-lg h-12 flex-1">
         <input
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder={`${sellerNickName}에게 메시지 보내기...`}
-          className="flex-1 bg-transparent outline-none mx-4 placeholder-uni-gray-600 text-16 text-uni-black"
+          className="flex-1 bg-transparent outline-none mx-4 placeholder-uni-gray-300 text-16 text-uni-black"
         />
         <button
           onClick={handleSend}

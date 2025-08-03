@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import SaveFloatingButton from "../../_components/SaveFloatingButton";
-import ToggleCard from "../../_components/ToggleCard";
+import SaveFloatingButton from "@/components/ui/SaveFloatingButton";
+import ToggleCard from "@/app/school/myPage/_components/ToggleCard";
 
 export default function NotificationSettings() {
   const [notifications, setNotifications] = useState({
@@ -34,13 +34,7 @@ export default function NotificationSettings() {
 
   // TODO: 저장 버튼 (현재: 콘솔 로그로 대체)
   const handleSave = () => {
-    console.log("저장된 알림 설정:", {
-      메시지알림: notifications.messageAlert,
-      찜알림: notifications.postLikeAlert,
-      댓글알림: notifications.postCommentAlert,
-      참여확정알림: notifications.participationConfirmationAlert,
-      모집완료알림: notifications.recruitmentCompletionAlert,
-    });
+    
   };
 
   return (
