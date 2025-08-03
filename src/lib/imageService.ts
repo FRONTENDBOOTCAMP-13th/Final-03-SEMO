@@ -9,7 +9,7 @@
  * 이미지 압축, 업로드, URL 생성 등을 담당
  */
 
-import apiClient, { API_CONFIG } from "./apiClient";
+import apiClient /* API_CONFIG */ from "./apiClient";
 
 class ImageService {
   /**

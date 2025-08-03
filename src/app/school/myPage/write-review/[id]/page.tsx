@@ -43,7 +43,8 @@ export default function MyPageWriteReview({ params }: MyPageWriteReviewProps) {
           } else {
             setReviewData(null);
           }
-        } catch (err) {
+          // } catch (err) {
+        } catch {
           setReviewData(null);
         } finally {
           setIsReviewDataLoading(false);

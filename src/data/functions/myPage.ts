@@ -1,5 +1,5 @@
 import { ApiRes, ApiResPromise } from "@/types";
-import { BookmarkResponse, BookmarkItem, OrderItem, PostItem, UserResponse } from "@/types/myPageApi";
+import { BookmarkResponse, BookmarkItem, OrderItem, PostItem } from "@/types/myPageApi";
 import { User } from "@/types/user";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
