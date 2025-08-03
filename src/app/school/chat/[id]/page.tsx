@@ -94,8 +94,7 @@ const ChatPage = () => {
         .then((res) => res.json())
         .then((data) => {
           setProductData(data.item);
-          setPostType(data.item?.type || ""); // type 저장
-          console.log("🔥 postType from API:", data.item?.type);
+          setPostType(data.item?.type || "");
         })
         .catch((err) => console.error("상품 데이터 가져오기 실패:", err));
     }
@@ -130,7 +129,6 @@ const ChatPage = () => {
       : productData?.extra?.newAccount || "계좌 정보 없음";
 
   const location = productData?.extra?.location || "장소 정보 없음";
-  console.log("최종 전달될 postType:", postType);
 
   return (
     <>
