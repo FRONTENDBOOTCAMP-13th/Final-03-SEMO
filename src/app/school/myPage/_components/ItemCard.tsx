@@ -51,7 +51,7 @@ export default function ItemCard({ item, onClick }: { item: Item; onClick?: (ite
   return (
     <div
       key={item.id}
-      className="flex items-center justify-between p-4 bg-uni-white rounded-xl shadow-sm border border-uni-gray-100 cursor-pointer" // cursor-pointer 추가
+      className="flex items-center justify-between p-4 bg-uni-white rounded-xl border border-uni-gray-100 cursor-pointer" // cursor-pointer 추가
       onClick={() => onClick && onClick(item)} // onClick 핸들러 추가
     >
       <div className="flex items-center space-x-3 flex-1 min-w-0">
