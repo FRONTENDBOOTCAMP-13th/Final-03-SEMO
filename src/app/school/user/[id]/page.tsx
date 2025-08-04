@@ -1,5 +1,5 @@
-import UserProfilePageClient from "./_components/UserProfilePageClient";
+import UserProfileContainer from "./_components/UserProfileContainer";
 
 export default function UserProfilePage({ params }: { params: { id: string } }) {
-  return <UserProfilePageClient userId={params.id} />;
+  return <UserProfileContainer userId={params.id} />;
 }
