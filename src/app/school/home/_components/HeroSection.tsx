@@ -5,9 +5,9 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 
 export const gradientOptions = {
-  gray: "bg-gradient-to-t from-gray-100 to-gray-300",
-  blue: "bg-gradient-to-t from-blue-300 to-blue-500",
-  green: "bg-gradient-to-t from-green-300 to-green-500",
+  gray: "bg-gradient-to-t from-[#EDECEA] to-[#DED5CB]",
+  blue: "bg-gradient-to-t from-[#71B2FF] to-[#2C81FF]",
+  green: "bg-gradient-to-t from-[#A1A1F3] to-[#6C62F1]",
 };
 
 export default function HeroSection() {
@@ -60,16 +60,16 @@ export default function HeroSection() {
         {slides.map((slide, index) => (
           <div
             key={index}
-            className={`relative w-full h-[180px] ${slide.bgColor} flex flex-col items-start justify-center text-left flex-shrink-0`}
+            className={`relative w-full h-[150px] ${slide.bgColor} flex flex-col items-start justify-center text-left flex-shrink-0`}
           >
-            <h1 className={`text-25 ml-5 font-bold ${slide.titleColor} mb-4`}>
+            <h1 className={`text-22 ml-5 font-bold ${slide.titleColor} mb-4`}>
               {slide.title}
               <br />
               {slide.sub}
             </h1>
             <p className={`text-14 ml-5 ${slide.descColor}`}>{slide.desc}</p>
-            <div className="absolute bottom-3 right-3 z-10">
-              <Image src={slide.assetImage} alt={slide.title} width={120} height={120} />
+            <div className="absolute bottom-4 right-3 z-10">
+              <Image src={slide.assetImage} alt={slide.title} width={110} height={110} />
             </div>
           </div>
         ))}
