@@ -8,9 +8,10 @@ import { ChevronRight } from "lucide-react";
 interface MarketPreviewProps {
   buyItems: Post[];
   sellItems: Post[];
+  groupPurchaseItems: Post[];
 }
 
-export default function MarketPreview({ buyItems, sellItems }: MarketPreviewProps) {
+export default function MarketPreview({ buyItems, sellItems, groupPurchaseItems }: MarketPreviewProps) {
   return (
     <div className="py-4 bg-uni-white">
       <section className="mb-15">
@@ -35,7 +36,7 @@ export default function MarketPreview({ buyItems, sellItems }: MarketPreviewProp
           <ChevronRight className="w-6 h-6 text-uni-gray-400mr-2" />
         </Link>
 
-        <ItemSection initialItems={sellItems.slice(0, 2)} market="groupPurchase" initialHasMore={false} />
+        <ItemSection initialItems={groupPurchaseItems.slice(0, 2)} market="groupPurchase" initialHasMore={false} />
       </section>
     </div>
   );
