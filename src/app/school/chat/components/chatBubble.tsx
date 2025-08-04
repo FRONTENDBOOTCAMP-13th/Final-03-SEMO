@@ -34,7 +34,9 @@ const ChatBubble = ({ msg }: ChatBubbleProps) => {
     <div className="flex justify-end items-end gap-2 min-h-[104px] p-4">
       <div className="max-w-[70%] text-right">
         {isWhisper && msg.toNickName && <div className="text-12 text-uni-gray-500 mb-1">귓속말 → {msg.toNickName}</div>}
-        <div className="px-4 py-3 rounded-xl text-16 bg-uni-blue-400 text-uni-white">{msg.content}</div>
+        <div className="px-4 py-3 rounded-xl text-16 break-words whitespace-pre-wrap bg-uni-blue-400 text-uni-white">
+          {msg.content}
+        </div>
       </div>
     </div>
   ) : (
@@ -54,7 +56,9 @@ const ChatBubble = ({ msg }: ChatBubbleProps) => {
         <span className="text-12 flex justify-center">{isWhisper ? `${msg.nickName} (귓속말)` : msg.nickName}</span>
       </div>
       <div className="max-w-[70%] text-left">
-        <div className="px-4 py-3 rounded-xl text-16 text-uni-black bg-uni-gray-200">{msg.content}</div>
+        <div className="px-4 py-3 rounded-xl text-16 break-words whitespace-pre-wrap text-uni-black bg-uni-gray-200">
+          {msg.content}
+        </div>
       </div>
     </div>
   );
