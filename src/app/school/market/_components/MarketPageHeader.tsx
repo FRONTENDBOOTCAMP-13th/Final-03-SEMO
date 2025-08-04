@@ -6,6 +6,7 @@ import { useUserStore } from "@/store/userStore";
 import { usePathname, useRouter } from "next/navigation";
 import { useActionState } from "react";
 import { deletePost } from "@/data/actions/post";
+import { sharePost } from "@/utils/share";
 import { Trash2, PenLine, ExternalLink } from "lucide-react";
 
 const HEADER_CONFIGS = {
@@ -266,7 +267,20 @@ export default function MarketPageHeader() {
             <Trash2 size={20} />
           </button>
           <button
-            onClick={() => setShowMenu(false)}
+            onClick={async () => {
+              try {
+                const success = await sharePost({
+                  url: window.location.href,
+                });
+                if (success) {
+                  console.log("공유 완료");
+                }
+              } catch (err) {
+                console.error(err);
+              } finally {
+                setShowMenu(false);
+              }
+            }}
             className="w-full px-4 py-3 text-left flex justify-between items-center text-uni-black hover:bg-uni-gray-100 !cursor-pointer"
           >
             <span>공유하기</span>
@@ -289,10 +303,24 @@ export default function MarketPageHeader() {
             차단하기
           </button>
           <button
-            onClick={() => setShowMenu(false)}
-            className="w-full px-4 py-2 text-left text-uni-black hover:bg-uni-gray-100"
+            onClick={async () => {
+              try {
+                const success = await sharePost({
+                  url: window.location.href,
+                });
+                if (success) {
+                  console.log("공유 완료");
+                }
+              } catch (err) {
+                console.error(err);
+              } finally {
+                setShowMenu(false);
+              }
+            }}
+            className="w-full px-4 py-3 text-left flex justify-between items-center text-uni-black hover:bg-uni-gray-100 !cursor-pointer"
           >
-            공유하기
+            <span>공유하기</span>
+            <ExternalLink size={20} />
           </button>
         </>
       )}

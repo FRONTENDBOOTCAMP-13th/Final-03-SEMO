@@ -1,6 +1,14 @@
 "use client";
 
+import Image from "next/image";
+
 import { useState, useEffect } from "react";
+
+export const gradientOptions = {
+  gray: "bg-gradient-to-t from-[#EDECEA] to-[#DED5CB]",
+  blue: "bg-gradient-to-t from-[#71B2FF] to-[#2C81FF]",
+  green: "bg-gradient-to-t from-[#A1A1F3] to-[#6C62F1]",
+};
 
 export default function HeroSection() {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -10,19 +18,28 @@ export default function HeroSection() {
       title: "기숙생을 위한 중고거래",
       sub: "공동구매 플랫폼",
       desc: "기숙생을 위한 중고 및 공동구매 플랫폼",
-      bgColor: "bg-uni-gray-300",
+      bgColor: gradientOptions.blue,
+      assetImage: "/assets/School.svg",
+      titleColor: "text-white",
+      descColor: "text-white",
     },
     {
       title: "함께 구매하면",
       sub: "더 저렴하게",
       desc: "공동구매로 더 합리적인 가격에 만나보세요",
-      bgColor: "bg-uni-blue-300",
+      bgColor: gradientOptions.gray,
+      assetImage: "/assets/Together.svg",
+      titleColor: "text-black",
+      descColor: "text-black",
     },
     {
       title: "안전한 거래",
       sub: "믿을 수 있는 플랫폼",
-      desc: "학교 인증으로 안전하고 신뢰할 수 있는 거래",
-      bgColor: "bg-uni-green-200",
+      desc: "학교 인증으로 더욱 안전하게",
+      bgColor: gradientOptions.green,
+      assetImage: "/assets/face.svg",
+      titleColor: "text-white",
+      descColor: "text-white",
     },
   ];
 
@@ -43,14 +60,17 @@ export default function HeroSection() {
         {slides.map((slide, index) => (
           <div
             key={index}
-            className={`w-full h-60 ${slide.bgColor} flex flex-col items-start justify-center text-left flex-shrink-0`}
+            className={`relative w-full h-[150px] ${slide.bgColor} flex flex-col items-start justify-center text-left flex-shrink-0`}
           >
-            <h1 className="text-36 ml-5 font-bold text-white mb-4">
+            <h1 className={`text-22 ml-5 font-bold ${slide.titleColor} mb-4`}>
               {slide.title}
               <br />
               {slide.sub}
             </h1>
-            <p className="text-14 ml-5 text-white">{slide.desc}</p>
+            <p className={`text-14 ml-5 ${slide.descColor}`}>{slide.desc}</p>
+            <div className="absolute bottom-4 right-3 z-10">
+              <Image src={slide.assetImage} alt={slide.title} width={110} height={110} />
+            </div>
           </div>
         ))}
       </div>
