@@ -17,7 +17,7 @@ const ChatPage = () => {
       if (!user || !user._id) return;
 
       try {
-        const res = await getPosts("chat");
+        const res = await getPosts("chat", 1, 10);
         if (!res.ok || !res.item) return;
 
         const items = Array.isArray(res.item) ? res.item : [res.item];
