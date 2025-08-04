@@ -3,11 +3,12 @@
 import { PostReply, Post } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
+import { getImageUrl } from "@/data/actions/file";
 import CommentDeleteForm from "@/app/school/market/[marketType]/[postId]/_components/CommentDeleteForm";
 // import { useUserStore } from "@/store/userStore";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
-const CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID || "";
+// const API_URL = process.env.NEXT_PUBLIC_API_URL;
+// const CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID || "";
 
 interface CommentItemProps {
   reply: PostReply;
@@ -24,7 +25,7 @@ export default function CommentItem({ reply, post }: CommentItemProps) {
       <div className="space-y-3">
         <div className="flex gap-2 items-start">
           <Image
-            src={reply.user.image ? `${API_URL}/files/${CLIENT_ID}/${reply.user.image}` : "/assets/defaultimg.png"}
+            src={getImageUrl(reply.user.image)}
             alt="{`${reply.user.name}`}"
             width={24}
             height={24}
