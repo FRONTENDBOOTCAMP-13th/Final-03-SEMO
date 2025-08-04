@@ -39,7 +39,7 @@ export function useMyPageData(): UseMyPageDataReturn {
       setError(null);
 
       // 사용자 정보 가져오기
-      const userInfo = await getCachedUser(user._id);
+      const userInfo = await getCachedUser(user._id, true); // forceRefresh: true 추가
       setUserData(userInfo);
 
       // 각종 카운트 정보 가져오기
