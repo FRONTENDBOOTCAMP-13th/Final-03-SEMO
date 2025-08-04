@@ -121,6 +121,7 @@ export const useChatSocket = ({ userId, nickName, roomId }: UseChatSocketProps) 
 
     const handleMessage = async (data: any) => {
       const currentRoomId = useChatStore.getState().currentRoomId;
+      const isGlobalRoom = (data.roomId || currentRoomId) === GLOBAL_ROOM_ID;
 
       const raw =
         typeof data.msg === "object"
@@ -144,6 +145,13 @@ export const useChatSocket = ({ userId, nickName, roomId }: UseChatSocketProps) 
       const messageUserId = String(raw.user_id || data.user_id || userId);
       const currentUserId = String(user?._id);
       const token = user?.token?.accessToken;
+
+      console.log("📩 message received", {
+        roomId: data.roomId,
+        content: raw.msg,
+        isWhisper,
+        isGlobalRoom,
+      });
 
       if (isTradeDone) {
         if (String(currentUserId) === String(raw.buyerId) && token) {
@@ -179,8 +187,11 @@ export const useChatSocket = ({ userId, nickName, roomId }: UseChatSocketProps) 
         return;
       }
 
-      if (currentRoomId !== GLOBAL_ROOM_ID && !isWhisper && messageUserId === currentUserId) return;
-      if (data.local && messageUserId === currentUserId) return;
+      if (!isGlobalRoom && !isWhisper && messageUserId === currentUserId) return;
+      if (!isGlobalRoom && data.local && messageUserId === currentUserId) return;
+
+      // if (currentRoomId !== GLOBAL_ROOM_ID && !isWhisper && messageUserId === currentUserId) return;
+      // if (data.local && messageUserId === currentUserId) return;
 
       const message: Message = {
         id: `${Date.now()}-${Math.random()}`,
@@ -247,11 +258,6 @@ export const useChatSocket = ({ userId, nickName, roomId }: UseChatSocketProps) 
     window.addEventListener("beforeunload", handleLeaveRoom);
 
     return () => {
-      socket.off("connect", handleConnect);
-      socket.off("members", handleMembers);
-      socket.off("message", handleMessage);
-      socket.off("sendTo", handleWhisper);
-
       handleLeaveRoom();
 
       window.removeEventListener("beforeunload", handleLeaveRoom);
