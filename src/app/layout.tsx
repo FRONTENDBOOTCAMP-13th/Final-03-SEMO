@@ -83,7 +83,7 @@ function LayoutContent({ children }: MyPageLayoutProps) {
       )}
 
       {/* 메인 콘텐츠 */}
-      <main className="pb-20">{children}</main>
+      <main>{children}</main>
 
       {/* 모달 (Intercepting Route 예정) */}
       {/*modal*/}
