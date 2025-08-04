@@ -13,6 +13,7 @@ export interface Post {
   createdAt: string;
   tag: string;
   updatedAt: string;
+  isLiked?: boolean;
   extra: {
     product?: {
       image?: string | null;
