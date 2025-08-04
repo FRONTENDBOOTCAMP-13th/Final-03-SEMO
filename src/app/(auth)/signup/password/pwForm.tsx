@@ -9,7 +9,6 @@ import PasswordInput from "../../_components/PasswordInput";
 import Input from "@/components/ui/Input";
 import { useUserStore } from "@/store/userStore";
 import { useAuthGuard } from "@/lib/useAuthGuard";
-import SignupBar from "../../_components/SignupBar";
 
 export default function SignupPasswordForm() {
   useAuthGuard(false);
@@ -38,45 +37,42 @@ export default function SignupPasswordForm() {
   };
 
   return (
-    <>
-      <SignupBar currentStep={2} totalSteps={4} />
-      <main className="bg-white min-h-screen flex justify-center items-center">
-        <div className="min-w-[320px] w-full max-w-[480px] px-6 flex flex-col items-center gap-8">
-          <div className="w-full">
-            <BackButton />
+    <main className="bg-white min-h-screen flex justify-center items-center">
+      <div className="min-w-[320px] w-full max-w-[480px] px-6 flex flex-col items-center gap-8">
+        <div className="w-full">
+          <BackButton />
+        </div>
+
+        <Logo />
+
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleNext();
+          }}
+          className="w-full max-w-sm flex flex-col gap-4"
+        >
+          {/* 비밀번호 */}
+          <div className="relative">
+            <PasswordInput
+              value={user.password ?? ""}
+              onChange={(e) => handlePasswordChange(e.target.value)}
+              placeholder="PW"
+            />
           </div>
 
-          <Logo />
+          {/* 비밀번호 확인 */}
+          <Input
+            type="password"
+            placeholder="비밀번호 확인"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+          />
 
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleNext();
-            }}
-            className="w-full max-w-sm flex flex-col gap-4"
-          >
-            {/* 비밀번호 */}
-            <div className="relative">
-              <PasswordInput
-                value={user.password ?? ""}
-                onChange={(e) => handlePasswordChange(e.target.value)}
-                placeholder="PW"
-              />
-            </div>
-
-            {/* 비밀번호 확인 */}
-            <Input
-              type="password"
-              placeholder="비밀번호 확인"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-            />
-
-            {/* 완료 버튼 */}
-            <Button buttonType="submit">비밀번호 입력</Button>
-          </form>
-        </div>
-      </main>
-    </>
+          {/* 완료 버튼 */}
+          <Button buttonType="submit">비밀번호 입력</Button>
+        </form>
+      </div>
+    </main>
   );
 }
