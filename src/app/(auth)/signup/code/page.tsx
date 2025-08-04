@@ -9,6 +9,7 @@ import BackButton from "../../_components/BackButton";
 import Logo from "../../_components/LogoLow";
 import { handleSignup } from "@/lib/actions/signup";
 import { sendVerificationCode } from "@/lib/sendVerificationCode";
+import SignupBar from "../../_components/SignupBar";
 
 export default function SignupCodePage() {
   const router = useRouter();
@@ -90,28 +91,31 @@ export default function SignupCodePage() {
   };
 
   return (
-    <main className="bg-white min-h-screen flex justify-center items-center">
-      <div className="min-w-[320px] w-full max-w-[480px] px-6 flex flex-col items-center gap-8">
-        <div className="w-full">
-          <BackButton />
-        </div>
+    <>
+      <SignupBar currentStep={3.8} totalSteps={4} />
+      <main className="bg-white min-h-screen flex justify-center items-center">
+        <div className="min-w-[320px] w-full max-w-[480px] px-6 flex flex-col items-center gap-8">
+          <div className="w-full">
+            <BackButton />
+          </div>
 
-        <Logo />
-        <p className="text-sm text-gray-600">입력한 이메일로 인증번호가 전송되었어요!</p>
+          <Logo />
+          <p className="text-sm text-gray-600">입력한 이메일로 인증번호가 전송되었어요!</p>
 
-        <div className="w-full max-w-sm flex flex-col gap-4">
-          <Input
-            type="text"
-            placeholder="인증번호 4자리 입력"
-            maxLength={4}
-            value={code}
-            onChange={(e) => setCode(e.target.value)}
-          />
-          <Button buttonType="submit" onClick={handleVerify} disabled={loading}>
-            {loading ? "처리 중..." : "인증하기"}
-          </Button>
+          <div className="w-full max-w-sm flex flex-col gap-4">
+            <Input
+              type="text"
+              placeholder="인증번호 4자리 입력"
+              maxLength={4}
+              value={code}
+              onChange={(e) => setCode(e.target.value)}
+            />
+            <Button buttonType="submit" onClick={handleVerify} disabled={loading}>
+              {loading ? "처리 중..." : "인증하기"}
+            </Button>
+          </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </>
   );
 }
