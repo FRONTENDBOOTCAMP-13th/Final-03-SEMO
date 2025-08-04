@@ -1,6 +1,6 @@
-import SplashScreenForm from "@/components/SplashScreenForm";
+import OnboardingSliderForm from "@/app/onBoarding/OnboardingSliderForm";
 
-export default function Home() {
+export default function OnBoardingPage() {
   return (
     <div className="relative w-full min-h-screen overflow-hidden bg-gradient-to-br from-uni-gray-100 via-uni-blue-100 to-uni-blue-200">
       {/* 배경 장식 요소들 */}
@@ -25,31 +25,8 @@ export default function Home() {
         ></div>
       </div>
 
-      {/* 스플래시 스크린 */}
-      <div className="splash-screen relative z-10 flex flex-col items-center justify-center min-h-screen px-8 text-center max-w-sm mx-auto py-20">
-        <div className="app-logo relative w-20 h-20 rounded-xl liquid-glass flex justify-center items-center mb-5 shadow-2xl animate-fade-in transition-all duration-[400ms] ease-[cubic-bezier(0.175,0.885,0.32,2.2)]">
-          <div className="absolute inset-0 bg-gradient-to-br from-uni-blue-400 to-uni-blue-600 rounded-xl opacity-90"></div>
-          <img
-            src="/assets/unistuffLogo.svg"
-            alt="UNISTUFF Logo"
-            className="relative z-10 w-12 h-12 filter brightness-0 invert"
-          />
-        </div>
-
-        <h1 className="text-2xl font-bold text-uni-blue-400 mb-3 animate-fade-in-delay-1">UNISTUFF</h1>
-        <p className="text-uni-gray-600 text-sm mb-12 leading-relaxed animate-fade-in-delay-2">
-          대학생을 위한 올인원 플랫폼
-          <br />
-          중고거래부터 커뮤니티까지 한번에
-        </p>
-
-        {/* 클라이언트 컴포넌트로 분리 */}
-        <SplashScreenForm />
-
-        <div className="absolute bottom-6 w-full text-center text-uni-gray-500 text-xs animate-fade-in-delay-4">
-          created by SEMO팀
-        </div>
-      </div>
+      {/* 온보딩 슬라이더 */}
+      <OnboardingSliderForm />
     </div>
   );
 }

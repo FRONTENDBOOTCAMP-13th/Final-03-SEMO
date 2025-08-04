@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation"; // useRouter 임포트
 import SaveFloatingButton from "@/components/ui/SaveFloatingButton";
 import InputField from "@/components/ui/InputField";
 import {
@@ -30,6 +31,7 @@ export default function AccountForm() {
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [uploadFileState, setUploadFileState] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
+  const router = useRouter(); // useRouter 훅 사용
 
   const banks = ["은행사", "국민은행", "신한은행", "우리은행", "하나은행", "농협은행", "기업은행"];
 
@@ -200,6 +202,10 @@ export default function AccountForm() {
         if (uploadedImageUrl) {
           setProfileImage(uploadedImageUrl);
         }
+
+        // 마이페이지로 이동 후 새로고침
+        router.push("/school/myPage");
+        router.refresh();
       } else {
         alert(`프로필 저장에 실패했습니다: ${result.message || "알 수 없는 오류"}`);
       }
