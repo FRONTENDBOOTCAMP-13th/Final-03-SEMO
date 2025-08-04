@@ -121,6 +121,7 @@ export const useChatSocket = ({ userId, nickName, roomId }: UseChatSocketProps) 
 
     const handleMessage = async (data: any) => {
       const currentRoomId = useChatStore.getState().currentRoomId;
+      const isGlobalRoom = (data.roomId || currentRoomId) === GLOBAL_ROOM_ID;
 
       const raw =
         typeof data.msg === "object"
@@ -179,8 +180,8 @@ export const useChatSocket = ({ userId, nickName, roomId }: UseChatSocketProps) 
         return;
       }
 
-      if (currentRoomId !== GLOBAL_ROOM_ID && !isWhisper && messageUserId === currentUserId) return;
-      if (data.local && messageUserId === currentUserId) return;
+      if (!isGlobalRoom && !isWhisper && messageUserId === currentUserId) return;
+      if (!isGlobalRoom && data.local && messageUserId === currentUserId) return;
 
       const message: Message = {
         id: `${Date.now()}-${Math.random()}`,
@@ -214,12 +215,12 @@ export const useChatSocket = ({ userId, nickName, roomId }: UseChatSocketProps) 
         toast.info(`${raw.nickName}님이 개인 메시지를 보냈습니다. 클릭하여 개인방으로 이동하세요.`, {
           autoClose: false,
           onClick: () => {
-            const { roomId: receivedRoomId, postId, buyerId, sellerId, sellerNickName, productId } = raw;
+            const { roomId: receivedRoomId, postId, buyerId, sellerId, productId } = raw;
             if (!receivedRoomId) return alert("roomId 정보가 없습니다.");
 
             enterRoom(receivedRoomId, () => {
               router.push(
-                `/school/chat/${postId}?buyerId=${buyerId}&sellerId=${sellerId}&sellerNickName=${sellerNickName}&productId=${productId}&roomId=${receivedRoomId}&autojoin=true`
+                `/school/chat/${postId}?buyerId=${buyerId}&sellerId=${sellerId}&productId=${productId}&roomId=${receivedRoomId}&autojoin=true`
               );
             });
           },
@@ -247,11 +248,6 @@ export const useChatSocket = ({ userId, nickName, roomId }: UseChatSocketProps) 
     window.addEventListener("beforeunload", handleLeaveRoom);
 
     return () => {
-      socket.off("connect", handleConnect);
-      socket.off("members", handleMembers);
-      socket.off("message", handleMessage);
-      socket.off("sendTo", handleWhisper);
-
       handleLeaveRoom();
 
       window.removeEventListener("beforeunload", handleLeaveRoom);

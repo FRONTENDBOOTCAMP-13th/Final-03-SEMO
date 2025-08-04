@@ -1,8 +1,10 @@
-// ChatBubble.tsx
+import { getCachedUser } from "@/data/functions/myPage";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 
 interface ChatBubbleProps {
   msg: {
+    userId: number;
     content: string;
     nickName: string;
     isMine: boolean;
@@ -13,25 +15,42 @@ interface ChatBubbleProps {
 
 const ChatBubble = ({ msg }: ChatBubbleProps) => {
   const isWhisper = msg.msgType === "whisper";
+  const [avatar, setAvatar] = useState("/assets/defaultImg.png");
+
+  useEffect(() => {
+    if (!msg.isMine && msg.userId) {
+      getCachedUser(msg.userId).then((user) => {
+        if (user?.image) {
+          setAvatar(
+            user.image.startsWith("http") ? user.image : `${process.env.NEXT_PUBLIC_IMAGE_BASE_URL || ""}${user.image}`
+          );
+        }
+      });
+    }
+  }, [msg.isMine, msg.userId]);
 
   return msg.isMine ? (
     // 내가 보낸 메시지
     <div className="flex justify-end items-end gap-2 min-h-[104px] p-4">
       <div className="max-w-[70%] text-right">
-        {/* 귓속말인 경우 표시 */}
         {isWhisper && msg.toNickName && <div className="text-12 text-uni-gray-500 mb-1">귓속말 → {msg.toNickName}</div>}
         <div className="px-4 py-3 rounded-xl text-16 bg-uni-blue-400 text-uni-white">{msg.content}</div>
-      </div>
-      <div>
-        <Image src="/assets/defaultImg.png" alt="내 아바타" width={40} height={40} className="rounded-full" />
-        <span className="text-12 flex justify-center">나</span>
       </div>
     </div>
   ) : (
     // 상대방이 보낸 메시지
     <div className="flex justify-start items-end gap-2 min-h-[104px] p-4">
       <div>
-        <Image src="/assets/defaultImg.png" alt="상대 아바타" width={40} height={40} className="rounded-full" />
+        <div className="w-[40px] h-[40px]">
+          <Image
+            src={avatar}
+            alt="상대 아바타"
+            width={40}
+            height={40}
+            className="rounded-full object-cover w-full h-full"
+            onError={() => setAvatar("/assets/defaultImg.png")}
+          />
+        </div>
         <span className="text-12 flex justify-center">{isWhisper ? `${msg.nickName} (귓속말)` : msg.nickName}</span>
       </div>
       <div className="max-w-[70%] text-left">
