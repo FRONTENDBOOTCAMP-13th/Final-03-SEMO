@@ -31,7 +31,7 @@ export default function MarketPreview({ buyItems, sellItems, groupPurchaseItems 
         <ItemSection initialItems={sellItems.slice(0, 4)} market="sell" initialHasMore={false} />
       </section>
       <section className="mb-15">
-        <Link href="/school/market/sell" className="flex items-center justify-between mb-4 group">
+        <Link href="/school/market/groupPurchase" className="flex items-center justify-between mb-4 group">
           <h2 className="text-20 font-semibold text-uni-black font-pretendard">공동구매</h2>
           <ChevronRight className="w-6 h-6 text-uni-gray-400mr-2" />
         </Link>
