@@ -4,6 +4,7 @@ import { ChevronsUpDown } from "lucide-react";
 interface ProductDescProps {
   initialData?: Post;
   contentError: string;
+  categoryError: string;
 }
 
 /*
@@ -12,7 +13,7 @@ interface ProductDescProps {
  * 만약 초기값이 없다면 옵셔널로 세팅해서 문제 없이 동작
  */
 
-export default function ProductDesc({ initialData, contentError }: ProductDescProps) {
+export default function ProductDesc({ initialData, contentError, categoryError }: ProductDescProps) {
   return (
     <section className="mb-5">
       <div className="mb-5">
@@ -41,6 +42,7 @@ export default function ProductDesc({ initialData, contentError }: ProductDescPr
             <ChevronsUpDown size={25} className="text-uni-gray-600" />
           </div>
         </div>
+        {categoryError && <p className=" text-14 text-uni-red-500 font-medium">{categoryError}</p>}
       </div>
       <div className="mb-5">
         <label htmlFor="desc" className="sr-only">
