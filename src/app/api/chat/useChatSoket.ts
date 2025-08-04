@@ -146,13 +146,6 @@ export const useChatSocket = ({ userId, nickName, roomId }: UseChatSocketProps) 
       const currentUserId = String(user?._id);
       const token = user?.token?.accessToken;
 
-      console.log("📩 message received", {
-        roomId: data.roomId,
-        content: raw.msg,
-        isWhisper,
-        isGlobalRoom,
-      });
-
       if (isTradeDone) {
         if (String(currentUserId) === String(raw.buyerId) && token) {
           try {
@@ -190,9 +183,6 @@ export const useChatSocket = ({ userId, nickName, roomId }: UseChatSocketProps) 
       if (!isGlobalRoom && !isWhisper && messageUserId === currentUserId) return;
       if (!isGlobalRoom && data.local && messageUserId === currentUserId) return;
 
-      // if (currentRoomId !== GLOBAL_ROOM_ID && !isWhisper && messageUserId === currentUserId) return;
-      // if (data.local && messageUserId === currentUserId) return;
-
       const message: Message = {
         id: `${Date.now()}-${Math.random()}`,
         roomId: data.roomId || currentRoomId,
@@ -225,12 +215,12 @@ export const useChatSocket = ({ userId, nickName, roomId }: UseChatSocketProps) 
         toast.info(`${raw.nickName}님이 개인 메시지를 보냈습니다. 클릭하여 개인방으로 이동하세요.`, {
           autoClose: false,
           onClick: () => {
-            const { roomId: receivedRoomId, postId, buyerId, sellerId, sellerNickName, productId } = raw;
+            const { roomId: receivedRoomId, postId, buyerId, sellerId, productId } = raw;
             if (!receivedRoomId) return alert("roomId 정보가 없습니다.");
 
             enterRoom(receivedRoomId, () => {
               router.push(
-                `/school/chat/${postId}?buyerId=${buyerId}&sellerId=${sellerId}&sellerNickName=${sellerNickName}&productId=${productId}&roomId=${receivedRoomId}&autojoin=true`
+                `/school/chat/${postId}?buyerId=${buyerId}&sellerId=${sellerId}&productId=${productId}&roomId=${receivedRoomId}&autojoin=true`
               );
             });
           },
