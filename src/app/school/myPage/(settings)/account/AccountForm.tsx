@@ -48,14 +48,6 @@ export default function AccountForm() {
     console.log("Profile image set:", userWithExtra.image);
   }, [user]);
 
-  // // 이미지 URL을 메모이제이션하여 불필요한 재생성 방지
-  // const memoizedImageUrl = useMemo(() => {
-  //   console.log("Memoizing image URL, profileImage:", profileImage);
-
-  //   // ImageService의 getSafeImageUrl 사용 (null 안전성 포함)
-  //   return ImageService.getSafeImageUrl(profileImage);
-  // }, [profileImage]);
-
   // 이미지 렌더링을 메모이제이션하여 불필요한 요청 방지
   const imageElement = useMemo(() => {
     // ImageService를 사용하여 안전한 이미지 URL 가져오기
