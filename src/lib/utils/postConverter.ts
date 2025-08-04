@@ -1,4 +1,4 @@
-import { BookmarkItem, OrderItem, ProductItem, PostItem } from "@/types/myPageApi";
+import { BookmarkItem, OrderItem, PostItem } from "@/types/myPageApi";
 import { getCachedUser } from "@/data/functions/myPage";
 import { getImageUrl } from "@/data/actions/file";
 
@@ -60,15 +60,20 @@ export function postToMyPageItem(post: PostItem, sourceType?: "sell" | "buy" | "
   const price = Number(post.extra?.price);
   const formattedPrice = isNaN(price) ? "가격 정보 없음" : `${price.toLocaleString()}원`;
 
+  // sourceType이 제공되면 그것을 사용하고, 아니면 post.type을 기반으로 결정
+  const determinedMarketType = sourceType
+    ? sourceType
+    : ["sell", "buy", "groupPurchase"].includes(post.type)
+      ? (post.type as "sell" | "buy" | "groupPurchase")
+      : "sell";
+
   return {
     id: post._id,
     title: post.title,
     image: imageUrl,
     price: formattedPrice,
     status: post.extra?.crt === "판매완료" ? "판매완료" : "판매중",
-    marketType: ["sell", "buy", "groupPurchase"].includes(post.type)
-      ? (post.type as "sell" | "buy" | "groupPurchase")
-      : "sell",
+    marketType: determinedMarketType,
   };
 }
 

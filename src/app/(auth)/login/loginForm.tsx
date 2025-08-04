@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Input from "@/components/ui/Input";
@@ -14,7 +14,8 @@ import { useAuthGuard } from "@/lib/useAuthGuard";
 import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 
-export default function LoginForm() {
+// export default function LoginForm() {
+function LoginFormContent() {
   useAuthGuard(false);
   const searchParams = useSearchParams();
   const resetUser = useUserStore((s) => s.resetUser);
@@ -125,5 +126,13 @@ export default function LoginForm() {
         </div>
       </div>
     </main>
+  );
+}
+
+export default function LoginForm() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <LoginFormContent />
+    </Suspense>
   );
 }

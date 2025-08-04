@@ -21,12 +21,17 @@ import { Pencil } from "lucide-react";
  * 가져온 게시글 데이터를 itemSection 컴포넌트에 전달하여 렌더링
  */
 
+interface PageProps {
+  params: Promise<{ marketType: "buy" | "sell" | "groupPurchase" }>;
+}
+
 export const metadata: Metadata = {
   title: "UniStuff | Market",
   description: "Market 페이지입니다.",
 };
 
-export default async function MarketPage({ params }: { params: { marketType: "buy" | "sell" | "groupPurchase" } }) {
+// export default async function MarketPage({ params }: { params: { marketType: "buy" | "sell" | "groupPurchase" } }) {
+export default async function MarketPage({ params }: PageProps) {
   const { marketType } = await params;
 
   const res = await getPosts(marketType, 1, 8);

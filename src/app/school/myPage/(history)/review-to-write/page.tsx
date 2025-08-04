@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import Pagination from "@/components/ui/Pagination";
 import ReviewCard from "@/app/school/myPage/_components/ReviewCard";
 import EmptyState from "@/components/common/EmptyState";
