@@ -14,7 +14,7 @@ export async function getPosts(boardType: string, page: number = 1, limit: numbe
       headers: {
         "Client-Id": CLIENT_ID,
       },
-      cache: "force-cache",
+      cache: "no-store",
       next: { revalidate: 30 },
     });
     return res.json();
@@ -64,7 +64,7 @@ export async function getPost(_id: number): ApiResPromise<Post> {
       headers: {
         "Client-Id": CLIENT_ID,
       },
-      cache: "force-cache",
+      cache: "no-store",
     });
     return res.json();
   } catch (error) {

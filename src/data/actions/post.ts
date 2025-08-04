@@ -234,6 +234,11 @@ export async function updatePost(state: ApiRes<Post> | null, formData: FormData)
   if (result.ok) {
     revalidateTag(`posts/${postId}`);
     revalidateTag(`posts?type=${type}`);
+
+    // test code
+    revalidatePath(`/school/market/${type}/${postId}`);
+    revalidatePath(`/school/market/${type}/${postId}/edit`);
+
     redirect(`/school/market/${type}/${postId}`);
   }
   return result;

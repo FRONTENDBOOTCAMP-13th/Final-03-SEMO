@@ -24,7 +24,7 @@ export default function HomeHeader() {
               alt={`${user.name || "User"} 프로필`}
               width={32}
               height={32}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover overflow-hidden "
             />
           ) : (
             <div className="w-full h-full bg-uni-gray-300 rounded-full flex items-center justify-center"></div>
