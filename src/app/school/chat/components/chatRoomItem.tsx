@@ -46,22 +46,11 @@ const ChatRoomItem = ({ postId, message, date, userId, buyerId, sellerId, produc
 
   return (
     <div
-      onClick={() => {
-        const params = new URLSearchParams();
-
-        if (buyerId !== undefined && buyerId !== null) params.set("buyerId", String(buyerId));
-        if (sellerId !== undefined && sellerId !== null) params.set("sellerId", String(sellerId));
-        if (productId !== undefined && productId !== null) params.set("productId", String(productId));
-        if (roomId !== undefined && roomId !== null) params.set("roomId", String(roomId));
-        console.log("✅ 파라미터 확인", {
-          buyerId,
-          sellerId,
-          productId,
-          roomId,
-          쿼리: params.toString(),
-        });
-        router.push(`/school/chat/${postId}?${params.toString()}`);
-      }}
+      onClick={() =>
+        router.push(
+          `/school/chat/${postId}?buyerId=${buyerId}&sellerId=${sellerId}&productId=${productId}&roomId=${roomId}`
+        )
+      }
       className="flex items-center justify-between py-3 cursor-pointer h-[91px]"
     >
       <div className="flex items-center">
