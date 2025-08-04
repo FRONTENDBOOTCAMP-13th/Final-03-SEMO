@@ -27,6 +27,7 @@ export default function PostForm({ mode, initialData, marketType, postId }: Post
   const [images, setImages] = useState<string[]>(initialData?.image ? [initialData.image] : []); // 이미지 배열(초기값 : 이미지 한장만 가능하게 설정, 추후 변경)
   const [contentError, setContentError] = useState<string>(""); // 상품 설명 에러 메시지
   const [titleError, setTitleError] = useState<string>(""); // 제목 에러 메시지
+  const [categoryError, setCategoryError] = useState<string>("");
 
   // 서버 액션 사용
   const [state, formAction] = useActionState(mode === "create" ? createPost : updatePost, null);
@@ -45,6 +46,7 @@ export default function PostForm({ mode, initialData, marketType, postId }: Post
     const formData = new FormData(e.currentTarget);
     const content = formData.get("content") as string;
     const title = formData.get("title") as string;
+    const category = formData.get("tag") as string; // 카테고리 값 가져오기
 
     let getError = false;
     // 제목 검증
@@ -61,6 +63,14 @@ export default function PostForm({ mode, initialData, marketType, postId }: Post
       getError = true;
     } else {
       setContentError(""); // 에러 초기화
+    }
+
+    // 카테고리 검증 추가
+    if (!category || category.trim() === "") {
+      setCategoryError("카테고리를 선택해주세요.");
+      getError = true;
+    } else {
+      setCategoryError(""); // 에러 초기화
     }
 
     if (getError) {
@@ -117,7 +127,7 @@ export default function PostForm({ mode, initialData, marketType, postId }: Post
           ))}
         </section>
 
-        <ProductDesc initialData={initialData} contentError={contentError} />
+        <ProductDesc initialData={initialData} contentError={contentError} categoryError={categoryError} />
         {tradeType === "groupPurchase" && <GroupPurchase initialData={initialData} />}
         <section className="mb-8">
           <fieldset className="flex flex-col gap-3">

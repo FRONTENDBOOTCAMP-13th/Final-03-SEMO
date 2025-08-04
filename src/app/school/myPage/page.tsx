@@ -12,18 +12,20 @@ export default function MyPage() {
   const userProfileImage = ImageService.getSafeImageUrl(userData?.image, "/assets/defaultimg.png");
 
   return (
-    <div className="px-4 py-6 space-y-6">
+    <div className="px-4 pb-6 space-y-6">
       {/* 사용자 프로필 */}
-      <div className="flex flex-col items-center text-center bg-uni-white py-8">
-        <div className="w-24 h-24 mb-4 bg-uni-gray-200 rounded-full flex items-center justify-center overflow-hidden relative">
+      <div className="flex items-center justify-center bg-uni-white py-8 px-4 mb-0">
+        <div className="w-24 h-24 mr-4 bg-uni-gray-200 rounded-full flex items-center justify-center overflow-hidden relative flex-shrink-0">
           {userData?.image ? (
             <Image src={userProfileImage} alt="User Profile" fill style={{ objectFit: "cover" }} />
           ) : (
             <User className="w-12 h-12 text-uni-gray-500" />
           )}
         </div>
-        <h2 className="text-20 font-semibold text-uni-black mb-1 font-pretendard">{userData?.name || "사용자 이름"}</h2>
-        <p className="text-14 text-uni-gray-400 font-pretendard">{userData?.email || "사용자 이메일"}</p>
+        <div>
+          <h2 className="text-20 font-semibold text-uni-black font-pretendard">{userData?.name || "사용자 이름"}</h2>
+          <p className="text-14 text-uni-gray-400 font-pretendard">{userData?.email || "사용자 이메일"}</p>
+        </div>
       </div>
       {/* 활동 요약 섹션 */}
       <div className="bg-uni-white">
