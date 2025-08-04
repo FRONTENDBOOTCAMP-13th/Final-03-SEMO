@@ -5,14 +5,25 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getCachedUser } from "@/data/functions/myPage";
 
+// interface ChatRoomItemProps {
+//   postId: string;
+//   message: string;
+//   date: string;
+//   userId: string;
+// }
+
 interface ChatRoomItemProps {
   postId: string;
   message: string;
   date: string;
   userId: string;
+  buyerId?: string | number;
+  sellerId?: string | number;
+  productId?: string | number;
+  roomId?: string;
 }
 
-const ChatRoomItem = ({ postId, message, date, userId }: ChatRoomItemProps) => {
+const ChatRoomItem = ({ postId, message, date, userId, buyerId, sellerId, productId, roomId }: ChatRoomItemProps) => {
   const router = useRouter();
   const [name, setName] = useState(`상대방 ${userId}`);
   const [avatar, setAvatar] = useState("/assets/defaultImg.png");
@@ -35,7 +46,11 @@ const ChatRoomItem = ({ postId, message, date, userId }: ChatRoomItemProps) => {
 
   return (
     <div
-      onClick={() => router.push(`/school/market/posts/${postId}`)}
+      onClick={() =>
+        router.push(
+          `/school/chat/${postId}?buyerId=${buyerId}&sellerId=${sellerId}&productId=${productId}&roomId=${roomId}`
+        )
+      }
       className="flex items-center justify-between py-3 cursor-pointer h-[91px]"
     >
       <div className="flex items-center">
