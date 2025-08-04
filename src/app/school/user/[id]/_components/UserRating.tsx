@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { Star } from 'lucide-react';
-import { RatingData } from './UserProfileContainer';
+import { Star } from "lucide-react";
+import { RatingData } from "./UserProfileContainer";
 
 interface UserRatingProps {
   ratingData: RatingData;
@@ -12,7 +12,7 @@ export default function UserRating({ ratingData, getRatingPercentage }: UserRati
   return (
     <div className="px-6 py-4">
       {/* 메인 평점 정보 */}
-      <div className="flex items-center mb-4">
+      <div className="flex mb-4">
         <div className="mr-6">
           <div className="text-4xl font-bold mb-1">{ratingData.averageRating.toFixed(1)}</div>
           <div className="flex mb-1">
@@ -29,7 +29,7 @@ export default function UserRating({ ratingData, getRatingPercentage }: UserRati
                     <Star
                       size={16}
                       className="absolute top-0 left-0 text-yellow-400 overflow-hidden"
-                      style={{ width: '50%' }}
+                      style={{ width: "50%" }}
                       fill="currentColor"
                     />
                   </div>
