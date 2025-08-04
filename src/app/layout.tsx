@@ -29,6 +29,7 @@ import { PageHeaderProvider, usePageHeader } from "../../src/contexts/PageHeader
 import "./globals.css";
 import { ToastContainer } from "react-toastify";
 import GlobalSocketManager from "@/components/common/globalSocketManager";
+import AuthRedirectHandler from "@/lib/AuthRedirectHandler";
 
 interface MyPageLayoutProps {
   children: ReactNode;
@@ -53,6 +54,7 @@ function LayoutContent({ children }: MyPageLayoutProps) {
       resetUser();
       localStorage.removeItem("accessToken");
       localStorage.removeItem("user-expires-at");
+      localStorage.removeItem("onboarding-completed");
     }
   }, [resetUser]);
 
@@ -81,7 +83,7 @@ function LayoutContent({ children }: MyPageLayoutProps) {
       )}
 
       {/* 메인 콘텐츠 */}
-      <main className="pb-20">{children}</main>
+      <main>{children}</main>
 
       {/* 모달 (Intercepting Route 예정) */}
       {/*modal*/}
@@ -98,6 +100,7 @@ export default function RootLayout({ children /*modal*/ }: MyPageLayoutProps) {
     <html lang="ko">
       <body>
         <PageHeaderProvider>
+          <AuthRedirectHandler />
           <LayoutContent>{children}</LayoutContent>
           <ToastContainer
             position="top-center"

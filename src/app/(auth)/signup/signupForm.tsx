@@ -37,7 +37,7 @@ export default function SignupForm() {
 
   return (
     <main className="bg-white min-h-screen flex justify-center">
-      <div className="min-w-[320px] w-full max-w-[480px] px-6 flex flex-col items-center justify-center flex-grow">
+      <div className="min-w-[320px] w-full max-w-[480px] px-6 flex flex-col items-center justify-center flex-grow gap-8">
         <div className="w-full mb-4">
           <BackButton />
         </div>

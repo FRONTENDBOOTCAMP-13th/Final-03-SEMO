@@ -93,7 +93,8 @@ const InputChat = ({ userId, nickName, sellerId, sellerNickName }: InputChatProp
     setInput("");
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.nativeEvent.isComposing) return;
     if (e.key === "Enter") {
       handleSend();
     }

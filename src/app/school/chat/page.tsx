@@ -81,12 +81,23 @@ const ChatPage = () => {
             const otherId = parts[0] === myId ? parts[1] : parts[0];
 
             return (
+              // <ChatRoomItem
+              //   key={post._id.toString()}
+              //   postId={post._id.toString()}
+              //   message={post.content || ""}
+              //   date={post.updatedAt || ""}
+              //   userId={otherId}
+              // />
               <ChatRoomItem
                 key={post._id.toString()}
                 postId={post._id.toString()}
                 message={post.content || ""}
                 date={post.updatedAt || ""}
                 userId={otherId}
+                buyerId={post.meta?.buyerId}
+                sellerId={post.meta?.sellerId}
+                productId={post.productId}
+                roomId={post.meta?.roomId}
               />
             );
           })

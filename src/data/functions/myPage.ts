@@ -65,12 +65,12 @@ const CACHE_DURATION = 10 * 60 * 1000; // 10분
  * @param {number} userId - 사용자 ID
  * @returns {Promise<User | null>} - 사용자 정보 또는 null
  */
-export async function getCachedUser(userId: number): Promise<User | null> {
+export async function getCachedUser(userId: number, forceRefresh: boolean = false): Promise<User | null> {
   // 캐시에서 확인
   const cached = userProfileCache.get(userId);
   const now = Date.now();
 
-  if (cached && now - cached.timestamp < CACHE_DURATION) {
+  if (cached && now - cached.timestamp < CACHE_DURATION && !forceRefresh) {
     return cached.user;
   }
 

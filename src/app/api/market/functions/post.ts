@@ -14,8 +14,8 @@ export async function getPosts(boardType: string, page: number = 1, limit: numbe
       headers: {
         "Client-Id": CLIENT_ID,
       },
-      cache: "force-cache",
-      next: { revalidate: 30 },
+      // cache: "no-cache",
+      next: { revalidate: 15 },
     });
     return res.json();
   } catch (error) {
@@ -36,7 +36,7 @@ export async function getPostsCount(boardType: string): Promise<number> {
       headers: {
         "Client-Id": CLIENT_ID,
       },
-      cache: "no-store",
+      // cache: "no-cache",
       next: { revalidate: 180 },
     });
 
@@ -64,7 +64,7 @@ export async function getPost(_id: number): ApiResPromise<Post> {
       headers: {
         "Client-Id": CLIENT_ID,
       },
-      cache: "force-cache",
+      cache: "no-cache",
     });
     return res.json();
   } catch (error) {
@@ -87,7 +87,7 @@ export async function getReplies(_id: number, retryCount = 0): ApiResPromise<Pos
       headers: {
         "Client-Id": CLIENT_ID,
       },
-      cache: "no-store",
+      cache: "no-cache",
     });
     if (!res.ok && retryCount < MAX_RETRIES) {
       console.warn(`댓글 목록 가져오기 실패, 재시도 ${retryCount + 1}/${MAX_RETRIES}`);
@@ -135,7 +135,7 @@ export async function getKeywordPosts(
       headers: {
         "Client-Id": CLIENT_ID,
       },
-      cache: "no-store", // 검색은 실시간 데이터
+      cache: "no-cache", // 검색은 실시간 데이터
     });
 
     // 응답 상태 확인
