@@ -1,4 +1,4 @@
-import OnboardingSliderForm from "@/components/OnboardingSliderForm";
+import OnboardingSliderForm from "@/app/onBoarding/OnboardingSliderForm";
 
 export default function OnBoardingPage() {
   return (
