@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import ProductCard from '@/components/ui/ProductCard';
-import { Post } from '@/types';
+import ProductCard from "@/app/school/user/[id]/_components/ProductCard";
+import { Post } from "@/types";
 
 interface UserPostListProps {
   sellPosts: Post[];
