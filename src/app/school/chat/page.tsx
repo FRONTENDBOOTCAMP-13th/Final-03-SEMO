@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getPosts } from "@/app/api/market/functions/post";
+import { useRouter } from "next/navigation";
+import { getPosts, getPost } from "@/app/api/market/functions/post";
 import ChatRoomItem from "./components/chatRoomItem";
 import Header from "@/components/common/Header";
 import { useUserStore } from "@/store/userStore";
@@ -11,6 +12,7 @@ const ChatPage = () => {
   const user = useUserStore((state) => state.user);
   const [rooms, setRooms] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchRooms = async () => {
@@ -23,7 +25,7 @@ const ChatPage = () => {
         const items = Array.isArray(res.item) ? res.item : [res.item];
         const myId = String(user._id);
 
-        const myRooms = items
+        const myRoomSummaries = items
           .filter((post): post is Post => !!post)
           .filter((post) => {
             const title = post.title?.replace(/\s/g, "");
@@ -31,7 +33,16 @@ const ChatPage = () => {
             return sender === myId || receiver === myId;
           });
 
-        setRooms(myRooms);
+        const detailedRooms = await Promise.all(
+          myRoomSummaries.map(async (post) => {
+            const detailRes = await getPost(post._id);
+            if (detailRes.ok && detailRes.item) return detailRes.item;
+            return null;
+          })
+        );
+
+        const filtered = detailedRooms.filter((r): r is Post => !!r);
+        setRooms(filtered);
       } catch (e) {
         console.error("채팅방 불러오기 실패", e);
       } finally {
@@ -42,22 +53,31 @@ const ChatPage = () => {
     fetchRooms();
   }, [user]);
 
-  if (loading) {
-    return (
-      <>
-        <Header title="채팅" />
-        <div className="max-w-[480px] mx-auto px-4 py-4">
-          <div className="text-center text-gray-400 py-10">로딩 중...</div>
-        </div>
-      </>
-    );
-  }
+  useEffect(() => {
+    const handleClick = (e: Event) => {
+      e.preventDefault();
+      router.back();
+    };
+
+    const link = document.querySelector('a[href="#"]');
+    if (link) {
+      link.addEventListener("click", handleClick);
+    }
+
+    return () => {
+      if (link) {
+        link.removeEventListener("click", handleClick);
+      }
+    };
+  }, [router]);
 
   return (
     <>
-      <Header title="채팅" />
+      <Header title="채팅" backLink="#" />
       <div className="max-w-[480px] mx-auto px-4 py-4">
-        {rooms.length === 0 ? (
+        {loading ? (
+          <div className="text-center text-gray-400 py-10">로딩 중...</div>
+        ) : rooms.length === 0 ? (
           <div className="text-center text-gray-400 py-10">채팅방이 없습니다</div>
         ) : (
           rooms.map((post) => {
