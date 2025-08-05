@@ -29,6 +29,7 @@ const InputChat = ({ userId, nickName, sellerId, sellerNickName }: InputChatProp
 
     const isGlobalRoom = roomId === GLOBAL_ROOM_ID;
     const messageId = `${Date.now()}-${Math.random()}`; // 고유한 ID 생성
+    const myUserId = String(userId);
 
     if (isGlobalRoom) {
       const whisperPayload = {
@@ -56,12 +57,41 @@ const InputChat = ({ userId, nickName, sellerId, sellerNickName }: InputChatProp
         type: "text",
         msgType: "whisper",
         createdAt: new Date().toISOString(),
-        user_id: String(userId),
+        user_id: myUserId,
         nickName,
         toUserId: sellerId,
         toNickName: sellerNickName,
       };
       useChatStore.getState().addMessage(myWhisperMessage);
+
+      socket.emit(
+        "createRoom",
+        {
+          roomId: roomIdFromUrl,
+          user_id: userId,
+          hostName: nickName,
+          roomName: `${nickName} <-> ${sellerNickName}`,
+          autoClose: false,
+        },
+        () => {
+          socket.emit(
+            "joinRoom",
+            {
+              roomId: roomIdFromUrl,
+              user_id: userId,
+              nickName,
+            },
+            (res: any) => {
+              if (res.ok) {
+                useChatStore.getState().setRoomId(roomIdFromUrl);
+                console.log("귓속말 후 개인방 자동 입장 성공:", roomIdFromUrl);
+              } else {
+                console.warn("개인방 자동 입장 실패:", res.message);
+              }
+            }
+          );
+        }
+      );
     } else {
       // 개인방에서는 로컬에 먼저 추가
       const myMessage: Message = {
@@ -71,7 +101,7 @@ const InputChat = ({ userId, nickName, sellerId, sellerNickName }: InputChatProp
         type: "text",
         msgType: "all",
         createdAt: new Date().toISOString(),
-        user_id: String(userId),
+        user_id: myUserId,
         nickName,
       };
 

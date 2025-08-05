@@ -14,40 +14,26 @@ const ChatPage = () => {
 
   useEffect(() => {
     const fetchRooms = async () => {
-      if (!user || !user._id) {
-        setRooms([]);
-        setLoading(false);
-        return;
-      }
-
-      const myId = String(user._id);
+      if (!user || !user._id) return;
 
       try {
-        const res = await getPosts("chat");
-        if (!res.ok || !res.item) {
-          console.warn("게시글 응답 없음 또는 실패");
-          setRooms([]);
-          setLoading(false);
-          return;
-        }
+        const res = await getPosts("chat", 1, 30);
+        if (!res.ok || !res.item) return;
 
         const items = Array.isArray(res.item) ? res.item : [res.item];
+        const myId = String(user._id);
 
         const myRooms = items
+          .filter((post): post is Post => !!post)
           .filter((post) => {
-            const title = post.title || "";
-            const isMine = title.startsWith(`${myId} ->`) || title.endsWith(`-> ${myId}`);
-            return isMine;
-          })
-          .sort((a, b) => {
-            const aTime = new Date(a.updatedAt || "").getTime();
-            const bTime = new Date(b.updatedAt || "").getTime();
-            return bTime - aTime;
+            const title = post.title?.replace(/\s/g, "");
+            const [sender, receiver] = title?.split("->") || [];
+            return sender === myId || receiver === myId;
           });
+
         setRooms(myRooms);
-      } catch (err) {
-        console.error("채팅 목록 로딩 에러:", err);
-        setRooms([]);
+      } catch (e) {
+        console.error("채팅방 불러오기 실패", e);
       } finally {
         setLoading(false);
       }
@@ -75,19 +61,12 @@ const ChatPage = () => {
           <div className="text-center text-gray-400 py-10">채팅방이 없습니다</div>
         ) : (
           rooms.map((post) => {
-            const title = post.title || "";
+            const title = post.title?.replace(/\s/g, "") || "";
             const myId = String(user._id);
-            const parts = title.split("->").map((s) => s.trim());
-            const otherId = parts[0] === myId ? parts[1] : parts[0];
+            const [sender, receiver] = title.split("->");
+            const otherId = sender === myId ? receiver : sender;
 
             return (
-              // <ChatRoomItem
-              //   key={post._id.toString()}
-              //   postId={post._id.toString()}
-              //   message={post.content || ""}
-              //   date={post.updatedAt || ""}
-              //   userId={otherId}
-              // />
               <ChatRoomItem
                 key={post._id.toString()}
                 postId={post._id.toString()}

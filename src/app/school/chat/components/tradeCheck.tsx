@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Share, Check } from "lucide-react";
+import { Check } from "lucide-react";
 import PopUp from "./popup";
 import { useUserStore } from "@/store/userStore";
 import { socket } from "@/app/api/chat/useChatSoket";
@@ -80,18 +80,20 @@ const TradeCheck = ({ onComplete, postId, isSeller, productExtra, productId, pos
         if (productJson.ok !== 1) throw new Error("상품 업데이트 실패");
       }
 
-      // 승인 메시지 먼저 발송
-      socket.emit("message", {
-        type: "approval",
-        msgType: "individual",
-        buyerId,
-        msg: "공동구매에 승인되었습니다!",
-        postId,
-        roomId,
-        timestamp: new Date().toISOString(),
-        user_id: sellerId,
-        nickName: sellerNickName,
-      });
+      // 승인 메시지 먼저 발송 공동구매일 경우
+      if (postType === "groupPurchase") {
+        socket.emit("message", {
+          type: "approval",
+          msgType: "individual",
+          buyerId,
+          msg: "공동구매에 승인되었습니다!",
+          postId,
+          roomId,
+          timestamp: new Date().toISOString(),
+          user_id: sellerId,
+          nickName: sellerNickName,
+        });
+      }
 
       // 거래 완료 메시지 발송
       if (shouldComplete) {
@@ -126,10 +128,6 @@ const TradeCheck = ({ onComplete, postId, isSeller, productExtra, productId, pos
       {showPopUp && <PopUp onClose={() => setShowPopUp(false)} onConfirm={handleConfirm} />}
       <div className="items-center w-full min-w-[360px] max-w-[480px] bg-uni-white px-4 py-3 gap-2">
         <div className="flex">
-          <button className="w-[80px] flex flex-col items-center text-uni-black text-14">
-            <Share size={20} className="mb-2" />
-            공유하기
-          </button>
           <button
             className="w-[80px] flex flex-col items-center text-uni-black text-14"
             onClick={() => setShowPopUp(true)}

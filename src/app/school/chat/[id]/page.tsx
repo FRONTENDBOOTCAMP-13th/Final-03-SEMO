@@ -135,10 +135,10 @@ const ChatPage = () => {
       <Header title="채팅" />
       {showModal && <PopUp onClose={() => setShowModal(false)} />}
 
-      <ProductInfo productId={productId} />
+      <ProductInfo productData={productData} />
 
       <div className="px-4 my-2">
-        <button
+        {/* <button
           onClick={() => {
             if (roomIdFromQuery) {
               handleJoinRoom(roomIdFromQuery);
@@ -150,7 +150,7 @@ const ChatPage = () => {
           disabled={joinedRoom}
         >
           {joinedRoom ? "개인 채팅 중..." : "1:1 채팅 시작하기"}
-        </button>
+        </button> */}
       </div>
 
       <ChatBubbleList />
