@@ -15,7 +15,10 @@ interface ProductDescProps {
 
 export default function ProductDesc({ initialData, contentError, categoryError }: ProductDescProps) {
   return (
-    <section className="mb-5">
+    <section aria-labelledby="product-desc-title" className="mb-5">
+      <h3 id="product-desc-title" className="sr-only">
+        상품 상세 정보
+      </h3>
       <div className="mb-5">
         <label htmlFor="category" className="sr-only">
           카테고리
@@ -42,7 +45,16 @@ export default function ProductDesc({ initialData, contentError, categoryError }
             <ChevronsUpDown size={25} className="text-uni-gray-600" />
           </div>
         </div>
-        {categoryError && <p className=" text-14 text-uni-red-500 font-medium">{categoryError}</p>}
+        {/* 도움말 텍스트 */}
+        <div id="category-help" className="sr-only">
+          상품 카테고리를 선택해주세요
+        </div>
+        {categoryError && (
+          <p className=" text-14 text-uni-red-500 font-medium" role="alert">
+            <span className="sr-only">오류: </span>
+            {categoryError}
+          </p>
+        )}
       </div>
       <div className="mb-5">
         <label htmlFor="desc" className="sr-only">
@@ -59,8 +71,16 @@ export default function ProductDesc({ initialData, contentError, categoryError }
           }`}
           maxLength={250}
         />
+        {/* 글자 수 및 도움말 */}
+        <div id="content-help" className="sr-only">
+          상품에 대한 자세한 설명을 10글자 이상 250글자 이하로 작성해주세요
+        </div>
         {/* 에러 메시지 표시 */}
-        {contentError && <p className=" text-14 text-uni-red-500 font-medium">{contentError}</p>}
+        {contentError && (
+          <p className=" text-14 text-uni-red-500 font-medium" role="alert">
+            {contentError}
+          </p>
+        )}
       </div>
       <div className="mb-5">
         <label htmlFor="price" className="sr-only">
@@ -75,19 +95,29 @@ export default function ProductDesc({ initialData, contentError, categoryError }
           placeholder="숫자만 입력 (',' 없이)"
           className="w-full bg-uni-gray-100 rounded-lg p-4 text-16 placeholder-uni-gray-300"
         />
+        {/* 가격 도움말 */}
+        <div id="price-help" className="sr-only">
+          가격을 숫자만 입력해주세요. 쉼표는 사용하지 마세요.
+        </div>
       </div>
+      {/* 거래 장소 */}
       <div className="mb-5">
         <label htmlFor="location" className="sr-only">
           거래장소
         </label>
         <p className="text-15 mb-1 text-uni-gray-600 font-bold">거래 희망 장소</p>
         <input
+          id="location"
           type="text"
           name="location"
           placeholder="거래 장소"
           defaultValue={initialData?.extra.location || ""}
           className="w-full bg-uni-gray-100 rounded-lg p-4 text-16 placeholder-uni-gray-300"
         />
+        {/* 장소 도움말 */}
+        <div id="location-help" className="sr-only">
+          거래를 희망하는 장소를 입력해주세요.
+        </div>
       </div>
     </section>
   );
