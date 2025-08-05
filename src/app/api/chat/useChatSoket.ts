@@ -237,17 +237,6 @@ export const useChatSocket = ({ userId, nickName, roomId }: UseChatSocketProps) 
         joinTime: value.joinTime,
       }));
       setUserList(userList);
-
-      const currentRoomId = useChatStore.getState().currentRoomId;
-
-      // 개인방이고, 혼자만 남았을 때 자동 퇴장
-      if (currentRoomId !== GLOBAL_ROOM_ID && userList.length <= 1) {
-        console.log("혼자 남음 → 자동 방 나가기");
-        socket.emit("leaveRoom");
-        useChatStore.getState().setRoomId(GLOBAL_ROOM_ID);
-
-        toast.info("상대방이 나가서 대화방이 종료되었습니다.");
-      }
     };
 
     socket.off("connect", handleConnect).on("connect", handleConnect);
