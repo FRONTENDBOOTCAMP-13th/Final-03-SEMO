@@ -11,16 +11,8 @@ interface CommentNewProps {
 
 export default function CommentNew({ _id }: CommentNewProps) {
   const [state, formAction, isLoading] = useActionState(createReply, null);
-  // const [accessToken, setAccessToken] = useState<string>("");
   // store 토큰 전역 관리
   const { user } = useUserStore();
-
-  // useEffect(() => {
-  //   const token = localStorage.getItem("accessToken");
-  //   if (token) {
-  //     setAccessToken(token);
-  //   }
-  // }, []);
 
   console.log(isLoading, state);
 
