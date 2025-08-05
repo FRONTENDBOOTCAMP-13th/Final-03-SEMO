@@ -70,6 +70,8 @@ export default function ItemSection({ initialItems, market, initialHasMore }: Pr
                   width={130}
                   height={130}
                   className="rounded-lg object-cover w-[130px] h-[130px]"
+                  loading="eager" // lazy를 eager로 변경
+                  priority={true} // 우선 로딩
                 />
                 <div className="flex-1 max-w-[200px]">
                   <span className="text-14 text-uni-gray-400">{item.tag}</span>
