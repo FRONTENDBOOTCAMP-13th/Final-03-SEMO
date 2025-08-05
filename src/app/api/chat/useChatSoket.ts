@@ -138,6 +138,8 @@ export const useChatSocket = ({ userId, nickName, roomId }: UseChatSocketProps) 
               postId: data.postId,
               productId: data.productId,
             };
+      // ㅇㅇㅇ이 입장했습니다 삭제
+      if (raw?.action === "joinRoom") return;
 
       const isWhisper = data.msgType === "whisper";
       const isTradeDone = data.type === "tradeDone" || data.msg?.type === "tradeDone";
