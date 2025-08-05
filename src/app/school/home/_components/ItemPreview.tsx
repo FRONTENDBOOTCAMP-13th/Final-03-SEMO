@@ -17,7 +17,7 @@ export default function MarketPreview({ buyItems, sellItems, groupPurchaseItems 
       <h1 id="market-preview-title" className="sr-only">
         마켓 미리보기
       </h1>
-      <section className="mb-15" aria-labelledby="buy-section-title">
+      <section className="mb-15" aria-label="buy-section-title">
         <header className="section-header">
           <Link href="/school/market/buy" className="flex items-center justify-between mb-4 group">
             <h2 className="text-20 font-semibold text-uni-black font-pretendard">사고싶어요</h2>
@@ -33,7 +33,7 @@ export default function MarketPreview({ buyItems, sellItems, groupPurchaseItems 
       </section>
 
       {/* 팔고 싶어요 세션 */}
-      <section className="mb-15" aria-labelledby="sell-section-title">
+      <section className="mb-15" aria-label="sell-section-title">
         <header className="section-header">
           <Link
             href="/school/market/sell"
@@ -53,7 +53,7 @@ export default function MarketPreview({ buyItems, sellItems, groupPurchaseItems 
         </div>
       </section>
       {/* 공동구매 세션 */}
-      <section className="mb-15" aria-labelledby="group-section-title">
+      <section className="mb-15" aria-label="group-section-title">
         <header className="section-header mb-4">
           <Link href="/school/market/groupPurchase" className="flex items-center justify-between mb-4 group">
             <h2 className="text-20 font-semibold text-uni-black font-pretendard">공동구매</h2>
