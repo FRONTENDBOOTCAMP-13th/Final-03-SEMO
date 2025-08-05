@@ -26,89 +26,60 @@
 
 거래 후기 및 별점 시스템을 통해 판매자와 구매자 모두의 신뢰도를 가시적으로 확인할 수 있습니다. 이는 건전한 거래 문화를 조성하는 기반이 됩니다.
 
-## 아키텍처 및 서비스 흐름
+## User Flow
 
 ```mermaid
-graph TD
-    UserRequest["User Request (Browser)"]
-
-    subgraph "Server Environment (SSR - Initial Load)"
-        direction TB
-        Router["Next.js App Router"]
-        ServerComps["Server Components (layout.tsx, page.tsx)"]
-        HTMLShell["Static HTML Shell (UI Skeleton)"]
-
-        UserRequest --> Router
-        Router -- "Renders" --> ServerComps
-        ServerComps -- "Generates" --> HTMLShell
+flowchart TD
+    subgraph "시작"
+        A[초기 진입] --> B[온보딩 확인]
     end
 
-    subgraph "Client Environment (Browser - CSR & Interactivity)"
-        direction TB
-        Hydration["1. Hydration (JS Activation)"]
-
-        subgraph "Global Managers & State"
-            Providers["Global Providers (in layout.tsx)"]
-            Zustand["Zustand Store (userStore)"]
-            BrowserStorage["LocalStorage"]
-            SocketManager[GlobalSocketManager]
-            AuthRedirect[AuthRedirectHandler]
-            PageHeader[PageHeaderProvider]
-        end
-
-        subgraph "Application & UI Layers"
-            subgraph "Feature Domains"
-                AuthPages["(auth) Pages"]
-                MarketPages["/school/market Pages"]
-                MyPages["/school/myPage Pages"]
-                ChatPages["/school/chat Pages"]
-                UserPages["/school/user Pages"]
-            end
-            subgraph "Component Layers"
-                Containers["Container Components"]
-                Presenters["Presentational Components"]
-            end
-        end
-
-        %% Client-side structural connections
-        HTMLShell -- "Delivered to Browser" --> Hydration
-        Hydration -- "Activates" --> Providers
-        Providers --> PageHeader & AuthRedirect & SocketManager
-        Providers -- "Provides Context to" --> AuthPages & MarketPages & MyPages & ChatPages & UserPages
-        AuthPages & MarketPages & MyPages & ChatPages & UserPages -- "Are composed of" --> Containers
-        Containers -- "Render" --> Presenters
-        Containers -- "Use" --> Zustand & SocketManager
-        Zustand -- "Persists / Rehydrates" --> BrowserStorage
+    subgraph "인증"
+        C[로그인 페이지] --> D{소셜 로그인 시도}
+        D -- 카카오 로그인 --> E[학교 이메일 인증]
+        E -- 인증 완료 --> F[메인 페이지]
     end
 
-    subgraph "External Services"
-        Kakao["Kakao OAuth Server"]
-        Backend["Backend API Server"]
-        WebSocket["WebSocket Server"]
+    subgraph "메인 서비스 (Market)"
+        F --> G[상품 목록 조회]
+        G --> H[상품 상세 보기]
+        H --> I{거래 희망}
+        I -- Yes --> J[채팅방 생성 및 이동]
+        I -- No --> G
+        G --> K[새 상품 등록]
+        K --> F
     end
 
-    %% --- Detailed Flows --- %%
-    AuthPages -- "2a. Auth Flow: Redirect to" --> Kakao
-    Kakao -- "Callback with Auth Code" --> AuthPages
-    AuthPages -- "Send Code to" --> Backend
-    Backend -- "Respond with JWT" --> AuthPages
-    AuthPages -- "Store JWT in" --> Zustand
+    subgraph "사용자 활동"
+        F -- 네비게이션 --> L[마이페이지]
+        L --> M{나의 활동 확인}
+        M -- 판매 내역 --> G
+        M -- 관심 목록 --> H
+        L --> N[프로필 수정]
+        H -- 사용자 프로필 클릭 --> O[다른 사용자 프로필 조회]
+    end
 
-    MarketPages & MyPages & UserPages -- "2b. Data Flow: API Calls with JWT" --> Backend
-    Backend -- "Respond with Data" --> MarketPages & MyPages & UserPages
+    subgraph "채팅"
+        J --> P[실시간 메시지 교환]
+        P --> Q{거래 약속}
+        Q -- 완료 --> R[거래 후기 작성]
+        R --> O
+    end
 
-    ChatPages -- "2c. Real-time Flow: Uses" --> SocketManager
-    SocketManager -- "Connects to" --> WebSocket
+    B -- 온보딩 필요 --> C
+    B -- 온보딩 완료 --> F
 
-    classDef server fill:#e6f2ff,stroke:#0069d9,stroke-width:2px;
-    classDef client fill:#e0ffe0,stroke:#008000,stroke-width:2px;
-    classDef external fill:#fff0e0,stroke:#d46f00,stroke-width:2px;
-    classDef domain fill:#f9f9f9,stroke:#333,stroke-width:2px
+    classDef start fill:#e6f2ff,stroke:#0069d9,stroke-width:2px;
+    classDef auth fill:#e0ffe0,stroke:#008000,stroke-width:2px;
+    classDef main fill:#fff0e0,stroke:#d46f00,stroke-width:2px;
+    classDef activity fill:#f9f9f9,stroke:#333,stroke-width:2px;
+    classDef chat fill:#f5e6ff,stroke:#8e44ad,stroke-width:2px;
 
-    class Router,ServerComps,HTMLShell server;
-    class Hydration,Providers,Zustand,BrowserStorage,SocketManager,AuthRedirect,PageHeader,Containers,Presenters client;
-    class AuthPages,MarketPages,MyPages,ChatPages,UserPages domain;
-    class Kakao,Backend,WebSocket external;
+    class A,B start;
+    class C,D,E auth;
+    class F,G,H,I,K main;
+    class L,M,N,O activity;
+    class J,P,Q,R chat;
 ```
 
 ## 프로젝트 구조
