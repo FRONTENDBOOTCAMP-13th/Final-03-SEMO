@@ -135,7 +135,8 @@ const ChatPage = () => {
       <Header title="채팅" />
       {showModal && <PopUp onClose={() => setShowModal(false)} />}
 
-      <ProductInfo productId={productId} />
+      {/* <ProductInfo productId={productId} /> */}
+      <ProductInfo productData={productData} />
 
       <div className="px-4 my-2">
         <button
