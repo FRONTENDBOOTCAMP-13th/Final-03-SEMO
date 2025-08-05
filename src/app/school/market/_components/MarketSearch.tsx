@@ -54,23 +54,42 @@ const Search = () => {
   };
 
   return (
-    <div className="w-full min-w-[340px] max-w-[480px] mx-auto">
-      <form onSubmit={handleSubmit}>
-        <div className="flex items-center bg-uni-gray-200 rounded-[12px] h-12 w-full">
-          <button type="submit" className="text-uni-black cursor-pointer">
-            <SearchIcon size={24} className="ml-4 text-uni-gray-600" />
-          </button>
-          <input
-            type="search"
-            placeholder="검색"
-            value={keyword}
-            onChange={(e) => setkeyword(e.target.value)}
-            onKeyPress={handleKeyPress}
-            className="w-full ml-2 my-3 bg-transparent outline-none placeholder-[#5E738C] text-16 text-uni-black"
-          />
-        </div>
+    <section className="w-full min-w-[340px] max-w-[480px] mx-auto" role="search" aria-labelledby="search-title">
+      <h2 id="search-title" className="sr-only">
+        상품 검색
+      </h2>
+      <form onSubmit={handleSubmit} role="search" aria-label="상품 검색 폼">
+        <fieldset className="search-fieldset">
+          <legend className="sr-only">검색어 입력</legend>
+          <div className="flex items-center bg-uni-gray-200 rounded-[12px] h-12 w-full">
+            <button type="submit" className="text-uni-black cursor-pointer" aria-label="검색 버튼" title="검색하기">
+              <SearchIcon size={24} className="ml-4 text-uni-gray-600" />
+            </button>
+            <label htmlFor="search-input" className="sr-only">
+              검색어를 입력하세요
+            </label>
+            <input
+              id="search-input"
+              type="search"
+              placeholder="검색"
+              value={keyword}
+              onChange={(e) => setkeyword(e.target.value)}
+              onKeyPress={handleKeyPress}
+              className="w-full ml-2 my-3 bg-transparent outline-none placeholder-[#5E738C] text-16 text-uni-black"
+              autoComplete="off"
+              spellCheck="false"
+            />
+            <div id="search-help" className="sr-only">
+              상품명이나 키워드를 입력하여 검색할 수 있습니다. enter 또는 검색 버튼을 눌러 검색하세요.
+            </div>
+          </div>
+        </fieldset>
       </form>
-    </div>
+      {/* 검색 상태 알림 (스크린 리더용) */}
+      <div className="sr-only" role="status" aria-live="polite" aria-atomic="true">
+        {keyword ? `입력된 검색어: ${keyword}` : "검색어를 입력해주세요"}
+      </div>
+    </section>
   );
 };
 
