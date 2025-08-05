@@ -3,15 +3,12 @@
 import { PostReply, Post } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
+import { getImageUrl } from "@/data/actions/file";
 import CommentDeleteForm from "@/app/school/market/[marketType]/[postId]/_components/CommentDeleteForm";
 // import { useUserStore } from "@/store/userStore";
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
-const CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID || "";
-
 interface CommentItemProps {
   reply: PostReply;
-  post: Post; // 게시글 정보 필요!
+  post: Post;
 }
 
 export default function CommentItem({ reply, post }: CommentItemProps) {
@@ -19,17 +16,19 @@ export default function CommentItem({ reply, post }: CommentItemProps) {
   const isPostAuthor = reply.user._id === post.user._id; // 게시글 작성자가 쓴 댓글
 
   return (
-    <div>
+    <article className="comment-item" role="article" aria-label="comment">
       {/* 댓글 리스트 */}
       <div className="space-y-3">
         <div className="flex gap-2 items-start">
-          <Image
-            src={reply.user.image ? `${API_URL}/files/${CLIENT_ID}/${reply.user.image}` : "/assets/defaultimg.png"}
-            alt="{`${reply.user.name}`}"
-            width={24}
-            height={24}
-            className="rounded-full"
-          />
+          <figure className="flex-shrink-0" aria-label={`${reply.user.name}의 프로필 이미지`}>
+            <Image
+              src={getImageUrl(reply.user.image)}
+              alt="{`${reply.user.name}`}"
+              width={24}
+              height={24}
+              className="rounded-full"
+            />
+          </figure>
           <div className="flex-1">
             <p className="text-14 font-bold">
               {/* 동적 사용자 이름 */}
@@ -57,6 +56,6 @@ export default function CommentItem({ reply, post }: CommentItemProps) {
           </div>
         </div>
       </div>
-    </div>
+    </article>
   );
 }

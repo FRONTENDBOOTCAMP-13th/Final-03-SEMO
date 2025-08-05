@@ -52,7 +52,10 @@ export default function HeroSection() {
     return () => clearInterval(timer);
   }, [slides.length]);
   return (
-    <section className="-mx-4 mb-3 mt-3 relative overflow-hidden">
+    <section className="-mx-4 mb-3 mt-3 relative overflow-hidden" aria-labelledby="hero-title" role="region">
+      <h2 id="hero-title" className="sr-only">
+        서비스 소개 슬라이드
+      </h2>
       <div
         className="flex transition-transform duration-500 ease-in-out"
         style={{ transform: `translateX(-${currentSlide * 100}%)` }}
@@ -68,9 +71,9 @@ export default function HeroSection() {
               {slide.sub}
             </h1>
             <p className={`text-14 ml-5 ${slide.descColor}`}>{slide.desc}</p>
-            <div className="absolute bottom-4 right-3 z-10">
+            <figure className="absolute bottom-4 right-3 z-10" aria-hidden="true">
               <Image src={slide.assetImage} alt={slide.title} width={110} height={110} />
-            </div>
+            </figure>
           </div>
         ))}
       </div>

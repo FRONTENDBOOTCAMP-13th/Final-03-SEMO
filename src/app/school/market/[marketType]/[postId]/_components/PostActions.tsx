@@ -64,12 +64,12 @@ export default function PostActions({ post }: PostActionsProps) {
 
   return (
     <div className="flex gap-2 mb-4">
-      <button
+      <section
         onClick={handleEdit}
         className="px-4 py-2 bg-blue-500 text-white rounded-lg text-14 hover:bg-blue-600 transition-colors"
       >
         수정
-      </button>
+      </section>
       <form action={formAction} onSubmit={handleDeleteSubmit} className="inline">
         {/* <form action={deleteAction} className="inline"> */}
         <input type="hidden" name="accessToken" value={accessToken} />
