@@ -133,10 +133,10 @@ export default function ItemSection({ initialItems, market, initialHasMore }: Pr
               {/* 고정 높이 */}
               <p className="mt-2 text-16 font-medium truncate">{item.title}</p>
               <div className="flex items-center justify-between text-14 text-uni-gray-400 mt-1">
-                <p className="text-14 text-uni-gray-300 font-light truncate">
+                <p className="text-14 text-uni-gray-700 font-light truncate">
                   {Number(item.extra.price).toLocaleString()}원
                 </p>
-                <div className="flex items-center">
+                <div className="flex items-center text-uni-gray-700">
                   <MessageCircleMore size={15} color="gray" strokeWidth={2} />
                   <span className="ml-1">{item.repliesCount || 0}</span>
                 </div>

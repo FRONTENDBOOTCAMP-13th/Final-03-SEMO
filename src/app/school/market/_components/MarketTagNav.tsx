@@ -66,7 +66,7 @@ export default function MarketTagNav() {
             // value={activeTag}
             onClick={() => handleTagClick(tag)}
             className={`flex-shrink-0 px-5 py-2 rounded-full text-16 font-medium
-              ${activeTag === tag ? "bg-uni-blue-400 text-uni-white" : "bg-uni-gray-200 text-uni-gray-300"}`}
+              ${activeTag === tag ? "bg-uni-blue-600 text-uni-white" : "bg-uni-gray-200 text-uni-gray-800"}`}
           >
             {tag}
           </button>

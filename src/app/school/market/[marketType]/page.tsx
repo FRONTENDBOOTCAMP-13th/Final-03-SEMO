@@ -51,14 +51,14 @@ export default async function MarketPage({ params }: PageProps) {
               key={i}
               href={`/school/market/${i}`}
               className={`flex-1 relative text-center py-3 font-bold text-14 ${
-                active ? "text-uni-blue-400" : "text-uni-gray-500"
+                active ? "text-uni-blue-600" : "text-uni-gray-500"
               }`}
             >
               {label}
               {/* {active && <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-uni-blue-400" />} */}
               <div
                 className={`absolute bottom-0 left-0 right-0 ${
-                  active ? "h-[2px] bg-uni-blue-400" : "h-[0.5px] bg-uni-gray-200"
+                  active ? "h-[2px] bg-uni-blue-500" : "h-[0.5px] bg-uni-gray-200"
                 }`}
               />
             </Link>
