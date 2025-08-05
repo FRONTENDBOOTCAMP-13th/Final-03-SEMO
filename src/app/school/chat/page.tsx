@@ -73,7 +73,6 @@ const ChatPage = () => {
 
   return (
     <>
-      {/* backLink는 "#" 로 설정하여 클릭만 유도 */}
       <Header title="채팅" backLink="#" />
       <div className="max-w-[480px] mx-auto px-4 py-4">
         {loading ? (

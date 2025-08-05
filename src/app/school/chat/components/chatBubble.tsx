@@ -14,7 +14,6 @@ interface ChatBubbleProps {
 }
 
 const ChatBubble = ({ msg }: ChatBubbleProps) => {
-  // const isWhisper = msg.msgType === "whisper";
   const [avatar, setAvatar] = useState("/assets/defaultImg.png");
 
   useEffect(() => {
