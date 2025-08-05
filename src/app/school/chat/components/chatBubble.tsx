@@ -14,7 +14,7 @@ interface ChatBubbleProps {
 }
 
 const ChatBubble = ({ msg }: ChatBubbleProps) => {
-  const isWhisper = msg.msgType === "whisper";
+  // const isWhisper = msg.msgType === "whisper";
   const [avatar, setAvatar] = useState("/assets/defaultImg.png");
 
   useEffect(() => {
@@ -33,7 +33,6 @@ const ChatBubble = ({ msg }: ChatBubbleProps) => {
     // 내가 보낸 메시지
     <div className="flex justify-end items-end gap-2  p-4">
       <div className="max-w-[70%] text-right">
-        {isWhisper && msg.toNickName && <div className="text-12 text-uni-gray-500 mb-1">귓속말 → {msg.toNickName}</div>}
         <div className="px-4 py-3 rounded-xl text-16 break-words whitespace-pre-wrap bg-uni-blue-400 text-uni-white">
           {msg.content}
         </div>
@@ -53,7 +52,6 @@ const ChatBubble = ({ msg }: ChatBubbleProps) => {
             onError={() => setAvatar("/assets/defaultImg.png")}
           />
         </div>
-        <span className="text-12 flex justify-center">{isWhisper ? `${msg.nickName} (귓속말)` : msg.nickName}</span>
       </div>
       <div className="max-w-[70%] text-left">
         <div className="px-4 py-3 rounded-xl text-16 break-words whitespace-pre-wrap text-uni-black bg-uni-gray-200">
