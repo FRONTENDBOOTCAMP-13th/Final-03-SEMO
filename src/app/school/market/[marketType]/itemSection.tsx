@@ -74,14 +74,14 @@ export default function ItemSection({ initialItems, market, initialHasMore }: Pr
                   priority={true}
                 />
                 <div className="flex-1 max-w-[200px]">
-                  <span className="text-14 text-uni-gray-400">{item.tag}</span>
+                  <span className="text-14 text-uni-gray-800">{item.tag}</span>
                   <h3 className="text-16 font-bold mb-1 mt-2 truncate">{item.title}</h3>
 
                   <div className="flex items-center gap-2">
                     <span className="text-14 text-uni-blue-400">모집인원 {item.extra.participants || 0}명</span>
                   </div>
 
-                  <p className="text-14 bg-uni-gray-200 px-3 py-1 inline-block mt-5 rounded-full text-uni-gray-400">
+                  <p className="text-14 bg-uni-gray-200 px-3 py-1 inline-block mt-5 rounded-full text-uni-gray-800">
                     {(() => {
                       const totalPrice = Number(item.extra.price);
                       const participants = item.extra.participants || 1;

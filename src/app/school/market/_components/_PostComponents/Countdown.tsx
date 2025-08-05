@@ -50,7 +50,7 @@ export default function Countdown({ deadLine }: CountdownProps) {
   }
   return (
     <div className="flex pt-2 gap-1 text-14 font-medium">
-      {time.days > 0 && <span className="text-uni-blue-400 font-bold py-1">{time.days}일</span>}
+      {time.days > 0 && <span className="text-uni-blue-600 font-bold py-1">{time.days}일</span>}
       <span className="text-uni-blue-400 font-bold py-1">{time.hours.toString().padStart(2, "0")}시간</span>
       <span className="text-uni-blue-400 font-bold py-1">{time.min.toString().padStart(2, "0")}분</span>
       <span className="text-uni-blue-400 font-bold py-1">{time.sec.toString().padStart(2, "0")}초</span>

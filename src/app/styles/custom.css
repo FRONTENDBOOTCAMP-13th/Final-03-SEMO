@@ -6,7 +6,7 @@
   --color-uni-blue-100: #ebf1ff;
   --color-uni-blue-200: #d0deff;
   --color-uni-blue-300: #72a8ff;
-  --color-uni-blue-400: #2991ff; /* 메인 블루 */
+  --color-uni-blue-400: #0871f3; /* 메인 블루 */
   --color-uni-blue-500: #0080e9;
   --color-uni-blue-600: #006ac1;
   --color-uni-blue-700: #005196;
@@ -39,6 +39,7 @@
   --color-uni-gray-500: #697382; /* 행복기숙사 */
   --color-uni-gray-600: #667382; /* 판매완료, 모집완료 */
   --color-uni-gray-700: #5e738c; /* 자동 전달 메시지 */
+  --color-uni-gray-800: #5a6d87; /* 자동 전달 메시지 */
 
   /* yellow */
   --color-uni-yellow: #fee500; /* 카카오톡 버튼 */

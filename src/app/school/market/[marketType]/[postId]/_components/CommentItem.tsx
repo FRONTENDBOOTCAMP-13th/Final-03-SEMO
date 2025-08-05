@@ -38,7 +38,7 @@ export default function CommentItem({ reply, post }: CommentItemProps) {
                 {isPostAuthor && <span className="text-14 text-uni-blue-400 font-bold ml-0.5">(글쓴이)</span>}
               </Link>
               {/* 동적 작성 날짜 */}
-              <span className="text-14 text-uni-gray-300 font-medium ml-2">
+              <span className="text-14 text-uni-gray-700 font-medium ml-2">
                 {new Date(reply.createdAt).toLocaleDateString("ko-KR", {
                   year: "numeric",
                   month: "long",
