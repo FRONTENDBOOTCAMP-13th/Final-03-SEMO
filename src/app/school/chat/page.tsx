@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getPost, getPosts } from "@/app/api/market/functions/post";
+import { getPosts } from "@/app/api/market/functions/post";
 import ChatRoomItem from "./components/chatRoomItem";
 import Header from "@/components/common/Header";
 import { useUserStore } from "@/store/userStore";
@@ -17,24 +17,18 @@ const ChatPage = () => {
       if (!user || !user._id) return;
 
       try {
-        const res = await getPosts("chat", 1, 10);
+        const res = await getPosts("chat", 1, 30);
         if (!res.ok || !res.item) return;
 
         const items = Array.isArray(res.item) ? res.item : [res.item];
-
-        const fullPosts = await Promise.all(
-          items.map(async (p) => {
-            const detail = await getPost(p._id);
-            return detail.ok ? detail.item : null;
-          })
-        );
-
         const myId = String(user._id);
-        const myRooms = fullPosts
+
+        const myRooms = items
           .filter((post): post is Post => !!post)
           .filter((post) => {
-            const title = post.title || "";
-            return title.startsWith(`${myId} ->`) || title.endsWith(`-> ${myId}`);
+            const title = post.title?.replace(/\s/g, "");
+            const [sender, receiver] = title?.split("->") || [];
+            return sender === myId || receiver === myId;
           });
 
         setRooms(myRooms);
@@ -47,6 +41,7 @@ const ChatPage = () => {
 
     fetchRooms();
   }, [user]);
+
   if (loading) {
     return (
       <>
@@ -66,10 +61,10 @@ const ChatPage = () => {
           <div className="text-center text-gray-400 py-10">채팅방이 없습니다</div>
         ) : (
           rooms.map((post) => {
-            const title = post.title || "";
+            const title = post.title?.replace(/\s/g, "") || "";
             const myId = String(user._id);
-            const parts = title.split("->").map((s) => s.trim());
-            const otherId = parts[0] === myId ? parts[1] : parts[0];
+            const [sender, receiver] = title.split("->");
+            const otherId = sender === myId ? receiver : sender;
 
             return (
               <ChatRoomItem
