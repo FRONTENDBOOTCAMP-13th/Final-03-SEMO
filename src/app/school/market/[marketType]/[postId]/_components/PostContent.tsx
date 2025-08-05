@@ -118,7 +118,7 @@ export default function PostContent({ post, marketType }: PostContentProps) {
   return (
     <main className="min-w-[320px] max-w-[480px] mx-auto px-4 min-h-screen bg-uni-white">
       {/* 이미지 */}
-      <div className="rounded-lg overflow-hidden mb-4 bg-uni-gray-100">
+      <div className="">
         <h1 className="sr-only">공동구매 상세 정보</h1>
         <figure
           className="product-image rounded-lg overflow-hidden mb-4 bg-uni-gray-100"
