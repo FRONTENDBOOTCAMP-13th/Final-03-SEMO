@@ -98,38 +98,61 @@ export default function PostForm({ mode, initialData, marketType, postId }: Post
   };
 
   return (
-    <form action={formAction} onSubmit={handleSubmit}>
-      <input type="hidden" name="accessToken" value={user?.token?.accessToken ?? ""} />
-      <input type="hidden" name="type" value={tradeType} />
-      <input type="hidden" name="postId" value={postId} />
-      <input type="hidden" name="image" value={images.length > 0 ? images[0] : ""} />
-      <main className="min-w-[320px] max-w-[480px] mx-auto px-4 py-6 min-h-screen bg-uni-white">
-        <Product images={images} setImages={setImages} initialTitle={initialData?.title} titleError={titleError} />
-        <p className="text-15 mb-2 text-uni-gray-600 font-bold">거래 방식</p>
-        <section role="group" aria-label="거래 유형" className="mb-5 flex gap-3">
-          {/* 팔래요, 살래요, 모여요 버튼 생성 */}
-          {(["buy", "sell", "groupPurchase"] as const).map((t) => (
-            <label
-              key={t}
-              className={`flex items-center justify-center px-5 py-2 rounded-xl font-medium text-14 cursor-pointer ${getButtonStyle(t, tradeType)} }`}
-            >
-              <input
-                type="radio"
-                name="tradeTypeInput"
-                value={t}
-                disabled={mode === "edit"}
-                checked={tradeType === t}
-                onChange={() => mode === "create" && setTradeType(t)} // 버튼 클릭시 tradeType 상태 업데이트
-                className="hidden"
-              />
-              {t === "buy" ? "살래요" : t === "sell" ? "팔래요" : "공동구매"}
-            </label>
-          ))}
+    <main className="post-form-container min-w-[320px] max-w-[480px] mx-auto px-4 py-6 bg-uni-white">
+      <h1 className="sr-only">{mode === "create" ? "새 상품 등록" : "상품 정보 수정"}</h1>
+      <form
+        action={formAction}
+        onSubmit={handleSubmit}
+        aria-label={mode === "create" ? "상품 등록 폼" : "상품 수정 폼"}
+        noValidate
+      >
+        <input type="hidden" name="accessToken" value={user?.token?.accessToken ?? ""} />
+        <input type="hidden" name="type" value={tradeType} />
+        <input type="hidden" name="postId" value={postId} />
+        <input type="hidden" name="image" value={images.length > 0 ? images[0] : ""} />
+
+        <section aria-labelledby="product-info-title" className="mb-6">
+          <h2 id="product-info-title" className="sr-only">
+            상품 기본 정보
+          </h2>
+          <Product images={images} setImages={setImages} initialTitle={initialData?.title} titleError={titleError} />
         </section>
 
-        <ProductDesc initialData={initialData} contentError={contentError} categoryError={categoryError} />
+        <section aria-labelledby="trade-type-title" className="mb-6">
+          <p className="text-15 mb-2 text-uni-gray-600 font-bold">거래 방식</p>
+          <fieldset role="group" aria-label="거래 유형" className="mb-5 flex gap-3">
+            <legend className="sr-only">거래 유형 선택</legend>
+            {/* 팔래요, 살래요, 모여요 버튼 생성 */}
+            {(["buy", "sell", "groupPurchase"] as const).map((t) => (
+              <label
+                key={t}
+                className={`flex items-center justify-center px-5 py-2 rounded-xl font-medium text-14 cursor-pointer ${getButtonStyle(t, tradeType)} }`}
+              >
+                <input
+                  type="radio"
+                  name="tradeTypeInput"
+                  value={t}
+                  disabled={mode === "edit"}
+                  checked={tradeType === t}
+                  onChange={() => mode === "create" && setTradeType(t)} // 버튼 클릭시 tradeType 상태 업데이트
+                  className="hidden"
+                />
+                {t === "buy" ? "살래요" : t === "sell" ? "팔래요" : "공동구매"}
+              </label>
+            ))}
+          </fieldset>
+        </section>
+
+        <section aria-labelledby="product-details-title" className="mb-6">
+          <h2 id="product-details-title" className="sr-only">
+            상품 상세 정보
+          </h2>
+          <ProductDesc initialData={initialData} contentError={contentError} categoryError={categoryError} />
+        </section>
+
+        {/* 공동구매 전용 세션 */}
         {tradeType === "groupPurchase" && <GroupPurchase initialData={initialData} />}
-        <section className="mb-8">
+        <section aria-labelledby="group-purchase-title" className="mb-8">
           <fieldset className="flex flex-col gap-3">
             <label
               className={`flex justify-between items-center p-4 rounded-lg cursor-pointer
@@ -165,15 +188,17 @@ export default function PostForm({ mode, initialData, marketType, postId }: Post
           {selected === "new" && <NewAccount />}
         </section>
 
-        <div className="flex justify-end">
+        {/* 제출 버튼 */}
+        <section className="flex justify-end">
           <button
             type="submit"
             className="w-full bg-uni-blue-400 text-uni-white py-3 font-semibold rounded-lg cursor-pointer"
+            aria-label={mode === "create" ? "상품 등록하기" : "상품 수정하기"}
           >
             {mode === "create" ? "등록하기" : "수정하기"}
           </button>
-        </div>
-      </main>
-    </form>
+        </section>
+      </form>
+    </main>
   );
 }

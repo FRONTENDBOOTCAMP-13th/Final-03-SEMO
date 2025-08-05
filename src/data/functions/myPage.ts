@@ -99,10 +99,13 @@ export async function getCachedUser(userId: number, forceRefresh: boolean = fals
  */
 export async function getMyBookmarks(accessToken: string): ApiResPromise<BookmarkItem[]> {
   try {
-    const res = await fetch(`${API_URL}/bookmarks/post`, {
+    const res = await fetch(`${API_URL}/bookmarks/post?_t=${Date.now()}`, {
       headers: {
         "Client-Id": CLIENT_ID,
         Authorization: `Bearer ${accessToken}`,
+        "Cache-Control": "no-cache, no-store, must-revalidate",
+        "Pragma": "no-cache",
+        "Expires": "0",
       },
       cache: "no-store", // 북마크는 실시간 데이터이므로 캐시하지 않음
     });
@@ -154,10 +157,13 @@ export async function getPurchasedItems(accessToken: string): ApiResPromise<Orde
  */
 export async function getMySellPosts(accessToken: string): ApiResPromise<PostItem[]> {
   try {
-    const res = await fetch(`${API_URL}/posts/users/?type=sell`, {
+    const res = await fetch(`${API_URL}/posts/users/?type=sell&_t=${Date.now()}`, {
       headers: {
         "Client-Id": CLIENT_ID,
         Authorization: `Bearer ${accessToken}`,
+        "Cache-Control": "no-cache, no-store, must-revalidate",
+        "Pragma": "no-cache",
+        "Expires": "0",
       },
       cache: "no-store", // 사용자 게시물은 실시간 데이터
     });
@@ -175,10 +181,13 @@ export async function getMySellPosts(accessToken: string): ApiResPromise<PostIte
  */
 export async function getMyBuyPosts(accessToken: string): ApiResPromise<PostItem[]> {
   try {
-    const res = await fetch(`${API_URL}/posts/users/?type=buy`, {
+    const res = await fetch(`${API_URL}/posts/users/?type=buy&_t=${Date.now()}`, {
       headers: {
         "Client-Id": CLIENT_ID,
         Authorization: `Bearer ${accessToken}`,
+        "Cache-Control": "no-cache, no-store, must-revalidate",
+        "Pragma": "no-cache",
+        "Expires": "0",
       },
       cache: "no-store", // 사용자 게시물은 실시간 데이터
     });
@@ -196,10 +205,13 @@ export async function getMyBuyPosts(accessToken: string): ApiResPromise<PostItem
  */
 export async function getMyGroupPurchasePosts(accessToken: string): ApiResPromise<PostItem[]> {
   try {
-    const res = await fetch(`${API_URL}/posts/users/?type=groupPurchase`, {
+    const res = await fetch(`${API_URL}/posts/users/?type=groupPurchase&_t=${Date.now()}`, {
       headers: {
         "Client-Id": CLIENT_ID,
         Authorization: `Bearer ${accessToken}`,
+        "Cache-Control": "no-cache, no-store, must-revalidate",
+        "Pragma": "no-cache",
+        "Expires": "0",
       },
       cache: "no-store", // 사용자 게시물은 실시간 데이터
     });

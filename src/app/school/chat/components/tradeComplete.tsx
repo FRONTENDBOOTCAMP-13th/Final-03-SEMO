@@ -1,4 +1,3 @@
-import { Share } from "lucide-react";
 import Image from "next/image";
 
 interface TradeCompleteProps {
@@ -8,12 +7,6 @@ interface TradeCompleteProps {
 const TradeComplete = ({ buyerName }: TradeCompleteProps) => {
   return (
     <div className="flex items-center w-full min-w-[360px] max-w-[480px] bg-uni-white px-4 py-3 gap-2">
-      {/* 공유하기 */}
-      <button className="w-[80px] flex flex-col items-center text-uni-black text-14">
-        <Share size={20} className="mb-2" />
-        공유하기
-      </button>
-
       {/* 승인 메시지 */}
       <div className="flex items-center gap-3">
         <Image src="/assets/defaultImg.png" alt="프로필" width={56} height={56} className="rounded-full" />

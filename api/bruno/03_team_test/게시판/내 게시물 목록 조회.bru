@@ -5,15 +5,63 @@ meta {
 }
 
 get {
-  url: {{url}}/posts/users/?type=buy
+  url: {{url}}/posts/users/?type=end
   body: none
   auth: inherit
 }
 
 params:query {
-  type: buy
+  type: end
 }
 
 vars:pre-request {
   _id: 5
+}
+
+response {
+  {
+  "ok": 1,
+  "item": [
+    {
+      "_id": 14,
+      "type": "end",
+      "title": "이거 밥에 뿌려먹으면 존맛탱구리인데 파실분?",
+      "content": "팔아주세요ㅠㅠㅠ 이거 없으면 밥을 못 먹어요",
+      "image": "https://res.cloudinary.com/ddedslqvv/image/upload/v1754301076/febc13-final03-emjf/nk8i5bK3q.jpg",
+      "tag": "식품",
+      "extra": {
+        "price": "500000",
+        "location": "숭실대학교 웨스턴민스턴홀 앞",
+        "crt": "거래완료",
+        "productId": 3,
+        "approvedUserIds": [
+          "3"
+        ]
+      },
+      "views": 25,
+      "user": {
+        "_id": 6,
+        "type": "seller",
+        "name": "밥슌",
+        "email": "parksw003@soongsil.ac.kr",
+        "image": null
+      },
+      "createdAt": "2025.08.04 18:51:48",
+      "updatedAt": "2025.08.04 18:58:13",
+      "seller_id": null,
+      "bookmarks": 0,
+      "likes": 0,
+      "repliesCount": 0,
+      "product": {
+        "image": null
+      }
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "limit": 0,
+    "total": 1,
+    "totalPages": 1
+  }
+}
 }

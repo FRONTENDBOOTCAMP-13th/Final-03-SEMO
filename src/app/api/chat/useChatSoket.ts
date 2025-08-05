@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 import { io } from "socket.io-client";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
@@ -7,75 +7,195 @@ import { useUserStore } from "@/store/userStore";
 
 export const socket = io("https://fesp-api.koyeb.app/ws/sample", { autoConnect: false });
 
+export const GLOBAL_ROOM_ID = "global";
+
 interface UseChatSocketProps {
   userId: string;
   nickName: string;
   roomId: string;
 }
 
-export const GLOBAL_ROOM_ID = "global";
+const processedTradeDoneSet = new Set<string>();
 
 export const useChatSocket = ({ userId, nickName, roomId }: UseChatSocketProps) => {
   const { setRoomId, setUserList, addMessage } = useChatStore();
   const router = useRouter();
   const user = useUserStore((state) => state.user);
 
-  const enterRoom = (roomId: string, onSuccess?: () => void) => {
-    socket.emit(
-      "joinRoom",
-      {
-        roomId,
-        user_id: userId,
-        nickName,
-      },
-      (joinRes: any) => {
-        if (joinRes.ok) {
-          console.log("개인방 입장 성공:", roomId);
-          setRoomId(roomId);
-          onSuccess?.();
-        } else {
-          console.warn("입장 실패, 방 생성 후 재시도:", joinRes.message);
-          socket.emit(
-            "createRoom",
-            {
-              roomId,
-              user_id: userId,
-              hostName: nickName,
-              roomName: roomId,
-              autoClose: false,
-            },
-            (createRes: any) => {
-              if (!createRes.ok) console.warn("방 생성 실패:", createRes.message);
-              socket.emit("joinRoom", { roomId, user_id: userId, nickName }, (retryJoinRes: any) => {
-                if (retryJoinRes.ok) {
-                  console.log("생성 후 입장 성공:", roomId);
-                  setRoomId(roomId);
-                  onSuccess?.();
-                } else {
-                  alert("개인방 입장 실패");
-                }
-              });
-            }
-          );
+  const enterRoom = useCallback(
+    (roomId: string, onSuccess?: () => void) => {
+      socket.emit(
+        "joinRoom",
+        {
+          roomId,
+          user_id: userId,
+          nickName,
+        },
+        (joinRes: any) => {
+          if (joinRes.ok) {
+            console.log("개인방 입장 성공:", roomId);
+            setRoomId(roomId);
+            onSuccess?.();
+          } else {
+            console.warn("입장 실패, 방 생성 후 재시도:", joinRes.message);
+            socket.emit(
+              "createRoom",
+              {
+                roomId,
+                user_id: userId,
+                hostName: nickName,
+                roomName: roomId,
+                autoClose: false,
+              },
+              (createRes: any) => {
+                if (!createRes.ok) console.warn("방 생성 실패:", createRes.message);
+                socket.emit("joinRoom", { roomId, user_id: userId, nickName }, (retryJoinRes: any) => {
+                  if (retryJoinRes.ok) {
+                    console.log("생성 후 입장 성공:", roomId);
+                    setRoomId(roomId);
+                    onSuccess?.();
+                  } else {
+                    alert("개인방 입장 실패");
+                  }
+                });
+              }
+            );
+          }
         }
+      );
+    },
+    [userId, nickName, setRoomId]
+  );
+
+  const handleMessage = useCallback(
+    async (data: any) => {
+      const currentRoomId = useChatStore.getState().currentRoomId;
+      const isGlobalRoom = (data.roomId || currentRoomId) === GLOBAL_ROOM_ID;
+
+      const raw =
+        typeof data.msg === "object"
+          ? data.msg
+          : {
+              msg: data.msg,
+              nickName: data.nickName,
+              user_id: data.user_id,
+              toUserId: data.toUserId,
+              toNickName: data.toNickName,
+              buyerId: data.buyerId,
+              sellerId: data.sellerId,
+              sellerNickName: data.sellerNickName,
+              postId: data.postId,
+              productId: data.productId,
+            };
+
+      if (raw?.action === "joinRoom" || raw?.action === "leaveRoom") return;
+
+      const isWhisper = data.msgType === "whisper";
+      const isTradeDone = data.type === "tradeDone" || data.msg?.type === "tradeDone";
+
+      const messageUserId = String(raw.user_id || data.user_id || userId);
+      const currentUserId = String(user?._id);
+      const token = user?.token?.accessToken;
+
+      if (!isGlobalRoom && !isWhisper && messageUserId === currentUserId) return;
+      if (!isGlobalRoom && data.local && messageUserId === currentUserId) return;
+
+      if (isTradeDone) {
+        const uniqueKey = `${messageUserId}-${data.roomId || currentRoomId}`;
+        if (processedTradeDoneSet.has(uniqueKey)) {
+          console.log("중복 거래 완료 메시지 무시됨");
+          return;
+        }
+        processedTradeDoneSet.add(uniqueKey);
+
+        if (String(currentUserId) === String(raw.buyerId) && token) {
+          try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/orders`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+                "Client-Id": "febc13-final03-emjf",
+              },
+              body: JSON.stringify({
+                products: [{ _id: Number(raw.productId), quantity: 1 }],
+              }),
+            });
+            const result = await response.json();
+            console.log("주문 등록 결과:", result);
+          } catch (err) {
+            console.error("주문 등록 실패:", err);
+          }
+        }
+
+        addMessage({
+          id: `${Date.now()}-${Math.random()}`,
+          roomId: data.roomId || currentRoomId,
+          content: raw.msg,
+          type: "tradeDone",
+          msgType: "all",
+          createdAt: data.timestamp ?? new Date().toISOString(),
+          user_id: messageUserId,
+          nickName: raw.nickName || nickName,
+        });
+        return;
       }
-    );
-  };
+
+      const messages = useChatStore.getState().messages;
+      const isDuplicate = messages.some(
+        (existingMsg) =>
+          existingMsg.content === (raw.content ?? raw.msg) &&
+          existingMsg.user_id === messageUserId &&
+          existingMsg.roomId === (data.roomId || currentRoomId) &&
+          Math.abs(new Date(existingMsg.createdAt).getTime() - new Date(data.timestamp ?? Date.now()).getTime()) < 3000
+      );
+      if (isDuplicate) return;
+
+      const message: Message = {
+        id: `${Date.now()}-${Math.random()}`,
+        roomId: data.roomId || currentRoomId,
+        content: raw.content ?? raw.msg,
+        type: "text",
+        msgType: isWhisper ? "whisper" : "all",
+        createdAt: data.timestamp ?? new Date().toISOString(),
+        user_id: messageUserId,
+        nickName: raw.nickName || nickName,
+        ...(isWhisper && {
+          toUserId: raw.toUserId,
+          toNickName: raw.toNickName,
+        }),
+      };
+
+      addMessage(message);
+
+      if (isWhisper && messageUserId !== currentUserId) {
+        toast.info(`${raw.nickName}님이 개인 메시지를 보냈습니다. 클릭하여 개인방으로 이동하세요.`, {
+          autoClose: false,
+          onClick: () => {
+            const { roomId: receivedRoomId, postId, buyerId, sellerId, productId } = raw;
+            if (!receivedRoomId) return alert("roomId 정보가 없습니다.");
+            enterRoom(receivedRoomId, () => {
+              router.push(
+                `/school/chat/${postId}?buyerId=${buyerId}&sellerId=${sellerId}&productId=${productId}&roomId=${receivedRoomId}&autojoin=true`
+              );
+            });
+          },
+        });
+      }
+    },
+    [userId, user, router, nickName, enterRoom, addMessage]
+  );
+
+  const handleWhisper = useCallback(
+    (data: any) => {
+      handleMessage({ ...data, msgType: "whisper" });
+    },
+    [handleMessage]
+  );
 
   useEffect(() => {
     if (!userId || !nickName) return;
     socket.connect();
-
-    const handleRouteChange = (url: string) => {
-      const currentRoomId = useChatStore.getState().currentRoomId;
-      if (currentRoomId && currentRoomId !== GLOBAL_ROOM_ID && !url.includes("/chat")) {
-        socket.emit("leaveRoom");
-        console.log("leaveRoom 호출:", url);
-      }
-    };
-
-    window.addEventListener("popstate", () => handleRouteChange(location.pathname));
-    window.addEventListener("pushstate", () => handleRouteChange(location.pathname));
 
     const handleConnect = () => {
       console.log("소켓 연결:", socket.id);
@@ -119,123 +239,10 @@ export const useChatSocket = ({ userId, nickName, roomId }: UseChatSocketProps) 
       setUserList(userList);
     };
 
-    const handleMessage = async (data: any) => {
-      const currentRoomId = useChatStore.getState().currentRoomId;
-      const isGlobalRoom = (data.roomId || currentRoomId) === GLOBAL_ROOM_ID;
-
-      const raw =
-        typeof data.msg === "object"
-          ? data.msg
-          : {
-              msg: data.msg,
-              nickName: data.nickName,
-              user_id: data.user_id,
-              toUserId: data.toUserId,
-              toNickName: data.toNickName,
-              buyerId: data.buyerId,
-              sellerId: data.sellerId,
-              sellerNickName: data.sellerNickName,
-              postId: data.postId,
-              productId: data.productId,
-            };
-
-      const isWhisper = data.msgType === "whisper";
-      const isTradeDone = data.type === "tradeDone" || data.msg?.type === "tradeDone";
-
-      const messageUserId = String(raw.user_id || data.user_id || userId);
-      const currentUserId = String(user?._id);
-      const token = user?.token?.accessToken;
-
-      if (isTradeDone) {
-        if (String(currentUserId) === String(raw.buyerId) && token) {
-          try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/orders`, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-                "Client-Id": "febc13-final03-emjf",
-              },
-              body: JSON.stringify({
-                products: [{ _id: Number(raw.productId), quantity: 1 }],
-              }),
-            });
-            const result = await response.json();
-            console.log("주문 등록 결과:", result);
-          } catch (err) {
-            console.error("주문 등록 실패:", err);
-          }
-        }
-
-        addMessage({
-          id: `${Date.now()}-${Math.random()}`,
-          roomId: data.roomId || currentRoomId,
-          content: raw.msg,
-          type: "tradeDone",
-          msgType: "all",
-          createdAt: data.timestamp ?? new Date().toISOString(),
-          user_id: messageUserId,
-          nickName: raw.nickName || nickName,
-        });
-        return;
-      }
-
-      if (!isGlobalRoom && !isWhisper && messageUserId === currentUserId) return;
-      if (!isGlobalRoom && data.local && messageUserId === currentUserId) return;
-
-      const message: Message = {
-        id: `${Date.now()}-${Math.random()}`,
-        roomId: data.roomId || currentRoomId,
-        content: raw.content ?? raw.msg,
-        type: "text",
-        msgType: isWhisper ? "whisper" : "all",
-        createdAt: data.timestamp ?? new Date().toISOString(),
-        user_id: messageUserId,
-        nickName: raw.nickName || nickName,
-        ...(isWhisper && {
-          toUserId: raw.toUserId,
-          toNickName: raw.toNickName,
-        }),
-      };
-
-      const messages = useChatStore.getState().messages;
-      const isDuplicate = messages.some(
-        (existingMsg) =>
-          existingMsg.content === message.content &&
-          existingMsg.user_id === message.user_id &&
-          existingMsg.roomId === message.roomId &&
-          Math.abs(new Date(existingMsg.createdAt).getTime() - new Date(message.createdAt).getTime()) < 3000
-      );
-
-      if (isDuplicate) return;
-
-      addMessage(message);
-
-      if (isWhisper && messageUserId !== currentUserId) {
-        toast.info(`${raw.nickName}님이 개인 메시지를 보냈습니다. 클릭하여 개인방으로 이동하세요.`, {
-          autoClose: false,
-          onClick: () => {
-            const { roomId: receivedRoomId, postId, buyerId, sellerId, productId } = raw;
-            if (!receivedRoomId) return alert("roomId 정보가 없습니다.");
-
-            enterRoom(receivedRoomId, () => {
-              router.push(
-                `/school/chat/${postId}?buyerId=${buyerId}&sellerId=${sellerId}&productId=${productId}&roomId=${receivedRoomId}&autojoin=true`
-              );
-            });
-          },
-        });
-      }
-    };
-
-    const handleWhisper = (data: any) => {
-      handleMessage({ ...data, msgType: "whisper" });
-    };
-
-    socket.on("connect", handleConnect);
-    socket.on("members", handleMembers);
-    socket.on("message", handleMessage);
-    socket.on("sendTo", handleWhisper);
+    socket.off("connect", handleConnect).on("connect", handleConnect);
+    socket.off("members", handleMembers).on("members", handleMembers);
+    socket.off("message", handleMessage).on("message", handleMessage);
+    socket.off("sendTo", handleWhisper).on("sendTo", handleWhisper);
 
     const handleLeaveRoom = () => {
       const currentRoomId = useChatStore.getState().currentRoomId;
@@ -251,10 +258,12 @@ export const useChatSocket = ({ userId, nickName, roomId }: UseChatSocketProps) 
       handleLeaveRoom();
 
       window.removeEventListener("beforeunload", handleLeaveRoom);
-      window.removeEventListener("popstate", () => handleRouteChange(location.pathname));
-      window.removeEventListener("pushstate", () => handleRouteChange(location.pathname));
+      socket.off("connect", handleConnect);
+      socket.off("members", handleMembers);
+      socket.off("message", handleMessage);
+      socket.off("sendTo", handleWhisper);
     };
-  }, [userId, nickName, roomId, setRoomId, setUserList, addMessage]);
+  }, [userId, nickName, roomId, setRoomId, setUserList, handleMessage, handleWhisper]);
 
   return { enterRoom };
 };

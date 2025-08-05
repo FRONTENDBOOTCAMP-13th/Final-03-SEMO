@@ -34,8 +34,8 @@ const PopUp = ({ onClose }: { onClose: () => void }) => {
 
         {/* 메시지 */}
         <p className="text-sm text-uni-black leading-relaxed m-3">
-          이 거래를 시작하려면 처음 메시지를 보낸 후<br />
-          <span className="text-uni-blue-500 font-medium">1:1채팅버튼</span>을 눌러서 시작해야 합니다.
+          이 거래를 완료하려면 <br />
+          <span className="text-uni-blue-500 font-medium">승인하기 버튼</span>을 눌러서 완료해야 합니다.
         </p>
 
         {/* 닫기 버튼 */}
@@ -44,10 +44,10 @@ const PopUp = ({ onClose }: { onClose: () => void }) => {
         </button>
 
         {/* 체크박스 */}
-        <label className="flex items-center gap-2 text-12 text-uni-black">
+        {/* <label className="flex items-center gap-2 text-12 text-uni-black">
           <input type="checkbox" />
           <span>하루동안 안 뜨게 하기</span>
-        </label>
+        </label> */}
       </div>
     </div>
   );

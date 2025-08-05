@@ -8,30 +8,11 @@ import { useParams } from "next/navigation";
 
 export default function CommentDeleteForm({ reply }: { reply: PostReply }) {
   const params = useParams();
-  // const { _id } = useParams();
   const postId = params.postId as string;
-  // const [accessToken, setAccessToken] = useState<string>("");
-  // const [currentUser, setCurrentUser] = useState<any>(null);
   const [state, formAction, isLoading] = useActionState(deleteReply, null);
   // store 토큰 전역 관리
   const { user } = useUserStore();
   console.log(state, isLoading);
-
-  // useEffect(() => {
-  //   const user = localStorage.getItem("user"); // user의 정보를 로컬스토리지에서 가져옴
-  //   const token = localStorage.getItem("accessToken"); // user의 토큰을 가져옴
-
-  //   console.log("로컬스토리지 정보:", { user: !!user, token: !!token });
-
-  //   if (user) {
-  //     // user의 정보를 currentUser에 저장
-  //     setCurrentUser(JSON.parse(user));
-  //   }
-  //   if (token) {
-  //     //
-  //     setAccessToken(token);
-  //   }
-  // }, []);
 
   // 삭제 결과 처리
   useEffect(() => {

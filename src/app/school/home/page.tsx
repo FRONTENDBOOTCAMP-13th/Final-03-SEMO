@@ -8,10 +8,15 @@ import { Pencil } from "lucide-react";
 import { Suspense } from "react";
 
 export default async function HomePage() {
-  const [buyRes, sellRes] = await Promise.all([getPosts("buy"), getPosts("sell")]);
+  const [buyRes, sellRes, groupPurchaseRes] = await Promise.all([
+    getPosts("buy"),
+    getPosts("sell"),
+    getPosts("groupPurchase"),
+  ]);
 
   const buyItems = buyRes.ok ? buyRes.item : [];
   const sellItems = sellRes.ok ? sellRes.item : [];
+  const groupPurchaseItems = groupPurchaseRes.ok ? groupPurchaseRes.item : [];
   return (
     // <div className="min-w-[320px] max-w-[480px] mx-auto px-4 py-3 bg-uni-white">
     //   <HomeHeader />
@@ -26,7 +31,7 @@ export default async function HomePage() {
         <MarketSearch />
       </Suspense>
       <HeroSection />
-      <MarketPreview buyItems={buyItems} sellItems={sellItems} />
+      <MarketPreview buyItems={buyItems} sellItems={sellItems} groupPurchaseItems={groupPurchaseItems} />
       <FloatingButton href={`/school/market/sell/new`} icon={<Pencil size={25} color="white" />} text={"글쓰기"} />
     </div>
   );

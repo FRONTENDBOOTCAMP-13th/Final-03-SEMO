@@ -9,8 +9,10 @@ interface ProductProps {
 }
 export default function Product({ images, initialTitle, setImages, titleError }: ProductProps) {
   return (
-    <section>
-      <h1 className="sr-only">상품 등록</h1>
+    <section aria-labelledby="product-basic-info-title">
+      <h2 id="product-basic-info-title" className="sr-only">
+        상품 등록 기본 정보
+      </h2>
       <div className="mb-5">
         <label htmlFor="item-name" className="sr-only">
           상품명
@@ -23,9 +25,17 @@ export default function Product({ images, initialTitle, setImages, titleError }:
           placeholder="상품명 입력(2글자 이상)"
           defaultValue={initialTitle || ""}
           className={`w-full bg-uni-gray-100 rounded-lg p-4 text-16 placeholder-uni-gray-300${titleError ? "border-2 border-uni-red-500" : ""}`}
+          aria-invalid={titleError ? "true" : "false"}
         />
+        <div id="title-help" className="sr-only">
+          상품명을 2글자 이상 입력해주세요
+        </div>
         {/* 에러 메시지 표시 */}
-        {titleError && <p className=" text-14 text-uni-red-500 font-medium">{titleError}</p>}
+        {titleError && (
+          <p id="title-error" className=" text-14 text-uni-red-500 font-medium" role="alert">
+            {titleError}
+          </p>
+        )}
       </div>
       <div className="mb-5">
         <PhotoUpload images={images} setImages={setImages} />
