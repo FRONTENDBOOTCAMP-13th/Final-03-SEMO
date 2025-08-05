@@ -138,7 +138,7 @@ const InputChat = ({ userId, nickName, sellerId, sellerNickName }: InputChatProp
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder={`${sellerNickName}에게 메시지 보내기...`}
+          placeholder="메시지를 입력하세요..."
           className="flex-1 bg-transparent outline-none mx-4 placeholder-uni-gray-300 text-16 text-uni-black"
         />
         <button
