@@ -132,26 +132,10 @@ const ChatPage = () => {
 
   return (
     <>
-      <Header title="채팅" />
+      <Header title="채팅" backLink="/school/chat" />
       {showModal && <PopUp onClose={() => setShowModal(false)} />}
 
       <ProductInfo productData={productData} />
-
-      <div className="px-4 my-2">
-        {/* <button
-          onClick={() => {
-            if (roomIdFromQuery) {
-              handleJoinRoom(roomIdFromQuery);
-            } else {
-              alert("roomId가 없습니다. 채팅을 시작할 수 없습니다.");
-            }
-          }}
-          className="bg-uni-blue-500 text-uni-white px-4 py-2 rounded hover:bg-uni-blue-600"
-          disabled={joinedRoom}
-        >
-          {joinedRoom ? "개인 채팅 중..." : "1:1 채팅 시작하기"}
-        </button> */}
-      </div>
 
       <ChatBubbleList />
 

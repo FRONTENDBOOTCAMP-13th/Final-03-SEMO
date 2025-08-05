@@ -88,7 +88,8 @@ export const useChatSocket = ({ userId, nickName, roomId }: UseChatSocketProps) 
               productId: data.productId,
             };
 
-      if (raw?.action === "joinRoom" || raw?.action === "leaveRoom") return;
+      if (raw?.action === "joinRoom") return;
+      if (raw?.action === "leaveRoom") return;
 
       const isWhisper = data.msgType === "whisper";
       const isTradeDone = data.type === "tradeDone" || data.msg?.type === "tradeDone";
