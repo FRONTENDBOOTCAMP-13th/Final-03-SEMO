@@ -14,6 +14,9 @@ interface PostContentProps {
 }
 
 export default function PostContent({ post, marketType }: PostContentProps) {
+  console.log("=== Post 데이터 확인 ===");
+  console.log("post.isLiked:", post.isLiked);
+  console.log("post 전체:", post);
   const totalPrice = Number(post?.extra?.price || "0");
   const participants = post?.extra?.participants || 1;
   const pricePerPerson = Math.floor(totalPrice / participants);
@@ -40,7 +43,7 @@ export default function PostContent({ post, marketType }: PostContentProps) {
         <div className="flex justify-between items-center mb-2">
           <h2 className="font-bold text-22">{post?.title}</h2>
           {/* <Heart size={20} color="red" strokeWidth={2} /> */}
-          <PostLikeButton postId={post._id} />
+          <PostLikeButton postId={post._id} initialLiked={post.isLiked} />
         </div>
 
         {/* <PostActions post={post} /> */}
@@ -110,8 +113,7 @@ export default function PostContent({ post, marketType }: PostContentProps) {
       {/* 제목 + 좋아요 */}
       <div className="flex justify-between items-center mb-2">
         <h2 className="font-bold text-22">{post?.title}</h2>
-        {/* <Heart size={20} color="red" strokeWidth={2} /> */}
-        <PostLikeButton postId={post._id} />
+        <PostLikeButton postId={post._id} initialLiked={post.isLiked} />
       </div>
 
       {/* <PostActions post={post} /> */}
