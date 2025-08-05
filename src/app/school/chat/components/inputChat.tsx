@@ -131,7 +131,7 @@ const InputChat = ({ userId, nickName, sellerId, sellerNickName }: InputChatProp
   };
 
   return (
-    <div className="w-full min-w-[360px] max-w-[480px] px-4 py-3">
+    <div className="w-full max-w-[480px] bg-uni-white px-4 py-3 fixed bottom-[80px]">
       <div className="flex items-center bg-uni-gray-100 rounded-lg h-12 flex-1">
         <input
           type="text"
