@@ -29,7 +29,7 @@ import { PageHeaderProvider, usePageHeader } from "../../src/contexts/PageHeader
 import "./globals.css";
 import { ToastContainer } from "react-toastify";
 import GlobalSocketManager from "@/components/common/globalSocketManager";
-import AuthRedirectHandler from "@/lib/AuthRedirectHandler";
+// import AuthRedirectHandler from "@/lib/AuthRedirectHandler";
 
 interface MyPageLayoutProps {
   children: ReactNode;
@@ -100,7 +100,7 @@ export default function RootLayout({ children /*modal*/ }: MyPageLayoutProps) {
     <html lang="ko">
       <body>
         <PageHeaderProvider>
-          <AuthRedirectHandler />
+          {/* <AuthRedirectHandler /> */}
           <LayoutContent>{children}</LayoutContent>
           <ToastContainer
             position="top-center"

@@ -70,7 +70,7 @@ export default function SignupCodePage() {
       alert("회원가입 완료!");
 
       // 회원가입 성공 후 로그인 페이지로 이동하고 나서 상태 초기화
-      router.push("/login?from=signup");
+      router.replace("/onBoarding");
     } catch (err) {
       console.error("회원가입 처리 오류:", err);
       alert("회원가입 처리 중 오류 발생!");
