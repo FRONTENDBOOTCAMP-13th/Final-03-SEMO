@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { useState, useEffect } from "react";
 import Pagination from "@/components/ui/Pagination";
@@ -24,7 +24,7 @@ export default function ReviewToWriteClient() {
         try {
           const items = await ordersToReviewItems(orders);
           setReviewsData(items);
-        } catch (err) {
+        } catch {
           setReviewsData([]);
         } finally {
           setIsReviewsLoading(false);
@@ -50,7 +50,12 @@ export default function ReviewToWriteClient() {
     }
   }, [reviewsData]);
 
-  const { currentPage, totalPages, paginatedData: visibleReviews, handlePageChange } = useResponsivePagination({
+  const {
+    currentPage,
+    totalPages,
+    paginatedData: visibleReviews,
+    handlePageChange,
+  } = useResponsivePagination({
     data: reviewsData,
     estimatedItemHeight: 88,
     minItemsPerPage: 3,
@@ -75,7 +80,9 @@ export default function ReviewToWriteClient() {
         <h2 className="text-20 font-semibold mb-3 text-uni-black font-pretendard">미작성 후기</h2>
         <div className="flex flex-col items-center justify-center py-20 space-y-4">
           <div className="text-uni-gray-400 font-pretendard">{error}</div>
-          <button onClick={refetch} className="px-4 py-2 bg-uni-blue text-white rounded-lg font-pretendard">다시 시도</button>
+          <button onClick={refetch} className="px-4 py-2 bg-uni-blue text-white rounded-lg font-pretendard">
+            다시 시도
+          </button>
         </div>
       </div>
     );

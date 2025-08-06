@@ -6,10 +6,15 @@
 import { User as BaseUser } from "@/types/user";
 
 // myPage에서 사용할 확장된 User 타입 (extra 필드 추가)
-export interface User extends BaseUser {
+export interface User extends Omit<BaseUser, "extra"> {
   extra?: {
     bank?: string;
     bankNumber?: number;
+    providerAccountId?: string; // BaseUser의 extra에서 가져옴
+    university?: string;
+    department?: string;
+    studentId?: string;
+    dormitory?: string;
     [key: string]: any; // 향후 확장 가능
   };
 }
