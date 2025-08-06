@@ -177,18 +177,16 @@ export default function AccountForm() {
         alert("프로필이 성공적으로 저장되었습니다.");
         setUploadFileState(null);
 
-        // Zustand 스토어 업데이트
-        const updatedUser = {
-          ...user,
+        // Zustand 스토어 업데이트 - 타입 안전하게 처리
+        setUser({
           name: name.trim(),
           image: uploadedImageUrl || user.image,
           extra: {
-            ...userWithExtra?.extra,
+            ...user.extra, // 기존 extra 필드 유지
             bank: selectedBank,
             bankNumber: accountNumber ? parseInt(accountNumber) : undefined,
-          },
-        } as User;
-        setUser(updatedUser);
+          } as any, // 타입 호환성을 위해 임시로 any 사용
+        });
 
         // 새로운 이미지로 프로필 이미지 상태 업데이트
         if (uploadedImageUrl) {
