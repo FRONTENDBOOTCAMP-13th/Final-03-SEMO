@@ -1,34 +1,11 @@
-// import { Metadata } from "next";
+import type { Metadata } from "next";
+import LogoutClient from "./logoutForm";
 
-// // SEO를 위한 메타 데이터
-// export const metadata: Metadata = {
-//   title: "UniStuff | 로그아웃",
-//   description: "UniStuff에서 로그아웃합니다",
-// };
-
-// ("use client");
-"use client";
-
-import { useEffect } from "react";
-import { logout } from "@/lib/actions/logout";
-import { useRouter } from "next/navigation";
+export const metadata: Metadata = {
+  title: "UniStuff – 로그아웃",
+  description: "UniStuff 로그아웃 페이지입니다",
+};
 
 export default function LogoutPage() {
-  const router = useRouter();
-
-  useEffect(() => {
-    const doLogout = async () => {
-      try {
-        await logout(); // Zustand + fetch
-        router.replace("/login");
-      } catch {
-        alert("로그아웃 실패!");
-        router.replace("/school/myPage");
-      }
-    };
-
-    doLogout();
-  }, [router]);
-
-  return <p className="text-16 text-uni-black font-pretendard text-center mt-20">로그아웃 중입니다...</p>;
+  return <LogoutClient />;
 }
