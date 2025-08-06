@@ -13,7 +13,7 @@ export default function Home() {
         <div className="flex flex-col items-center mb-12">
           <div className="flex items-center gap-1.5 mb-6">
             <img src="/assets/unistuffLogo.svg" alt="UNISTUFF Logo" className="w-12 h-12" />
-            <h1 className="font-extrabold text-35 font-pretendard,sans-serif color-uni-black">UNISTUFF</h1>
+            <h1 className="font-extrabold text-35 font-pretendard,sans-serif color-uni-black">UniStuff</h1>
           </div>
           <p className="text-uni-gray-600 text-sm text-center font-pretendard leading-relaxed">
             대학생을 위한 올인원 플랫폼
