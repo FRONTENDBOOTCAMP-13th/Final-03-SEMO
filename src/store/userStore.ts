@@ -23,12 +23,8 @@ export const useUserStore = create<UserStore>()(
     (set) => ({
       user: {},
       verificationCode: "",
-      setVerificationCode: (code) => set({ verificationCode: code }),
-      emailForVerification: "",
-      setEmailForVerification: (email) => set({ emailForVerification: email }),
-
       emailVerified: false,
-      setEmailVerified: (v) => set({ emailVerified: v }),
+      emailForVerification: "",
 
       setUser: (user) => {
         console.log("[Zustand] setUser 호출됨:", user);
@@ -48,6 +44,10 @@ export const useUserStore = create<UserStore>()(
         console.log("[Zustand] resetUser 호출됨");
         set({ user: {}, verificationCode: "", emailForVerification: "", emailVerified: false });
       },
+      setEmailVerified: (v) => set({ emailVerified: v }),
+      setEmailForVerification: (email) => set({ emailForVerification: email }),
+
+      setVerificationCode: (code) => set({ verificationCode: code }),
     }),
 
     {

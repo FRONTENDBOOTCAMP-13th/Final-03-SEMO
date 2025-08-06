@@ -37,7 +37,8 @@ export function useRequireProfileCompletion() {
     const uni = user.extra?.university;
     const stu = user.extra?.studentId;
     const dorm = user.address;
-    const complete = !!uni && !!stu && !!dorm && emailVerified;
+    const verified = user.emailVerified;
+    const complete = !!uni && !!stu && !!dorm && verified;
 
     // 3) 바이패스 경로면 역시 리다이렉트 안 함
     if (BYPASS_PATHS.some((p) => pathname.startsWith(p))) {

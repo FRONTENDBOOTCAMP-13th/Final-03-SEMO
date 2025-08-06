@@ -106,7 +106,7 @@ function LoginFormContent() {
           </div>
         </form>
 
-        <div className="w-full max-w-sm mt-10 space-y-3">
+        <div className="w-full max-w-sm space-y-3">
           <div className="flex items-center w-full max-w-sm gap-4 my-6">
             <div className="flex-grow h-px bg-gray-300" />
             <span className="text-sm text-gray-400 whitespace-nowrap">소셜 로그인</span>
@@ -118,10 +118,10 @@ function LoginFormContent() {
             카카오 로그인
           </Button>
 
-          <Button type="google" onClick={() => alert("구글 로그인")}>
+          {/* <Button type="google" onClick={() => alert("구글 로그인")}>
             <Image src="/assets/google.svg" alt="Google" width={20} height={20} className="mr-2" />
             Google 로그인
-          </Button>
+          </Button> */}
         </div>
       </div>
     </main>
