@@ -1,4 +1,10 @@
 import OnboardingSliderForm from "@/app/onBoarding/OnboardingSliderForm";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "UniStuff | 온보딩 페이지",
+  description: "UniStuff의 온보딩 페이지 입니다",
+};
 
 export default function OnBoardingPage() {
   return (
