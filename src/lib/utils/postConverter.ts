@@ -111,7 +111,7 @@ export async function orderToReviewItems(order: OrderItem): Promise<Review[]> {
       orderId: order._id, // order_id 추가
       title: product.name,
       author: authorName,
-      image: getImageUrl(product.image?.["path "]), // 상품 이미지
+      image: getImageUrl(product.image?.path), // 상품 이미지 (path 키에서 공백 제거)
       sellerProfileImage: sellerProfileImageUrl, // 판매자 프로필 이미지
       location: location, // 모든 리뷰 아이템에 동일한 위치 정보 적용
       date: new Date(order.createdAt)
