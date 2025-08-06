@@ -1,6 +1,11 @@
 import PostContent from "./_components/PostContent";
 import MarketPageHeader from "@/app/school/market/_components/MarketPageHeader";
+import { Metadata } from "next";
 
+export const metadata: Metadata = {
+  title: "UniStuff | 상품",
+  description: "상품 상세 페이지입니다.",
+};
 interface PageProps {
   params: Promise<{ marketType: string; postId: string }>;
 }
