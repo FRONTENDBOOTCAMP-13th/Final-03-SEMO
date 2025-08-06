@@ -31,55 +31,33 @@
 ```mermaid
 flowchart TD
     subgraph "시작"
-        A[초기 진입] --> B[온보딩 확인]
+        A[앱 진입] --> B{온보딩 확인}
+        B -- 필요함 --> C[로그인/회원가입]
+        B -- 완료됨 --> D[메인 진입]
     end
 
     subgraph "인증"
-        C[로그인 페이지] --> D{소셜 로그인 시도}
-        D -- 카카오 로그인 --> E[학교 이메일 인증]
-        E -- 인증 완료 --> F[메인 페이지]
+        C --> E[소셜 로그인 및 학교 인증]
+        E --> D
     end
 
-    subgraph "메인 서비스 (Market)"
-        F --> G[상품 목록 조회]
-        G --> H[상품 상세 보기]
-        H --> I{거래 희망}
-        I -- Yes --> J[채팅방 생성 및 이동]
-        I -- No --> G
-        G --> K[새 상품 등록]
-        K --> F
+    subgraph "메인 서비스"
+        D --> F[상품 조회 및 등록]
+        F --> G[채팅 시작]
     end
 
-    subgraph "사용자 활동"
-        F -- 네비게이션 --> L[마이페이지]
-        L --> M{나의 활동 확인}
-        M -- 판매 내역 --> G
-        M -- 관심 목록 --> H
-        L --> N[프로필 수정]
-        H -- 사용자 프로필 클릭 --> O[다른 사용자 프로필 조회]
+    subgraph "채팅 및 거래"
+        G --> H[실시간 채팅]
+        H --> I[거래 완료 → 후기 작성]
     end
 
-    subgraph "채팅"
-        J --> P[실시간 메시지 교환]
-        P --> Q{거래 약속}
-        Q -- 완료 --> R[거래 후기 작성]
-        R --> O
+    subgraph "마이페이지"
+        D --> J[내 활동 확인 및 프로필 수정]
     end
 
-    B -- 온보딩 필요 --> C
-    B -- 온보딩 완료 --> F
+    classDef section fill:#f0f8ff,stroke:#333,stroke-width:1.5px;
+    class A,B,C,D,E,F,G,H,I,J section;
 
-    classDef start fill:#e6f2ff,stroke:#0069d9,stroke-width:2px;
-    classDef auth fill:#e0ffe0,stroke:#008000,stroke-width:2px;
-    classDef main fill:#fff0e0,stroke:#d46f00,stroke-width:2px;
-    classDef activity fill:#f9f9f9,stroke:#333,stroke-width:2px;
-    classDef chat fill:#f5e6ff,stroke:#8e44ad,stroke-width:2px;
-
-    class A,B start;
-    class C,D,E auth;
-    class F,G,H,I,K main;
-    class L,M,N,O activity;
-    class J,P,Q,R chat;
 ```
 
 ## 프로젝트 구조
