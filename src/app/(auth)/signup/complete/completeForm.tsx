@@ -39,8 +39,8 @@ export default function SignupCompleteForm() {
           {/* 학교 선택 */}
           <div className="relative w-full">
             <select
-              value={user.university ?? ""}
-              onChange={(e) => handleChange("university", e.target.value)}
+              value={user.extra?.university ?? ""}
+              onChange={(e) => handleChange("extra", e.target.value)}
               className="appearance-none w-full pr-10 border border-uni-gray-200 rounded-lg p-4 text-16 focus:outline-uni-blue-400 focus:border-uni-blue-400 bg-uni-gray-100"
             >
               <option value="">대학교 선택</option>
@@ -59,18 +59,18 @@ export default function SignupCompleteForm() {
 
           <Input
             placeholder="소속 학과"
-            value={user.department ?? ""}
-            onChange={(e) => setUser({ ...user, department: e.target.value })}
+            value={user.extra?.department ?? ""}
+            onChange={(e) => setUser({ ...user, extra: { ...user.extra, department: e.target.value } })}
           />
           <Input
             placeholder="소속 학번(전체)"
-            value={user.studentId ?? ""}
-            onChange={(e) => setUser({ ...user, studentId: e.target.value })}
+            value={user.extra?.studentId ?? ""}
+            onChange={(e) => setUser({ ...user, extra: { ...user.extra, studentId: e.target.value } })}
           />
           <Input
             placeholder="기숙사 호관"
-            value={user.dormitory ?? ""}
-            onChange={(e) => setUser({ ...user, dormitory: e.target.value })}
+            value={user.extra?.dormitory ?? ""}
+            onChange={(e) => setUser({ ...user, extra: { ...user.extra, dormitory: e.target.value } })}
           />
           <Input
             placeholder="닉네임"

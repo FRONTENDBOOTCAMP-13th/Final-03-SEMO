@@ -6,6 +6,7 @@ import { ChevronLeft } from 'lucide-react';
 import { useUserStore } from '@/store/userStore';
 import UserProfileHeader from './UserProfileHeader';
 import UserRating from './UserRating';
+import { Post } from "@/types";
 
 export interface SellerInfo {
   _id: number;
@@ -20,20 +21,33 @@ export interface RatingData {
   ratingDistribution: { [key: number]: number };
 }
 
+interface UserPostsData {
+  sell: Post[];
+  buy: Post[];
+  groupPurchase: Post[];
+}
+
 interface UserProfileContainerProps {
   userId: string;
   userInfoPromise: Promise<SellerInfo | null>;
+  userPostsPromise: Promise<UserPostsData>;
 }
 
-export default function UserProfileContainer({ userId, userInfoPromise }: UserProfileContainerProps) {
+export default function UserProfileContainer({ userId, userInfoPromise, userPostsPromise }: UserProfileContainerProps) {
   const router = useRouter();
   const { user } = useUserStore();
   const isCurrentUser = user?._id === parseInt(userId);
 
   const sellerInfo = use(userInfoPromise);
+  const userPosts = use(userPostsPromise);
 
   const [purchaseCount, setPurchaseCount] = useState<number>(0);
   const [ratingData, setRatingData] = useState<RatingData>({ averageRating: 0, totalReviews: 0, ratingDistribution: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 } });
+
+  // 게시글 수 계산
+  const sellPostsCount = userPosts.sell.length;
+  const buyPostsCount = userPosts.buy.length;
+  const groupPurchasePostsCount = userPosts.groupPurchase.length;
 
   useEffect(() => {
     async function fetchData() {
@@ -71,7 +85,7 @@ export default function UserProfileContainer({ userId, userInfoPromise }: UserPr
           <div className="w-10 h-10"></div>
         </div>
       </header>
-      <UserProfileHeader sellerInfo={sellerInfo} sellPostsCount={0} buyPostsCount={0} groupPurchasePostsCount={0} purchaseCount={purchaseCount} getUserImageUrl={getUserImageUrl} />
+      <UserProfileHeader sellerInfo={sellerInfo} sellPostsCount={sellPostsCount} buyPostsCount={buyPostsCount} groupPurchasePostsCount={groupPurchasePostsCount} purchaseCount={purchaseCount} getUserImageUrl={getUserImageUrl} />
       <UserRating ratingData={ratingData} getRatingPercentage={getRatingPercentage} />
     </div>
   );

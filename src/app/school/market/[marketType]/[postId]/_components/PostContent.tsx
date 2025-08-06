@@ -61,13 +61,13 @@ export default function PostContent({ post, marketType }: PostContentProps) {
             상품 가격 정보
           </h3>
           <span className="sr-only">가격:</span>
-          <p className="text-14 text-uni-gray-400 mb-4">
+          <p className="text-14 text-uni-gray-700 mb-4">
             {post?.extra?.price != null ? `${Number(post?.extra.price).toLocaleString()}원` : "가격 정보 없음"}
           </p>
         </section>
 
         {/* 작성자 */}
-        <div className="flex items-center gap-3 my-2" role="region" aria-labelledby="seller-title">
+        <div className="flex items-center gap-3 my-2" role="region" aria-label="seller-title">
           <figure className="seller-avatar" aria-label={`${post?.user.name}의 프로필`}>
             <Image
               src={getImageUrl(post.user.image)}
@@ -79,7 +79,7 @@ export default function PostContent({ post, marketType }: PostContentProps) {
           </figure>
           <div className="seller-details">
             <p className="text-16">{post?.user.name}</p>
-            <p className="text-14 text-uni-gray-300">
+            <p className="text-14 text-uni-gray-700">
               <span className="sr-only">거래 위치:</span>
               {post?.extra.location}
             </p>
@@ -88,18 +88,18 @@ export default function PostContent({ post, marketType }: PostContentProps) {
 
         {/* 상태 */}
         <div className="my-3" role="status" aria-label="상품 상태">
-          <span className="inline-block bg-uni-green-300 text-uni-white text-14 font-bold rounded-xl px-4 py-1.5">
+          <span className="inline-block bg-uni-green-400 text-uni-white text-14 font-bold rounded-xl px-4 py-1.5">
             {post?.extra.crt}
           </span>
         </div>
 
         {/* 설명 */}
-        <section className="product-description" aria-labelledby="description-title">
+        <section className="product-description" aria-label="description-title">
           <h3 id="desc-title" className="sr-only">
             상품 설명
           </h3>
           <p className="text-gray-700 mb-2 text-16">{post?.content}</p>
-          <p className="text-12 text-uni-gray-300 mb-6">{post?.createdAt}</p>
+          <p className="text-12 text-uni-gray-700 mb-6">{post?.createdAt}</p>
         </section>
         {post?._id && Number.isInteger(post._id) && <CommentList _id={post._id} post={post} />}
 
@@ -118,7 +118,7 @@ export default function PostContent({ post, marketType }: PostContentProps) {
   return (
     <main className="min-w-[320px] max-w-[480px] mx-auto px-4 min-h-screen bg-uni-white">
       {/* 이미지 */}
-      <div className="rounded-lg overflow-hidden mb-4 bg-uni-gray-100">
+      <div className="">
         <h1 className="sr-only">공동구매 상세 정보</h1>
         <figure
           className="product-image rounded-lg overflow-hidden mb-4 bg-uni-gray-100"
@@ -157,7 +157,7 @@ export default function PostContent({ post, marketType }: PostContentProps) {
         <h3 id="group-info-title" className="sr-only">
           공동구매 정보
         </h3>
-        <p className="text-14 text-uni-gray-400 mb-4">
+        <p className="text-14 text-uni-gray-700 mb-4">
           <span className="sr-only">총 가격:</span>
           {post?.extra?.price != null ? `${Number(post?.extra.price).toLocaleString()}원` : "가격 정보 없음"}
         </p>
@@ -179,7 +179,7 @@ export default function PostContent({ post, marketType }: PostContentProps) {
           <div className="details">
             <p className="text-16">{post?.user.name}</p>
             <span className="sr-only">거래 장소</span>
-            <p className="text-14 text-uni-gray-300">{post?.extra.location}</p>
+            <p className="text-14 text-uni-gray-700">{post?.extra.location}</p>
           </div>
         </div>
 
@@ -188,11 +188,11 @@ export default function PostContent({ post, marketType }: PostContentProps) {
           <span className="inline-block bg-uni-green-400 text-uni-white text-14 font-bold rounded-[12px] p-10 mr-2 px-4.5 py-1.5">
             {post?.extra.crt}
           </span>
-          <span className="inline-block bg-uni-gray-200 text-uni-gray-400 text-14 font-bold rounded-[12px] p-10  mr-2 px-4.5 py-1.5">
+          <span className="inline-block bg-uni-gray-200 text-uni-gray-800 text-14 font-bold rounded-[12px] p-10  mr-2 px-4.5 py-1.5">
             <span className="sr-only">참여 인원:</span>
             {post?.extra.participants}명
           </span>
-          <span className="inline-block bg-uni-gray-200 text-uni-gray-400 text-14 font-bold rounded-[12px] p-10  mr-2 px-4.5 py-1.5">
+          <span className="inline-block bg-uni-gray-200 text-uni-gray-800 text-14 font-bold rounded-[12px] p-10  mr-2 px-4.5 py-1.5">
             <span className="sr-only">인당 가격:</span>
             인당 {pricePerPerson.toLocaleString()}원
           </span>
@@ -200,27 +200,27 @@ export default function PostContent({ post, marketType }: PostContentProps) {
       </section>
 
       {/* 설명 */}
-      <section className="product-description mb-6" aria-labelledby="group-description-title">
+      <section className="product-description mb-6" aria-label="group-description-title">
         <h3 id="group-desc" className="sr-only">
           상품 설명
         </h3>
         <p className="text-gray-700 mb-2 text-16">{post?.content}</p>
-        <p className="text-12 text-uni-gray-300 mb-6">{post?.createdAt}</p>
+        <p className="text-12 text-uni-gray-700 mb-6">{post?.createdAt}</p>
       </section>
 
       {/* 분배 장소 */}
-      <section className="group-details mb-6" aria-labelledby="group-details-title">
+      <section className="group-details mb-6" aria-label="group-details-title">
         <h3 id="group-details-title" className="sr-only">
           공동구매 세부 정보
         </h3>
-        <div className="border-2 border-uni-gray-200 rounded-lg p-3 mb-2 mt-10" aria-labelledby="location-title">
+        <div className="border-2 border-uni-gray-200 rounded-lg p-3 mb-2 mt-10" aria-label="location-title">
           <p className="text-14 font-medium text-uni-gray-500 mb-1">분배 장소</p>
           <p className="text-14 text-uni-blue-400 font-bold">{post?.extra.groupLocation}</p>
         </div>
         {/* 마감기한 */}
-        <div className="border-2 border-uni-gray-200 rounded-lg p-3 mb-10" aria-labelledby="deadLine">
-          <p className="text-14 font-medium text-uni-gray-500 mb-1">기한</p>
-          <p className="text-14 text-uni-gray-300">
+        <div className="border-2 border-uni-gray-200 rounded-lg p-3 mb-10" aria-label="deadLine">
+          <p className="text-14 font-medium text-uni-gray-700 mb-1">기한</p>
+          <p className="text-14 text-uni-gray-700">
             {post?.extra.deadLine
               ? `${new Date(post.extra.deadLine).toLocaleDateString("ko-KR", {
                   year: "numeric",

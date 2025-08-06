@@ -20,7 +20,7 @@ export default async function CommentList({ _id, post }: CommentListProps) {
       {res.ok && res.item.length > 0 ? (
         res.item.map((reply: PostReply) => <CommentItem key={reply._id} reply={reply} post={post} />)
       ) : (
-        <p className="text-uni-gray-300 text-center py-4">댓글이 없습니다.</p>
+        <p className="text-uni-gray-600 text-center py-4">댓글이 없습니다.</p>
       )}
     </div>
   );

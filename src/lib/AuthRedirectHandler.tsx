@@ -33,22 +33,35 @@ export default function AuthRedirectHandler() {
   const pathname = usePathname();
   const { user } = useUserStore();
 
-  useEffect(() => {
-    // 브라우저 환경이 아니면 리턴 (SSR 방지)
-    if (typeof window === "undefined") return;
+  // 여기서 건너뛸 경로들을 정의합니다.
+  const SKIP_PATHS = [
+    "/signup",
+    "/signup/code",
+    "/signup/complete", // 필요에 따라 추가
+    "/school/myPage/kakaoSetting", // 카카오 전용 프로필 보완 페이지
+    "/onBoarding", // 온보딩 페이지
+    "/login",
+    "/find",
+  ];
 
-    // setTimeout을 사용해 한 틱 뒤에 실행 (DOM과 상태가 안정화된 후)
+  useEffect(() => {
+    // SSR 혹은 초기 hydration 중이면 동작 금지
+    if (typeof window === "undefined") return;
+    // 예외 경로면 바로 리턴 (어떤 redirect도 하지 않음)
+    if (SKIP_PATHS.some((p) => pathname.startsWith(p))) return;
+
     const timeoutId = setTimeout(() => {
-      // 로그인 상태를 더 안정적으로 확인
       const userStoreToken = user.token?.accessToken;
       const localStorageToken = localStorage.getItem("accessToken");
       const isLoggedIn = !!(userStoreToken || localStorageToken);
-
-      // 온보딩 완료 상태 확인
       const onboardingCompleted = localStorage.getItem("onboarding-completed") === "true";
 
       const isAuthPage =
-        pathname.startsWith("/login") || pathname.startsWith("/signup") || pathname.startsWith("/find");
+        pathname.startsWith("/login") ||
+        pathname.startsWith("/signup") ||
+        pathname.startsWith("/find") ||
+        pathname.startsWith("/signup/code") ||
+        pathname.startsWith("/school/myPage/kakaoSetting");
       const isOnboardingPage = pathname === "/onBoarding";
       const isRootPage = pathname === "/";
       const isSchoolPage = pathname.startsWith("/school");
@@ -56,18 +69,18 @@ export default function AuthRedirectHandler() {
       if (isLoggedIn) {
         // 로그인된 사용자
         if (onboardingCompleted) {
-          // 온보딩 완료: 루트, 온보딩, 인증 페이지에서 홈으로 리다이렉트
+          // 온보딩 완료 → 루트/인증 관련 페이지일 땐 홈으로
           if (isRootPage || isOnboardingPage || isAuthPage) {
             router.replace("/school/home");
           }
         } else {
-          // 온보딩 미완료: 루트, 인증 페이지에서 온보딩으로 리다이렉트
+          // 온보딩 미완료 → 루트/인증 관련 페이지일 땐 온보딩으로
           if (isRootPage || isAuthPage) {
             router.replace("/onBoarding");
           }
         }
       } else {
-        // 로그인되지 않은 사용자: 온보딩, 스쿨 페이지 접근 시 루트로 리다이렉트
+        // 비로그인 사용자
         if (isOnboardingPage || isSchoolPage) {
           router.replace("/");
         }
@@ -75,7 +88,7 @@ export default function AuthRedirectHandler() {
     }, 0);
 
     return () => clearTimeout(timeoutId);
-  }, [user.token?.accessToken, router, pathname]);
+  }, [user.token?.accessToken, pathname, router]);
 
   return null;
 }

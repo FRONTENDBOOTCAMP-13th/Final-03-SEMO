@@ -5,6 +5,12 @@ import ItemSection from "../[marketType]/itemSection";
 import { getPosts } from "@/app/api/market/functions/post";
 import MarketTagNav from "@/app/school/market/_components/MarketTagNav";
 import { Pencil } from "lucide-react";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "UniStuff | 공동구매",
+  description: "groupPurchase 페이지입니다.",
+};
 
 export default async function groupPurchase() {
   const boardType = "groupPurchase";
