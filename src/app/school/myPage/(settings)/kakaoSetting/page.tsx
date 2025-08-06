@@ -50,6 +50,7 @@ export default function KakaoSettingPage() {
     setEmailForVerification(email);
     setUser({
       ...user,
+      emailVerified: false, // 아직 인증 안 됨
       email, // 인증에 쓸 이메일
       address: dorm,
       extra: { ...user.extra, university: univ, department: dept, studentId },
@@ -70,6 +71,7 @@ export default function KakaoSettingPage() {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
+          ...user,
           email,
           emailVerified: true,
           address: dorm,
@@ -82,6 +84,7 @@ export default function KakaoSettingPage() {
       // store 갱신
       setUser({
         ...user,
+        emailVerified: true,
         email,
         address: dorm,
         extra: { ...user.extra, university: univ, department: dept, studentId },
