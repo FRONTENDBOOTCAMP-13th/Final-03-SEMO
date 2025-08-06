@@ -1,4 +1,10 @@
 import SplashScreenForm from "@/components/SplashScreenForm";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "UniStuff",
+  description: "UniStuff - 대학생을 위한 올인원 플랫폼",
+};
 
 export default function Home() {
   return (
