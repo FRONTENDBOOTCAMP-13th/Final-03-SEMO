@@ -9,9 +9,9 @@ interface SignupParams {
 }
 
 export const handleSignup = async ({ user, setLoading }: SignupParams) => {
-  const { email, password, extra, name } = user;
+  const { email, password, extra, address, name } = user;
 
-  if (!extra?.university || !extra?.department || !extra?.studentId || !extra?.dormitory || !name) {
+  if (!extra?.university || !extra?.department || !extra?.studentId || !address || !name) {
     throw new Error("모든 항목을 입력해 주세요!");
   }
 
