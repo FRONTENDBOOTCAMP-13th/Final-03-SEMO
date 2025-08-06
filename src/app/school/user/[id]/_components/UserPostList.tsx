@@ -1,25 +1,29 @@
 "use client";
 
-import ProductCard from "@/app/school/user/[id]/_components/ProductCard";
+import ProductCard from "./ProductCard";
 import { Post } from "@/types";
 
 interface UserPostListProps {
   sellPosts: Post[];
   buyPosts: Post[];
   groupPurchasePosts: Post[];
-  getProductImagePath: (productImages: any) => string;
 }
 
-export default function UserPostList({
-  sellPosts,
-  buyPosts,
-  groupPurchasePosts,
-  getProductImagePath,
-}: UserPostListProps) {
+export default function UserPostList({ sellPosts, buyPosts, groupPurchasePosts }: UserPostListProps) {
   const allPosts = [...sellPosts, ...buyPosts, ...groupPurchasePosts];
 
+  const getProductImagePath = (productImages: any): string => {
+    if (Array.isArray(productImages) && productImages.length > 0) {
+      const firstImage = productImages[0];
+      if (typeof firstImage === "object" && firstImage.path) return firstImage.path;
+      if (typeof firstImage === "string") return firstImage;
+    }
+    if (typeof productImages === "string") return productImages;
+    return "";
+  };
+
   return (
-    <div className="px-6 pt-4 pb-6">
+    <div className="pb-6">
       <h3 className="text-lg font-bold mb-4">게시물</h3>
       {allPosts.length > 0 ? (
         <div className="overflow-x-auto hide-scrollbar">

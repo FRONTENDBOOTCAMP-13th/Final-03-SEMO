@@ -3,6 +3,7 @@
 
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation"; // useRouter 임포트
+import Head from "next/head";
 import TabNavigation from "@/components/ui/TabNavigation";
 import ItemCard, { Item } from "@/app/school/myPage/_components/ItemCard";
 import EmptyState from "@/components/common/EmptyState";
@@ -65,9 +66,14 @@ export default function MyPageWishlist() {
   }
 
   return (
-    <div className="min-h-screen bg-uni-white">
-      {/* Tab Navigation */}
-      <TabNavigation tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
+    <>
+      <Head>
+        <title>UniStuff | 북마크</title>
+        <meta name="description" content="찜한 목록을 확인" />
+      </Head>
+      <div className="min-h-screen bg-uni-white">
+        {/* Tab Navigation */}
+        <TabNavigation tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
 
       <main className="p-4 space-y-6 pb-24">
         {/* 팔래요 Section */}
@@ -130,6 +136,7 @@ export default function MyPageWishlist() {
           </section>
         )}
       </main>
-    </div>
+      </div>
+    </>
   );
 }

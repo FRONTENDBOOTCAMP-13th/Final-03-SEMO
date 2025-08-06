@@ -11,10 +11,10 @@ import TradeComplete from "../components/tradeComplete";
 import TradeInfoBox from "../components/tradeInfoBox";
 
 import { socket, useChatSocket } from "../../../api/chat/useChatSoket";
-import { useChatStore } from "../../../api/chat/useChatStore";
 import { useUserStore } from "@/store/userStore";
 import Header from "@/components/common/Header";
 import PopUp from "@/components/common/PopUp";
+import { useChatStore } from "@/store/useChatStore";
 
 const ChatPage = () => {
   const params = useParams();
@@ -132,43 +132,24 @@ const ChatPage = () => {
 
   return (
     <>
-      <Header title="채팅" />
-      {showModal && <PopUp onClose={() => setShowModal(false)} />}
-
-      <ProductInfo productData={productData} />
-
-      <div className="px-4 my-2">
-        {/* <button
-          onClick={() => {
-            if (roomIdFromQuery) {
-              handleJoinRoom(roomIdFromQuery);
-            } else {
-              alert("roomId가 없습니다. 채팅을 시작할 수 없습니다.");
-            }
-          }}
-          className="bg-uni-blue-500 text-uni-white px-4 py-2 rounded hover:bg-uni-blue-600"
-          disabled={joinedRoom}
-        >
-          {joinedRoom ? "개인 채팅 중..." : "1:1 채팅 시작하기"}
-        </button> */}
+      <div className="mb-[56px]">
+        <Header title="채팅" backLink="/school/chat" />
+        {showModal && <PopUp onClose={() => setShowModal(false)} />}
+        <ProductInfo productData={productData} />
+        <ChatBubbleList />
+        {!isTradeDone && (
+          <TradeCheck
+            postId={productId}
+            productId={productData?.extra?.productId}
+            productExtra={productData?.extra || {}}
+            postType={postType}
+            isSeller={isSeller}
+            onComplete={() => setIsTradeDone(true)}
+          />
+        )}
+        {isTradeDone && !isSeller && <TradeComplete buyerId={Number(buyerId)} buyerName={buyerNickName} />}
+        {isTradeDone && <TradeInfoBox location={location} accountNumber={accountNumber} />}
       </div>
-
-      <ChatBubbleList />
-
-      {!isTradeDone && (
-        <TradeCheck
-          postId={productId}
-          productId={productData?.extra?.productId}
-          productExtra={productData?.extra || {}}
-          postType={postType}
-          isSeller={isSeller}
-          onComplete={() => setIsTradeDone(true)}
-        />
-      )}
-
-      {isTradeDone && !isSeller && <TradeComplete buyerName={buyerNickName} />}
-      {isTradeDone && <TradeInfoBox location={location} accountNumber={accountNumber} />}
-
       <InputChat userId={buyerId} nickName={buyerNickName} sellerId={sellerId} sellerNickName={sellerNickName} />
     </>
   );

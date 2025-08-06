@@ -1,148 +1,17 @@
-"use client";
+import type { Metadata } from "next";
+import MyPageClient from "./MyPageClient";
 
-import Link from "next/link";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { User, Package, Star, Heart, Bell, Info, LogOut } from "lucide-react";
-import { useMyPageData } from "@/lib/hooks/useMyPageData";
-import ImageService from "@/lib/imageService";
+// SEO를 위한 메타 데이터
+export const metadata: Metadata = {
+  title: "UniStuff | 마이페이지",
+  description: "나의 거래 내역, 찜한 목록, 거래 후기 등 모든 활동을 확인하고 프로필을 관리",
+};
 
 export default function MyPage() {
-  const { userData, postsCount, reviewsCount, bookmarksCount } = useMyPageData();
-  const router = useRouter();
-
-  const userProfileImage = ImageService.getSafeImageUrl(userData?.image, "/assets/defaultimg.png");
-
-  // 프로필 클릭 핸들러
-  const handleProfileClick = () => {
-    if (userData?._id) {
-      router.push(`/school/user/${userData._id}`);
-    }
-  };
-
   return (
-    <div className="px-4 pb-6 space-y-6">
-      {/* 사용자 프로필 */}
-      <button
-        onClick={handleProfileClick}
-        className="flex items-center justify-center bg-uni-white py-8 px-4 mb-0 w-full hover:bg-uni-gray-50 transition-colors"
-      >
-        <div className="w-24 h-24 mr-4 bg-uni-gray-200 rounded-full flex items-center justify-center overflow-hidden relative flex-shrink-0">
-          {userData?.image ? (
-            <Image src={userProfileImage} alt="User Profile" fill style={{ objectFit: "cover" }} />
-          ) : (
-            <User className="w-12 h-12 text-uni-gray-500" />
-          )}
-        </div>
-        <div className="text-left">
-          <h2 className="text-20 font-semibold text-uni-black font-pretendard">{userData?.name || "사용자 이름"}</h2>
-          <p className="text-14 text-uni-gray-400 font-pretendard">{userData?.email || "사용자 이메일"}</p>
-        </div>
-      </button>
-      {/* 활동 요약 섹션 */}
-      <div className="bg-uni-white">
-        <div className="px-4 py-4 ">
-          <h3 className="text-18 font-semibold text-uni-black font-pretendard">활동 요약</h3>
-        </div>
-
-        <div className="space-y-0">
-          <Link
-            href="/school/myPage/my-post" //내가 거래한 목록
-            className="flex items-center justify-between py-4 px-4  "
-          >
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-uni-blue-100 rounded-lg flex items-center justify-center">
-                <Package className="w-5 h-5 text-uni-blue-400" />
-              </div>
-              <div>
-                <p className="font-medium text-uni-black font-pretendard">내 거래 목록</p>
-                <p className="text-14 text-uni-gray-400 font-pretendard">{postsCount}건</p>
-              </div>
-            </div>
-          </Link>
-          <Link
-            href="/school/myPage/review-to-write" //남길 수 있는 후기 목록
-            className="flex items-center justify-between py-4 px-4  "
-          >
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-uni-blue-100 rounded-lg flex items-center justify-center">
-                <Star className="w-5 h-5 text-uni-blue-400" />
-              </div>
-              <div>
-                <p className="font-medium text-uni-black font-pretendard">남길 수 있는 후기</p>
-                <p className="text-14 text-uni-gray-400 font-pretendard">{reviewsCount}건</p>
-              </div>
-            </div>
-          </Link>
-          <Link
-            href="/school/myPage/wishlist" //찜한 목록
-            className="flex items-center justify-between py-4 px-4 "
-          >
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-uni-blue-100 rounded-lg flex items-center justify-center">
-                <Heart className="w-5 h-5 text-uni-blue-400" />
-              </div>
-              <div>
-                <p className="font-medium text-uni-black font-pretendard">찜한 목록</p>
-                <p className="text-14 text-uni-gray-400 font-pretendard">{bookmarksCount}건</p>
-              </div>
-            </div>
-          </Link>
-        </div>
-      </div>
-      {/* 상세 정보 및 설정 섹션 */}
-      <div className="bg-uni-white">
-        <div className="px-4 py-4 ">
-          <h3 className="text-18 font-semibold text-uni-black font-pretendard">상세 정보 및 설정</h3>
-        </div>
-
-        <div className="space-y-0">
-          <Link
-            href="/school/myPage/account" //계정 설정
-            className="flex items-center justify-between py-4 px-4  "
-          >
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-uni-gray-200 rounded-lg flex items-center justify-center">
-                <User className="w-5 h-5 text-uni-gray-600" />
-              </div>
-              <span className="font-medium text-uni-black font-pretendard">계정 설정</span>
-            </div>
-          </Link>
-          <Link
-            href="/school/myPage/notifications" //알림 설정
-            className="flex items-center justify-between py-4 px-4  "
-          >
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-uni-gray-200 rounded-lg flex items-center justify-center">
-                <Bell className="w-5 h-5 text-uni-gray-600" />
-              </div>
-              <span className="font-medium text-uni-black font-pretendard">알림 설정</span>
-            </div>
-          </Link>
-          <Link
-            href="/school/myPage/app-info" //앱 정보(임시 페이지 이름)
-            className="flex items-center justify-between py-4 px-4  "
-          >
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-uni-gray-200 rounded-lg flex items-center justify-center">
-                <Info className="w-5 h-5 text-uni-gray-600" />
-              </div>
-              <span className="font-medium text-uni-black font-pretendard">앱 정보</span>
-            </div>
-          </Link>
-          <Link
-            href="/school/myPage/logout" //로그아웃
-            className="flex items-center justify-between py-4 px-4 "
-          >
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-uni-gray-200 rounded-lg flex items-center justify-center">
-                <LogOut className="w-5 h-5 text-uni-gray-600" />
-              </div>
-              <span className="font-medium text-uni-black font-pretendard">로그아웃</span>
-            </div>
-          </Link>
-        </div>
-      </div>
-    </div>
+    <main>
+      <h1 className="sr-only">마이페이지</h1> {/* 스크린 리더 사용자를 위한 제목 */}
+      <MyPageClient />
+    </main>
   );
 }

@@ -10,11 +10,9 @@ export default function OnboardingSliderForm() {
   const touchEndX = useRef(0);
 
   const handleStartClick = () => {
+    console.log("온보딩 완료 상태 업데이트됨");
     // 온보딩 완료 플래그 저장
-    if (typeof window !== 'undefined') {
-      localStorage.setItem("onboarding-completed", "true");
-    }
-    router.push("/school/home");
+    router.push("/login");
   };
 
   const goToSlide = (slideIndex: number) => {
@@ -55,23 +53,23 @@ export default function OnboardingSliderForm() {
 
   return (
     <div
-      className="onboarding-container absolute inset-0 z-10 bg-gradient-to-br from-uni-gray-100 via-uni-blue-100 to-uni-blue-200"
+      className="onboarding-container w-full h-screen bg-white"
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
       onClick={handleSlideClick}
     >
-      <div className="slider w-full h-screen relative overflow-hidden max-w-sm mx-auto">
+      <div className="slider w-full h-screen relative overflow-hidden">
         <div
           className="slides flex w-[400%] h-full transition-transform duration-500 ease-in-out"
           style={{ transform: `translateX(-${currentSlide * 25}%)` }}
         >
           {/* 슬라이드 1: 중고거래 */}
-          <div className="slide w-1/4 h-full flex flex-col items-center justify-center px-4">
-            <div className="slide-image relative w-32 h-32 mb-6 rounded-2xl liquid-glass icon-container flex justify-center items-center text-4xl shadow-xl">
-              <span className="relative z-20 drop-shadow-lg text-black font-semibold">🛒</span>
+          <div className="slide w-1/4 h-full flex flex-col items-center justify-center px-8 pt-16 pb-32">
+            <div className="slide-image w-24 h-24 mb-10 rounded-2xl bg-uni-blue-100 flex justify-center items-center text-4xl">
+              <span className="text-uni-blue-400">🛒</span>
             </div>
-            <h2 className="text-lg font-bold text-uni-blue-400 mb-3">안전한 중고거래</h2>
-            <p className="text-center text-uni-gray-600 text-sm mb-6 max-w-xs leading-relaxed">
+            <h2 className="text-xl font-bold text-uni-black font-pretendard mb-5">안전한 중고거래</h2>
+            <p className="text-center text-uni-gray-600 text-sm font-pretendard leading-relaxed max-w-xs">
               대학생 인증으로 더욱 안전하게
               <br />
               교내에서 편리한 거래를 시작하세요
@@ -79,12 +77,12 @@ export default function OnboardingSliderForm() {
           </div>
 
           {/* 슬라이드 2: 커뮤니티 */}
-          <div className="slide w-1/4 h-full flex flex-col items-center justify-center px-4">
-            <div className="slide-image relative w-32 h-32 mb-6 rounded-2xl liquid-glass icon-container flex justify-center items-center text-4xl shadow-xl">
-              <span className="relative z-20 drop-shadow-lg text-black font-semibold">💬</span>
+          <div className="slide w-1/4 h-full flex flex-col items-center justify-center px-8 pt-16 pb-32">
+            <div className="slide-image w-24 h-24 mb-10 rounded-2xl bg-uni-blue-100 flex justify-center items-center text-4xl">
+              <span className="text-uni-blue-400">💬</span>
             </div>
-            <h2 className="text-lg font-bold text-uni-blue-400 mb-3">활발한 커뮤니티</h2>
-            <p className="text-center text-uni-gray-600 text-sm mb-6 max-w-xs leading-relaxed">
+            <h2 className="text-xl font-bold text-uni-black font-pretendard mb-5">활발한 커뮤니티</h2>
+            <p className="text-center text-uni-gray-600 text-sm font-pretendard leading-relaxed max-w-xs">
               같은 대학 학생들과 소통하고
               <br />
               유용한 정보를 나누어보세요
@@ -92,12 +90,12 @@ export default function OnboardingSliderForm() {
           </div>
 
           {/* 슬라이드 3: 실시간 채팅 */}
-          <div className="slide w-1/4 h-full flex flex-col items-center justify-center px-4">
-            <div className="slide-image relative w-32 h-32 mb-6 rounded-2xl liquid-glass icon-container flex justify-center items-center text-4xl shadow-xl">
-              <span className="relative z-20 drop-shadow-lg text-black font-semibold">📱</span>
+          <div className="slide w-1/4 h-full flex flex-col items-center justify-center px-8 pt-16 pb-32">
+            <div className="slide-image w-24 h-24 mb-10 rounded-2xl bg-uni-blue-100 flex justify-center items-center text-4xl">
+              <span className="text-uni-blue-400">📱</span>
             </div>
-            <h2 className="text-lg font-bold text-uni-blue-400 mb-3">실시간 채팅</h2>
-            <p className="text-center text-uni-gray-600 text-sm mb-6 max-w-xs leading-relaxed">
+            <h2 className="text-xl font-bold text-uni-black font-pretendard mb-5">실시간 채팅</h2>
+            <p className="text-center text-uni-gray-600 text-sm  font-pretendard leading-relaxed max-w-xs">
               빠르고 편리한 실시간 채팅으로
               <br />
               원활한 소통을 경험하세요
@@ -105,12 +103,12 @@ export default function OnboardingSliderForm() {
           </div>
 
           {/* 슬라이드 4: 마이페이지 */}
-          <div className="slide w-1/4 h-full flex flex-col items-center justify-center px-4">
-            <div className="slide-image relative w-32 h-32 mb-6 rounded-2xl liquid-glass icon-container flex justify-center items-center text-4xl shadow-xl">
-              <span className="relative z-20 drop-shadow-lg text-black font-semibold">👤</span>
+          <div className="slide w-1/4 h-full flex flex-col items-center justify-center px-8 pt-16 pb-32">
+            <div className="slide-image w-24 h-24 mb-10 rounded-2xl bg-uni-blue-100 flex justify-center items-center text-4xl">
+              <span className="text-uni-blue-400">👤</span>
             </div>
-            <h2 className="text-lg font-bold text-uni-blue-400 mb-3">맞춤형 관리</h2>
-            <p className="text-center text-uni-gray-600 text-sm mb-6 max-w-xs leading-relaxed">
+            <h2 className="text-xl font-bold text-uni-black font-pretendard mb-5">맞춤형 관리</h2>
+            <p className="text-center text-uni-gray-600 text-sm font-pretendard leading-relaxed max-w-xs">
               내 활동과 관심사를 한눈에
               <br />
               개인화된 서비스를 제공합니다
@@ -127,7 +125,7 @@ export default function OnboardingSliderForm() {
         </div>
 
         {/* 슬라이드 인디케이터 */}
-        <div className="dots absolute bottom-32 left-0 right-0 flex justify-center gap-3">
+        <div className="dots absolute bottom-40 left-0 right-0 flex justify-center gap-3">
           {[0, 1, 2, 3].map((index) => (
             <div
               key={index}
@@ -143,16 +141,18 @@ export default function OnboardingSliderForm() {
         </div>
 
         {/* 시작하기 버튼 */}
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            handleStartClick();
-          }}
-          className="absolute bottom-16 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-full liquid-glass text-black text-sm font-bold overflow-hidden transition-all duration-[400ms] ease-[cubic-bezier(0.175,0.885,0.32,2.2)] animate-fade-in-delay-3 group"
-        >
-          <span className="relative z-20 font-semibold">시작하기</span>
-        </button>
       </div>
+
+      {/* SaveFloatingButton 스타일의 시작하기 버튼 */}
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          handleStartClick();
+        }}
+        className="fixed left-4 right-4 bottom-8 bg-uni-blue-400 text-uni-white py-3 font-pretendard font-semibold rounded-lg cursor-pointer"
+      >
+        시작하기
+      </button>
     </div>
   );
 }

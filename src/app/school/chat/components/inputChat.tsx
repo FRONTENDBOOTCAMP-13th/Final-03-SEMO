@@ -3,8 +3,8 @@
 import { Send } from "lucide-react";
 import { useState } from "react";
 import { GLOBAL_ROOM_ID, socket } from "../../../api/chat/useChatSoket";
-import { useChatStore, Message } from "../../../api/chat/useChatStore";
 import { useParams, useSearchParams } from "next/navigation";
+import { Message, useChatStore } from "@/store/useChatStore";
 
 interface InputChatProps {
   userId: string | number;
@@ -131,14 +131,14 @@ const InputChat = ({ userId, nickName, sellerId, sellerNickName }: InputChatProp
   };
 
   return (
-    <div className="w-full min-w-[360px] max-w-[480px] px-4 py-3">
+    <div className="w-full max-w-[480px] bg-uni-white px-4 py-3 fixed bottom-[80px]">
       <div className="flex items-center bg-uni-gray-100 rounded-lg h-12 flex-1">
         <input
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder={`${sellerNickName}에게 메시지 보내기...`}
+          placeholder="메시지를 입력하세요..."
           className="flex-1 bg-transparent outline-none mx-4 placeholder-uni-gray-300 text-16 text-uni-black"
         />
         <button

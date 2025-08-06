@@ -104,15 +104,15 @@ export async function getMyBookmarks(accessToken: string): ApiResPromise<Bookmar
         "Client-Id": CLIENT_ID,
         Authorization: `Bearer ${accessToken}`,
         "Cache-Control": "no-cache, no-store, must-revalidate",
-        "Pragma": "no-cache",
-        "Expires": "0",
+        Pragma: "no-cache",
+        Expires: "0",
       },
       cache: "no-store", // 북마크는 실시간 데이터이므로 캐시하지 않음
     });
 
     const data: ApiRes<BookmarkResponse> = await res.json();
 
-    if (data.ok) {
+    if (data.ok && data.item) {
       // BookmarkResponse를 BookmarkItem[]로 변환
       const bookmarkItems = Object.values(data.item).filter(
         (item): item is BookmarkItem =>
@@ -121,7 +121,7 @@ export async function getMyBookmarks(accessToken: string): ApiResPromise<Bookmar
 
       return { ok: 1, item: bookmarkItems };
     } else {
-      return { ok: 0, message: data.message };
+      return { ok: 0, message: data.ok === 0 ? data.message : "북마크 목록을 불러올 수 없습니다." };
     }
   } catch (error) {
     console.error(error);
@@ -162,8 +162,8 @@ export async function getMySellPosts(accessToken: string): ApiResPromise<PostIte
         "Client-Id": CLIENT_ID,
         Authorization: `Bearer ${accessToken}`,
         "Cache-Control": "no-cache, no-store, must-revalidate",
-        "Pragma": "no-cache",
-        "Expires": "0",
+        Pragma: "no-cache",
+        Expires: "0",
       },
       cache: "no-store", // 사용자 게시물은 실시간 데이터
     });
@@ -186,8 +186,8 @@ export async function getMyBuyPosts(accessToken: string): ApiResPromise<PostItem
         "Client-Id": CLIENT_ID,
         Authorization: `Bearer ${accessToken}`,
         "Cache-Control": "no-cache, no-store, must-revalidate",
-        "Pragma": "no-cache",
-        "Expires": "0",
+        Pragma: "no-cache",
+        Expires: "0",
       },
       cache: "no-store", // 사용자 게시물은 실시간 데이터
     });
@@ -210,8 +210,8 @@ export async function getMyGroupPurchasePosts(accessToken: string): ApiResPromis
         "Client-Id": CLIENT_ID,
         Authorization: `Bearer ${accessToken}`,
         "Cache-Control": "no-cache, no-store, must-revalidate",
-        "Pragma": "no-cache",
-        "Expires": "0",
+        Pragma: "no-cache",
+        Expires: "0",
       },
       cache: "no-store", // 사용자 게시물은 실시간 데이터
     });

@@ -4,7 +4,7 @@ import { Check } from "lucide-react";
 import PopUp from "./popup";
 import { useUserStore } from "@/store/userStore";
 import { socket } from "@/app/api/chat/useChatSoket";
-import { useChatStore } from "@/app/api/chat/useChatStore";
+import { useChatStore } from "@/store/useChatStore";
 import { useSearchParams } from "next/navigation";
 
 interface TradeCheckProps {
@@ -127,19 +127,17 @@ const TradeCheck = ({ onComplete, postId, isSeller, productExtra, productId, pos
     <>
       {showPopUp && <PopUp onClose={() => setShowPopUp(false)} onConfirm={handleConfirm} />}
       <div className="items-center w-full min-w-[360px] max-w-[480px] bg-uni-white px-4 py-3 gap-2">
-        <div className="flex">
-          <button
-            className="w-[80px] flex flex-col items-center text-uni-black text-14"
-            onClick={() => setShowPopUp(true)}
-            disabled={isTradeCompleted}
-          >
-            <Check
-              size={20}
-              className={`mb-2 rounded-full ${isTradeCompleted ? "bg-uni-blue-500 text-white" : "bg-uni-gray-200 text-uni-gray-400"} p-1`}
-            />
-            {isTradeCompleted ? "완료됨" : "승인하기"}
-          </button>
-        </div>
+        <button
+          className="w-[80px] flex flex-col items-center text-uni-black text-14"
+          onClick={() => setShowPopUp(true)}
+          disabled={isTradeCompleted}
+        >
+          <Check
+            size={20}
+            className={`mb-2 rounded-full ${isTradeCompleted ? "bg-uni-blue-500 text-white" : "bg-uni-gray-200 text-uni-gray-400"} p-1`}
+          />
+          {isTradeCompleted ? "완료됨" : "승인하기"}
+        </button>
       </div>
     </>
   );

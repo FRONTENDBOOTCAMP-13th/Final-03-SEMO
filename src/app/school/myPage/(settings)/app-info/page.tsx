@@ -1,3 +1,11 @@
+import { Metadata } from "next";
+
+// SEO를 위한 메타 데이터
+export const metadata: Metadata = {
+  title: "UniStuff | 앱정보",
+  description: "UniStuff의 앱 정보를 확인",
+};
+
 export default function AppInfoPage() {
   return (
     <div className="min-h-screen flex flex-col">

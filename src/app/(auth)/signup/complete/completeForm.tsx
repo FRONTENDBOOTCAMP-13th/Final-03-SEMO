@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import BackButton from "../../_components/BackButton";
@@ -16,9 +16,35 @@ export default function SignupCompleteForm() {
   const { user, setUser } = useUserStore();
   const [loading] = useState(false);
 
-  const handleChange = (field: keyof typeof user, value: string) => {
-    setUser({ ...user, [field]: value });
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    // 검증
+    if (!user.extra?.university || !user.extra?.department || !user.extra?.studentId || !user.address || !user.name) {
+      alert("모든 항목을 입력해 주세요!");
+      return;
+    }
+    // 다음 단계로
+    router.push("/signup/code");
   };
+
+  // 아래 5개의 핸들러가 각각 올바른 위치에 저장합니다.
+  const onUniversityChange = (v: string) =>
+    setUser({
+      ...user,
+      extra: { ...user.extra, university: v },
+    });
+  const onDepartmentChange = (v: string) =>
+    setUser({
+      ...user,
+      extra: { ...user.extra, department: v },
+    });
+  const onStudentIdChange = (v: string) =>
+    setUser({
+      ...user,
+      extra: { ...user.extra, studentId: v },
+    });
+  const onDormitoryChange = (v: string) => setUser({ ...user, address: v });
+  const onNameChange = (v: string) => setUser({ ...user, name: v });
 
   return (
     <main className="bg-white min-h-screen flex justify-center items-center">
@@ -29,18 +55,12 @@ export default function SignupCompleteForm() {
 
         <Logo />
 
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            router.push("/signup/code");
-          }}
-          className="w-full max-w-sm space-y-2"
-        >
+        <form onSubmit={handleSubmit} className="w-full max-w-sm space-y-2">
           {/* 학교 선택 */}
           <div className="relative w-full">
             <select
-              value={user.university ?? ""}
-              onChange={(e) => handleChange("university", e.target.value)}
+              value={user.extra?.university ?? ""}
+              onChange={(e) => onUniversityChange(e.target.value)}
               className="appearance-none w-full pr-10 border border-uni-gray-200 rounded-lg p-4 text-16 focus:outline-uni-blue-400 focus:border-uni-blue-400 bg-uni-gray-100"
             >
               <option value="">대학교 선택</option>
@@ -59,24 +79,20 @@ export default function SignupCompleteForm() {
 
           <Input
             placeholder="소속 학과"
-            value={user.department ?? ""}
-            onChange={(e) => setUser({ ...user, department: e.target.value })}
+            value={user.extra?.department ?? ""}
+            onChange={(e) => onDepartmentChange(e.target.value)}
           />
           <Input
             placeholder="소속 학번(전체)"
-            value={user.studentId ?? ""}
-            onChange={(e) => setUser({ ...user, studentId: e.target.value })}
+            value={user.extra?.studentId ?? ""}
+            onChange={(e) => onStudentIdChange(e.target.value)}
           />
           <Input
             placeholder="기숙사 호관"
-            value={user.dormitory ?? ""}
-            onChange={(e) => setUser({ ...user, dormitory: e.target.value })}
+            value={user.address ?? ""}
+            onChange={(e) => onDormitoryChange(e.target.value)}
           />
-          <Input
-            placeholder="닉네임"
-            value={user.name ?? ""}
-            onChange={(e) => setUser({ ...user, name: e.target.value })}
-          />
+          <Input placeholder="닉네임" value={user.name ?? ""} onChange={(e) => onNameChange(e.target.value)} />
 
           <Button buttonType="submit" disabled={loading} className="mt-6 w-full">
             {loading ? "가입 중..." : "회원가입"}
