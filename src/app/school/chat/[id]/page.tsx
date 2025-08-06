@@ -147,7 +147,7 @@ const ChatPage = () => {
             onComplete={() => setIsTradeDone(true)}
           />
         )}
-        {isTradeDone && !isSeller && <TradeComplete buyerName={buyerNickName} />}
+        {isTradeDone && !isSeller && <TradeComplete buyerId={Number(buyerId)} buyerName={buyerNickName} />}
         {isTradeDone && <TradeInfoBox location={location} accountNumber={accountNumber} />}
       </div>
       <InputChat userId={buyerId} nickName={buyerNickName} sellerId={sellerId} sellerNickName={sellerNickName} />
