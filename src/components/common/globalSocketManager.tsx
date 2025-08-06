@@ -27,7 +27,7 @@ export default function GlobalSocketManager({ isAuthPage }: GlobalSocketManagerP
 
   const isUserReady = user && typeof user === "object" && "_id" in user && "name" in user;
   // 로그인 상태 확인 (user._id와 user.name이 있으면 로그인된 것으로 간주)
-  const isLoggedIn = Boolean(user?.name && (user._id || user.providerAccountId));
+  const isLoggedIn = Boolean(user?.name && (user._id || user.extra?.providerAccountId));
 
   // 소켓 연결 조건: 로그인되어 있고 인증 페이지가 아닐 때
   const shouldConnectSocket = isHydrated && isLoggedIn && !isAuthPage;
@@ -35,7 +35,7 @@ export default function GlobalSocketManager({ isAuthPage }: GlobalSocketManagerP
   // 로그인되고 인증페이지가 아닐 때만 유효한 데이터 전달
 
   useChatSocket({
-    userId: shouldConnectSocket ? String(user._id || user.providerAccountId || "") : "",
+    userId: shouldConnectSocket ? String(user._id || user.extra?.providerAccountId || "") : "",
     nickName: shouldConnectSocket ? user.name! : "",
     roomId: "global",
   });
