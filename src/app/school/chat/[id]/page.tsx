@@ -11,10 +11,10 @@ import TradeComplete from "../components/tradeComplete";
 import TradeInfoBox from "../components/tradeInfoBox";
 
 import { socket, useChatSocket } from "../../../api/chat/useChatSoket";
-import { useChatStore } from "../../../api/chat/useChatStore";
 import { useUserStore } from "@/store/userStore";
 import Header from "@/components/common/Header";
 import PopUp from "@/components/common/PopUp";
+import { useChatStore } from "@/store/useChatStore";
 
 const ChatPage = () => {
   const params = useParams();

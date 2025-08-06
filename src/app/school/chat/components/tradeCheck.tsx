@@ -4,7 +4,7 @@ import { Check } from "lucide-react";
 import PopUp from "./popup";
 import { useUserStore } from "@/store/userStore";
 import { socket } from "@/app/api/chat/useChatSoket";
-import { useChatStore } from "@/app/api/chat/useChatStore";
+import { useChatStore } from "@/store/useChatStore";
 import { useSearchParams } from "next/navigation";
 
 interface TradeCheckProps {

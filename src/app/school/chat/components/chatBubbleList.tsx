@@ -1,10 +1,9 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-// import { useSearchParams } from "next/navigation";
-import { useChatStore } from "../../../api/chat/useChatStore";
 import ChatBubble from "./chatBubble";
 import { useUserStore } from "@/store/userStore";
+import { useChatStore } from "@/store/useChatStore";
 
 const ChatBubbleList = () => {
   const messages = useChatStore((state) => state.messages);

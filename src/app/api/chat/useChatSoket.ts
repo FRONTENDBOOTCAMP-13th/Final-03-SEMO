@@ -2,8 +2,8 @@ import { useEffect, useCallback } from "react";
 import { io } from "socket.io-client";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
-import { Message, useChatStore } from "./useChatStore";
 import { useUserStore } from "@/store/userStore";
+import { Message, useChatStore } from "@/store/useChatStore";
 
 export const socket = io("https://fesp-api.koyeb.app/ws/sample", { autoConnect: false });
 
