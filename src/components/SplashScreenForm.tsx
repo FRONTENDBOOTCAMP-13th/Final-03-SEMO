@@ -14,19 +14,19 @@ export default function SplashScreenForm() {
   };
 
   return (
-    <div className="flex flex-col gap-3 w-full max-w-xs">
+    <div className="flex flex-col gap-3 w-full">
       <button
         onClick={handleSignUpClick}
-        className="relative px-6 py-3 rounded-full bg-white liquid-glass text-black text-sm font-bold flex items-center justify-center transition duration-400 ease-[cubic-bezier(0.175,0.885,0.32,2.2)] animate-fade-in-delay-4"
+        className="w-full py-3 rounded-lg font-pretendard font-semibold text-16 cursor-pointer flex justify-center items-center focus:outline-uni-blue-400 focus:border-uni-blue-400 bg-uni-blue-400 text-uni-white"
       >
-        <span className="relative z-20 font-semibold">회원가입</span>
+        회원가입
       </button>
 
       <button
         onClick={handleLoginClick}
-        className="relative px-6 py-3 rounded-full bg-white liquid-glass text-black text-sm font-bold flex items-center justify-center transition duration-400 ease-[cubic-bezier(0.175,0.885,0.32,2.2)] animate-fade-in-delay-4"
+        className="w-full py-3 rounded-lg font-pretendard font-semibold text-16 cursor-pointer flex justify-center items-center focus:outline-uni-blue-400 focus:border-uni-blue-400 border border-uni-blue-400 text-uni-blue-400"
       >
-        <span className="relative z-20 font-semibold">로그인</span>
+        로그인
       </button>
     </div>
   );

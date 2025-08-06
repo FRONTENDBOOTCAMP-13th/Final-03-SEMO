@@ -73,7 +73,7 @@ export interface OrderItem {
     seller_id: number;
     name: string;
     image: {
-      "path ": string;
+      path: string;
       name: string;
       originalname: string;
     };

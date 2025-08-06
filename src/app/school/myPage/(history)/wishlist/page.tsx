@@ -9,6 +9,12 @@ import EmptyState from "@/components/common/EmptyState";
 import { useMyBookmarks } from "@/lib/hooks/useMyBookmarks";
 import { bookmarksToWishlistItems } from "@/lib/utils/postConverter";
 import SectionHeader from "@/components/common/SectionHeader";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "UniStuff | 북마크",
+  description: "찜한 목록을 확인",
+};
 
 export default function MyPageWishlist() {
   const [activeTab, setActiveTab] = useState("전체");

@@ -80,7 +80,7 @@ export default async function UserProfilePage({ params }: { params: Promise<{ id
   return (
     <main>
       <h1 className="sr-only">사용자 프로필</h1>
-      <UserProfileContainer userId={userId} userInfoPromise={userInfoPromise} />
+      <UserProfileContainer userId={userId} userInfoPromise={userInfoPromise} userPostsPromise={userPostsPromise} />
       <div className="p-4 space-y-6">
         <Suspense fallback={<SectionSkeleton />}>
           <PostListSection userPostsPromise={userPostsPromise} />

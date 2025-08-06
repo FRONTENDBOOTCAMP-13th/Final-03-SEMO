@@ -3,6 +3,13 @@
 import React, { useState } from "react";
 import SaveFloatingButton from "@/components/ui/SaveFloatingButton";
 import ToggleCard from "@/app/school/myPage/_components/ToggleCard";
+import { Metadata } from "next";
+
+// SEO를 위한 메타 데이터
+export const metadata: Metadata = {
+  title: "UniStuff | 알림 설정",
+  description: "UniStuff의 알림 설정 페이지입니다. 원하는 알림을 켜고 끌 수 있습니다",
+};
 
 export default function NotificationSettings() {
   const [notifications, setNotifications] = useState({
@@ -33,9 +40,7 @@ export default function NotificationSettings() {
   };
 
   // TODO: 저장 버튼 (현재: 콘솔 로그로 대체)
-  const handleSave = () => {
-    
-  };
+  const handleSave = () => {};
 
   return (
     <div className="px-4 py-6">
