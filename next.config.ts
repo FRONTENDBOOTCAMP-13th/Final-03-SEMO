@@ -23,5 +23,8 @@ const nextConfig: NextConfig = {
     },
   },
 };
+module.exports = {
+  reactStrictMode: false,
+};
 
 export default nextConfig;
