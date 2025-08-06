@@ -132,27 +132,24 @@ const ChatPage = () => {
 
   return (
     <>
-      <Header title="채팅" backLink="/school/chat" />
-      {showModal && <PopUp onClose={() => setShowModal(false)} />}
-
-      <ProductInfo productData={productData} />
-
-      <ChatBubbleList />
-
-      {!isTradeDone && (
-        <TradeCheck
-          postId={productId}
-          productId={productData?.extra?.productId}
-          productExtra={productData?.extra || {}}
-          postType={postType}
-          isSeller={isSeller}
-          onComplete={() => setIsTradeDone(true)}
-        />
-      )}
-
-      {isTradeDone && !isSeller && <TradeComplete buyerName={buyerNickName} />}
-      {isTradeDone && <TradeInfoBox location={location} accountNumber={accountNumber} />}
-
+      <div className="mb-[56px]">
+        <Header title="채팅" backLink="/school/chat" />
+        {showModal && <PopUp onClose={() => setShowModal(false)} />}
+        <ProductInfo productData={productData} />
+        <ChatBubbleList />
+        {!isTradeDone && (
+          <TradeCheck
+            postId={productId}
+            productId={productData?.extra?.productId}
+            productExtra={productData?.extra || {}}
+            postType={postType}
+            isSeller={isSeller}
+            onComplete={() => setIsTradeDone(true)}
+          />
+        )}
+        {isTradeDone && !isSeller && <TradeComplete buyerName={buyerNickName} />}
+        {isTradeDone && <TradeInfoBox location={location} accountNumber={accountNumber} />}
+      </div>
       <InputChat userId={buyerId} nickName={buyerNickName} sellerId={sellerId} sellerNickName={sellerNickName} />
     </>
   );

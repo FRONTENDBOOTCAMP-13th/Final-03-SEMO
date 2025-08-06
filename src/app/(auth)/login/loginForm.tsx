@@ -14,7 +14,6 @@ import { useAuthGuard } from "@/lib/useAuthGuard";
 import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 
-// export default function LoginForm() {
 function LoginFormContent() {
   useAuthGuard(false);
   const searchParams = useSearchParams();

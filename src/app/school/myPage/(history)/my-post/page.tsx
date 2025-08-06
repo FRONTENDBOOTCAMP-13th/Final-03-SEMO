@@ -3,8 +3,8 @@ import MyPostClient from "./MyPostClient";
 
 // SEO를 위한 메타 데이터
 export const metadata: Metadata = {
-  title: "내 거래 목록",
-  description: "내가 작성한 판매, 구매, 공동구매 게시글을 모두 확인하고 관리하세요.",
+  title: "UniStuff | 내 거래 목록",
+  description: "내가 작성한 판매, 구매, 공동구매 게시글을 모두 확인하고 관리",
 };
 
 export default function MyPostPage() {

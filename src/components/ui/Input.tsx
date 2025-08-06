@@ -1,4 +1,7 @@
+import React from "react";
 interface InputProps {
+  label?: string;
+  disabled?: boolean;
   type?: string;
   placeholder?: string;
   value?: string;
