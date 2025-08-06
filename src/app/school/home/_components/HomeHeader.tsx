@@ -38,7 +38,7 @@ export default function HomeHeader() {
       {/* 로고 */}
       <div className="flex items-center gap-2" role="region" aria-label="알림">
         <Image src="/assets/unistuffLogo.svg" alt="UniStuff logo" width={32} height={32} />
-        <span className="text-20 font-bold text-uni-black">UniStuff</span>
+        <span className="text-20 font-bold text-uni-black font-urbanist">UniStuff</span>
       </div>
 
       {/* 알람 */}

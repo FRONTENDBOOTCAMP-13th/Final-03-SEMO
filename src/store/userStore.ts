@@ -27,7 +27,6 @@ export const useUserStore = create<UserStore>()(
       emailForVerification: "",
 
       setUser: (user) => {
-        console.log("[Zustand] setUser 호출됨:", user);
         if (!user || typeof user !== "object") {
           console.warn("[Zustand] user 데이터 이상함, 저장 취소됨:", user);
           return;

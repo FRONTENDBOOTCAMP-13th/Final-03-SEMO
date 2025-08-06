@@ -26,8 +26,8 @@ function LoginFormContent() {
     }
   }, [searchParams, resetUser]);
   const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("21017004@suwon.ac.kr");
+  const [password, setPassword] = useState("fpwh3749");
   const { setUser } = useUserStore();
 
   const handleLogin = async () => {
