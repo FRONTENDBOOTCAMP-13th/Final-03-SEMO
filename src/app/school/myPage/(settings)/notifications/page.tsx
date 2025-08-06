@@ -1,15 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
+import Head from "next/head";
 import SaveFloatingButton from "@/components/ui/SaveFloatingButton";
 import ToggleCard from "@/app/school/myPage/_components/ToggleCard";
-import { Metadata } from "next";
-
-// SEO를 위한 메타 데이터
-export const metadata: Metadata = {
-  title: "UniStuff | 알림 설정",
-  description: "UniStuff의 알림 설정 페이지입니다. 원하는 알림을 켜고 끌 수 있습니다",
-};
 
 export default function NotificationSettings() {
   const [notifications, setNotifications] = useState({
@@ -43,7 +37,12 @@ export default function NotificationSettings() {
   const handleSave = () => {};
 
   return (
-    <div className="px-4 py-6">
+    <>
+      <Head>
+        <title>UniStuff | 알림 설정</title>
+        <meta name="description" content="UniStuff의 알림 설정 페이지입니다. 원하는 알림을 켜고 끌 수 있습니다" />
+      </Head>
+      <div className="px-4 py-6">
       {/* 전체 알림 Section */}
       <div className="mb-8">
         <h2 className="text-18 font-semibold mb-4 text-uni-black font-pretendard">전체 알림</h2>
@@ -104,6 +103,7 @@ export default function NotificationSettings() {
         </div>
       </div>
       <SaveFloatingButton onClick={handleSave}>저장하기</SaveFloatingButton>
-    </div>
+      </div>
+    </>
   );
 }
