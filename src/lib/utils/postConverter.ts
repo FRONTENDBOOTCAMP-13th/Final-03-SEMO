@@ -88,24 +88,21 @@ export async function orderToReviewItems(order: OrderItem): Promise<Review[]> {
 
     if (product.seller_id) {
       if (sellerCache[product.seller_id]) {
-        console.log(`✅ 캐시 히트: 판매자 ${product.seller_id}`);
         authorName = sellerCache[product.seller_id].name;
         sellerProfileImageUrl = sellerCache[product.seller_id].image || "/assets/defaultimg.png";
         sellerAddress = sellerCache[product.seller_id].address || "위치 정보 없음";
       } else {
-        console.log(`🌐 API 요청: 판매자 ${product.seller_id}`);
         try {
           const sellerData = await getCachedUser(product.seller_id);
           if (sellerData) {
             authorName = sellerData.name || `판매자 ${product.seller_id}`;
             sellerProfileImageUrl = getImageUrl(sellerData.image);
             sellerAddress = sellerData.address || "위치 정보 없음"; // 판매자 주소 정보 추가
-            sellerCache[product.seller_id] = { 
-              name: authorName, 
+            sellerCache[product.seller_id] = {
+              name: authorName,
               image: sellerProfileImageUrl,
-              address: sellerAddress 
+              address: sellerAddress,
             };
-            console.log(`💾 캐시 저장: 판매자 ${product.seller_id} (주소: ${sellerAddress})`);
           }
         } catch {
           // 판매자 정보 로딩 실패 시 에러 로깅 제거
