@@ -1,6 +1,5 @@
 export interface User {
   _id?: number; // 사용자 ID (생략 가능, oauth 계정의 경우 providerAccountId로 대체)
-  providerAccountId?: string; // oauth 계정 ID
 
   email: string;
   password: string;
@@ -9,11 +8,16 @@ export interface User {
   type: "seller";
 
   // 회원가입 관련
-  university?: string;
-  department?: string;
-  studentId?: string;
-  dormitory?: string;
-
+  extra?: {
+    providerAccountId?: string; // oauth 계정 ID
+    university?: string;
+    department?: string;
+    studentId?: string;
+    dormitory?: string;
+  };
+  emailVerification?: boolean;
+  emailVerified?: boolean; // 이메일 인증 여부
+  profileComplete?: boolean; // 프로필 완성 여부 (학교 정보, 이메일 인증 등)
   // 기존 필드들
   loginType?: "email" | "kakao" | "google";
   image?: string;
