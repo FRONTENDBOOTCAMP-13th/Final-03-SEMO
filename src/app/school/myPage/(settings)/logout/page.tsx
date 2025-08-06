@@ -1,4 +1,12 @@
-"use client";
+import { Metadata } from "next";
+
+// SEO를 위한 메타 데이터
+export const metadata: Metadata = {
+  title: "UniStuff | 로그아웃",
+  description: "UniStuff에서 로그아웃합니다",
+};
+
+("use client");
 
 import { useEffect } from "react";
 import { logout } from "@/lib/actions/logout";

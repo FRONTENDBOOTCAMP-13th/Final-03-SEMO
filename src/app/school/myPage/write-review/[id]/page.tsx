@@ -9,6 +9,13 @@ import { usePurchasedItems } from "@/lib/hooks/usePurchasedItems";
 import { orderToReviewItems, Review } from "@/lib/utils/postConverter";
 import { submitReview } from "@/data/actions/myPage";
 import { useUserStore } from "@/store/userStore";
+import { Metadata } from "next";
+
+// SEO를 위한 메타 데이터
+export const metadata: Metadata = {
+  title: "UniStuff | 리뷰 작성",
+  description: "거래 후 리뷰를 작성하는 페이지입니다. ",
+};
 
 interface MyPageWriteReviewProps {
   params: Promise<{
