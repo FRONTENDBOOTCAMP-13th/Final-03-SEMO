@@ -20,17 +20,24 @@ export function useRequireProfileCompletion() {
   const { user, emailVerified } = useUserStore();
 
   useEffect(() => {
+    // 0) 아직 user 정보 로딩 중이면 아무 처리하지 않음
+    if (!user || !user.loginType) return;
+
+    // 1) 이메일/비번 가입자는 프로필 보완 훅 자체를 건너뜀
+    if (user.loginType !== "kakao") {
+      return;
+    }
+
     // 1) 스킵할 경로면 아무 처리도 하지 않음
     if (SKIP_PATHS.some((p) => pathname.startsWith(p))) {
       return;
     }
 
     // 2) extra 필드까지 펼쳐서 검사
-    const uni = user.extra?.university ?? (user as any).extra?.university;
-    const stu = user.extra?.studentId ?? (user as any).extra?.studentId;
+    const uni = user.extra?.university;
+    const stu = user.extra?.studentId;
     const dorm = user.address;
-    const verified = !!user.emailVerified;
-    const complete = !!uni && !!stu && !!dorm && verified;
+    const complete = !!uni && !!stu && !!dorm && emailVerified;
 
     // 3) 바이패스 경로면 역시 리다이렉트 안 함
     if (BYPASS_PATHS.some((p) => pathname.startsWith(p))) {
