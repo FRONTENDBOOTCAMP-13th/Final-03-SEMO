@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useUserStore } from "@/store/userStore";
 import BackButton from "@/app/(auth)/_components/BackButton";
@@ -8,10 +8,20 @@ import Logo from "@/app/(auth)/_components/LogoLow";
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
 
-export default function KakaoSettingPage() {
-  const router = useRouter();
+// useSerchParams() 사용때문에 변경
+function VerifiedQueryReader({ setVerified }: { setVerified: (v: boolean) => void }) {
   const params = useSearchParams();
   const verifiedQuery = params.get("verified") === "1";
+
+  useEffect(() => {
+    setVerified(verifiedQuery);
+  }, [verifiedQuery]);
+
+  return null;
+}
+
+export default function KakaoSettingPage() {
+  const router = useRouter();
   const {
     user,
     // code 페이지에서 setEmailForVerification(true) 할 때 저장된 값
@@ -23,6 +33,8 @@ export default function KakaoSettingPage() {
     emailVerified,
     setEmailVerified,
   } = useUserStore();
+
+  const [verifiedQuery, setVerifiedQuery] = useState(false);
 
   // ① query 파라미터로도 받아오면 store에 옮기기
   useEffect(() => {
@@ -62,7 +74,8 @@ export default function KakaoSettingPage() {
   const handleSave = async () => {
     setLoading(true);
     try {
-      const token = user.token?.accessToken || localStorage.getItem("accessToken");
+      const token =
+        user.token?.accessToken || (typeof window !== "undefined" ? localStorage.getItem("accessToken") : "");
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${user._id}`, {
         method: "PATCH",
         headers: {
@@ -100,11 +113,16 @@ export default function KakaoSettingPage() {
       setLoading(false);
     }
   };
+
   // 인증 페이지(code)에서 돌아왔을 때 버튼 보이게
   const canShowSave = emailVerified;
 
   return (
     <main className="min-h-screen flex flex-col items-center p-6 bg-white">
+      <Suspense fallback={null}>
+        <VerifiedQueryReader setVerified={setVerifiedQuery} />
+      </Suspense>
+
       <BackButton />
       <Logo />
       <h2 className="mt-4 text-lg font-semibold">추가 정보 입력</h2>
