@@ -2,7 +2,7 @@ import { BookmarkItem, OrderItem, PostItem } from "@/types/myPageApi";
 import { getCachedUser } from "@/data/functions/myPage";
 import { getImageUrl } from "@/data/actions/file";
 
-const sellerCache: { [key: string]: { name: string; image?: string } } = {};
+const sellerCache: { [key: string]: { name: string; image?: string; address?: string } } = {};
 
 export interface MyPageItem {
   id: number;
@@ -81,24 +81,31 @@ export function postToMyPageItem(post: PostItem, sourceType?: "sell" | "buy" | "
  * OrderItem을 Review 배열로 변환합니다 (구매한 상품 리뷰 작성용).
  */
 export async function orderToReviewItems(order: OrderItem): Promise<Review[]> {
-  // 주문의 extra에서 위치 정보를 가져옵니다.
-  const location = order.extra?.["location:"] || "";
-
   const reviewPromises = order.products.map(async (product) => {
     let authorName = "판매자";
     let sellerProfileImageUrl = "/assets/defaultimg.png"; // 판매자 프로필 이미지
+    let sellerAddress = "위치 정보 없음"; // 판매자 주소 정보
 
     if (product.seller_id) {
       if (sellerCache[product.seller_id]) {
+        console.log(`✅ 캐시 히트: 판매자 ${product.seller_id}`);
         authorName = sellerCache[product.seller_id].name;
         sellerProfileImageUrl = sellerCache[product.seller_id].image || "/assets/defaultimg.png";
+        sellerAddress = sellerCache[product.seller_id].address || "위치 정보 없음";
       } else {
+        console.log(`🌐 API 요청: 판매자 ${product.seller_id}`);
         try {
           const sellerData = await getCachedUser(product.seller_id);
           if (sellerData) {
             authorName = sellerData.name || `판매자 ${product.seller_id}`;
             sellerProfileImageUrl = getImageUrl(sellerData.image);
-            sellerCache[product.seller_id] = { name: authorName, image: sellerProfileImageUrl };
+            sellerAddress = sellerData.address || "위치 정보 없음"; // 판매자 주소 정보 추가
+            sellerCache[product.seller_id] = { 
+              name: authorName, 
+              image: sellerProfileImageUrl,
+              address: sellerAddress 
+            };
+            console.log(`💾 캐시 저장: 판매자 ${product.seller_id} (주소: ${sellerAddress})`);
           }
         } catch {
           // 판매자 정보 로딩 실패 시 에러 로깅 제거
@@ -113,7 +120,7 @@ export async function orderToReviewItems(order: OrderItem): Promise<Review[]> {
       author: authorName,
       image: getImageUrl(product.image?.path), // 상품 이미지 (path 키에서 공백 제거)
       sellerProfileImage: sellerProfileImageUrl, // 판매자 프로필 이미지
-      location: location, // 모든 리뷰 아이템에 동일한 위치 정보 적용
+      location: sellerAddress, // 판매자 주소 정보 사용
       date: new Date(order.createdAt)
         .toLocaleDateString("ko-KR", {
           year: "numeric",
