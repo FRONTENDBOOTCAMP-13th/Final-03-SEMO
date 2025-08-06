@@ -3,8 +3,8 @@
 import { Send } from "lucide-react";
 import { useState } from "react";
 import { GLOBAL_ROOM_ID, socket } from "../../../api/chat/useChatSoket";
-import { useChatStore, Message } from "../../../api/chat/useChatStore";
 import { useParams, useSearchParams } from "next/navigation";
+import { Message, useChatStore } from "@/store/useChatStore";
 
 interface InputChatProps {
   userId: string | number;

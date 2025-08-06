@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
       title: `${user.name}님의 프로필`,
       description: `${user.name}님의 판매 상품, 거래 후기 등 프로필 정보를 확인하세요.`,
     };
-  } catch (error) {
+  } catch {
     return { title: "프로필 | SEMO", description: "사용자 프로필 정보를 확인하세요." };
   }
 }
