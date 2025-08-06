@@ -7,6 +7,7 @@ import { getImageUrl } from "@/data/actions/file";
 import PostLikeButton from "./PostLikeButton";
 import Countdown from "@/app/school/market/_components/_PostComponents/Countdown";
 import ChatStartButton from "@/app/school/chat/components/chatStartBtn";
+import UserProfileSection from "./UserProfileSection";
 
 interface PostContentProps {
   post: Post;
@@ -67,24 +68,7 @@ export default function PostContent({ post, marketType }: PostContentProps) {
         </section>
 
         {/* 작성자 */}
-        <div className="flex items-center gap-3 my-2" role="region" aria-label="seller-title">
-          <figure className="seller-avatar" aria-label={`${post?.user.name}의 프로필`}>
-            <Image
-              src={getImageUrl(post.user.image)}
-              alt=""
-              width={56}
-              height={56}
-              className="w-14 h-14 object-cover rounded-full"
-            />
-          </figure>
-          <div className="seller-details">
-            <p className="text-16">{post?.user.name}</p>
-            <p className="text-14 text-uni-gray-700">
-              <span className="sr-only">거래 위치:</span>
-              {post?.extra.location}
-            </p>
-          </div>
-        </div>
+        <UserProfileSection user={{ ...post.user, id: post.user._id }} location={post?.extra.location} />
 
         {/* 상태 */}
         <div className="my-3" role="status" aria-label="상품 상태">
@@ -163,25 +147,7 @@ export default function PostContent({ post, marketType }: PostContentProps) {
         </p>
 
         {/* 작성자 */}
-        <div className="flex items-center gap-3 my-2">
-          <h4 id="organizer-title" className="sr-only">
-            공동구매 게시글 작성자
-          </h4>
-          <figure className="organizer" aria-label={`${post?.user.name}의 프로필`}>
-            <Image
-              src={getImageUrl(post.user.image)}
-              alt=""
-              width={56}
-              height={56}
-              className="w-14 h-14 object-cover rounded-full"
-            />
-          </figure>
-          <div className="details">
-            <p className="text-16">{post?.user.name}</p>
-            <span className="sr-only">거래 장소</span>
-            <p className="text-14 text-uni-gray-700">{post?.extra.location}</p>
-          </div>
-        </div>
+        <UserProfileSection user={{ ...post.user, id: post.user._id }} location={post?.extra.location} />
 
         {/* 상태 */}
         <div className="my-3" role="status" aria-label="공동구매 현황">
@@ -240,7 +206,13 @@ export default function PostContent({ post, marketType }: PostContentProps) {
       {post?._id && Number.isInteger(post._id) && <CommentList _id={post._id} post={post} />}
 
       <div className=" w-full max-w-[480px] bg-white">
-        {post.user?._id && <ChatStartButton sellerId={post.user._id.toString()} productId={post._id.toString()} />}
+        {post.user?._id && (
+          <ChatStartButton
+            sellerId={post.user._id.toString()}
+            // sellerNickName={post.user.name}
+            productId={post._id.toString()}
+          />
+        )}
       </div>
     </main>
   );
