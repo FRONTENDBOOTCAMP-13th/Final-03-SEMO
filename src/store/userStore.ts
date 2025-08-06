@@ -42,17 +42,21 @@ export const useUserStore = create<UserStore>()(
 
       resetUser: () => {
         console.log("[Zustand] resetUser 호출됨");
-        set({ user: {}, verificationCode: "", emailForVerification: "", emailVerified: false });
+        set({
+          user: {},
+          verificationCode: "",
+          emailForVerification: "",
+          emailVerified: false,
+        });
       },
+
       setEmailVerified: (v) => set({ emailVerified: v }),
       setEmailForVerification: (email) => set({ emailForVerification: email }),
-
       setVerificationCode: (code) => set({ verificationCode: code }),
     }),
 
     {
       name: "user-storage",
-      skipHydration: false,
       partialize: (state) => ({
         user: state.user,
         verificationCode: state.verificationCode,

@@ -10,11 +10,9 @@ export default function OnboardingSliderForm() {
   const touchEndX = useRef(0);
 
   const handleStartClick = () => {
+    console.log("온보딩 완료 상태 업데이트됨");
     // 온보딩 완료 플래그 저장
-    if (typeof window !== "undefined") {
-      localStorage.setItem("onboarding-completed", "true");
-    }
-    router.push("/school/home");
+    router.push("/login");
   };
 
   const goToSlide = (slideIndex: number) => {
