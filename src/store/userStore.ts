@@ -9,6 +9,13 @@ interface UserStore {
 
   verificationCode: string;
   setVerificationCode: (code: string) => void;
+
+  // 이메일 인증용 (카카오 유저 흐름)
+  emailForVerification: string;
+  setEmailForVerification: (email: string) => void;
+
+  emailVerified: boolean; // 인증 완료 플래그
+  setEmailVerified: (v: boolean) => void;
 }
 
 export const useUserStore = create<UserStore>()(
@@ -17,6 +24,11 @@ export const useUserStore = create<UserStore>()(
       user: {},
       verificationCode: "",
       setVerificationCode: (code) => set({ verificationCode: code }),
+      emailForVerification: "",
+      setEmailForVerification: (email) => set({ emailForVerification: email }),
+
+      emailVerified: false,
+      setEmailVerified: (v) => set({ emailVerified: v }),
 
       setUser: (user) => {
         console.log("[Zustand] setUser 호출됨:", user);
@@ -34,7 +46,7 @@ export const useUserStore = create<UserStore>()(
 
       resetUser: () => {
         console.log("[Zustand] resetUser 호출됨");
-        set({ user: {}, verificationCode: "" });
+        set({ user: {}, verificationCode: "", emailForVerification: "", emailVerified: false });
       },
     }),
 
@@ -44,6 +56,7 @@ export const useUserStore = create<UserStore>()(
       partialize: (state) => ({
         user: state.user,
         verificationCode: state.verificationCode,
+        emailForVerification: state.emailForVerification,
       }), // 불필요한 state 저장 방지
     }
   )
