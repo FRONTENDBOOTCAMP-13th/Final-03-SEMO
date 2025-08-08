@@ -28,8 +28,7 @@ export default function SignupCodeClient() {
     setVerificationCode(rnd);
     setLoading(true);
 
-    sendVerificationCode(email, rnd)
-      .finally(() => setLoading(false));
+    sendVerificationCode(email, rnd).finally(() => setLoading(false));
   }, [email, setVerificationCode]);
 
   const handleVerify = async () => {
@@ -49,18 +48,15 @@ export default function SignupCodeClient() {
         return;
       }
 
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/users/${user._id}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            "Client-Id": process.env.NEXT_PUBLIC_CLIENT_ID!,
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ ...user, emailVerified: true }),
-        }
-      );
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${user._id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          "Client-Id": process.env.NEXT_PUBLIC_CLIENT_ID!,
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ ...user, emailVerified: true }),
+      });
       if (!res.ok) {
         alert("프로필 업데이트에 실패했습니다.");
         return;
@@ -81,7 +77,7 @@ export default function SignupCodeClient() {
       setLoading(true);
       await handleSignup({ user, setLoading });
       alert("회원가입 완료!");
-      router.push("/login?from=signup");
+      router.push("/onBoarding");
     } catch (err) {
       console.error(err);
       alert("회원가입 처리 중 오류 발생!");
